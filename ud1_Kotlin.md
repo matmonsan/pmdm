@@ -125,7 +125,7 @@ fun main() {
 	val myDouble4 = 3
 	myDouble3 = myDouble + myDouble4 * myDouble2
 
-	val myString = "Santi"
+	val myString = "Juan"
 	val myString1: String = "soy " + myString
 
 	val myBool = true
@@ -142,7 +142,7 @@ fun main() {
 **Resultado:**
 
 ```text
-Estamos repasando de kotlin y soy Santi
+Estamos repasando de kotlin y soy Juan
 Tipos enteros: 2
 Tipos reales: 7.0
 Tipos booleanos: false
@@ -246,7 +246,7 @@ println("La longitud del nombre es: $longitudNombre")
 
 * En lugar de escribir un bloque `if` extenso, se utiliza la combinación `?.`.
 
-* Si `nombre` tiene un valor asignado (por ejemplo, "Santiago"), `longitudNombre` valdrá `8`.
+* Si `nombre` tiene un valor asignado (por ejemplo, "Juan"), `longitudNombre` valdrá `4`.
 
 * Si `nombre` es `null`, Kotlin detiene la evaluación de la propiedad `length` y asigna directamente `null` a `longitudNombre`. El resultado en consola será: `La longitud del nombre es: null`.
 
@@ -297,10 +297,10 @@ fun procesarNombre(nombre: String?) {
 }
 
 fun main() {
-    val nombre1: String? = "Santi"
+    val nombre1: String? = "Juan"
     val nombre2: String? = null
 
-    procesarNombre(nombre1) // ① Imprimirá: El nombre es Santi
+    procesarNombre(nombre1) // ① Imprimirá: El nombre es Juan
     procesarNombre(nombre2) // ② Imprimirá: El nombre es null
 }
 ```
@@ -315,7 +315,7 @@ El uso de `let` no se limita a verificar nulos. También es común encontrarlo e
 
 ```kotlin
 fun main() {
-    val yo = "Santiago Rodenas Herráiz"
+    val yo = "Matías Montávez Sánchez"
 
     yo.let {
         it.toUpperCase()
@@ -674,7 +674,7 @@ Cuando la lambda recibe un único parámetro (en la inicialización de arrays re
 > #### Ejemplos
 >
 > #### Imprimir una lista de nombres
-> Supón que tienes una lista: `["Santi", "Sonia", "Diego"]`.
+> Supón que tienes una lista: `["Juan", "Sonia", "Diego"]`.
 >
 > - **Forma larga (sin `it`):** Le dices a Kotlin: *"Para cada elemento, invéntate la variable `nombre` e imprime `nombre`"*.
 >   ```kotlin
@@ -706,13 +706,13 @@ Cuando la lambda recibe un único parámetro (en la inicialización de arrays re
   - **Ejemplo:**
     ```kotlin
     // Array de cadenas (Array<String>)
-    val nombres = arrayOf("Santi", "Sonia", "Guille", "Diego")
+    val nombres = arrayOf("Juan", "Sonia", "Guille", "Diego")
     
     // Array genérico heterogéneo (Array<Any>)
     val datos = arrayOf("Kotlin", 100, true, 3.14)
     
     // Modificación de un elemento
-    nombres[0] = "Santiago"
+    nombres[0] = "Pedro"
     ```
 
 - **`Array(tamaño) { lambda_de_inicializacion }`**: Sigue siendo un array genérico como el anterior (`Array<T>`), pero se diferencia en la forma de inicializar sus elementos mediante una **función lambda** que calcula el valor de cada posición según su índice.
@@ -762,11 +762,11 @@ A continuación se muestra cómo Java y Kotlin declaran un array:
 ```kotlin
 // En Java
 // int[] arr = new int[5]; // ①
-// String[] names = {"Santi", "Sonia", "Guille", "Diego"};
+// String[] names = {"Juan", "Sonia", "Guille", "Diego"};
 
 // En Kotlin
 val arr = IntArray(5) // ②
-val names = arrayOf("Santi", "Sonia", "Guille", "Diego")
+val names = arrayOf("Juan", "Sonia", "Guille", "Diego")
 ```
 
 - **① Declaración de un array en Java:** Declaración clásica indicando tipo primitivo y tamaño.
@@ -865,7 +865,7 @@ fun main() {
 ### Funciones integradas
 
 ```kotlin
-val myArray1 = arrayOf(1, 2, 3.3, "santi")
+val myArray1 = arrayOf(1, 2, 3.3, "Juan")
 val myArray2 = intArrayOf(1, 2, 3, 4)
 val myArray3 = doubleArrayOf(1.4, 2.6)
 val myArray4 = Array(5) { it * 2 }
@@ -907,7 +907,7 @@ fun main() {
 	println("Convertido a MutableList: ${myArray.toMutableList()}")
 	println("Convertido a Set: ${myArray.toSet()}")
 
-	val pairsArray = arrayOf("Santi" to 25, "Sonia" to 30, "Guille" to 15, "Diego" to 10)
+	val pairsArray = arrayOf("Juan" to 25, "Sonia" to 30, "Guille" to 15, "Diego" to 10)
 	val mapFromArray = pairsArray.toMap()
 	println(mapFromArray)
 }
