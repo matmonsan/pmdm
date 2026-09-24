@@ -21,7 +21,7 @@ description: "<strong>Profesor:</strong> Matías Montávez Sánchez | <strong>M�
 
 ## INTRODUCCIÓN
 
-![Icono Kotlin](assets/img/kotlin.png)
+![Icono Kotlin](assets/img/Kotlin.png)
 
 Con este documento, se va a ofrecer una visión rápida del lenguaje Kotlin, en comparación con el Java que ya conocéis del curso pasado. A través de sencillos ejemplos y explicaciones se va a proporcionar una introducción efectiva al lenguaje. No se va a cubrir un módulo completo de programación de primer año, pero es necesario dedicar una o dos semanas para familiarizarse con este lenguaje ya que Kotlin, poco a poco será el lenguaje que sustituya a Java en la programación de aplicaciones con Android.
 
