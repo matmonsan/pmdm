@@ -281,7 +281,7 @@ fun obtenerNombreConPredeterminado(): String {
 
 2. `fun obtenerNombreConPredeterminado(): String`: Declara una función cuyo retorno no puede ser nulo (`String`). Llama a `obtenerNombre()` y utiliza el operador Elvis `?:` para garantizar que, si el resultado es `null`, devuelva la cadena por defecto especificada.
 
-## 7. Uso más extendido de la comprobación de nullables en Kotlin (`let`)
+#### Uso más extendido de la comprobación de nullables en Kotlin (`let`)
 
 En Kotlin, la función de extensión `let` se utiliza para ejecutar un bloque de código **únicamente si el objeto no es `null`**, combinándola con el operador seguro `?.`.
 
@@ -655,6 +655,50 @@ Una **función lambda** es una función anónima (un bloque de código sin nombr
 `{ parámetro -> cuerpo_de_la_función }`
 
 Cuando la lambda recibe un único parámetro (en la inicialización de arrays representa el **índice o posición** `0, 1, 2...`), Kotlin nos permite omitir la declaración del parámetro y utilizar la palabra reservada **`it`** para hacer referencia a él.
+
+>
+> **NOTA: `it` en Kotlin**
+>
+> Imagina que estás fregando la vajilla y le dices a alguien:
+> - **Sin atajos:** "Coge el plato. Enjabona el plato. Seca el plato."
+> - **Con atajos:** "Coge el plato. Enjabóna**lo**, séca**lo**."
+>
+> Ese **"lo"** es exactamente lo que hace **`it`** en Kotlin: es un atajo para decir **"eso"** o **"esta cosa"** sin tener que ponerle un nombre cada vez.
+>
+> #### ¿Qué es `it`?
+> En Kotlin, **`it`** es un apodo automático que significa:  
+> **"el elemento con el que estoy trabajando en este preciso instante"**.
+>
+> Solo aparece cuando realizas una tarea sobre **una sola cosa a la vez**.
+>
+> #### Ejemplos
+>
+> #### Imprimir una lista de nombres
+> Supón que tienes una lista: `["Santi", "Sonia", "Diego"]`.
+>
+> - **Forma larga (sin `it`):** Le dices a Kotlin: *"Para cada elemento, invéntate la variable `nombre` e imprime `nombre`"*.
+>   ```kotlin
+>   nombres.forEach { nombre -> println(nombre) }
+>   ```
+> - **Forma fácil (usando `it`):** Le dices a Kotlin: *"Para cada elemento... ¡imprime **eso**!"*.
+>   ```kotlin
+>   nombres.forEach { println(it) }
+>   ```
+>
+> #### Crear una lista de números por su posición
+> Si le pides a Kotlin que cree un array de 5 números donde cada posición valga el doble de su índice (`0, 1, 2, 3, 4`):
+> ```kotlin
+> // 'it' vale la posición actual (0, luego 1, luego 2...)
+> val dobles = IntArray(5) { it * 2 }
+> // Resultado: [0, 2, 4, 6, 8]
+> ```
+> *(Traducción: "En la casilla que toque, coge **su posición** y multiplícala por 2").*
+>
+> #### Importante
+> 1. **`it` = "Eso" / "Lo que toque ahora".**
+> 2. **Solo funciona con 1 argumento:** Si la función procesa 1 sola cosa, Kotlin te regala el uso de `it`.
+> 3. **Si hay 2 o más cosas a la vez:** (por ejemplo, una clave y un valor en un mapa), `it` no funciona y tienes que ponerles nombre explícito a cada una.
+>
 
 ### Formas habituales de creación e inicialización
 
