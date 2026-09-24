@@ -1,12 +1,7 @@
 ---
-layout: default
-title: Repaso de Kotlin con ejemplos
+title: UD 1.1: Lenguaje Kotlin
+description: "<strong>Profesor:</strong> Matías Montávez Sánchez | <strong>Módulo:</strong> Programación Multimedia y Dispositivos Móviles"
 ---
-
-# REPASO DE KOTLIN CON EJEMPLOS
-
-**PMDM**  
-**Santiago Rodenas Herráiz**
 
 ## Índice
 
@@ -14,7 +9,7 @@ title: Repaso de Kotlin con ejemplos
 - [Recordando conceptos](#recordando-conceptos)
 - [Variables primitivas en Kotlin](#variables-primitivas-en-kotlin)
 - [Estructuras de control y repetición](#estructuras-de-control-y-repetición)
-- [Arrays](#arrays)
+- [Arrays](#arrays-1)
 - [Funciones](#funciones)
 - [Funciones lambda](#funciones-lambda)
 - [Clases](#clases)
@@ -26,7 +21,9 @@ title: Repaso de Kotlin con ejemplos
 
 ## INTRODUCCIÓN
 
-Con este documento, pretendo ofrecer una visión rápida del lenguaje Kotlin, en comparación con el Java que ya conocéis del curso pasado. A través de sencillos ejemplos y explicaciones, espero proporcionar una introducción efectiva al lenguaje. No pretendo cubrir un módulo completo de programación de primer año de DAM, pero he observado que en años anteriores era necesario dedicar una o dos semanas para familiarizarse con este lenguaje. Kotlin, poco a poco será el lenguaje que sustituya a Java en la programación de aplicaciones con Android.
+![Icono Kotlin](assets/img/kotlin.png)
+
+Con este documento, se va a ofrecer una visión rápida del lenguaje Kotlin, en comparación con el Java que ya conocéis del curso pasado. A través de sencillos ejemplos y explicaciones se va a proporcionar una introducción efectiva al lenguaje. No se va a cubrir un módulo completo de programación de primer año, pero es necesario dedicar una o dos semanas para familiarizarse con este lenguaje ya que Kotlin, poco a poco será el lenguaje que sustituya a Java en la programación de aplicaciones con Android.
 
 ### Variables
 
@@ -74,11 +71,9 @@ Finalmente, abordaremos el concepto de callbacks, que son funciones que se pasan
 
 Actualmente, soy profesor de 2º DAM en el IES Virgen del Carmen de Jaén. Imparto la asignatura de PMDM (Programación multimedia y dispositivos móviles) y la asignatura de PSP (Programación servicios y procesos). Para cualquier consulta, puedes contactar en la siguiente dirección de correo electrónico:
 
-- **Email:** srodher115@g.educaand.es
-- [GitHub Repository](https://github.com/srodenas?tab=repositories)
-- Curso 24/25
+- **Email:** mmonsan050@g.educaand.es
 - [Documentación oficial de Kotlin](https://kotlinlang.org/docs/home.html)
-- © 2024 Santiago Rodenas Herráiz.
+- © 2026 Matías Montávez Sánchez.
 
 ## RECORDANDO CONCEPTOS
 
@@ -89,6 +84,8 @@ En clase, hablaremos de los siguientes conceptos:
 3. **JRE.** Java Runtime Environment engloba la JVM, encargada de interpretar y ejecutar el bytecode generado después de la compilación realizada por el JDK. La máquina virtual debe instalarse según el sistema operativo y la arquitectura del procesador. La JVM interpreta el bytecode y genera instrucciones para la arquitectura concreta.
 4. **JDK.** El kit de desarrollo software contiene lo necesario para desarrollar aplicaciones: compilador (`javac`) y librerías del lenguaje. En Kotlin, el compilador (`kotlinc`) no se encuentra dentro del JDK, pero debe generar bytecode compatible con él.
 5. **SDK.** Conjunto de herramientas necesarias para desarrollar una aplicación: IDE, documentación, herramientas de compilación, librerías, emuladores y plugins. En Android se relaciona con el nivel de API. Una aplicación con API mínima 34 no podrá ejecutarse en Android 33.
+
+![Esquema arquitectura](assets/img/gradle.jpg)
 
 La relación general es: el SDK utiliza Gradle para gestionar dependencias y construir el proyecto; Kotlin necesita el JDK; Kotlin compila a bytecode compatible con Java; la JVM interpreta ese bytecode y necesita el sistema operativo y la arquitectura hardware.
 
@@ -176,194 +173,465 @@ println("Float a Double: $anotherDouble")
 
 ### Anulables
 
-Los tipos anulables permiten que una variable tome el valor `null`. Para declararlos se escribe `?` después del tipo.
+En Kotlin, los **tipos anulables** (o *nullable types*) son una característica fundamental que permite a las variables y propiedades tomar el valor `null` (es decir, representar la ausencia de un valor).
+
+Esta característica es especialmente útil para evitar los famosos errores de referencia nula (**NullPointerException** o "el error del millón de dólares"), un problema sumamente común en otros lenguajes de programación como Java.
+
+#### ¿Qué significa que algo sea null?
+
+> Imagina que una variable es una caja.
+>
+> * Una variable normal de tipo `String` contiene siempre un texto (la caja tiene algo dentro).
+>
+> * Una variable que puede ser `null` es una caja que **puede estar totalmente vacía**. Si intentas usar lo que hay dentro de una caja vacía sin comprobarlo antes, el programa se detiene de forma inesperada. Kotlin te obliga a declararlo si una caja puede estar vacía.
+
+#### Declaración de Tipos Anulables
+
+Para declarar una variable o propiedad que puede ser nula, se debe usar el operador **`?`** justo después del tipo de dato. Esto le indica al compilador de Kotlin que la variable puede contener un valor del tipo especificado o, en su defecto, el valor `null`.
 
 ```kotlin
 var nombre: String? = null
 var edad: Int? = 25
+```
 
+* `String?`: Significa *"aquí guardaré un texto, o puede que no haya nada (`null`)"*.
+
+* `Int?`: Significa *"aquí guardaré un número entero, o puede que no haya nada (`null`)"*.
+
+* En este ejemplo, `nombre` inicia estando completamente vacío (`null`), mientras que `edad` contiene el número `25`, pero tiene la opción de valer `null` más adelante si fuera necesario.
+
+#### Comprobación de Nulidad
+
+Puedes comprobar si una variable anulable es `null` utilizando una condición tradicional `if` / `else`.
+
+```kotlin
 if (nombre != null) {
-	println("El nombre es: $nombre")
+    println("El nombre es: $nombre")
 } else {
-	println("El nombre es nulo")
+    println("El nombre es nulo")
 }
+```
 
+* El operador `!=` significa *"es diferente de"*.
+
+* Con `if (nombre != null)`, le preguntamos a Kotlin: *"¿Hay un valor válido dentro de la variable nombre?"*.
+
+* Si contiene un texto, imprime el texto. Si está vacía (`null`), se ejecuta el bloque del `else`.
+
+* **Ventaja de Kotlin:** Dentro del bloque `if`, Kotlin realiza una conversión automática (*Smart Cast*) y reconoce que `nombre` no es nulo dentro de ese alcance, permitiendo usarlo sin riesgo de error.
+
+#### Operador Elvis (`?:`)
+
+El operador **Elvis** (`?:`) se usa para proporcionar un valor predeterminado (un valor de respaldo) cuando una expresión resulta ser `null`.
+
+```kotlin
 val longitudNombre = nombre?.length ?: 0
 println("La longitud del nombre es: $longitudNombre")
 ```
 
-El operador `?.` accede a una propiedad sólo si el receptor no es `null`. El operador `?:` proporciona un valor alternativo. El operador `!!` afirma que el valor no es nulo, pero lanza `NullPointerException` si la afirmación es falsa.
+* `nombre?.length`: Intenta obtener la longitud del texto guardado en `nombre`.
+
+* `?: 0`: *"Si la expresión de la izquierda devuelve `null`, usa el valor `0` por defecto"*.
+
+* En este ejemplo, si `nombre` vale `null`, la variable `longitudNombre` recibirá el valor `0`.
+
+#### Operador de Acceso Seguro (`?.`)
+
+El operador de acceso seguro se usa para llamar a un método o acceder a una propiedad **solo si la variable no es `null`**. Si la variable es `null`, la operación no se ejecuta y devuelve `null` de forma segura.
 
 ```kotlin
 val longitudNombre = nombre?.length
-val longitudForzada = nombre!!.length // Puede lanzar NullPointerException
-
-fun obtenerNombre(): String? = null
-
-fun obtenerNombreConPredeterminado(): String =
-	obtenerNombre() ?: "Nombre predeterminado"
+println("La longitud del nombre es: $longitudNombre")
 ```
 
-`let` permite ejecutar un bloque sólo si el valor no es nulo:
+* En lugar de escribir un bloque `if` extenso, se utiliza la combinación `?.`.
+
+* Si `nombre` tiene un valor asignado (por ejemplo, "Santiago"), `longitudNombre` valdrá `8`.
+
+* Si `nombre` es `null`, Kotlin detiene la evaluación de la propiedad `length` y asigna directamente `null` a `longitudNombre`. El resultado en consola será: `La longitud del nombre es: null`.
+
+#### Operador de Afirmación de No Nulidad (`!!`)
+
+El operador `!!` se utiliza para **afirmar de forma explícita** que una variable **no es `null`**. Es una orden directa al compilador indicando que se asume el control del valor.
+
+> **NOTA DE ADVERTENCIA:** Si la variable llega a ser `null` al ejecutar esta línea, el programa fallará lanzando una excepción `NullPointerException`.
+
+```kotlin
+val longitudNombre = nombre!!.length
+println("La longitud del nombre es: $longitudNombre")
+```
+
+> Este operador debe usarse con precaución, ya que puede causar errores en tiempo de ejecución si el valor es `null`. Es recomendable limitar su uso a casos donde la presencia del valor esté previamente garantizada.
+
+#### Funciones Anulables
+
+Kotlin permite definir funciones cuyo valor de retorno sea anulable. Esto se logra especificando el tipo de retorno con el operador `?`.
+
+```kotlin
+fun obtenerNombre(): String? {
+    return null
+}
+
+fun obtenerNombreConPredeterminado(): String {
+    return obtenerNombre() ?: "Devolverá siempre Nombre Predeterminado, porque siempre retornara null"
+}
+```
+
+1. `fun obtenerNombre(): String?`: Declara una función que puede devolver una cadena de texto o un valor `null`. En esta implementación, siempre devuelve `null`.
+
+2. `fun obtenerNombreConPredeterminado(): String`: Declara una función cuyo retorno no puede ser nulo (`String`). Llama a `obtenerNombre()` y utiliza el operador Elvis `?:` para garantizar que, si el resultado es `null`, devuelva la cadena por defecto especificada.
+
+## 7. Uso más extendido de la comprobación de nullables en Kotlin (`let`)
+
+En Kotlin, la función de extensión `let` se utiliza para ejecutar un bloque de código **únicamente si el objeto no es `null`**, combinándola con el operador seguro `?.`.
+
+Esto es útil para manejar valores opcionales y evitar el uso excesivo de comprobaciones de nulidad manuales.
 
 ```kotlin
 fun procesarNombre(nombre: String?) {
-	nombre?.let {
-		println("El nombre es $it")
-	} ?: run {
-		println("El nombre es null")
-	}
+    nombre?.let {
+        println("El nombre es $it")
+    } ?: run {
+        println("El nombre es null")
+    }
 }
 
 fun main() {
-	procesarNombre("Santi")
-	procesarNombre(null)
+    val nombre1: String? = "Santi"
+    val nombre2: String? = null
+
+    procesarNombre(nombre1) // ① Imprimirá: El nombre es Santi
+    procesarNombre(nombre2) // ② Imprimirá: El nombre es null
 }
 ```
 
-También puede encadenar operaciones sobre el mismo objeto:
+* `nombre?.let { ... }`: Si `nombre` no es nulo, se ejecuta el bloque interno. Dentro de este bloque, el objeto no nulo está disponible mediante la variable implícita **`it`**.
+
+* `?: run { ... }`: Si `nombre` es nulo, la expresión con `?.let` resulta nula, por lo que el operador Elvis redirige la ejecución al bloque `run`.
+
+#### Encadenamiento de múltiples operaciones con `let`
+
+El uso de `let` no se limita a verificar nulos. También es común encontrarlo encadenando múltiples operaciones sobre un mismo objeto:
 
 ```kotlin
 fun main() {
-	val yo = "Santiago Rodenas Herráiz"
+    val yo = "Santiago Rodenas Herráiz"
 
-	yo.let { it.uppercase() }
-		.let { nombreMayus ->
-			val partes = nombreMayus.split(" ")
-			val nombre = partes[0]
-			val apellido1 = partes[1]
-			val apellido2 = partes[2]
-			Triple(nombre, apellido2, apellido1)
-		}
-		.let {
-			print("Mi nombre con el apellido cambiado es ${it.first}, ${it.second}, ${it.third}")
-		}
+    yo.let {
+        it.toUpperCase()
+    }.let { nombreMayus -> // Sobre ese string convertido a mayúsculas
+        val partes = nombreMayus.split(" ")
+        val nombre = partes[0]
+        val apellido1 = partes[1]
+        val apellido2 = partes[2]
+        Triple(nombre, apellido2, apellido1) // Devuelvo el objeto Triple pero con los apellidos al revés
+    }.let { // Sobre ese objeto Triple
+        print("Mi nombre con el apellido cambiado es ${it.first}, ${it.second}, ${it.third}")
+    }
 }
 ```
 
-El código siguiente no tiene sentido tal como está escrito: `nombre.let` recibe un `String?`, por lo que `it.length` no es seguro. La forma coherente sería `nombre?.let { ... } ?: run { ... }`; usar `it!!.length` puede provocar una excepción.
+#### Análisis de Caso Práctico
 
-**Resumen:** usa `?` para declarar anulables, `if` para comprobarlos, `?:` para valores predeterminados, `?.` para acceso seguro y `!!` sólo cuando la no nulidad esté garantizada.
+Analizar el siguiente código e indicar si tiene sentido y por qué:
 
-### ACTIVIDADES
+```kotlin
+val nombre : String? = null
+nombre.let {
+    print("Longitud ${it.length}") // ①
+} ?: run { // ②
+    print("No tiene mucho sentido")
+}
+```
 
-1. Declara varias variables enteras (`val` y `var`), realiza operaciones básicas y muestra el resultado.
-2. Declara variables `Double`, `Float`, `Boolean` y `String`; realiza operaciones y muestra los resultados.
-3. Declara un `Double` y un `Float` y observa la diferencia de precisión.
-4. Convierte un `Double` a `Float`.
-5. Convierte un `Float` a `Double`.
-6. Declara una variable sin inicializar, asígnale un valor y úsala.
-7. Convierte un `Double` a `Int` y muestra ambos valores.
-8. Concatena dos cadenas.
-9. Usa un `Boolean` en una condición.
-10. Declara variables `var` y `val`, modifica sólo las primeras y explica la diferencia.
-11. Define una función que reciba `String?` y devuelva un valor mediante Elvis.
-12. Recibe `Int?` y usa `let` para imprimir su doble o indicar que es `null`.
-13. Usa `?: run` sólo cuando exista un objeto `?.let`.
-14. Encadena operaciones con `let`.
-15. Filtra una lista de `String?` con `filterNotNull()`.
-16. Devuelve la longitud de un `String?` o cero usando `?.let`.
-17. Recibe dos `Int?` y devuelve su suma o un valor predeterminado si alguno es nulo.
+* **Punto ① (`it.length`):**
+
+  * Hay una incoherencia: al no utilizar el operador seguro `?.` en `nombre.let` (es decir, se escribió `nombre.let` directamente), la función `let` se ejecuta sin importar si `nombre` es nulo o no.
+
+  * Como `nombre` es `null`, la variable `it` dentro del bloque sigue siendo de tipo anulable (`String?`). El compilador no permite llamar directamente a `.length` sobre un tipo anulable.
+
+  * Para forzar la compilación se tendría que escribir `${it!!.length}`, lo cual provocaría una excepción `NullPointerException` en tiempo de ejecución al evaluarse.
+
+* **Punto ② (`?: run`):**
+
+  * El uso de `?: run` junto con `objeto?.let` tiene sentido cuando se quiere verificar con el operador Elvis qué hacer en caso de que la variable sea nula.
+
+  * En este ejemplo, al usar `let` directamente sobre la variable anulable sin la llamada segura `?.`, la expresión de la izquierda no devuelve `null` de la forma esperada por el operador Elvis, por lo que usar `?: run` carece de sentido en este contexto.
+
+#### Resumen de Conceptos Clave
+
+| Concepto / Operador | Sintaxis | Descripción |
+| --- | --- | --- |
+| **Declaración Anulable** | `Tipo?` | Usa `?` después del tipo para permitir que una variable o propiedad sea `null`. |
+| **Comprobación de Nulidad** | `if (x != null)` | Usa condiciones `if` tradicionales para verificar si una variable no es `null`. |
+| **Operador Elvis** | `?:` | Proporciona un valor predeterminado si una expresión resulta ser `null`. |
+| **Acceso Seguro** | `?.` | Accede a métodos y propiedades solo si la variable no es `null`. |
+| **Afirmación No Nula** | `!!` | Asegura que una variable no es `null`, lanzando una excepción si lo es. |
+| **Funciones Anulables** | `fun(): Tipo?` | Permite definir funciones que devuelven valores anulables especificando el tipo de retorno como tal. |
+| **Uso con `let`** | `x?.let { } ?: run { }` | Ejecuta un bloque de código de forma segura sobre objetos no nulos y ofrece una alternativa con `run`. |
+
+---
+
+### RELACIÓN 1. Variables Primitivas
+
+1. Declaración de variables enteras: Escribe un programa que declare varias variables enteras (val y var), realiza operaciones básicas con ellas y muestra el resultado en la consola.
+2. Declaración de variables reales, booleanas y cadenas: Crea un programa que declare variables de tipo Double, Float, Boolean y String. Realiza operaciones con estas variables y muestra los resultados en la consola.
+3. Diferencia entre Double y Float: Escribe un programa que declare una variable de tipo Double y una de tipo Float. Muestra ambos valores en la consola para observar la diferencia de precisión.
+4. Conversión de Double a Float: Crea un programa que convierta un valor de tipo Double a Float y muestra el resultado en la consola.
+5. Conversión de Float a Double: Escribe un programa que convierta un valor de tipo Float a Double y muestra el resultado en la consola.
+6. Inicialización de variables sin valor: Desarrolla un programa en el que declares una variable sin inicializarla y luego le asignes un valor. Usa esta variable en una operación simple.
+7. Casting de tipos numéricos: Realiza un programa que convierta un valor de tipo Double a Int usando casting y muestra el valor convertido junto con el original.
+8. Operaciones con cadenas: Escribe un programa que concatene dos cadenas de texto y muestre el resultado en la consola.
+9. Uso de Boolean en condiciones: Crea un programa que use una variable Boolean en una expresión condicional para mostrar mensajes diferentes según el valor de la variable.
+10. Declaración y uso de var y val: Escribe un programa que declare variables utilizando tanto var como val. Modifica el valor de las variables var y muestra cómo cambian en comparación con las variables val que son inmutables.
+11. Valor Predeterminado con Elvis: Define una función que recibe un parámetro de tipo String? y devuelve un String que es el valor del parámetro si no es null, o un valor predeterminado si es null. Utiliza el operador Elvis (?:) para proporcionar el valor predeterminado.
+12. Uso de let para Procesar Valores No Nulos: Crea una función que reciba un parámetro de tipo Int?. Si el parámetro no es null, utiliza let para imprimir el doble del valor. Si el parámetro es null, imprime un mensaje que indique que el valor es null.
+13. Crea una variable temperatura de tipo Double que pueda no tener ningún valor. Si contiene una temperatura, muestra por pantalla su valor, indica si hace frío o calor y calcula cuál sería la temperatura después de aumentar 5 grados.
+14. Un estudiante ha realizado tres exámenes y tiene las notas 7.5, 6.0 y 8.0. Crea las variables correspondientes y utiliza let para trabajar con la nota media. Dentro del bloque let, calcula la media de las tres notas, muestra por pantalla la nota obtenida y comprueba si el estudiante ha aprobado o suspendido. Finalmente, guarda en una variable el resultado que devuelve el bloque let.
+15. Manejo de Nulos en Funciones de Cálculo: Define una función que reciba dos parámetros de tipo Int?. Si ambos parámetros no son null, devuelve la suma de los dos valores. Si al menos uno de los parámetros es null, devuelve un valor predeterminado que indique que uno o ambos valores eran nulos.
 
 ## ESTRUCTURAS DE CONTROL Y REPETICIÓN
 
-### Condicionales compuestas
+
+En programación, las **estructuras de control** nos permiten alterar el flujo de ejecución de un programa. En lugar de ejecutar las instrucciones de arriba a abajo de forma estrictamente lineal, podemos tomar decisiones (condicionales) o repetir bloques de código varias veces (bucles).
+
+### Clasificación General de las Estructuras de Control
+
+1. **Sentencias Condicionales (Toma de decisiones):**
+   - **Condicional Simple:** Evalúa una condición; si es verdadera, ejecuta un código (`if`).
+   - **Condicional Doble:** Evalúa una condición; ejecuta un bloque si es verdadera y otro si es falsa (`if - else`).
+   - **Condicional Compuesta o Anidada:** Evalúa múltiples condiciones en cadena (`if - else if - else`).
+   - **Condicional Múltiple:** Evalúa una variable frente a múltiples posibles casos (`when`).
+
+2. **Sentencias Repetitivas (Bucles o Iteraciones):**
+   - **While:** Repite un bloque mientras una condición sea verdadera (comprueba antes de ejecutar).
+   - **Do-While:** Repite un bloque mientras una condición sea verdadera, pero garantiza ejecutar el bloque al menos una vez (comprueba después de ejecutar).
+   - **For:** Recorre un rango determinado de valores o una colección de elementos.
+
+###  Sentencias Condicionales
+
+#### Condicional Compuesta (`if - else if - else`)
+
+Cuando necesitamos comprobar más de dos alternativas posibles, encadenamos condiciones usando `else if`.
 
 ```kotlin
 fun main() {
-	val myInt = 9
+    val myInt = 9
 
-	if (myInt < 0)
-		println("Numero negativo, es $myInt")
-	else if (myInt <= 10 && myInt != 5)
-		println("Numero entre 0 y 10 y distinto de 5 es $myInt")
-	else if (myInt == 5)
-		println("Número igual a 5")
-	else
-		println("Número mayor que 10 es $myInt")
+    if (myInt < 0) {
+        println("Numero negativo, es $myInt")
+    } else if (myInt <= 10 && myInt != 5) {
+        println("Numero entre 0 y 10 y distinto de 5 es, $myInt")
+    } else if (myInt == 5) {
+        println("Número igual a 5")
+    } else {
+        println("Número mayor que 10 es, $myInt")
+    }
 }
 ```
 
-### Condicional múltiple `when`
+1. **Evaluación de la primera condición (`myInt < 0`):**
+   - Kotlin comprueba si `9` es menor que `0`. Como es falso, se ignora ese bloque y pasa al siguiente `else if`.
 
-En Java se utiliza `switch`; Kotlin ofrece un `when` más expresivo.
+2. **Evaluación de la segunda condición (`myInt <= 10 && myInt != 5`):**
+   - Utiliza el operador lógico `&&` (Y lógico), lo que exige que ambas partes sean verdaderas:
+     - `myInt <= 10`: ¿Es 9 menor o igual a 10? Sí (Verdadero).
+     - `myInt != 5`: ¿Es 9 diferente de 5? Sí (Verdadero).
+   - Al cumplirse ambas condiciones, se ejecuta esta rama e imprime: `Numero entre 0 y 10 y distinto de 5 es, 9`.
+
+3. **Ignorancia de las ramas restantes:**
+   - Una vez que una de las condiciones resulta verdadera, el programa ejecuta su bloque de código correspondiente y salta automáticamente hasta el final de toda la estructura condicional. Las demás condiciones ya no se evalúan.
+
+#### Condicional Múltiple (`when`)
+
+En lenguajes como Java o C, las decisiones múltiples se gestionan mediante la sentencia `switch`. Kotlin reemplaza `switch` con `when`, una herramienta mucho más potente, expresiva y flexible.
 
 ```kotlin
 fun main() {
-	val pais = "España"
-	var moneda = ""
+    val pais: String = "España"
+    var moneda = ""
 
-	when (pais) {
-		"España", "Francia", "Alemania", "Italia" -> moneda = "Euro"
-		"EEUU" -> moneda = "Dolar"
-		"Venezuela" -> moneda = "Bolibar"
-		else -> moneda = "N.I."
-	}
+    // Formato 1: Evaluación valor por valor (Largo)
+    when (pais) {
+        "España" -> {
+            moneda = "Euro"
+        }
+        "Francia" -> {
+            moneda = "Euro"
+        }
+        "Alemania" -> {
+            moneda = "Euro"
+        }
+        "EEUU" -> {
+            moneda = "Dolar"
+        }
+        "Italia" -> {
+            moneda = "Euro"
+        }
+        "Venezuela" -> {
+            moneda = "Bolibar"
+        }
+        else -> {
+            moneda = "N.I."
+        }
+    }
 
-	println("La moneda del pais $pais es $moneda")
+    println("La moneda del pais $pais es $moneda")
 
-	val sueldo = 1000
-	when (sueldo) {
-		in 700..900 -> println("Sueldo de 700 a 900")
-		in 901..1200 -> println("Sueldo de 901 a 1200")
-		in 1201..2000 -> println("Sueldo de menos de 2000")
-		else -> println("Otro sueldo")
-	}
+    // Formato 2: Evaluación por un conjunto de valores separados por comas
+    when (pais) {
+        "España", "Francia", "Alemania", "Italia" -> moneda = "Euro"
+        "EEUU" -> moneda = "Dolar"
+        "Venezuela" -> moneda = "Bolibar"
+        else -> moneda = "N.I."
+    }
+
+    // Formato 3: Evaluación por rangos numéricos utilizando 'in'
+    val sueldo = 1000
+    when (sueldo) {
+        in 700..900 -> println("Sueldo de 700 a 900")
+        in 901..1200 -> println("Sueldo de 901 a 1200")
+        in 1201..2000 -> println("Sueldo de menos de 2000")
+        else -> println("Otro sueldo")
+    }
 }
 ```
 
-### Bucles
+- **Caso 1 (Evaluación individual):** Compara el valor de la variable `pais` una por una contra cada caso. Si coincide, ejecuta las líneas agrupadas entre llaves `{}`.
+- **Caso 2 (Evaluación por conjunto de valores):** Podemos agrupar múltiples valores en una sola línea separándolos con comas (`,`). Si `pais` es "España", "Francia", "Alemania" o "Italia", se le asignará la variable "Euro" sin necesidad de repetir código.
+- **Caso 3 (Evaluación por rango numérico):** Utiliza la palabra reservada `in` junto con la sintaxis de rangos `inicio..fin`. Por ejemplo, `in 901..1200` comprueba si la variable `sueldo` está comprendida entre 901 y 1200 (ambos inclusive). Como `sueldo` vale 1000, imprimirá `"Sueldo de 901 a 1200"`.
+- **Uso de `else`:** Cumple el mismo rol que el `default` en Java. Si ninguna condición previa coincide con el valor evaluado, se ejecutará la rama `else`.
+
+### Sentencias Repetitivas (Bucles)
+
+#### Bucles `while` y `do-while`
+
+La sintaxis y el comportamiento de los bucles `while` y `do-while` en Kotlin son prácticamente idénticos a los de Java y C.
 
 ```kotlin
 fun main() {
-	var x = 0
-	while (x < 10) {
-		print(" $x ")
-		x += 2
-	}
+    var x = 0
+    
+    // Bucle while: evalúa antes de ejecutar
+    while (x < 10) {
+        print(" $x ")
+        x += 2
+    }
 
-	println("\nAhora do-while")
-	x = 0
-	do {
-		print(" $x ")
-		x += 2
-	} while (x < 10)
+    println("\nAhora do-while")
+
+    // Bucle do-while: ejecuta y evalúa después
+    x = 0
+    do {
+        print(" $x ")
+        x += 2
+    } while (x < 10)
 }
 ```
+
+#### Diferencia clave entre ambos bucles:
+
+- **`while`:** Primero comprueba la condición `(x < 10)`. Si es verdadera, entra al bloque. Si la variable `x` empezara valiendo `20`, el cuerpo del bucle **nunca** se ejecutaría.
+- **`do-while`:** Ejecuta el bloque de código **primero** y luego evalúa la condición. Por este motivo, el código dentro de un `do-while` tiene la garantía absoluta de ejecutarse **al menos una vez**, incluso si la condición resulta ser falsa desde el principio.
+
+#### Bucle `for`
+
+A diferencia de Java, donde el bucle `for` tradicional utiliza una sintaxis basada en tres partes `for (int i = 0; i < 10; i++)`, Kotlin utiliza exclusivamente la sintaxis de interacción sobre rangos o colecciones usando la palabra clave `in`.
+
+#### A) For Incremental Básico
 
 ```kotlin
 fun main() {
-	var suma = 0
-	for (i in 1..10) {
-		print("Ingrese un valor:")
-		val valor = readLine()!!.toInt()
-		suma += valor
-	}
-	println("La suma de los valores ingresados es $suma")
-	val promedio = suma / 10
-	println("Su promedio es $promedio")
+    var suma = 0
+
+    for (i in 1..10) {
+        print("Ingrese un valor: ")
+        val valor = readLine()!!.toInt()
+        suma += valor
+    }
+
+    println("La suma de los valores ingresados es $suma")
+    val promedio = suma / 10
+    println("Su promedio es $promedio")
 }
 ```
+
+- **Sintaxis de rango `1..10`:** Define un rango inclusivo desde el número 1 hasta el 10. La variable `i` tomará consecutivamente los valores 1, 2, 3, ..., 10.
+- **`readLine()!!.toInt()`:**
+  - `readLine()` lee el texto ingresado por el usuario por consola como un tipo `String?` (anulable).
+  - `!!` (Afirmación de no nulidad) le asegura al compilador que el usuario no va a introducir un valor nulo.
+  - `.toInt()` convierte ese texto ingresado a un número entero para poder realizar operaciones matemáticas con él.
+
+#### B) For Incremental con Salto Personalizado (`step`)
+
+Cuando no deseamos avanzar de uno en uno, podemos especificar el incremento mediante la palabra reservada `step`.
 
 ```kotlin
 fun main() {
-	var suma = 0
-	for (i in 0..10 step 2) {
-		println("Número par: $i")
-		suma += i
-	}
-	println("La suma de los números pares es: $suma")
+    var suma = 0
+    println("Contando números pares de 0 a 10 y calculando su suma:")
 
-	for (i in 10 downTo 0 step 2) {
-		println("Contamos... Estado actual: $i")
-	}
-	println("¡BUMMMMMMM!")
+    for (i in 0..10 step 2) {
+        println("Número par: $i")
+        suma += i
+    }
+
+    println("La suma de los números pares es: $suma")
 }
 ```
 
-En un rango decremental debe usarse `downTo`: `10..0 step 2` no funciona como se espera porque el rango ascendente no puede recorrer esos límites.
+- **`0..10 step 2`:** Genera la secuencia `0, 2, 4, 6, 8, 10`.
+- A diferencia de Java donde se escribiría `i += 2` dentro de la cabecera del bucle, en Kotlin la variable del bucle `i` es inmutable dentro de cada iteración y el salto de avance se indica obligatoriamente con la palabra reservada `step`.
 
-### ACTIVIDADES
+#### C) For Decremental (`downTo`)
+
+Para realizar conteos hacia atrás (decrementar valores), no se puede utilizar el operador de rango normal `..`. En su lugar, se debe usar la función `downTo`.
+
+```kotlin
+fun main() {
+    println("Tiempo para la explosión de dos en dos:")
+
+    for (i in 10 downTo 0 step 2) {
+        println("Contamos... Estado actual: $i")
+    }
+
+    println("¡BUMMMMMMM!")
+}
+```
+
+**Atención con el error:** `10..0 step 2`
+
+- En Kotlin, la sintaxis `a..b` **siempre** presupone un rango creciente donde $a \le b$.
+- Si intentas escribir `10..0`, Kotlin evaluará que $10 > 0$ y creará un **rango vacío**. Como consecuencia, el bucle no ejecutará ninguna iteración y se saltará por completo sin dar error de compilación.
+- Para realizar un recorrido descendente es **estrictamente obligatorio** usar `downTo`:
+  - `10 downTo 0 step 2` producirá correctamente la secuencia: `10, 8, 6, 4, 2, 0`.
+
+#### Modificadores de Rangos Adicionales en Kotlin
+
+Para profundizar en la gestión de bucles y rangos en Kotlin, existen operadores adicionales muy útiles:
+
+##### Rango Excluyente (`until`)
+
+Si deseas recorrer un rango numérico desde un inicio hasta un límite pero **excluyendo el valor final** (útil al trabajar con índices de arreglos o listas que van de `0` a `tamaño - 1`), se utiliza `until` en sustitución de `..`.
+
+```kotlin
+// Recorre del 0 al 9 (el 10 queda excluido)
+for (i in 0 until 10) {
+    print("$i ")
+}
+```
+
+#### Tabla Comparativa de Sintaxis de Rangos en Bucles
+
+| Sintaxis en Kotlin | Secuencia generada | Descripción |
+| --- | --- | --- |
+| `1..5` | `1, 2, 3, 4, 5` | Rango ascendente e inclusivo. |
+| `0 until 5` | `0, 1, 2, 3, 4` | Rango ascendente excluyendo el límite superior. |
+| `0..10 step 2` | `0, 2, 4, 6, 8, 10` | Rango ascendente de 2 en 2. |
+| `5 downTo 1` | `5, 4, 3, 2, 1` | Rango descendente e inclusivo. |
+| `10 downTo 0 step 2` | `10, 8, 6, 4, 2, 0` | Rango descendente de 2 en 2. |
+
+### RELACIÓN 2. Estructuras de control
 
 1. Pide un número e indica si es positivo, negativo o cero.
 2. Pregunta la edad e indica si es mayor o menor de edad.
@@ -378,60 +646,177 @@ En un rango decremental debe usarse `downTo`: `10..0 step 2` no funciona como se
 
 ## ARRAYS
 
-Formas habituales:
+Existen diferentes formas de trabajar con los arrays en Kotlin. En la mayoría de los casos, para la inicialización de valores nos decantaremos por el uso de **expresiones lambda**.
 
-- `arrayOf(v1, v2, ..., vn)`: array genérico inicializado con valores.
-- `Array(tamaño) { lambda }`: array inicializado mediante lambda.
-- `IntArray(...)`, `DoubleArray(...)`: arrays especializados.
-- `listOf(...)`: lista inmutable, no un array.
+### ¿Qué es una función lambda?
+Una **función lambda** es una función anónima (un bloque de código sin nombre) que se puede tratar como si fuera un valor: se puede pasar como parámetro a otra función, almacenar en una variable o ejecutar bajo demanda.
+
+**Sintaxis básica:**
+`{ parámetro -> cuerpo_de_la_función }`
+
+Cuando la lambda recibe un único parámetro (en la inicialización de arrays representa el **índice o posición** `0, 1, 2...`), Kotlin nos permite omitir la declaración del parámetro y utilizar la palabra reservada **`it`** para hacer referencia a él.
+
+### Formas habituales de creación e inicialización
+
+- **`arrayOf(v1, v2, ..., vn)`**: Creamos un array inicializado con valores. Solo se permite la creación del array con valores inicializados desde su origen. Es de tipo genérico (`Array<T>`), por lo que podemos insertar cualquier tipo de objeto.
+  - **Ejemplo:**
+    ```kotlin
+    // Array de cadenas (Array<String>)
+    val nombres = arrayOf("Santi", "Sonia", "Guille", "Diego")
+    
+    // Array genérico heterogéneo (Array<Any>)
+    val datos = arrayOf("Kotlin", 100, true, 3.14)
+    
+    // Modificación de un elemento
+    nombres[0] = "Santiago"
+    ```
+
+- **`Array(tamaño) { lambda_de_inicializacion }`**: Sigue siendo un array genérico como el anterior (`Array<T>`), pero se diferencia en la forma de inicializar sus elementos mediante una **función lambda** que calcula el valor de cada posición según su índice.
+  - **Ejemplo:**
+    ```kotlin
+    // Array de 5 posiciones con el mismo valor inicial
+    val ceros = Array(5) { 0 } // [0, 0, 0, 0, 0]
+    
+    // Array donde cada posición se calcula con su índice 'it'
+    val cuadrados = Array(5) { it * it } // [0, 1, 4, 9, 16]
+    
+    // Array de textos usando el índice explícito
+    val etiquetas = Array(3) { i -> "Item ${i + 1}" } // ["Item 1", "Item 2", "Item 3"]
+    ```
+
+- **`IntArray(...)` / `intArrayOf(i1, i2, ..., in)`**: Nos declaramos e inicializamos un array especializado de tipo entero primitivo (`int[]` en Java). Optimiza el uso de memoria al evitar el empaquetado de objetos (boxing).
+  - **Ejemplo:**
+    ```kotlin
+    val arrValores = intArrayOf(10, 20, 30, 40) // Con valores iniciales
+    val arrCeros = IntArray(5)                  // Tamaño 5, inicializado con ceros [0, 0, 0, 0, 0]
+    val arrPares = IntArray(5) { it * 2 }       // Con lambda: [0, 2, 4, 6, 8]
+    ```
+
+- **`DoubleArray(...)` / `doubleArrayOf(d1, d2, ..., dn)`**: Nos declaramos e inicializamos un array especializado de tipo `Double` (`double[]` en Java).
+  - **Ejemplo:**
+    ```kotlin
+    val precios = doubleArrayOf(12.50, 99.99, 4.50) // Con valores iniciales
+    val cerosDouble = DoubleArray(3)                 // [0.0, 0.0, 0.0]
+    val factores = DoubleArray(4) { i -> (i + 1) * 1.5 } // [1.5, 3.0, 4.5, 6.0]
+    ```
+
+- **`listOf(v1, v2, ..., vn)`**: **NO se considera un array**, sino una lista totalmente **inmutable**. Quiere decir que NO podemos cambiar sus valores ni su tamaño tras crearse.
+  - **Ejemplo:**
+    ```kotlin
+    val listaInmutable = listOf(1, 2, 3, 4)
+    val elemento = listaInmutable[0] // Lectura permitida
+    // listaInmutable[0] = 10 // ERROR de compilación: es inmutable (no posee método set)
+    ```
+
+> **Recordatorio:** Un array no es extensible en elementos (su tamaño es fijo), a diferencia de las listas mutables (`mutableListOf`), que sí permiten añadir o eliminar elementos.
+
+
+### Comparativa de declaración entre Java y Kotlin:
+
+A continuación se muestra cómo Java y Kotlin declaran un array:
 
 ```kotlin
-// Java
-// int[] arr = new int[5];
+// En Java
+// int[] arr = new int[5]; // ①
 // String[] names = {"Santi", "Sonia", "Guille", "Diego"};
 
-val arr = IntArray(5)
+// En Kotlin
+val arr = IntArray(5) // ②
 val names = arrayOf("Santi", "Sonia", "Guille", "Diego")
 ```
 
-`var` permite cambiar la referencia a otro array; `val` no permite cambiarla, aunque sí se pueden cambiar los elementos de un array mutable.
+- **① Declaración de un array en Java:** Declaración clásica indicando tipo primitivo y tamaño.
+- **② Declaración de un array en Kotlin:** `arrayOf` tendrá un significado especial, ya que es un array de objetos genéricos que tenemos que inicializar en el mismo momento en el que lo declaramos. Tener cuidado si lo declaramos como `val`, porque no podríamos volver a referenciar con la misma variable otro array.
+
+### Pregunta: ¿Qué diferencia hay entre utilizar `var` o `val` en un array?
+
+La diferencia la tenemos en que `val` en tiempo de ejecución inicializa la referencia de su variable y no permite que vuelva a apuntar a otro objeto. Por tanto:
+
+- Con **`var`**: La variable apunta a una zona de memoria donde existe un conjunto de elementos (array), y **SÍ podemos volver a modificar la referencia** de dicha variable para asignarle otro array distinto.
+- Con **`val`**: **NO se puede volver a modificar la referencia** con otra posición de memoria. Sin embargo, **SÍ se pueden modificar los elementos internos** del array, ya que los valores alojados dentro de la estructura siguen siendo mutables.
 
 ```kotlin
 var array = arrayOf(1, 2, 3, 4)
 val array2 = arrayOf(1, 2, 3, 4)
-array[1] = 10
-array2[0] = 20
-array = array2
-// array2 = array // Error: array2 es val
+
+array[1] = 10 // Se puede modificar el contenido del array
+array2[0] = 20 // También se puede modificar el contenido, aunque esté declarado con val
+
+array = array2 // Esto es válido, ya que 'array' está declarado con var.
+// array2 = array // Esto NO es válido, porque 'array2' está declarado con val y no se puede cambiar su referencia.
 ```
 
 ### Declaración, acceso y recorridos
 
+Como hemos indicado anteriormente, la mayoría de las veces utilizaremos arrays inicializados a valor 0 o inicializados con valores preestablecidos. Tenemos que diferenciar entre un `arrayOf` y un `listOf`. Un `arrayOf` es un array en el que puedo cambiar sus elementos, a diferencia de un `listOf` cuyos elementos son **INMUTABLES**.
+
 ```kotlin
 fun main() {
-	val arrayInmutable = listOf(1, 2, 3, 4)
-	val myArray = arrayOf("lunes", "Martes", "Miercoles", "jueves", "Viernes", "Sabado", "Domingo")
+    val arrayInmutable = listOf(1, 2, 3, 4) // Declaramos una lista inmutable de valores.
+    // arrayInmutable[0] = 2 // Esto generaría un error de compilación, porque es inmutable. Realmente es una lista de valores constantes.
 
-	val martes = myArray[1]
-	val miercoles = myArray.get(2)
-	myArray[3] = "Jueves"
-	myArray.set(0, "Lunes")
+    val myArray = arrayOf("lunes", "Martes", "Miercoles", "jueves", "Viernes", "Sabado", "Domingo") // ①
 
-	myArray.forEach {
-		if (it == "Sabado") println("Sabado, el mejor día de la semana") else println(it)
-	}
-	for (a in myArray) println(a)
+    val martes = myArray[1] // ②
+    val miercoles = myArray.get(2) // ③
+    myArray[3] = "Jueves" // ④
+    myArray.set(0, "Lunes") // ④
 
-	for (i in myArray.indices) print("${myArray[i]} ")
-	for (i in myArray.indices step 2) print("${myArray[i]} ")
-	for (i in 2 until myArray.size - 1) print("${myArray[i]} ")
-	for (i in myArray.size - 1 downTo 0) print("${myArray[i]} ")
-	for (pos in myArray.indices) println(myArray.get(pos))
-	for ((pos, valor) in myArray.withIndex()) println("La posicion $pos tiene de valor $valor")
+    // Recorrido con forEach
+    myArray.forEach { // ⑤
+        if (it == "Sabado")
+            println("Sabado, el mejor día de la semana")
+        else
+            println(it)
+    }
+
+    // Bucle for tradicional por elemento
+    for (a in myArray) {
+        if (a == "Domingo")
+            println("El domingo, día de reunirse con la familia")
+        else
+            println(a)
+    }
+
+    // Declaración de un Rango
+    var myArray2 = 0..10 // ⑥
+    for (x in myArray2) {
+        println(x)
+    }
+
+    // Recorridos mediante diferentes formas de for e índices:
+    for (i in 0..myArray.size - 1) print("${myArray[i]} ") // ⑦
+    println()
+
+    for (i in 0..myArray.size - 1 step 2) print("${myArray[i]} ") // ⑧
+    println()
+
+    for (i in 2 until myArray.size - 1) print("${myArray[i]} ") // ⑨
+    println()
+
+    for (i in myArray.size - 1 downTo 0) print("${myArray[i]} ") // ⑩
+    println()
+
+    for (pos in myArray.indices) println(myArray.get(pos)) // ⑪
+
+    for ((pos, valor) in myArray.withIndex()) println("La posicion $pos tiene de valor $valor") // ⑫
 }
 ```
 
-Un rango (`0..10`) puede recorrerse, pero no es un array y no permite acceso mediante `[]`.
+#### Explicación detallada de los puntos del código (① a ⑫):
+
+- **① Los arrays son de tamaño fijo:** No pueden añadirse más elementos una vez definidos. Sí podemos cambiar sus valores en cada posición.
+- **② Acceso clásico por índice:** Manera clásica de acceder a un elemento del array, igual que en Java. Internamente, el acceso entre corchetes `[]` invoca al método `get()` indicado en el punto ③.
+- **③ Método `.get(pos)`:** Accedemos al valor igual que en el punto ②, pero haciéndolo de manera explícita.
+- **④ Modificación mediante `[]` y `.set(pos, valor)`:** De la misma forma que accedemos a los valores según su posición o índice, también es posible modificar dichos valores mediante la sintaxis `myArray[3] = "Jueves"` o de forma explícita con `myArray.set(0, "Lunes")`.
+- **⑤ `forEach`:** Es la función que incorporan los arrays por excelencia para recorrer cada uno de sus valores, a la cual pasamos como argumento una expresión o función lambda que será invocada dentro del `forEach` elemento por elemento. Es el claro ejemplo de programación funcional.
+- **⑥ Rangos (`0..10`):** Nos declaramos y definimos un rango de 11 elementos. **Un rango no es un array y no permite acceso mediante `[]`** (no posee el método `get()`). Se pueden recorrer mediante un bucle `for (x in Rango)`.
+- **⑦ Bucle `0..myArray.size - 1`:** Lo más parecido a otros lenguajes imperativos: `for (int i = 0; i <= 6; i++)`.
+- **⑧ Bucle con `step`:** Ajusta el paso o incremento de la iteración. Equivale a: `for (int i = 0; i <= 6; i += 2)`.
+- **⑨ Bucle con `until`:** Rango semiabierto (excluye el límite superior). Equivale a: `for (int i = 2; i < myArray.size - 1; i++)`.
+- **⑩ Bucle con `downTo`:** Recorrido inverso o decreciente. Equivale a: `for (int i = myArray.size - 1; i >= 0; i--)`.
+- **⑪ Bucle con `.indices`:** Recorremos directamente los índices válidos del array (`0 until size`).
+- **⑫ Bucle con `.withIndex()`:** Recorremos obteniendo la desestructuración `(pos, valor)`. Muy utilizado cuando queremos sonsacar tanto la posición (índice) como el valor que encierra esa celda.
 
 ### Funciones integradas
 
