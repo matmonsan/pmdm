@@ -1,6 +1,6 @@
 ---
 title: UD 1.1. Lenguaje Kotlin
-description: "<strong>Profesor:</strong> Matías Montávez Sánchez | <strong>Módulo:</strong> Programación Multimedia y Dispositivos Móviles"
+description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos Móviles <br> <strong>Profesor:</strong> Matías Montávez Sánchez"
 ---
 [⌂ Volver al inicio](index.md)
 
@@ -69,12 +69,6 @@ Exploraremos los mapas (`Map`), que son colecciones de pares clave-valor. Veremo
 ### Callback
 
 Finalmente, abordaremos el concepto de callbacks, que son funciones que se pasan como parámetros y se ejecutan cuando una tarea asíncrona se completa. Veremos cómo definir y utilizar callbacks en Kotlin, y cómo esto se relaciona con operaciones asíncronas y la programación basada en eventos.
-
-Actualmente, soy profesor de 2º DAM en el IES Virgen del Carmen de Jaén. Imparto la asignatura de PMDM (Programación multimedia y dispositivos móviles) y la asignatura de PSP (Programación servicios y procesos). Para cualquier consulta, puedes contactar en la siguiente dirección de correo electrónico:
-
-- **Email:** mmonsan050@g.educaand.es
-- [Documentación oficial de Kotlin](https://kotlinlang.org/docs/home.html)
-- © 2026 Matías Montávez Sánchez.
 
 ## RECORDANDO CONCEPTOS
 

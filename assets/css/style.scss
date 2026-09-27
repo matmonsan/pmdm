@@ -10,3 +10,29 @@
   display: block;
   margin: 0 auto;
 }
+
+.page-header {
+  color: #54436d;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    url("../img/banner_PMDM.jpg");
+  background-size: cover;
+  background-position: center;
+  border-bottom: 4px solid #54436d;
+}
+
+.project-tagline {
+  opacity: 1;
+}
+
+.project-tagline strong {
+  color: #54436d;
+}
+
+.main-content h1,
+.main-content h2,
+.main-content h3,
+.main-content h4,
+.main-content h5,
+.main-content h6 {
+  color: #54436d;
+}
