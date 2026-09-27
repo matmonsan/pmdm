@@ -958,7 +958,7 @@ Nota más alta: Iker (10.0)
 Nota más baja: Pablo (0.0)
 ```
 
-12. Escribe un programa que analice la puntuación de un jugador en ocho rondas. Cada puntuación es un número entero entre 0 y 30. El programa debe mostrar la suma y la media de los puntos, la puntuación máxima y la ronda en que se obtuvo, la mínima y su ronda, y cuántas rondas alcanzaron al menos 20 puntos. Al final, indica «Buen rendimiento» si la media es 18 o superior y «Rendimiento por mejorar» si es inferior. Las rondas se numeran del 1 al 8.
+12\. Escribe un programa que analice la puntuación de un jugador en ocho rondas. Cada puntuación es un número entero entre 0 y 30. El programa debe mostrar la suma y la media de los puntos, la puntuación máxima y la ronda en que se obtuvo, la mínima y su ronda, y cuántas rondas alcanzaron al menos 20 puntos. Al final, indica «Buen rendimiento» si la media es 18 o superior y «Rendimiento por mejorar» si es inferior. Las rondas se numeran del 1 al 8.
 
 Entrada de ejemplo (una puntuación por ronda):
 
@@ -977,7 +977,7 @@ Rondas con 20 puntos o más: 3
 Rendimiento por mejorar
 ```
 
-13. Diseña un programa para gestionar las reservas de una sala con 12 plazas, todas libres al inicio. Debe permitir reservar una plaza, cancelar una reserva, consultar cuántas plazas están ocupadas y libres, consultar la recaudación actual y finalizar. Rechaza los números de plaza que no estén entre 1 y 12, las reservas de plazas ocupadas y las cancelaciones de plazas libres. El precio depende de la ubicación: las plazas 1–4 cuestan 8 euros, las plazas 5–8 cuestan 10 euros y las plazas 9–12 cuestan 12 euros. Al cancelar una reserva, su importe deja de contar en la recaudación.
+13\. Diseña un programa para gestionar las reservas de una sala con 12 plazas, todas libres al inicio. Debe permitir reservar una plaza, cancelar una reserva, consultar cuántas plazas están ocupadas y libres, consultar la recaudación actual y finalizar. Rechaza los números de plaza que no estén entre 1 y 12, las reservas de plazas ocupadas y las cancelaciones de plazas libres. El precio depende de la ubicación: las plazas 1–4 cuestan 8 euros, las plazas 5–8 cuestan 10 euros y las plazas 9–12 cuestan 12 euros. Al cancelar una reserva, su importe deja de contar en la recaudación.
 
 El programa debe mostrar el siguiente menú. Al elegir reservar o cancelar, también debe pedir el número de plaza:
 
