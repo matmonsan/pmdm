@@ -6,71 +6,71 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 
 ## Índice
 
-- [Introducción](#introducción)
-- [Recordando conceptos](#recordando-conceptos)
-- [Variables primitivas en Kotlin](#variables-primitivas-en-kotlin)
-- [Estructuras de control y repetición](#estructuras-de-control-y-repetición)
-- [Arrays](#arrays-1)
-- [Funciones](#funciones)
-- [Funciones lambda](#funciones-lambda)
-- [Clases](#clases)
-- [Función de extensión en Kotlin](#función-de-extensión-en-kotlin)
-- [Data class](#data-class)
-- [Listas inmutables y mutables](#listas-inmutables-y-mutables)
-- [Mapas](#mapas)
-- [Callback](#callback)
+- [1. Introducción](#1-introducción)
+- [2. Recordando conceptos](#2-recordando-conceptos)
+- [3. Variables primitivas en Kotlin](#3-variables-primitivas-en-kotlin)
+- [4. Estructuras de control y repetición](#4-estructuras-de-control-y-repetición)
+- [5. Arrays](#5-arrays)
+- [6. Funciones](#6-funciones)
+- [7. Funciones lambda](#7-funciones-lambda)
+- [8. Clases](#8-clases)
+- [9. Función de extensión en Kotlin](#9-función-de-extensión-en-kotlin)
+- [10. Data class](#10-data-class)
+- [11. Listas inmutables y mutables](#11-listas-inmutables-y-mutables)
+- [12. Mapas](#12-mapas)
+- [13. Callback](#13-callback)
 
-## INTRODUCCIÓN
+## 1. INTRODUCCIÓN
 
 ![Icono Kotlin](assets/img/Kotlin.png)
 
 Con este documento, se va a ofrecer una visión rápida del lenguaje Kotlin, en comparación con el Java que ya conocéis del curso pasado. A través de sencillos ejemplos y explicaciones se va a proporcionar una introducción efectiva al lenguaje. No se va a cubrir un módulo completo de programación de primer año, pero es necesario dedicar una o dos semanas para familiarizarse con este lenguaje ya que Kotlin, poco a poco será el lenguaje que sustituya a Java en la programación de aplicaciones con Android.
 
-### Variables
+### 1.1 Variables
 
 En esta sección, exploraremos cómo se declaran y utilizan las variables en Kotlin. Veremos la diferencia entre variables inmutables (`val`) y mutables (`var`), así como las convenciones para nombrarlas y los tipos de datos más comunes que se utilizan.
 
-### Sentencias
+### 1.2 Sentencias
 
 Aquí abordaremos las sentencias de control de flujo en Kotlin, como `if`, `when`, y `for`. Estas estructuras nos permiten controlar la ejecución del código según diferentes condiciones y realizar iteraciones sobre colecciones.
 
-### Arrays
+### 1.3 Arrays
 
 En esta parte, aprenderemos cómo trabajar con arrays en Kotlin. Veremos cómo declararlos, inicializarlos y manipular sus elementos. También discutiremos cómo Kotlin ofrece una variedad de funciones útiles para trabajar con arrays.
 
-### Funciones
+### 1.4 Funciones
 
 Exploraremos cómo definir y utilizar funciones en Kotlin. Abordaremos la sintaxis básica para declarar funciones y cómo Kotlin maneja los valores de retorno y los parámetros.
 
-### Lambda
+### 1.5 Lambda
 
 Las expresiones lambda son una característica poderosa de Kotlin. En esta sección, aprenderemos cómo se definen y utilizan las lambdas, así como los casos en los que son especialmente útiles, como en funciones de orden superior. En el último punto, trataremos los callback.
 
-### Clases
+### 1.6 Clases
 
 En esta sección, discutiremos cómo definir y utilizar clases en Kotlin. Veremos la sintaxis para crear clases, propiedades, métodos y constructores, y cómo se aplican conceptos de orientación a objetos como herencia y polimorfismo.
 
-### Extensiones
+### 1.7 Extensiones
 
 Aquí aprenderemos sobre las funciones de extensión en Kotlin, que permiten añadir nuevas funcionalidades a clases existentes sin modificarlas. Veremos cómo definir funciones de extensión y cómo pueden mejorar la legibilidad y modularidad del código.
 
-### Data Class
+### 1.8 Data Class
 
 Las `data class` en Kotlin son una forma conveniente de manejar datos. En esta sección, veremos cómo definir una `data class`, así como los métodos automáticamente generados como `toString()`, `equals()`, `hashCode()`, y `copy()`.
 
-### Listas
+### 1.9 Listas
 
 En esta parte, discutiremos el trabajo con listas en Kotlin, tanto inmutables (`List`) como mutables (`MutableList`). Veremos cómo declarar, inicializar y manipular listas, y cómo Kotlin ofrece funciones útiles para trabajar con ellas.
 
-### Map
+### 1.10 Map
 
 Exploraremos los mapas (`Map`), que son colecciones de pares clave-valor. Veremos cómo crear, inicializar y manipular mapas, y cómo utilizar funciones como `put`, `get`, `remove`, y `forEach`.
 
-### Callback
+### 1.11 Callback
 
 Finalmente, abordaremos el concepto de callbacks, que son funciones que se pasan como parámetros y se ejecutan cuando una tarea asíncrona se completa. Veremos cómo definir y utilizar callbacks en Kotlin, y cómo esto se relaciona con operaciones asíncronas y la programación basada en eventos.
 
-## RECORDANDO CONCEPTOS
+## 2. RECORDANDO CONCEPTOS
 
 En clase, hablaremos de los siguientes conceptos:
 
@@ -84,9 +84,9 @@ En clase, hablaremos de los siguientes conceptos:
 
 La relación general es: el SDK utiliza Gradle para gestionar dependencias y construir el proyecto; Kotlin necesita el JDK; Kotlin compila a bytecode compatible con Java; la JVM interpreta ese bytecode y necesita el sistema operativo y la arquitectura hardware.
 
-## VARIABLES PRIMITIVAS EN KOTLIN
+## 3. VARIABLES PRIMITIVAS EN KOTLIN
 
-### Declaración tipo entero
+### 3.1 Declaración tipo entero
 
 ```kotlin
 fun main() {
@@ -106,7 +106,7 @@ fun main() {
 
 **Resultado:** `El valor de f es 20.9 y el de b es 20. También puedo poner la suma: 40`.
 
-### Reales, booleanos y cadenas
+### 3.2 Reales, booleanos y cadenas
 
 ```kotlin
 fun main() {
@@ -166,13 +166,13 @@ val anotherDouble: Double = anotherFloat.toDouble()
 println("Float a Double: $anotherDouble")
 ```
 
-### Anulables
+### 3.3 Anulables
 
 En Kotlin, los **tipos anulables** (o *nullable types*) son una característica fundamental que permite a las variables y propiedades tomar el valor `null` (es decir, representar la ausencia de un valor).
 
 Esta característica es especialmente útil para evitar los famosos errores de referencia nula (**NullPointerException** o "el error del millón de dólares"), un problema sumamente común en otros lenguajes de programación como Java.
 
-#### ¿Qué significa que algo sea null?
+#### 3.3.1 ¿Qué significa que algo sea null?
 
 > Imagina que una variable es una caja.
 >
@@ -180,7 +180,7 @@ Esta característica es especialmente útil para evitar los famosos errores de r
 >
 > * Una variable que puede ser `null` es una caja que **puede estar totalmente vacía**. Si intentas usar lo que hay dentro de una caja vacía sin comprobarlo antes, el programa se detiene de forma inesperada. Kotlin te obliga a declararlo si una caja puede estar vacía.
 
-#### Declaración de Tipos Anulables
+#### 3.3.2 Declaración de Tipos Anulables
 
 Para declarar una variable o propiedad que puede ser nula, se debe usar el operador **`?`** justo después del tipo de dato. Esto le indica al compilador de Kotlin que la variable puede contener un valor del tipo especificado o, en su defecto, el valor `null`.
 
@@ -195,7 +195,7 @@ var edad: Int? = 25
 
 * En este ejemplo, `nombre` inicia estando completamente vacío (`null`), mientras que `edad` contiene el número `25`, pero tiene la opción de valer `null` más adelante si fuera necesario.
 
-#### Comprobación de Nulidad
+#### 3.3.3 Comprobación de Nulidad
 
 Puedes comprobar si una variable anulable es `null` utilizando una condición tradicional `if` / `else`.
 
@@ -215,7 +215,7 @@ if (nombre != null) {
 
 * **Ventaja de Kotlin:** Dentro del bloque `if`, Kotlin realiza una conversión automática (*Smart Cast*) y reconoce que `nombre` no es nulo dentro de ese alcance, permitiendo usarlo sin riesgo de error.
 
-#### Operador Elvis (`?:`)
+#### 3.3.4 Operador Elvis (`?:`)
 
 El operador **Elvis** (`?:`) se usa para proporcionar un valor predeterminado (un valor de respaldo) cuando una expresión resulta ser `null`.
 
@@ -230,7 +230,7 @@ println("La longitud del nombre es: $longitudNombre")
 
 * En este ejemplo, si `nombre` vale `null`, la variable `longitudNombre` recibirá el valor `0`.
 
-#### Operador de Acceso Seguro (`?.`)
+#### 3.3.5 Operador de Acceso Seguro (`?.`)
 
 El operador de acceso seguro se usa para llamar a un método o acceder a una propiedad **solo si la variable no es `null`**. Si la variable es `null`, la operación no se ejecuta y devuelve `null` de forma segura.
 
@@ -245,7 +245,7 @@ println("La longitud del nombre es: $longitudNombre")
 
 * Si `nombre` es `null`, Kotlin detiene la evaluación de la propiedad `length` y asigna directamente `null` a `longitudNombre`. El resultado en consola será: `La longitud del nombre es: null`.
 
-#### Operador de Afirmación de No Nulidad (`!!`)
+#### 3.3.6 Operador de Afirmación de No Nulidad (`!!`)
 
 El operador `!!` se utiliza para **afirmar de forma explícita** que una variable **no es `null`**. Es una orden directa al compilador indicando que se asume el control del valor.
 
@@ -258,7 +258,7 @@ println("La longitud del nombre es: $longitudNombre")
 
 > Este operador debe usarse con precaución, ya que puede causar errores en tiempo de ejecución si el valor es `null`. Es recomendable limitar su uso a casos donde la presencia del valor esté previamente garantizada.
 
-#### Funciones Anulables
+#### 3.3.7 Funciones Anulables
 
 Kotlin permite definir funciones cuyo valor de retorno sea anulable. Esto se logra especificando el tipo de retorno con el operador `?`.
 
@@ -276,7 +276,7 @@ fun obtenerNombreConPredeterminado(): String {
 
 2. `fun obtenerNombreConPredeterminado(): String`: Declara una función cuyo retorno no puede ser nulo (`String`). Llama a `obtenerNombre()` y utiliza el operador Elvis `?:` para garantizar que, si el resultado es `null`, devuelva la cadena por defecto especificada.
 
-#### Uso más extendido de la comprobación de nullables en Kotlin (`let`)
+#### 3.3.8 Uso más extendido de la comprobación de nullables en Kotlin (`let`)
 
 En Kotlin, la función de extensión `let` se utiliza para ejecutar un bloque de código **únicamente si el objeto no es `null`**, combinándola con el operador seguro `?.`.
 
@@ -304,7 +304,7 @@ fun main() {
 
 * `?: run { ... }`: Si `nombre` es nulo, la expresión con `?.let` resulta nula, por lo que el operador Elvis redirige la ejecución al bloque `run`.
 
-#### Encadenamiento de múltiples operaciones con `let`
+#### 3.3.9 Encadenamiento de múltiples operaciones con `let`
 
 El uso de `let` no se limita a verificar nulos. También es común encontrarlo encadenando múltiples operaciones sobre un mismo objeto:
 
@@ -326,7 +326,7 @@ fun main() {
 }
 ```
 
-#### Análisis de Caso Práctico
+#### 3.3.10 Análisis de Caso Práctico
 
 Analizar el siguiente código e indicar si tiene sentido y por qué:
 
@@ -353,7 +353,7 @@ nombre.let {
 
   * En este ejemplo, al usar `let` directamente sobre la variable anulable sin la llamada segura `?.`, la expresión de la izquierda no devuelve `null` de la forma esperada por el operador Elvis, por lo que usar `?: run` carece de sentido en este contexto.
 
-#### Resumen de Conceptos Clave
+#### 3.3.11 Resumen de Conceptos Clave
 
 | Concepto / Operador | Sintaxis | Descripción |
 | --- | --- | --- |
@@ -367,7 +367,7 @@ nombre.let {
 
 ---
 
-### RELACIÓN 1. Variables Primitivas
+### 3.4 RELACIÓN 1: Variables Primitivas
 
 1. Declaración de variables enteras: Escribe un programa que declare varias variables enteras (val y var), realiza operaciones básicas con ellas y muestra el resultado en la consola.
 2. Declaración de variables reales, booleanas y cadenas: Crea un programa que declare variables de tipo Double, Float, Boolean y String. Realiza operaciones con estas variables y muestra los resultados en la consola.
@@ -385,12 +385,12 @@ nombre.let {
 14. Un estudiante ha realizado tres exámenes y tiene las notas 7.5, 6.0 y 8.0. Crea las variables correspondientes y utiliza let para trabajar con la nota media. Dentro del bloque let, calcula la media de las tres notas, muestra por pantalla la nota obtenida y comprueba si el estudiante ha aprobado o suspendido. Finalmente, guarda en una variable el resultado que devuelve el bloque let.
 15. Manejo de Nulos en Funciones de Cálculo: Define una función que reciba dos parámetros de tipo Int?. Si ambos parámetros no son null, devuelve la suma de los dos valores. Si al menos uno de los parámetros es null, devuelve un valor predeterminado que indique que uno o ambos valores eran nulos.
 
-## ESTRUCTURAS DE CONTROL Y REPETICIÓN
+## 4. ESTRUCTURAS DE CONTROL Y REPETICIÓN
 
 
 En programación, las **estructuras de control** nos permiten alterar el flujo de ejecución de un programa. En lugar de ejecutar las instrucciones de arriba a abajo de forma estrictamente lineal, podemos tomar decisiones (condicionales) o repetir bloques de código varias veces (bucles).
 
-### Clasificación General de las Estructuras de Control
+### 4.1 Clasificación General de las Estructuras de Control
 
 1. **Sentencias Condicionales (Toma de decisiones):**
    - **Condicional Simple:** Evalúa una condición; si es verdadera, ejecuta un código (`if`).
@@ -403,9 +403,9 @@ En programación, las **estructuras de control** nos permiten alterar el flujo d
    - **Do-While:** Repite un bloque mientras una condición sea verdadera, pero garantiza ejecutar el bloque al menos una vez (comprueba después de ejecutar).
    - **For:** Recorre un rango determinado de valores o una colección de elementos.
 
-###  Sentencias Condicionales
+### 4.2 Sentencias Condicionales
 
-#### Condicional Compuesta (`if - else if - else`)
+#### 4.2.1 Condicional Compuesta (`if - else if - else`)
 
 Cuando necesitamos comprobar más de dos alternativas posibles, encadenamos condiciones usando `else if`.
 
@@ -437,7 +437,7 @@ fun main() {
 3. **Ignorancia de las ramas restantes:**
    - Una vez que una de las condiciones resulta verdadera, el programa ejecuta su bloque de código correspondiente y salta automáticamente hasta el final de toda la estructura condicional. Las demás condiciones ya no se evalúan.
 
-#### Condicional Múltiple (`when`)
+#### 4.2.2 Condicional Múltiple (`when`)
 
 En lenguajes como Java o C, las decisiones múltiples se gestionan mediante la sentencia `switch`. Kotlin reemplaza `switch` con `when`, una herramienta mucho más potente, expresiva y flexible.
 
@@ -497,9 +497,9 @@ fun main() {
 - **Caso 3 (Evaluación por rango numérico):** Utiliza la palabra reservada `in` junto con la sintaxis de rangos `inicio..fin`. Por ejemplo, `in 901..1200` comprueba si la variable `sueldo` está comprendida entre 901 y 1200 (ambos inclusive). Como `sueldo` vale 1000, imprimirá `"Sueldo de 901 a 1200"`.
 - **Uso de `else`:** Cumple el mismo rol que el `default` en Java. Si ninguna condición previa coincide con el valor evaluado, se ejecutará la rama `else`.
 
-### Sentencias Repetitivas (Bucles)
+### 4.3 Sentencias Repetitivas (Bucles)
 
-#### Bucles `while` y `do-while`
+#### 4.3.1 Bucles `while` y `do-while`
 
 La sintaxis y el comportamiento de los bucles `while` y `do-while` en Kotlin son prácticamente idénticos a los de Java y C.
 
@@ -524,16 +524,16 @@ fun main() {
 }
 ```
 
-#### Diferencia clave entre ambos bucles:
+#### 4.3.2 Diferencia clave entre ambos bucles
 
 - **`while`:** Primero comprueba la condición `(x < 10)`. Si es verdadera, entra al bloque. Si la variable `x` empezara valiendo `20`, el cuerpo del bucle **nunca** se ejecutaría.
 - **`do-while`:** Ejecuta el bloque de código **primero** y luego evalúa la condición. Por este motivo, el código dentro de un `do-while` tiene la garantía absoluta de ejecutarse **al menos una vez**, incluso si la condición resulta ser falsa desde el principio.
 
-#### Bucle `for`
+#### 4.3.3 Bucle `for`
 
 A diferencia de Java, donde el bucle `for` tradicional utiliza una sintaxis basada en tres partes `for (int i = 0; i < 10; i++)`, Kotlin utiliza exclusivamente la sintaxis de interacción sobre rangos o colecciones usando la palabra clave `in`.
 
-#### A) For Incremental Básico
+#### 4.3.3.1 For Incremental Básico
 
 ```kotlin
 fun main() {
@@ -557,7 +557,7 @@ fun main() {
   - `!!` (Afirmación de no nulidad) le asegura al compilador que el usuario no va a introducir un valor nulo.
   - `.toInt()` convierte ese texto ingresado a un número entero para poder realizar operaciones matemáticas con él.
 
-#### B) For Incremental con Salto Personalizado (`step`)
+#### 4.3.3.2 For Incremental con Salto Personalizado (`step`)
 
 Cuando no deseamos avanzar de uno en uno, podemos especificar el incremento mediante la palabra reservada `step`.
 
@@ -578,7 +578,7 @@ fun main() {
 - **`0..10 step 2`:** Genera la secuencia `0, 2, 4, 6, 8, 10`.
 - A diferencia de Java donde se escribiría `i += 2` dentro de la cabecera del bucle, en Kotlin la variable del bucle `i` es inmutable dentro de cada iteración y el salto de avance se indica obligatoriamente con la palabra reservada `step`.
 
-#### C) For Decremental (`downTo`)
+#### 4.3.3.3 For Decremental (`downTo`)
 
 Para realizar conteos hacia atrás (decrementar valores), no se puede utilizar el operador de rango normal `..`. En su lugar, se debe usar la función `downTo`.
 
@@ -601,11 +601,11 @@ fun main() {
 - Para realizar un recorrido descendente es **estrictamente obligatorio** usar `downTo`:
   - `10 downTo 0 step 2` producirá correctamente la secuencia: `10, 8, 6, 4, 2, 0`.
 
-#### Modificadores de Rangos Adicionales en Kotlin
+#### 4.3.4 Modificadores de Rangos Adicionales en Kotlin
 
 Para profundizar en la gestión de bucles y rangos en Kotlin, existen operadores adicionales muy útiles:
 
-##### Rango Excluyente (`until`)
+##### 4.3.4.1 Rango Excluyente (`until`)
 
 Si deseas recorrer un rango numérico desde un inicio hasta un límite pero **excluyendo el valor final** (útil al trabajar con índices de arreglos o listas que van de `0` a `tamaño - 1`), se utiliza `until` en sustitución de `..`.
 
@@ -616,7 +616,7 @@ for (i in 0 until 10) {
 }
 ```
 
-#### Tabla Comparativa de Sintaxis de Rangos en Bucles
+#### 4.3.5 Tabla Comparativa de Sintaxis de Rangos en Bucles
 
 | Sintaxis en Kotlin | Secuencia generada | Descripción |
 | --- | --- | --- |
@@ -626,7 +626,7 @@ for (i in 0 until 10) {
 | `5 downTo 1` | `5, 4, 3, 2, 1` | Rango descendente e inclusivo. |
 | `10 downTo 0 step 2` | `10, 8, 6, 4, 2, 0` | Rango descendente de 2 en 2. |
 
-### RELACIÓN 2. Estructuras de control
+### 4.4 RELACIÓN 2: Estructuras de control
 
 1. Pide un número e indica si es positivo, negativo o cero.
 2. Pregunta la edad e indica si es mayor o menor de edad.
@@ -639,11 +639,11 @@ for (i in 0 until 10) {
 9. Recibe un número de 1 a 12 y muestra el mes con `when` y rangos.
 10. Cuenta cuántos números entre 1 y el indicado son divisibles por 3.
 
-## ARRAYS
+## 5. ARRAYS
 
 Existen diferentes formas de trabajar con los arrays en Kotlin. En la mayoría de los casos, para la inicialización de valores nos decantaremos por el uso de **expresiones lambda**.
 
-### ¿Qué es una función lambda?
+### 5.1 ¿Qué es una función lambda?
 Una **función lambda** es una función anónima (un bloque de código sin nombre) que se puede tratar como si fuera un valor: se puede pasar como parámetro a otra función, almacenar en una variable o ejecutar bajo demanda.
 
 **Sintaxis básica:**
@@ -695,7 +695,7 @@ Cuando la lambda recibe un único parámetro (en la inicialización de arrays re
 > 3. **Si hay 2 o más cosas a la vez:** (por ejemplo, una clave y un valor en un mapa), `it` no funciona y tienes que ponerles nombre explícito a cada una.
 >
 
-### Formas habituales de creación e inicialización
+### 5.2 Formas habituales de creación e inicialización
 
 - **`arrayOf(v1, v2, ..., vn)`**: Creamos un array inicializado con valores. Solo se permite la creación del array con valores inicializados desde su origen. Es de tipo genérico (`Array<T>`), por lo que podemos insertar cualquier tipo de objeto.
   - **Ejemplo:**
@@ -750,7 +750,7 @@ Cuando la lambda recibe un único parámetro (en la inicialización de arrays re
 > **Recordatorio:** Un array no es extensible en elementos (su tamaño es fijo), a diferencia de las listas mutables (`mutableListOf`), que sí permiten añadir o eliminar elementos.
 
 
-### Comparativa de declaración entre Java y Kotlin:
+### 5.3 Comparativa de declaración entre Java y Kotlin
 
 A continuación se muestra cómo Java y Kotlin declaran un array:
 
@@ -767,7 +767,7 @@ val names = arrayOf("Juan", "Sonia", "Guille", "Diego")
 - **① Declaración de un array en Java:** Declaración clásica indicando tipo primitivo y tamaño.
 - **② Declaración de un array en Kotlin:** `arrayOf` tendrá un significado especial, ya que es un array de objetos genéricos que tenemos que inicializar en el mismo momento en el que lo declaramos. Tener cuidado si lo declaramos como `val`, porque no podríamos volver a referenciar con la misma variable otro array.
 
-### Pregunta: ¿Qué diferencia hay entre utilizar `var` o `val` en un array?
+### 5.4 Pregunta: ¿Qué diferencia hay entre utilizar `var` o `val` en un array?
 
 La diferencia la tenemos en que `val` en tiempo de ejecución inicializa la referencia de su variable y no permite que vuelva a apuntar a otro objeto. Por tanto:
 
@@ -785,7 +785,7 @@ array = array2 // Esto es válido, ya que 'array' está declarado con var.
 // array2 = array // Esto NO es válido, porque 'array2' está declarado con val y no se puede cambiar su referencia.
 ```
 
-### Declaración, acceso y recorridos
+### 5.5 Declaración, acceso y recorridos
 
 Como hemos indicado anteriormente, la mayoría de las veces utilizaremos arrays inicializados a valor 0 o inicializados con valores preestablecidos. Tenemos que diferenciar entre un `arrayOf` y un `listOf`. Un `arrayOf` es un array en el que puedo cambiar sus elementos, a diferencia de un `listOf` cuyos elementos son **INMUTABLES**.
 
@@ -842,7 +842,7 @@ fun main() {
 }
 ```
 
-#### Explicación detallada de los puntos del código (① a ⑫):
+#### 5.5.1 Explicación detallada de los puntos del código (① a ⑫)
 
 - **① Los arrays son de tamaño fijo:** No pueden añadirse más elementos una vez definidos. Sí podemos cambiar sus valores en cada posición.
 - **② Acceso clásico por índice:** Manera clásica de acceder a un elemento del array, igual que en Java. Internamente, el acceso entre corchetes `[]` invoca al método `get()` indicado en el punto ③.
@@ -857,7 +857,7 @@ fun main() {
 - **⑪ Bucle con `.indices`:** Recorremos directamente los índices válidos del array (`0 until size`).
 - **⑫ Bucle con `.withIndex()`:** Recorremos obteniendo la desestructuración `(pos, valor)`. Muy utilizado cuando queremos sonsacar tanto la posición (índice) como el valor que encierra esa celda.
 
-### Funciones integradas
+### 5.6 Funciones integradas
 
 ```kotlin
 val myArray1 = arrayOf(1, 2, 3.3, "Juan")
@@ -919,7 +919,7 @@ fun main() {
 }
 ```
 
-### ACTIVIDADES
+### 5.7 RELACIÓN 3: arrays
 
 1. Declara e inicializa un array de enteros y otro de cadenas.
 2. Accede y modifica elementos de un array de cadenas.
@@ -931,8 +931,95 @@ fun main() {
 8. Ordena ascendente y descendentemente.
 9. Convierte un array a lista inmutable, lista mutable y conjunto.
 10. Usa `map` y `mapIndexed`, recordando que `map` devuelve una lista.
+11. Crea un programa que procese las calificaciones finales de seis alumnos, en una escala de 0 a 10. Para cada alumno debe indicar si está aprobado (nota igual o superior a 5), suspenso o no presentado. Al final, debe calcular la media de las notas disponibles y mostrar quién obtuvo la nota más alta y quién la más baja. Si todas las notas están ausentes, debe avisar de que no puede calcular la media.
 
-## FUNCIONES
+Entrada de ejemplo (nombre y nota):
+
+```text
+Ana 8.0
+Luis null
+Marta 4.5
+Iker 10.0
+Nora 6.0
+Pablo 0.0
+```
+
+Salida esperada:
+
+```text
+Ana: aprobado
+Luis: no presentado
+Marta: suspenso
+Iker: aprobado
+Nora: aprobado
+Pablo: suspenso
+Media: 5.70
+Nota más alta: Iker (10.0)
+Nota más baja: Pablo (0.0)
+```
+
+12. Escribe un programa que analice la puntuación de un jugador en ocho rondas. Cada puntuación es un número entero entre 0 y 30. El programa debe mostrar la suma y la media de los puntos, la puntuación máxima y la ronda en que se obtuvo, la mínima y su ronda, y cuántas rondas alcanzaron al menos 20 puntos. Al final, indica «Buen rendimiento» si la media es 18 o superior y «Rendimiento por mejorar» si es inferior. Las rondas se numeran del 1 al 8.
+
+Entrada de ejemplo (una puntuación por ronda):
+
+```text
+12 20 8 25 16 30 10 19
+```
+
+Salida esperada:
+
+```text
+Puntos totales: 140
+Media: 17.5
+Puntuación máxima: 30 (ronda 6)
+Puntuación mínima: 8 (ronda 3)
+Rondas con 20 puntos o más: 3
+Rendimiento por mejorar
+```
+
+13. Diseña un programa para gestionar las reservas de una sala con 12 plazas, todas libres al inicio. Debe permitir reservar una plaza, cancelar una reserva, consultar cuántas plazas están ocupadas y libres, consultar la recaudación actual y finalizar. Rechaza los números de plaza que no estén entre 1 y 12, las reservas de plazas ocupadas y las cancelaciones de plazas libres. El precio depende de la ubicación: las plazas 1–4 cuestan 8 euros, las plazas 5–8 cuestan 10 euros y las plazas 9–12 cuestan 12 euros. Al cancelar una reserva, su importe deja de contar en la recaudación.
+
+El programa debe mostrar el siguiente menú. Al elegir reservar o cancelar, también debe pedir el número de plaza:
+
+Menú de ejemplo y acciones para probarlo:
+
+```text
+RESERVAS DE SALA
+1. Reservar una plaza
+2. Cancelar una reserva
+3. Consultar ocupación
+4. Consultar recaudación
+0. Finalizar
+
+Opción: 1
+Número de plaza: 4
+Opción: 1
+Número de plaza: 4
+Opción: 1
+Número de plaza: 13
+Opción: 1
+Número de plaza: 9
+Opción: 2
+Número de plaza: 9
+Opción: 3
+Opción: 4
+Opción: 0
+```
+
+Salida esperada:
+
+```text
+Reserva confirmada: plaza 4
+No se pudo reservar: la plaza 4 está ocupada
+Número de plaza no válido: 13
+Reserva confirmada: plaza 9
+Reserva cancelada: plaza 9
+Plazas ocupadas: 1
+Plazas libres: 11
+Recaudación actual: 8 euros
+```
+
+## 6. FUNCIONES
 
 Una función se define con `fun`, seguida del nombre, parámetros, tipo de retorno y cuerpo.
 
@@ -986,7 +1073,7 @@ fun printValuesOfArr(arr: IntArray) {
 }
 ```
 
-### ACTIVIDADES
+### 6.1 ACTIVIDADES
 
 1. Define una función de saludo completa y otra con cuerpo de expresión.
 2. Crea una función sin parámetros que imprima `Hola mundo!`.
@@ -995,9 +1082,9 @@ fun printValuesOfArr(arr: IntArray) {
 5. Modifica un `Int` dentro de una función y demuestra que el original no cambia.
 6. Crea un array aleatorio, devuélvelo y muéstralo desde otra función.
 
-## FUNCIONES LAMBDA
+## 7. FUNCIONES LAMBDA
 
-### Referencias a funciones
+### 7.1 Referencias a funciones
 
 Una variable puede almacenar la referencia a una función.
 
@@ -1030,7 +1117,7 @@ fun main() {
 }
 ```
 
-### Expresiones lambda
+### 7.2 Expresiones lambda
 
 Una lambda es una función anónima con la forma `{ parámetros -> cuerpo }`.
 
@@ -1045,7 +1132,7 @@ fun main() {
 }
 ```
 
-### Funciones de orden superior
+### 7.3 Funciones de orden superior
 
 ```kotlin
 fun operacion(a: Int, b: Int, fn: (Int, Int) -> Int): Int = fn(a, b)
@@ -1095,7 +1182,7 @@ fun myFun2(arr: IntArray, fn: (Int) -> Boolean): Int {
 fun myFun3(arr: IntArray, fn: (Int) -> Boolean): Int = arr.count(fn)
 ```
 
-### ACTIVIDADES
+### 7.4 ACTIVIDADES
 
 1. Define `saluda`, guarda su referencia en `miSaludo` e invócala con varios nombres.
 2. Define `multiplica`, `divide` y `resta`; cambia la función almacenada en `operacion`.
@@ -1113,9 +1200,9 @@ fun myFun3(arr: IntArray, fn: (Int) -> Boolean): Int = arr.count(fn)
 14. Transforma datos con una lambda.
 15. Compón dos funciones y aplícalas en secuencia.
 
-## CLASES
+## 8. CLASES
 
-### Declaración de clases
+### 8.1 Declaración de clases
 
 ```kotlin
 class Persona(var name: String, var age: Int) {
@@ -1144,7 +1231,7 @@ fun main() {
 }
 ```
 
-### Constructores, `init`, getters y setters
+### 8.2 Constructores, `init`, getters y setters
 
 ```kotlin
 class Alumno() {
@@ -1186,7 +1273,7 @@ class PersonaGetSet {
 }
 ```
 
-### Lambdas y clases
+### 8.3 Lambdas y clases
 
 ```kotlin
 class MyArray {
@@ -1199,7 +1286,7 @@ class MyArray {
 }
 ```
 
-### Relaciones entre clases
+### 8.4 Relaciones entre clases
 
 ```kotlin
 data class PersonalData(val name: String?, val phone: String?)
@@ -1223,7 +1310,7 @@ fun main() {
 }
 ```
 
-### Herencia
+### 8.5 Herencia
 
 Las clases son finales por defecto. Para permitir herencia se usa `open`; la subclase se declara con `:`.
 
@@ -1264,7 +1351,7 @@ class Masajista(
 
 Los atributos que deban heredarse pueden ser `protected`. Las subclases llaman al constructor de la superclase y pueden invocar sus métodos.
 
-### Clases abstractas
+### 8.6 Clases abstractas
 
 Cuando cada subclase debe implementar su propia versión de una operación, se declara una clase abstracta y un método abstracto.
 
@@ -1289,7 +1376,7 @@ fun main() {
 
 Así no es necesario hacer casteos al recorrer objetos de la clase padre.
 
-### Interfaces
+### 8.7 Interfaces
 
 ```kotlin
 interface IntegranteSeleccionFutbol {
@@ -1304,7 +1391,7 @@ interface IntegranteSeleccionFutbol {
 
 Una interfaz define un contrato. Puede declarar propiedades y métodos abstractos, y también incluir implementaciones por defecto.
 
-### ACTIVIDADES
+### 8.8 ACTIVIDADES
 
 1. Declara `Animal` con nombre, edad y `toString()`.
 2. Crea `Vehiculo` con constructor secundario y método de impresión.
@@ -1322,7 +1409,7 @@ Una interfaz define un contrato. Puede declarar propiedades y métodos abstracto
 14. Implementa una clase abstracta `Vehiculo` con `mover()`.
 15. Define `ComportamientoAnimal`, una clase abstracta `Animal` y las subclases `Perro` y `Gato`, aprovechando polimorfismo para llamar a `hacerSonido()`, `moverse()`, `dormir()` y `alimentarse()`.
 
-## FUNCIÓN DE EXTENSIÓN EN KOTLIN
+## 9. FUNCIÓN DE EXTENSIÓN EN KOTLIN
 
 Las funciones de extensión permiten añadir funciones a clases existentes sin modificarlas.
 
@@ -1350,12 +1437,12 @@ fun main() {
 
 El receptor también puede ser anulable (`Date?`) y el resultado puede serlo (`String?`).
 
-### ACTIVIDADES
+### 9.1 ACTIVIDADES
 
 1. Crea las extensiones `isPalindrome`, `toPigLatin`, `reverseWords` y `wordCount` para `String`.
 2. Crea `sumSquares`, `maxMinDiff`, `average` y `filterEven` para `List<Int>`.
 
-## DATA CLASS
+## 10. DATA CLASS
 
 Una `data class` representa datos y genera automáticamente `toString()`, `equals()`, `hashCode()` y `copy()`. Sólo las propiedades del constructor primario participan en esas operaciones.
 
@@ -1394,15 +1481,15 @@ fun main() {
 }
 ```
 
-### ACTIVIDADES
+### 10.1 ACTIVIDADES
 
 1. Crea `Producto(nombre, precio)`, compara dos objetos y usa `copy()` modificando el precio.
 2. Crea `Empleado(nombre, salario)` con el método `anualSalario()`.
 3. Crea `Libro(titulo, autor, anioPublicacion, genero?)`, usa valores opcionales y `copy()`.
 
-## LISTAS INMUTABLES Y MUTABLES
+## 11. LISTAS INMUTABLES Y MUTABLES
 
-### Listas inmutables
+### 11.1 Listas inmutables
 
 Una lista inmutable no permite añadir, eliminar ni modificar elementos.
 
@@ -1434,7 +1521,7 @@ listPersonal.forEach { println("Personal -> $it") }
 
 Que la lista sea inmutable no significa que no puedan cambiarse propiedades mutables de los objetos que contiene.
 
-### Listas mutables
+### 11.2 Listas mutables
 
 ```kotlin
 data class PersonalDataMutable(val name: String, val phone: String?)
@@ -1466,7 +1553,7 @@ println("Lista mutable: $mutableList")
 println("Lista inmutable original: $immutableList")
 ```
 
-### ACTIVIDADES
+### 11.3 ACTIVIDADES
 
 1. Crea y recorre una lista inmutable de enteros del 1 al 5.
 2. Convierte nombres de ciudades a mayúsculas con `map`.
@@ -1479,11 +1566,11 @@ println("Lista inmutable original: $immutableList")
 9. Usa `removeAll` y `removeIf` para filtrar objetos.
 10. Genera 15 números aleatorios, cuenta los menores que 5 y elimina los mayores que 8.
 
-## MAPAS
+## 12. MAPAS
 
 Los mapas son colecciones de pares clave-valor. Las claves son únicas. Se usan `Map` para mapas no mutables y `MutableMap` para mapas modificables.
 
-### Mapas inmutables
+### 12.1 Mapas inmutables
 
 ```kotlin
 fun main() {
@@ -1524,7 +1611,7 @@ fun main() {
 }
 ```
 
-### Mapas mutables
+### 12.2 Mapas mutables
 
 `apply` permite configurar el objeto dentro de un bloque de inicialización.
 
@@ -1583,7 +1670,7 @@ fun main() {
 }
 ```
 
-### ACTIVIDADES
+### 12.3 ACTIVIDADES
 
 1. Crea un mapa inmutable de tres claves y recórrelo.
 2. Crea mapas de países y ciudades y cuenta las ciudades con más de 200.000 habitantes.
@@ -1592,11 +1679,11 @@ fun main() {
 5. Cuenta y filtra productos según su precio.
 6. Define `Autor` y `Libro`, crea una lista de libros, muestra sus datos y comprueba si pertenecen a un autor determinado.
 
-## CALLBACK
+## 13. CALLBACK
 
 Un callback es una función que se pasa como parámetro y que otra función invoca al completar su tarea. Es especialmente útil en operaciones asíncronas como acceso a bases de datos, lectura de archivos o peticiones a una API.
 
-### Llamada síncrona
+### 13.1 Llamada síncrona
 
 El hilo principal espera a que termine la operación.
 
@@ -1620,7 +1707,7 @@ fun main() {
 }
 ```
 
-### Llamada asíncrona
+### 13.2 Llamada asíncrona
 
 La operación se ejecuta en otro hilo y el hilo principal puede continuar.
 
@@ -1648,7 +1735,7 @@ fun main() {
 }
 ```
 
-### Ejemplo adaptado a corrutinas
+### 13.3 Ejemplo adaptado a corrutinas
 
 En aplicaciones Android se utilizan corrutinas para ejecutar operaciones fuera del hilo de interfaz y volver después al hilo principal.
 
@@ -1682,15 +1769,15 @@ fun main() {
 
 En una aplicación Android no sería necesario este `sleep` de consola: el ciclo de vida de la interfaz y del `CoroutineScope` se encargan de mantener la operación.
 
-### ACTIVIDADES
+### 13.4 ACTIVIDADES
 
-#### 1. Callback síncrono
+#### 13.4.1 Callback síncrono
 
 1. Define `procesarNombres(nombres, callback)` con `callback: (String) -> Unit`.
 2. Recorre los nombres e invoca el callback de forma secuencial.
 3. Crea una lista y muestra cómo cada nombre se procesa en el orden original.
 
-#### 2. Callback asíncrono
+#### 13.4.2 Callback asíncrono
 
 1. Define `descargarContenido(url, callback)` con `callback: (String) -> Unit`.
 2. Usa un hilo, una corrutina o un `ExecutorService` para simular la descarga.
