@@ -1081,6 +1081,31 @@ fun printValuesOfArr(arr: IntArray) {
 4. Suma un array y un rango de enteros.
 5. Modifica un `Int` dentro de una función y demuestra que el original no cambia.
 6. Crea un array aleatorio, devuélvelo y muéstralo desde otra función.
+7. Crea un programa que gestione las puntuaciones de una máquina recreativa a partir de un array `puntuaciones` con las partidas jugadas. Divide la lógica en varias funciones que trabajen sobre ese array y resuelvan lo siguiente:
+	- Obtener la puntuación más alta conseguida.
+	- Contar cuántas partidas superan un umbral de puntos dado.
+	- Clasificar una puntuación en una categoría (`"Leyenda"`, `"Experto"`, `"Aficionado"` o `"Novato"`) según su valor.
+	- Averiguar en qué partida (posición) se logró la mejor puntuación.
+	- Mostrar un ranking completo con el número de partida, su puntuación y su categoría, junto con un resumen final (mejor puntuación, en qué partida se logró y cuántas partidas fueron "récord").
+
+	Ejemplo de entrada:
+
+	```kotlin
+	val puntuaciones = intArrayOf(320, 850, 1200, 690, 410)
+	mostrarRanking(puntuaciones)
+	```
+
+	Salida esperada:
+
+	```text
+	Partida 1: 320 puntos -> Novato
+	Partida 2: 850 puntos -> Experto
+	Partida 3: 1200 puntos -> Leyenda
+	Partida 4: 690 puntos -> Aficionado
+	Partida 5: 410 puntos -> Aficionado
+	Mejor puntuación: 1200 (partida 3)
+	Partidas récord (>700): 2
+	```
 
 ## 7. FUNCIONES LAMBDA
 
