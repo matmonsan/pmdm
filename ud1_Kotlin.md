@@ -13,12 +13,9 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 - [5. Arrays](#5-arrays)
 - [6. Funciones](#6-funciones)
 - [7. Funciones lambda](#7-funciones-lambda)
-- [8. Clases](#8-clases)
-- [9. Función de extensión en Kotlin](#9-función-de-extensión-en-kotlin)
-- [10. Data class](#10-data-class)
-- [11. Listas inmutables y mutables](#11-listas-inmutables-y-mutables)
-- [12. Mapas](#12-mapas)
-- [13. Callback](#13-callback)
+- [8. Programación orientada a objetos](#8-programación-orientada-a-objetos)
+- [9. Colecciones](#9-colecciones)
+- [10. Otros elementos de Kotlin](#10-otros-elementos-de-kotlin)
 
 ## 1. INTRODUCCIÓN
 
@@ -30,7 +27,7 @@ Con este documento, se va a ofrecer una visión rápida del lenguaje Kotlin, en 
 
 En esta sección, exploraremos cómo se declaran y utilizan las variables en Kotlin. Veremos la diferencia entre variables inmutables (`val`) y mutables (`var`), así como las convenciones para nombrarlas y los tipos de datos más comunes que se utilizan.
 
-### 1.2 Sentencias
+### 1.2 Estructuras de control
 
 Aquí abordaremos las sentencias de control de flujo en Kotlin, como `if`, `when`, y `for`. Estas estructuras nos permiten controlar la ejecución del código según diferentes condiciones y realizar iteraciones sobre colecciones.
 
@@ -42,33 +39,21 @@ En esta parte, aprenderemos cómo trabajar con arrays en Kotlin. Veremos cómo d
 
 Exploraremos cómo definir y utilizar funciones en Kotlin. Abordaremos la sintaxis básica para declarar funciones y cómo Kotlin maneja los valores de retorno y los parámetros.
 
-### 1.5 Lambda
+### 1.5 Funciones lambda
 
 Las expresiones lambda son una característica poderosa de Kotlin. En esta sección, aprenderemos cómo se definen y utilizan las lambdas, así como los casos en los que son especialmente útiles, como en funciones de orden superior. En el último punto, trataremos los callback.
 
-### 1.6 Clases
+### 1.6 Programación orientada a objetos
 
-En esta sección, discutiremos cómo definir y utilizar clases en Kotlin. Veremos la sintaxis para crear clases, propiedades, métodos y constructores, y cómo se aplican conceptos de orientación a objetos como herencia y polimorfismo.
+En esta sección, veremos clases, propiedades, constructores, herencia, clases abstractas, interfaces y polimorfismo.
 
-### 1.7 Extensiones
+### 1.7 Colecciones
 
-Aquí aprenderemos sobre las funciones de extensión en Kotlin, que permiten añadir nuevas funcionalidades a clases existentes sin modificarlas. Veremos cómo definir funciones de extensión y cómo pueden mejorar la legibilidad y modularidad del código.
+Estudiaremos listas, conjuntos y mapas, sus variantes de solo lectura y mutables, y las operaciones más habituales para consultar y transformar datos.
 
-### 1.8 Data Class
+### 1.8 Otros elementos de Kotlin
 
-Las `data class` en Kotlin son una forma conveniente de manejar datos. En esta sección, veremos cómo definir una `data class`, así como los métodos automáticamente generados como `toString()`, `equals()`, `hashCode()`, y `copy()`.
-
-### 1.9 Listas
-
-En esta parte, discutiremos el trabajo con listas en Kotlin, tanto inmutables (`List`) como mutables (`MutableList`). Veremos cómo declarar, inicializar y manipular listas, y cómo Kotlin ofrece funciones útiles para trabajar con ellas.
-
-### 1.10 Map
-
-Exploraremos los mapas (`Map`), que son colecciones de pares clave-valor. Veremos cómo crear, inicializar y manipular mapas, y cómo utilizar funciones como `put`, `get`, `remove`, y `forEach`.
-
-### 1.11 Callback
-
-Finalmente, abordaremos el concepto de callbacks, que son funciones que se pasan como parámetros y se ejecutan cuando una tarea asíncrona se completa. Veremos cómo definir y utilizar callbacks en Kotlin, y cómo esto se relaciona con operaciones asíncronas y la programación basada en eventos.
+Agruparemos conceptos complementarios del lenguaje: funciones de extensión, `data class` y callbacks, con ejemplos de su uso.
 
 ## 2. RECORDANDO CONCEPTOS
 
@@ -1120,7 +1105,7 @@ fun imprimeTuNombre(nombre: String) {
 
 fun main() {
 	val myFun: (String) -> Unit = ::imprimeTuNombre
-	myFun("Santiago Rodenas Herraiz")
+	myFun("Juan Pérez Pérez")
 	myFun("Sonia Mena Delgado")
 }
 ```
@@ -1225,9 +1210,15 @@ fun myFun3(arr: IntArray, fn: (Int) -> Boolean): Int = arr.count(fn)
 14. Transforma datos con una lambda.
 15. Compón dos funciones y aplícalas en secuencia.
 
-## 8. CLASES
+## 8. PROGRAMACIÓN ORIENTADA A OBJETOS
+
+La programación orientada a objetos (POO) organiza el programa alrededor de objetos que combinan estado (propiedades) y comportamiento (funciones). Una clase define un tipo y sirve como molde; cada objeto es una instancia concreta de esa clase. En Kotlin se aplican abstracción, encapsulación, herencia y polimorfismo. Las clases son finales por defecto: la herencia y la sobrescritura se habilitan de forma explícita.
 
 ### 8.1 Declaración de clases
+
+Una clase se declara con `class`. Sus propiedades y funciones miembro describen el estado y las operaciones disponibles. Para crear una instancia se llama al constructor, sin usar `new`.
+
+En el constructor primario de `Persona`, `name` y `age` se convierten directamente en propiedades porque están declarados con `var`. Eso permite leerlos y cambiarlos desde el objeto. `isAdult()` es una función miembro: trabaja con el estado de la instancia sobre la que se invoca. `toString()` reemplaza la representación genérica heredada de `Any`, por lo que imprimir una persona muestra sus datos.
 
 ```kotlin
 class Persona(var name: String, var age: Int) {
@@ -1241,7 +1232,7 @@ fun myFun(persons: Array<Persona>, fn: (String) -> Unit) {
 
 fun main() {
 	val persons = arrayOf(
-		Persona("Santi", 46),
+		Persona("Juan", 46),
 		Persona("Sonia", 45),
 		Persona("Guille", 14),
 		Persona("Diego", 11)
@@ -1256,7 +1247,11 @@ fun main() {
 }
 ```
 
-### 8.2 Constructores, `init`, getters y setters
+Cada llamada a `Persona(...)` crea una instancia independiente. `val persona = Persona(...)` impide reasignar la referencia `persona`, pero no impide cambiar las propiedades declaradas con `var`. En `main`, el array contiene cuatro referencias a personas; `forEach` visita cada una, consulta sus datos e invoca sus métodos. `myFun` recibe un array y una función `(String) -> Unit`: al pasarle la lambda `{ ... }`, la función ejecuta ese comportamiento para el nombre de cada persona.
+
+### 8.2 Constructores, `init`, propiedades y accesores
+
+El constructor primario aparece en la cabecera de la clase. Si sus parámetros llevan `val` o `var`, también declaran propiedades. Los constructores secundarios se declaran con `constructor` y deben delegar en el primario mediante `this(...)`. Los bloques `init` se ejecutan al inicializar la instancia, después de evaluar el constructor primario y antes del cuerpo del constructor secundario.
 
 ```kotlin
 class Alumno() {
@@ -1285,6 +1280,12 @@ class Alumno() {
 
 El bloque `init` se ejecuta al crear el objeto. Un setter usa `value` y `field`. Los atributos `private` sólo son visibles dentro de la clase.
 
+`field` es el campo de respaldo que Kotlin genera para una propiedad cuando hace falta almacenar el valor. Dentro de un getter o setter personalizado se usa para leer o cambiar ese valor sin volver a invocar el propio accesor. Se pueden definir solo getter, solo setter o ambos; una propiedad `val` no puede tener setter.
+
+En el ejemplo de `Alumno`, el constructor primario no tiene parámetros y asigna valores iniciales a las propiedades. El constructor secundario delega en él con `: this()`, y después copia los argumentos recibidos a las propiedades. El bloque `init` se ejecuta durante esa creación; a continuación se ejecuta el cuerpo del constructor secundario. El setter de `name` normaliza el valor a mayúsculas, mientras que el de `age` rechaza edades inferiores a 18 asignando cero.
+
+En `PersonaGetSet`, `name` es nullable porque empieza siendo `null`. Su setter solo reemplaza el valor cuando no está vacío y el getter ofrece un texto alternativo si sigue siendo nulo. El setter de `age` aplica una regla cada vez que alguien asigna un valor. Los accesores son un lugar apropiado para proteger invariantes sencillas, pero una operación de dominio más amplia suele expresarse mejor mediante una función miembro.
+
 ```kotlin
 class PersonaGetSet {
 	var name: String? = null
@@ -1300,18 +1301,47 @@ class PersonaGetSet {
 
 ### 8.3 Lambdas y clases
 
+Una lambda es una función sin nombre que puede guardarse o pasarse como argumento. Una función que recibe otra función es una función de orden superior. En una clase, las lambdas permiten procesar el estado interno sin duplicar bucles: `count`, `all` y `any` reciben una condición y la aplican a cada elemento del array.
+
+El parámetro de esa condición es el elemento actual. Kotlin permite escribirlo como `it` cuando hay un único parámetro, o darle un nombre explícito para que la condición resulte más legible. `count` devuelve cuántos elementos cumplen la condición; `all` devuelve `true` solo si todos la cumplen; `any` devuelve `true` si al menos uno la cumple. Estas operaciones devuelven valores, no alteran el array.
+
 ```kotlin
-class MyArray {
-	var arr = IntArray(10) { kotlin.random.Random.nextInt(0, 11) }
+class MyArray(private val arr: IntArray = IntArray(10) { indice -> indice + 1 }) {
 
 	fun printArray() = println(arr.joinToString(", "))
-	fun printElementTo5() = println("La cantidad de elementos menor que 5 es ${arr.count { it <= 5 }}")
-	fun printAllTo9() = println(if (arr.all { it <= 9 }) "Todos son menor o igual que 9" else "Hay números mayores que 9")
-	fun printElementoTo10() = println(if (arr.any { it == 10 }) "Hay un elemento que tiene al menos un 10" else "No hay ningun elemento que sea 10")
+
+	fun printElementTo5() {
+		val cantidad = arr.count { elemento -> elemento <= 5 }
+		println("La cantidad de elementos menor o igual que 5 es $cantidad")
+	}
+
+	fun printAllTo9() {
+		val todosCumplen = arr.all { it <= 9 }
+		println(if (todosCumplen) "Todos son menores o iguales que 9" else "Hay números mayores que 9")
+	}
+
+	fun printElementoTo10() {
+		val existe = arr.any { it == 10 }
+		println(if (existe) "Hay un elemento que tiene un 10" else "No hay ningún elemento que sea 10")
+	}
+}
+
+fun main() {
+	val datos = MyArray()
+	datos.printArray()
+	datos.printElementTo5()
+	datos.printAllTo9()
+	datos.printElementoTo10()
 }
 ```
 
+El inicializador `IntArray(10) { indice -> indice + 1 }` construye diez enteros y llama a la lambda una vez por posición; en este ejemplo se usa el índice para generar los valores del 1 al 10. `arr` es privado porque forma parte de la implementación de `MyArray`: desde fuera se piden resultados mediante sus métodos, pero no se puede reemplazar directamente el array. `printArray` usa `joinToString` para crear una representación legible sin escribir el bucle manualmente.
+
+Con esos datos, `count` cuenta los cinco valores menores o iguales que 5; `all` resulta falso porque 10 no cumple `<= 9`; y `any` resulta verdadero porque sí hay un 10. Se podría cambiar el inicializador por `IntArray(10) { kotlin.random.Random.nextInt(0, 11) }` para generar números aleatorios. En ese caso, los resultados de las tres consultas variarían en cada ejecución.
+
 ### 8.4 Relaciones entre clases
+
+Una clase puede contener referencias a objetos de otras clases. Esta relación se conoce como composición cuando el objeto principal se construye usando otros objetos para colaborar o representar sus partes. No es necesario que exista herencia para relacionar tipos.
 
 ```kotlin
 data class PersonalData(val name: String?, val phone: String?)
@@ -1322,7 +1352,7 @@ fun main() {
 	val enterprise = arrayOf(
 		Employee(1, null),
 		Employee(2, PersonalData(null, null)),
-		Employee(3, PersonalData("santi", null)),
+		Employee(3, PersonalData("juan", null)),
 		Employee(4, PersonalData("sonia", "953 12 34 56"))
 	)
 	enterprise.forEach { employee ->
@@ -1335,9 +1365,13 @@ fun main() {
 }
 ```
 
-### 8.5 Herencia
+En este ejemplo, `Employee` tiene un `PersonalData` opcional. El operador `?.` permite acceder a sus propiedades solo cuando la referencia no es nula; `let` agrupa el trabajo que se realiza cuando el objeto existe. Conviene usar composición para expresar relaciones «tiene un» y reservar la herencia para relaciones «es un».
 
-Las clases son finales por defecto. Para permitir herencia se usa `open`; la subclase se declara con `:`.
+`Employee` no crea ni hereda de `PersonalData`: guarda una referencia a ese objeto. El tipo `PersonalData?` indica que la información puede faltar, por eso el primer empleado no tiene datos asociados. El recorrido omite a ese empleado porque el bloque de `let` solo se ejecuta cuando `personalData` no es nulo. La referencia tampoco impone por sí sola cómo se comparten o cuánto viven esos objetos; esas decisiones dependen del diseño de la aplicación.
+
+### 8.5 Herencia y polimorfismo
+
+Para permitir que una clase sea clase base se usa `open`; la subclase indica su clase padre después de `:` y llama a su constructor. Los miembros también son finales por defecto: para sobrescribir un método o propiedad, la clase base debe declararlo `open` y la subclase debe usar `override`.
 
 ```kotlin
 open class SeleccionFutbol(
@@ -1376,9 +1410,36 @@ class Masajista(
 
 Los atributos que deban heredarse pueden ser `protected`. Las subclases llaman al constructor de la superclase y pueden invocar sus métodos.
 
+En el ejemplo, `Entrenador`, `Futbolista` y `Masajista` heredan el identificador, el nombre, los apellidos y la edad. Esos valores se reciben en sus constructores y se envían al constructor de `SeleccionFutbol`. El modificador `protected` permite que las subclases usen esas propiedades sin exponerlas como parte de la API pública. `super.toString()` reutiliza la descripción de la clase base antes de añadir el dato propio del entrenador.
+
+El polimorfismo permite tratar objetos de distintas subclases mediante un tipo común. Al llamar a un método sobrescrito, Kotlin ejecuta la implementación correspondiente al tipo real del objeto:
+
+```kotlin
+open class Figura {
+	open fun area(): Double = 0.0
+}
+
+class Circulo(private val radio: Double) : Figura() {
+	override fun area(): Double = Math.PI * radio * radio
+}
+
+class Rectangulo(private val ancho: Double, private val alto: Double) : Figura() {
+	override fun area(): Double = ancho * alto
+}
+
+fun main() {
+	val figuras: List<Figura> = listOf(Circulo(2.0), Rectangulo(3.0, 4.0))
+	figuras.forEach { println("Área: ${it.area()}") }
+}
+```
+
+La lista está declarada con el tipo común `Figura`, pero cada llamada a `area()` se resuelve usando la implementación de `Circulo` o `Rectangulo`.
+
+En Kotlin hay herencia simple: una clase tiene como máximo una clase padre, aunque puede implementar varias interfaces. Una subclase no puede sobrescribir miembros finales. Si una subclase sobrescribe a su vez un miembro `open`, la sobrescritura también puede volver a marcarse como `final` para cerrar esa rama. El despacho polimórfico evita preguntar manualmente qué subtipo se recibió antes de invocar el comportamiento compartido.
+
 ### 8.6 Clases abstractas
 
-Cuando cada subclase debe implementar su propia versión de una operación, se declara una clase abstracta y un método abstracto.
+Una clase abstracta representa una idea general que no debe instanciarse directamente. Puede tener constructor, propiedades con estado y funciones ya implementadas, además de miembros abstractos sin cuerpo. Cada subclase concreta debe implementar esos miembros con `override`; si deja alguno pendiente, también deberá ser abstracta.
 
 ```kotlin
 abstract class Integrante {
@@ -1399,9 +1460,11 @@ fun main() {
 }
 ```
 
-Así no es necesario hacer casteos al recorrer objetos de la clase padre.
+Así no es necesario hacer conversiones de tipo al recorrer una lista de `Integrante`: cada objeto ofrece `training()` mediante el tipo común, y se ejecuta la implementación de la subclase real. Elige una clase abstracta cuando las subclases compartan estado o implementación; una interfaz suele encajar mejor cuando se quiere definir una capacidad que pueden tener clases distintas.
 
 ### 8.7 Interfaces
+
+Una interfaz declara operaciones que una clase se compromete a implementar. Una clase puede implementar varias interfaces, pero solo heredar de una clase. Las interfaces no tienen constructor primario ni almacenan estado propio como una clase, aunque pueden incluir implementaciones por defecto.
 
 ```kotlin
 interface IntegranteSeleccionFutbol {
@@ -1414,9 +1477,181 @@ interface IntegranteSeleccionFutbol {
 }
 ```
 
-Una interfaz define un contrato. Puede declarar propiedades y métodos abstractos, y también incluir implementaciones por defecto.
+Una clase que implementa la interfaz proporciona los miembros que no tienen implementación por defecto:
 
-### 8.8 ACTIVIDADES
+```kotlin
+class JugadorSeleccion(override var anio: Int) : IntegranteSeleccionFutbol {
+	override fun training() = println("El jugador está entrenando")
+	override fun travel() = println("El jugador está viajando")
+}
+
+fun main() {
+	val integrante: IntegranteSeleccionFutbol = JugadorSeleccion(2025)
+	integrante.concentrarse()
+	integrante.training()
+}
+```
+
+`IntegranteSeleccionFutbol` exige que quien la implemente proporcione `anio`, `training()` y `travel()`. `concentrarse()` ya tiene cuerpo y puede usarse sin sobrescritura, aunque una clase podría reemplazarlo con `override`. El objeto se guarda en una variable del tipo interfaz para mostrar que el código cliente depende del contrato y no de la clase concreta `JugadorSeleccion`.
+
+Si dos interfaces implementadas por una misma clase declaran una función con el mismo nombre y ambas tienen cuerpo, la clase debe resolver la ambigüedad sobrescribiendo esa función. Desde la sobrescritura puede llamar a una implementación concreta mediante `super<NombreInterfaz>.funcion()`.
+
+### 8.8 Encapsulación y visibilidad
+
+La encapsulación protege el estado interno y expone operaciones controladas. En Kotlin, los modificadores de visibilidad son:
+
+| Modificador | Acceso |
+| --- | --- |
+| `public` | Visible desde cualquier lugar; es el valor predeterminado. |
+| `private` | Visible solo dentro de la declaración que lo contiene. En una clase, solo dentro de esa clase; a nivel de archivo, solo dentro del archivo. |
+| `protected` | Visible en la clase y sus subclases. Solo se aplica a miembros de clases. |
+| `internal` | Visible en el mismo módulo de compilación. |
+
+El siguiente ejemplo permite consultar el saldo, pero solo modificarlo a través de operaciones validadas:
+
+```kotlin
+class CuentaBancaria(saldoInicial: Int) {
+	var saldoCentimos: Int = saldoInicial
+		private set
+
+	fun ingresar(centimos: Int) {
+		require(centimos > 0) { "El ingreso debe ser positivo" }
+		saldoCentimos += centimos
+	}
+
+	fun retirar(centimos: Int) {
+		require(centimos > 0) { "La retirada debe ser positiva" }
+		require(centimos <= saldoCentimos) { "Saldo insuficiente" }
+		saldoCentimos -= centimos
+	}
+}
+```
+
+`private set` deja la propiedad legible desde fuera, pero restringe su escritura a la clase. Así se evita que cualquier código asigne un saldo inválido directamente.
+
+La encapsulación no consiste únicamente en ocultar variables: define qué operaciones se permiten y mantiene las reglas del objeto en un único lugar. `require` valida los argumentos y lanza `IllegalArgumentException` si una condición no se cumple. Al mantener el setter privado, todos los cambios del saldo pasan por `ingresar` o `retirar`, donde se comprueban las cantidades y el saldo disponible.
+
+### 8.9 Igualdad entre objetos
+
+En Kotlin, `==` comprueba igualdad estructural: equivale a llamar de forma segura a `equals`. `===` comprueba identidad referencial: indica si dos referencias apuntan exactamente al mismo objeto. Una clase normal hereda la igualdad por identidad de `Any`; puede sobrescribir `equals` y `hashCode` para definir igualdad por sus propiedades. Las `data class` generan estas operaciones a partir de las propiedades del constructor primario; se explican en el apartado 10.2.
+
+```kotlin
+class Punto(val x: Int, val y: Int)
+
+fun main() {
+	val primero = Punto(2, 3)
+	val segundo = Punto(2, 3)
+	val mismaReferencia = primero
+
+	println(primero == segundo)
+	println(primero === segundo)
+	println(primero === mismaReferencia)
+}
+```
+
+Aunque `primero` y `segundo` contienen las mismas coordenadas, son instancias diferentes. Al no sobrescribir `equals`, `==` también resulta falso. `mismaReferencia` apunta al mismo objeto que `primero`, por lo que `===` resulta verdadero.
+
+Cuando se sobrescribe `equals`, también hay que sobrescribir `hashCode`: dos objetos considerados iguales deben producir el mismo código hash. Esta regla es necesaria para que funcionen correctamente como claves de mapas o elementos de conjuntos hash. No se debe usar `===` para comparar el contenido de dos objetos.
+
+### 8.10 Declaraciones `object` y `companion object`
+
+Una declaración `object` crea un único objeto (singleton) y permite agrupar estado y funciones que no necesitan una instancia de una clase. Se inicializa cuando se accede a él por primera vez.
+
+```kotlin
+object ConfiguracionApp {
+	const val NOMBRE = "Mi aplicación"
+	var modoDepuracion: Boolean = false
+
+	fun mostrarNombre() = println(NOMBRE)
+}
+
+fun main() {
+	ConfiguracionApp.modoDepuracion = true
+	ConfiguracionApp.mostrarNombre()
+}
+```
+
+Un `companion object` es un objeto asociado a una clase. Sus miembros se pueden invocar usando el nombre de la clase, sin crear una instancia. Puede implementar interfaces y tener un nombre opcional.
+
+```kotlin
+class Usuario private constructor(val nombre: String) {
+	companion object {
+		fun invitado(): Usuario = Usuario("Invitado")
+	}
+}
+
+fun main() {
+	val usuario = Usuario.invitado()
+	println(usuario.nombre)
+}
+```
+
+Kotlin no define miembros `static` como Java. Los miembros del `companion object` son miembros de ese objeto asociado, aunque la sintaxis `Usuario.invitado()` permite acceder a ellos a través del nombre de la clase. En el ejemplo, el constructor privado impide crear usuarios directamente desde fuera; la función fábrica decide cómo se crea el usuario invitado. Un `object` global debe reservarse para estado realmente compartido, porque todas las partes del programa observan la misma instancia.
+
+### 8.11 Clases anidadas e internas
+
+Una clase declarada dentro de otra es anidada y, por defecto, no conserva una referencia a una instancia de la clase exterior. La palabra `inner` hace que la clase interna sí tenga esa referencia y pueda acceder a los miembros de la instancia exterior.
+
+```kotlin
+class Exterior(private val mensaje: String) {
+	class Anidada {
+		fun describir() = "Clase anidada"
+	}
+
+	inner class Interna {
+		fun describir() = "Clase interna: $mensaje"
+	}
+}
+
+fun main() {
+	println(Exterior.Anidada().describir())
+	println(Exterior("Hola").Interna().describir())
+}
+```
+
+La clase `Anidada` se crea con `Exterior.Anidada()` y no necesita una instancia de `Exterior`. La clase `Interna`, en cambio, necesita primero `Exterior("Hola")`; esa instancia queda asociada a la interna y permite leer su propiedad privada `mensaje`. Esa referencia adicional puede ser útil, pero también mantiene viva la instancia exterior mientras se conserve la instancia interna.
+
+### 8.12 Enumeraciones y jerarquías selladas
+
+Una enumeración (`enum class`) representa un conjunto finito y conocido de constantes. Cada constante es una instancia de la enumeración. Puede incluir propiedades, constructor y funciones; cuando una expresión `when` contempla todas las constantes, no necesita una rama `else`.
+
+```kotlin
+enum class EstadoPedido(val descripcion: String) {
+	PENDIENTE("Pendiente de preparación"),
+	ENVIADO("En camino"),
+	ENTREGADO("Entregado"),
+	CANCELADO("Cancelado")
+}
+
+fun describir(estado: EstadoPedido): String = when (estado) {
+	EstadoPedido.PENDIENTE -> estado.descripcion
+	EstadoPedido.ENVIADO -> estado.descripcion
+	EstadoPedido.ENTREGADO -> estado.descripcion
+	EstadoPedido.CANCELADO -> estado.descripcion
+}
+```
+
+Una clase sellada (`sealed class`) permite definir una jerarquía cerrada de subtipos. Es apropiada para representar alternativas conocidas que pueden tener datos diferentes, como el resultado de una operación. El compilador puede comprobar que un `when` cubre todas las alternativas declaradas.
+
+```kotlin
+sealed class Resultado<out T> {
+	data class Exito<T>(val dato: T) : Resultado<T>()
+	data class Fallo(val mensaje: String) : Resultado<Nothing>()
+	object Cargando : Resultado<Nothing>()
+}
+
+fun describir(resultado: Resultado<String>): String = when (resultado) {
+	is Resultado.Exito -> "Resultado: ${resultado.dato}"
+	is Resultado.Fallo -> "Error: ${resultado.mensaje}"
+	Resultado.Cargando -> "La operación está en curso"
+}
+```
+
+Usa `enum class` cuando las opciones sean constantes simples del mismo tipo. Usa una jerarquía sellada cuando cada alternativa necesite propiedades o comportamientos propios. Ambas permiten aprovechar `when` exhaustivos y evitan representar estados conocidos mediante cadenas arbitrarias.
+
+Las constantes de una enumeración también se pueden recorrer mediante `EstadoPedido.entries`. Su propiedad `name` contiene el identificador declarado y `ordinal` la posición; evita guardar `ordinal` como dato persistente, ya que reordenar las constantes cambiaría ese número. En una jerarquía sellada, las alternativas pueden transportar datos distintos y el `when` queda comprobado por el compilador, reduciendo el riesgo de olvidar un caso al añadir uno nuevo.
+
+### 8.13 ACTIVIDADES
 
 1. Declara `Animal` con nombre, edad y `toString()`.
 2. Crea `Vehiculo` con constructor secundario y método de impresión.
@@ -1433,90 +1668,51 @@ Una interfaz define un contrato. Puede declarar propiedades y métodos abstracto
 13. Implementa una clase abstracta `Animal` con `hacerSonido()`.
 14. Implementa una clase abstracta `Vehiculo` con `mover()`.
 15. Define `ComportamientoAnimal`, una clase abstracta `Animal` y las subclases `Perro` y `Gato`, aprovechando polimorfismo para llamar a `hacerSonido()`, `moverse()`, `dormir()` y `alimentarse()`.
+16. Crea una `CuentaBancaria` con saldo privado, ingreso y retirada validados. Explica qué miembros pueden consultarse y modificarse desde fuera.
+17. Define `Figura`, `Circulo` y `Rectangulo`. Guarda ambas figuras en una lista de `Figura` e invoca `area()` para practicar polimorfismo.
+18. Implementa una interfaz `Imprimible` en dos clases diferentes y recorre una lista de elementos `Imprimible`.
+19. Crea una clase normal `Punto`, compara dos instancias con `==` y `===`, y después implementa igualdad estructural sobrescribiendo correctamente `equals` y `hashCode`.
+20. Crea un `object` para almacenar una configuración compartida y una clase con `companion object` que ofrezca una función fábrica.
+21. Define una clase anidada y una clase `inner`; demuestra cuál de las dos puede acceder a una propiedad de la instancia exterior.
+22. Diseña una relación de composición entre `Pedido` y `Producto`. Explica por qué no se modela mediante herencia.
+23. Define una enumeración `EstadoTarea` y usa un `when` exhaustivo para mostrar una acción para cada estado.
+24. Modela el resultado de una búsqueda con una clase sellada que incluya los casos de éxito, error y carga; procesa todos los casos con `when`.
 
-## 9. FUNCIÓN DE EXTENSIÓN EN KOTLIN
+## 9. COLECCIONES
 
-Las funciones de extensión permiten añadir funciones a clases existentes sin modificarlas.
+Una colección agrupa varios elementos y permite consultarlos, recorrerlos y transformarlos. Kotlin proporciona interfaces y funciones para trabajar con listas, conjuntos y mapas en `kotlin.collections`. Las colecciones permiten expresar operaciones habituales de forma clara, sin tener que implementar manualmente búsquedas, filtros o recorridos.
 
-```kotlin
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+Las tres familias principales son:
 
-fun Date?.myFormat(): String? {
-	val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ", Locale.getDefault())
-	return this?.let { formatter.format(it) }
-}
+| Tipo | Qué almacena | Orden e identificación |
+| --- | --- | --- |
+| `List<T>` | Elementos de tipo `T` | Mantiene el orden y admite elementos repetidos. Se accede por posición. |
+| `Set<T>` | Elementos de tipo `T` | No admite elementos repetidos. No se debe confiar en el orden salvo que se elija una implementación ordenada. |
+| `Map<K, V>` | Pares de clave y valor | Las claves son únicas; cada clave identifica un valor. `Map` no es un subtipo de `Collection`. |
 
-fun Date?.myLength(): Int = this.myFormat()?.length ?: 0
+En cada familia existen interfaces de solo lectura (`List`, `Set`, `Map`) e interfaces mutables (`MutableList`, `MutableSet`, `MutableMap`). Las primeras no ofrecen operaciones para cambiar la estructura; las segundas sí. «Solo lectura» no significa necesariamente que ningún otro código pueda modificar el mismo objeto: tampoco hace inmutables los objetos guardados dentro de la colección.
 
-fun Date?.toLower(): String? = this.myFormat()?.lowercase()
-
-fun main() {
-	val dat = Date()
-	println("Santi, la fecha actual es ${dat.myFormat()} y su longitud es ${dat.myLength()}")
-	println("Ahora devuelvo la misma fecha en minusculas ${dat.toLower()}")
-	println("La longitud de un null es ${null.myLength()}")
-}
-```
-
-El receptor también puede ser anulable (`Date?`) y el resultado puede serlo (`String?`).
-
-### 9.1 ACTIVIDADES
-
-1. Crea las extensiones `isPalindrome`, `toPigLatin`, `reverseWords` y `wordCount` para `String`.
-2. Crea `sumSquares`, `maxMinDiff`, `average` y `filterEven` para `List<Int>`.
-
-## 10. DATA CLASS
-
-Una `data class` representa datos y genera automáticamente `toString()`, `equals()`, `hashCode()` y `copy()`. Sólo las propiedades del constructor primario participan en esas operaciones.
+Las colecciones son genéricas: el tipo entre `< >` indica qué elementos admiten. `List<String?>` es una lista que puede contener cadenas nulas; `List<String>?` es una referencia a una lista que puede ser nula. Son tipos diferentes y Kotlin obliga a tratar cada posible `null` de forma segura.
 
 ```kotlin
-data class Persona(var nombre: String, var edad: Int)
+val nombres: List<String> = listOf("Ana", "Luis")
 
-fun main() {
-	val per1 = Persona("Santi", 40)
-	val per2 = Persona("Sonia", 35)
-	println(per1)
-	println(per1 == per2)
-	val per3 = per1.copy(edad = 50)
-	println(per1 == per3)
-	println("El hashcode de Santi es ${per1.hashCode()} y el de Sonia es ${per2.hashCode()}")
-	println("El hashcode de la copia de Santi es ${per3.hashCode()}")
-}
+val nombresMutables: MutableList<String> = mutableListOf("Ana", "Luis")
+nombresMutables.add("Marta")
+println(nombresMutables)
 ```
 
-Una propiedad declarada fuera del constructor no interviene en `equals`, `hashCode`, `toString` ni `copy`:
+`val` impide reasignar la variable, no modificar un objeto mutable al que apunta. Además, si una `MutableList` se guarda en una variable de tipo `List`, esa referencia no permite modificarla, pero otra referencia mutable podría hacerlo.
 
-```kotlin
-data class PersonaConTelefono(var nombre: String, var edad: Int) {
-	var telefono: String? = null
-}
+Los arrays (`Array<T>`, `IntArray`, etc.) no son listas, aunque permiten acceder a sus posiciones. Se pueden convertir con `toList()` y `toTypedArray()`; las conversiones producen un contenedor distinto.
 
-fun main() {
-	val per1 = PersonaConTelefono("Santi", 40)
-	val per2 = PersonaConTelefono("Sonia", 35)
-	per1.telefono = "953 111 222"
-	per2.telefono = "953 222 222"
-	val per3 = per1.copy()
-	println(per1)
-	println(per2)
-	println(per1 == per2)
-	println(per1 == per3)
-}
-```
+### 9.1 Listas
 
-### 10.1 ACTIVIDADES
+Una lista conserva el orden de inserción y permite repetir valores. La primera posición tiene índice `0`; el último índice es `size - 1`. `listOf` crea una lista de solo lectura y `mutableListOf` crea una lista modificable.
 
-1. Crea `Producto(nombre, precio)`, compara dos objetos y usa `copy()` modificando el precio.
-2. Crea `Empleado(nombre, salario)` con el método `anualSalario()`.
-3. Crea `Libro(titulo, autor, anioPublicacion, genero?)`, usa valores opcionales y `copy()`.
+#### Listas de solo lectura
 
-## 11. LISTAS INMUTABLES Y MUTABLES
-
-### 11.1 Listas inmutables
-
-Una lista inmutable no permite añadir, eliminar ni modificar elementos.
+Una lista `List<T>` permite consultar y recorrer los elementos, pero no proporciona operaciones para cambiar su contenido. Puede declararse el tipo explícitamente o dejar que Kotlin lo infiera.
 
 ```kotlin
 val numbers: List<Int> = listOf(1, 2, 3, 4, 5)
@@ -1528,10 +1724,10 @@ También se puede inicializar con una lambda:
 ```kotlin
 data class PersonalData(val name: String, val phone: String?)
 
-val listSamePersonal = List(3) { PersonalData("Santi", "953 34 54 34") }
+val listSamePersonal = List(3) { PersonalData("Juan", "953 34 54 34") }
 val listAnonymous = List(3) { PersonalData("Anonimo_repetido", null) }
 val listPersonal = listOf(
-	PersonalData("Santi", "953 34 54 34"),
+	PersonalData("Juan", "953 34 54 34"),
 	PersonalData("Sonia", "953 34 54 35"),
 	PersonalData("Guille", null),
 	PersonalData("Diego", null)
@@ -1544,16 +1740,42 @@ println("Último de la lista -> ${listPersonal.last()}")
 listPersonal.forEach { println("Personal -> $it") }
 ```
 
-Que la lista sea inmutable no significa que no puedan cambiarse propiedades mutables de los objetos que contiene.
+Que la lista sea de solo lectura no impide que se cambien propiedades mutables de los objetos que contiene. También existen `firstOrNull()` y `lastOrNull()`, que devuelven `null` si la lista está vacía. En cambio, `first()` y `last()` lanzan una excepción en ese caso. El acceso `lista[indice]` también falla si el índice no existe; para validar el índice se puede consultar `indices`.
 
-### 11.2 Listas mutables
+```kotlin
+val colores = listOf("rojo", "verde", "azul")
+println(colores.firstOrNull())
+println(colores.getOrNull(10))
+
+for (indice in colores.indices) {
+	println("$indice: ${colores[indice]}")
+}
+```
+
+```kotlin
+data class Tarea(val descripcion: String, var completada: Boolean)
+
+val tareas: List<Tarea> = listOf(Tarea("Estudiar Kotlin", false))
+tareas[0].completada = true
+```
+
+`List(n) { ... }` genera una lista de tamaño `n` invocando la lambda para cada índice. Es útil para construir valores calculados:
+
+```kotlin
+val cuadrados = List(5) { indice -> indice * indice }
+println(cuadrados) // [0, 1, 4, 9, 16]
+```
+
+#### Listas mutables
+
+`MutableList<T>` permite insertar, reemplazar y eliminar elementos. Las operaciones más comunes son `add`, `addAll`, `remove`, `removeAt`, `clear` y la asignación mediante un índice existente.
 
 ```kotlin
 data class PersonalDataMutable(val name: String, val phone: String?)
 
 fun main() {
 	val listPersonal = mutableListOf<PersonalDataMutable>()
-	listPersonal.add(PersonalDataMutable("Santi", "953 34 54 34"))
+	listPersonal.add(PersonalDataMutable("Juan", "953 34 54 34"))
 	listPersonal.add(PersonalDataMutable("Sonia", "953 34 54 35"))
 	listPersonal.add(PersonalDataMutable("Diego", null))
 	listPersonal.add(PersonalDataMutable("Guille", null))
@@ -1578,24 +1800,109 @@ println("Lista mutable: $mutableList")
 println("Lista inmutable original: $immutableList")
 ```
 
-### 11.3 ACTIVIDADES
+`toMutableList()` crea una nueva lista mutable con los elementos actuales. Modificar esa copia no cambia la estructura de la lista original. Del mismo modo, `toList()` devuelve una lista de solo lectura, aunque la conversión no realiza una copia profunda de los objetos contenidos.
 
-1. Crea y recorre una lista inmutable de enteros del 1 al 5.
-2. Convierte nombres de ciudades a mayúsculas con `map`.
-3. Filtra los números pares.
-4. Invierte una lista de `PersonalData` con `reversed`.
-5. Usa `intersect` y `subtract` sobre dos listas.
-6. Crea una `MutableList` inicializada a cero, añade y modifica elementos.
-7. Usa `removeAt` y `count` sobre una lista de nombres.
-8. Convierte una lista mutable y compara el resultado con la original.
-9. Usa `removeAll` y `removeIf` para filtrar objetos.
-10. Genera 15 números aleatorios, cuenta los menores que 5 y elimina los mayores que 8.
+#### Operaciones habituales
 
-## 12. MAPAS
+Las funciones de extensión permiten consultar y transformar listas. Normalmente producen un resultado nuevo y no modifican la colección original:
 
-Los mapas son colecciones de pares clave-valor. Las claves son únicas. Se usan `Map` para mapas no mutables y `MutableMap` para mapas modificables.
+```kotlin
+val numeros = listOf(1, 2, 3, 4, 5, 6)
 
-### 12.1 Mapas inmutables
+val dobles = numeros.map { it * 2 }
+val pares = numeros.filter { it % 2 == 0 }
+val primerMayorQueCuatro = numeros.firstOrNull { it > 4 }
+val hayImpares = numeros.any { it % 2 != 0 }
+val todosPositivos = numeros.all { it > 0 }
+val cantidadPares = numeros.count { it % 2 == 0 }
+
+println(dobles)
+println(pares)
+println("Primer mayor que cuatro: $primerMayorQueCuatro")
+println("Hay impares: $hayImpares; todos positivos: $todosPositivos")
+println("Cantidad de pares: $cantidadPares")
+```
+
+Operaciones útiles adicionales:
+
+- `mapNotNull` transforma los elementos y descarta los resultados nulos.
+- `flatMap` transforma cada elemento en una colección y concatena los resultados.
+- `find` busca el primer elemento que cumple una condición y devuelve `null` si no existe; equivale a `firstOrNull { ... }`.
+- `distinct` elimina repetidos conservando el orden de su primera aparición.
+- `sorted`, `sortedDescending`, `sortedBy` y `sortedByDescending` generan listas ordenadas.
+- `take(n)` obtiene los primeros elementos; `drop(n)` descarta los primeros.
+- `zip` combina elementos de dos listas por posición hasta agotar la más corta.
+- `reversed` devuelve una lista en orden inverso; `partition` separa los elementos en dos listas según una condición.
+- `groupBy` agrupa los elementos por una clave; `fold` y `reduce` acumulan un resultado recorriendo la colección.
+- `sum`, `average`, `minOrNull`, `maxOrNull` y `sumOf` realizan cálculos sobre los valores.
+
+```kotlin
+data class Producto(val nombre: String, val precio: Double)
+
+val productos = listOf(
+	Producto("Cuaderno", 2.5),
+	Producto("Mochila", 24.0),
+	Producto("Bolígrafo", 1.2)
+)
+
+val nombresCaros = productos
+	.filter { it.precio >= 10.0 }
+	.sortedBy { it.nombre }
+	.map { it.nombre }
+
+val total = productos.sumOf { it.precio }
+println(nombresCaros)
+println("Total: $total")
+```
+
+El encadenamiento se ejecuta operación por operación y cada transformación intermedia suele crear una colección. Para recorridos grandes con muchas transformaciones se pueden usar `Sequence`, que evalúa las operaciones de forma diferida y elemento a elemento:
+
+```kotlin
+val resultado = (1..1_000_000).asSequence()
+	.filter { it % 2 == 0 }
+	.map { it * it }
+	.take(3)
+	.toList()
+
+println(resultado)
+```
+
+Una secuencia no almacena necesariamente todos los resultados intermedios. Se materializa al convertirla, por ejemplo con `toList()`, o al ejecutar una operación terminal como `sum()` o `first()`. Para colecciones pequeñas, las operaciones normales suelen ser más sencillas.
+
+### 9.2 Conjuntos
+
+Un conjunto (`Set<T>`) almacena valores únicos según la igualdad de sus elementos. Al crear un conjunto a partir de valores repetidos, las repeticiones no se conservan. `setOf` crea un conjunto de solo lectura y `mutableSetOf` uno mutable. `linkedSetOf` conserva el orden de inserción; `sortedSetOf` mantiene los elementos ordenados.
+
+```kotlin
+val letras: Set<Char> = setOf('a', 'b', 'a', 'c')
+println(letras)
+println('b' in letras)
+
+val etiquetas = mutableSetOf("Kotlin", "Android")
+etiquetas.add("Kotlin")
+etiquetas.add("Compose")
+etiquetas.remove("Android")
+println(etiquetas)
+```
+
+Los conjuntos son convenientes para comprobar pertenencia y eliminar duplicados. La comprobación `elemento in conjunto` expresa directamente esa intención.
+
+```kotlin
+val grupoA = setOf("Ana", "Luis", "Eva")
+val grupoB = setOf("Eva", "Marta", "Luis")
+
+println(grupoA union grupoB)
+println(grupoA intersect grupoB)
+println(grupoA subtract grupoB)
+```
+
+Estas operaciones devuelven conjuntos nuevos. También se pueden aplicar los operadores `+` y `-` para obtener conjuntos con elementos añadidos o eliminados, sin modificar el conjunto original.
+
+### 9.3 Mapas
+
+Un mapa asocia claves de tipo `K` con valores de tipo `V`. Cada clave aparece una sola vez; los valores sí pueden repetirse. `mapOf` crea un `Map<K, V>` de solo lectura y `mutableMapOf` un `MutableMap<K, V>`. Se recorre por entradas, claves o valores.
+
+#### Mapas de solo lectura
 
 ```kotlin
 fun main() {
@@ -1636,7 +1943,26 @@ fun main() {
 }
 ```
 
-### 12.2 Mapas mutables
+#### Mapas mutables
+
+Un mapa mutable permite añadir o reemplazar una asociación mediante `put` o con `mapa[clave] = valor`, eliminarla con `remove` y borrar todas las entradas con `clear`. Si se inserta una clave que ya existe, su valor anterior se reemplaza.
+
+El acceso `mapa[clave]` devuelve un valor nullable, porque la clave podría no existir. Se puede usar `getOrDefault` para un valor alternativo o `getValue` si se desea una excepción cuando falta la clave. `getOrPut` obtiene el valor existente o calcula, guarda y devuelve uno nuevo.
+
+```kotlin
+val edades = mutableMapOf("Ana" to 20, "Luis" to 22)
+edades["Ana"] = 21
+edades["Marta"] = 19
+
+val edadLuis = edades["Luis"]
+val edadEva = edades.getOrDefault("Eva", 0)
+val edadPablo = edades.getOrPut("Pablo") { 18 }
+
+println("Luis: $edadLuis; Eva: $edadEva; Pablo: $edadPablo")
+edades.remove("Marta")
+```
+
+Se pueden recorrer las entradas con `for ((clave, valor) in mapa)` o con `forEach`. `keys` y `values` permiten consultar las claves y los valores. Algunas funciones prácticas son `filter`, `filterKeys`, `filterValues`, `mapValues` y `getOrPut`.
 
 `apply` permite configurar el objeto dentro de un bloque de inicialización.
 
@@ -1670,7 +1996,7 @@ fun printAllWithSignature(alumns: MutableMap<String, Alumn>, fn: (String) -> Uni
 fun main() {
 	val alumns = mutableMapOf<String, Alumn>().apply {
 		listOf(
-			"11111" to Alumn("11111", "Santiago"),
+			"11111" to Alumn("11111", "Juan"),
 			"22222" to Alumn("22222", "Sonia"),
 			"33333" to Alumn("33333", "Mariano")
 		).forEach { (dni, alum) -> put(dni, alum) }
@@ -1695,20 +2021,126 @@ fun main() {
 }
 ```
 
-### 12.3 ACTIVIDADES
+### 9.4 Elegir y combinar colecciones
 
-1. Crea un mapa inmutable de tres claves y recórrelo.
-2. Crea mapas de países y ciudades y cuenta las ciudades con más de 200.000 habitantes.
-3. Suma habitantes totales y habitantes de ciudades con menos de 150.000.
-4. Convierte una lista de pares a mapa.
-5. Cuenta y filtra productos según su precio.
-6. Define `Autor` y `Libro`, crea una lista de libros, muestra sus datos y comprueba si pertenecen a un autor determinado.
+La elección depende de cómo se consultarán los datos: una `List` cuando importan el orden, las posiciones o los duplicados; un `Set` cuando cada valor debe aparecer una sola vez o se comprueba pertenencia; un `Map` cuando se necesita localizar un valor a partir de una clave. Las colecciones pueden convertirse entre sí y combinarse con otras operaciones.
 
-## 13. CALLBACK
+```kotlin
+val palabras = listOf("sol", "luna", "sol", "mar")
+val palabrasUnicas = palabras.toSet()
+val longitudesPorPalabra = palabrasUnicas.associateWith { it.length }
+val letrasContadas = palabras.flatMap { it.toList() }.groupingBy { it }.eachCount()
+
+println(palabrasUnicas)
+println(longitudesPorPalabra)
+println(letrasContadas)
+```
+
+`associate` construye un mapa a partir de los pares que devuelve la transformación; `associateBy` usa una propiedad como clave. Si se generan claves repetidas, el mapa conserva una única entrada por clave y el valor posterior sustituye al anterior. `groupBy` agrupa elementos en listas por una clave; `groupingBy(...).eachCount()` cuenta cuántos elementos hay en cada grupo.
+
+### 9.5 ACTIVIDADES
+
+1. Crea una lista de enteros del 1 al 10. Muestra su tamaño, el primer y último elemento y los elementos en posiciones pares.
+2. Dada una lista de nombres, crea otra con los nombres en mayúsculas, filtra los que empiezan por una letra elegida y cuenta los resultados.
+3. Genera una lista de 15 números aleatorios. Cuenta los menores que 5 y crea otra lista sin los mayores que 8.
+4. Crea una lista mutable de tareas. Añade tareas, marca una como completada, elimina otra y muestra las pendientes.
+5. Convierte una lista mutable en una lista de solo lectura y explica qué operaciones permite cada referencia.
+6. Dadas dos listas de nombres, calcula sus elementos comunes y los que aparecen solo en la primera.
+7. A partir de una lista con nombres repetidos, crea un conjunto y verifica qué ocurre con las repeticiones. Recorre un `linkedSetOf` y un `sortedSetOf` para comparar sus órdenes.
+8. Crea un mapa inmutable de tres países y sus poblaciones. Recorre sus entradas, claves y valores, y calcula la población total.
+9. Convierte una lista de pares ciudad-población en un mapa. Filtra las ciudades con más de 150.000 habitantes y suma las poblaciones inferiores a esa cifra.
+10. Crea un mapa mutable de productos y precios. Añade productos, cambia un precio, consulta una clave ausente con `getOrDefault` y elimina una entrada.
+11. Define `Autor` y `Libro`. Crea una lista de libros, agrúpalos por autor y comprueba si existe algún libro de un autor determinado.
+12. Dada una lista de palabras, cuenta cuántas veces aparece cada una con `groupingBy` y `eachCount`.
+13. Define `Producto(nombre, precio, categoria)`. Filtra por precio, ordena por nombre, calcula el precio total y construye un mapa de productos por nombre.
+14. Dada una lista de frases, utiliza `flatMap` para obtener todas sus palabras, `distinct` para eliminar repeticiones y `sorted` para ordenarlas.
+15. Repite una transformación de filtrado y mapeo sobre una lista grande usando `Sequence`. Compara el resultado con el de las operaciones de colección y explica cuándo resulta útil la evaluación diferida.
+
+## 10. OTROS ELEMENTOS DE KOTLIN
+
+### 10.1 FUNCIONES DE EXTENSIÓN
+
+Las funciones de extensión permiten añadir funciones a clases existentes sin modificarlas.
+
+```kotlin
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+fun Date?.myFormat(): String? {
+	val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZ", Locale.getDefault())
+	return this?.let { formatter.format(it) }
+}
+
+fun Date?.myLength(): Int = this.myFormat()?.length ?: 0
+
+fun Date?.toLower(): String? = this.myFormat()?.lowercase()
+
+fun main() {
+	val dat = Date()
+	println("Juan, la fecha actual es ${dat.myFormat()} y su longitud es ${dat.myLength()}")
+	println("Ahora devuelvo la misma fecha en minusculas ${dat.toLower()}")
+	println("La longitud de un null es ${null.myLength()}")
+}
+```
+
+El receptor también puede ser anulable (`Date?`) y el resultado puede serlo (`String?`).
+
+#### 10.1.1 ACTIVIDADES
+
+1. Crea las extensiones `isPalindrome`, `toPigLatin`, `reverseWords` y `wordCount` para `String`.
+2. Crea `sumSquares`, `maxMinDiff`, `average` y `filterEven` para `List<Int>`.
+
+### 10.2 DATA CLASSES
+
+Una `data class` representa datos y genera automáticamente `toString()`, `equals()`, `hashCode()` y `copy()`. Sólo las propiedades del constructor primario participan en esas operaciones.
+
+```kotlin
+data class Persona(var nombre: String, var edad: Int)
+
+fun main() {
+	val per1 = Persona("Juan", 40)
+	val per2 = Persona("Sonia", 35)
+	println(per1)
+	println(per1 == per2)
+	val per3 = per1.copy(edad = 50)
+	println(per1 == per3)
+	println("El hashcode de Juan es ${per1.hashCode()} y el de Sonia es ${per2.hashCode()}")
+	println("El hashcode de la copia de Juan es ${per3.hashCode()}")
+}
+```
+
+Una propiedad declarada fuera del constructor no interviene en `equals`, `hashCode`, `toString` ni `copy`:
+
+```kotlin
+data class PersonaConTelefono(var nombre: String, var edad: Int) {
+	var telefono: String? = null
+}
+
+fun main() {
+	val per1 = PersonaConTelefono("Juan", 40)
+	val per2 = PersonaConTelefono("Sonia", 35)
+	per1.telefono = "953 111 222"
+	per2.telefono = "953 222 222"
+	val per3 = per1.copy()
+	println(per1)
+	println(per2)
+	println(per1 == per2)
+	println(per1 == per3)
+}
+```
+
+#### 10.2.1 ACTIVIDADES
+
+1. Crea `Producto(nombre, precio)`, compara dos objetos y usa `copy()` modificando el precio.
+2. Crea `Empleado(nombre, salario)` con el método `anualSalario()`.
+3. Crea `Libro(titulo, autor, anioPublicacion, genero?)`, usa valores opcionales y `copy()`.
+
+### 10.3 CALLBACKS
 
 Un callback es una función que se pasa como parámetro y que otra función invoca al completar su tarea. Es especialmente útil en operaciones asíncronas como acceso a bases de datos, lectura de archivos o peticiones a una API.
 
-### 13.1 Llamada síncrona
+#### 10.3.1 Llamada síncrona
 
 El hilo principal espera a que termine la operación.
 
@@ -1725,14 +2157,14 @@ fun main() {
 	println("Comenzamos nuestra aplicación..")
 	Thread.sleep(1000)
 	println("Ahora procedemos a petición de datos...")
-	getDataBBDD("name = santi") { data ->
+	getDataBBDD("name = juan") { data ->
 		println("Los datos obtenidos son:")
 		data.forEach { println(it) }
 	}
 }
 ```
 
-### 13.2 Llamada asíncrona
+#### 10.3.2 Llamada asíncrona
 
 La operación se ejecuta en otro hilo y el hilo principal puede continuar.
 
@@ -1750,7 +2182,7 @@ fun getDataBBDD(sql: String, callback: (List<String>) -> Unit) {
 fun main() {
 	println("Comenzamos nuestra aplicación...")
 	println("Ahora procedemos a la petición de datos de manera asíncrona...")
-	getDataBBDD("name = santi") { data ->
+	getDataBBDD("name = juan") { data ->
 		println("Los datos obtenidos son:")
 		data.forEach { println(it) }
 		println("A que esto es lo último que veis?")
@@ -1760,7 +2192,7 @@ fun main() {
 }
 ```
 
-### 13.3 Ejemplo adaptado a corrutinas
+#### 10.3.3 Ejemplo adaptado a corrutinas
 
 En aplicaciones Android se utilizan corrutinas para ejecutar operaciones fuera del hilo de interfaz y volver después al hilo principal.
 
@@ -1781,7 +2213,7 @@ fun getDataBBDD(sql: String, callback: (List<String>) -> Unit) {
 
 fun main() {
 	println("Comenzamos nuestra aplicación...")
-	getDataBBDD("name = santi") { data ->
+	getDataBBDD("name = juan") { data ->
 		println("Los datos obtenidos son:")
 		data.forEach { println(it) }
 		println("A que esto es lo último que veis?")
@@ -1794,15 +2226,15 @@ fun main() {
 
 En una aplicación Android no sería necesario este `sleep` de consola: el ciclo de vida de la interfaz y del `CoroutineScope` se encargan de mantener la operación.
 
-### 13.4 ACTIVIDADES
+#### 10.3.4 ACTIVIDADES
 
-#### 13.4.1 Callback síncrono
+##### 10.3.4.1 Callback síncrono
 
 1. Define `procesarNombres(nombres, callback)` con `callback: (String) -> Unit`.
 2. Recorre los nombres e invoca el callback de forma secuencial.
 3. Crea una lista y muestra cómo cada nombre se procesa en el orden original.
 
-#### 13.4.2 Callback asíncrono
+##### 10.3.4.2 Callback asíncrono
 
 1. Define `descargarContenido(url, callback)` con `callback: (String) -> Unit`.
 2. Usa un hilo, una corrutina o un `ExecutorService` para simular la descarga.
@@ -1810,7 +2242,4 @@ En una aplicación Android no sería necesario este `sleep` de consola: el ciclo
 4. Comprueba que el hilo principal no queda bloqueado y que el callback se ejecuta después de la operación.
 
 ---
-
-**REPASO DE KOTLIN CON EJEMPLOS — PMDM**  
-Santiago Rodenas Herráiz
 
