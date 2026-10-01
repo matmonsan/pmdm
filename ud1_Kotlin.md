@@ -1094,23 +1094,66 @@ fun printValuesOfArr(arr: IntArray) {
 
 ## 7. FUNCIONES LAMBDA
 
+Una **función lambda** es una función que se escribe sin nombre y puede utilizarse como un valor: se puede guardar en una variable o pasar como argumento a otra función. Resulta útil cuando queremos expresar una operación breve en el mismo lugar donde se va a utilizar. Por ejemplo, en vez de declarar una función con nombre para comprobar si un número es par, podemos escribir esa comprobación directamente como una lambda.
+
+La sintaxis general es:
+
+```kotlin
+{ parametros -> instrucciones }
+```
+
+Las llaves delimitan la lambda, `->` separa los parámetros del cuerpo y, si la lambda devuelve un resultado, este es normalmente el valor de su última expresión. En el siguiente ejemplo, el tipo `(Int) -> Boolean` indica que la lambda recibe un entero y devuelve un valor verdadero o falso:
+
+```kotlin
+val esPar: (Int) -> Boolean = { numero -> numero % 2 == 0 }
+
+println(esPar(8)) // true
+println(esPar(5)) // false
+```
+
+Se puede leer de izquierda a derecha: `esPar` guarda una función; `numero` es el parámetro; `numero % 2 == 0` es la condición que se calcula; y `esPar(8)` ejecuta la lambda con el valor `8`. El tipo declarado permite a Kotlin saber qué valores recibe y qué resultado debe producir. En los apartados siguientes veremos cómo se diferencia esta forma de una referencia a una función ya existente y cómo se pasa una lambda a otras funciones.
+
+[![Miniatura del videotutorial de DevExpert sobre tipos de funciones y expresiones lambda en Kotlin](https://img.youtube.com/vi/t96yH4xQkcY/hqdefault.jpg)](https://www.youtube.com/watch?v=t96yH4xQkcY)
+
+*Videotutorial: [Cómo usar tipos de funciones y expresiones lambda en Kotlin, de DevExpert](https://www.youtube.com/watch?v=t96yH4xQkcY). La imagen enlaza directamente al video.*
+
 ### 7.1 Referencias a funciones
 
-Una variable puede almacenar la referencia a una función.
+Una **referencia a función** sirve para guardar una función que ya está definida y utilizarla más adelante. La idea clave es distinguir entre **ejecutar** una función y **señalar cuál función queremos utilizar**:
+
+* `imprimeTuNombre("Ana")` ejecuta la función ahora mismo con el texto `"Ana"`.
+* `::imprimeTuNombre` no la ejecuta: indica que queremos usar esa función. Los dos puntos `::` se leen como «referencia a».
+
+Primero definimos una función normal. Su parámetro `nombre` recibe el texto que se mostrará:
 
 ```kotlin
 fun imprimeTuNombre(nombre: String) {
 	println("Tu nombre es $nombre")
 }
+```
 
+Podemos ejecutarla directamente escribiendo su nombre y un argumento entre paréntesis:
+
+```kotlin
+imprimeTuNombre("Ana") // Ejecuta la función y muestra: Tu nombre es Ana
+```
+
+También podemos guardar una referencia a esa misma función en una variable:
+
+```kotlin
 fun main() {
-	val myFun: (String) -> Unit = ::imprimeTuNombre
-	myFun("Juan Pérez Pérez")
-	myFun("Sonia Mena Delgado")
+	// El tipo dice: recibe un String y no devuelve un resultado (Unit).
+	val miSaludo: (String) -> Unit = ::imprimeTuNombre
+
+	// Aquí sí se ejecuta la función guardada, usando el texto como argumento.
+	miSaludo("Ana")
+	miSaludo("Luis")
 }
 ```
 
-También podemos cambiar la función almacenada:
+En `(String) -> Unit`, la parte antes de `->` describe los parámetros: en este caso, un `String`. La parte después de la flecha describe el resultado: `Unit` significa que la función no devuelve un dato; su trabajo consiste en mostrar el saludo. `miSaludo` guarda la función, no el texto ni el resultado de haberla ejecutado. Por eso podemos llamarla varias veces con nombres distintos.
+
+La misma idea permite cambiar qué función se ejecuta. En este segundo ejemplo, las tres funciones reciben dos enteros y devuelven un entero:
 
 ```kotlin
 fun suma(a: Int, b: Int) = a + b
@@ -1118,31 +1161,63 @@ fun resta(a: Int, b: Int) = a - b
 fun multi(a: Int, b: Int) = a * b
 
 fun main() {
+	// (Int, Int) -> Int: recibe dos enteros y devuelve un entero.
+	// var permite cambiar después la función guardada.
 	var operacion: (Int, Int) -> Int = ::suma
-	println(operacion(2, 3))
+
+	// Llama a suma(2, 3), porque esa es la función guardada ahora.
+	println(operacion(2, 3)) // Muestra 5
+
+	// Cambia la referencia: desde aquí, operacion señala a resta.
 	operacion = ::resta
-	println(operacion(2, 3))
+	println(operacion(2, 3)) // Llama a resta(2, 3) y muestra -1
+
+	// Se puede volver a cambiar para señalar a multi.
 	operacion = ::multi
-	println(operacion(2, 3))
+	println(operacion(2, 3)) // Llama a multi(2, 3) y muestra 6
 }
 ```
 
+Las funciones `suma`, `resta` y `multi` se pueden guardar en la misma variable porque tienen el mismo tipo: `(Int, Int) -> Int`. Al escribir `operacion(2, 3)`, Kotlin ejecuta la función que esté guardada en ese momento. Usamos `val` cuando no vamos a cambiar la referencia y `var` cuando, como en este ejemplo, queremos reemplazarla.
+
 ### 7.2 Expresiones lambda
 
-Una lambda es una función anónima con la forma `{ parámetros -> cuerpo }`.
+Una **expresión lambda** define una función sin darle un nombre. Su forma general es `{ parámetros -> cuerpo }`: a la izquierda de `->` se escriben los parámetros y a la derecha, las instrucciones que se ejecutan. Se utiliza cuando interesa definir el comportamiento en el mismo lugar en el que se guarda o se pasa.
 
 ```kotlin
 fun main() {
 	var operacion: (Int, Int) -> Int = { a, b -> a + b }
-	println(operacion(2, 3))
+	println(operacion(2, 3)) // 5
 	operacion = { a, b -> a - b }
-	println(operacion(2, 3))
+	println(operacion(2, 3)) // -1
 	operacion = { a, b -> a * b }
-	println(operacion(2, 3))
+	println(operacion(2, 3)) // 6
 }
 ```
 
+En este ejemplo, el tipo declarado para `operacion` permite a Kotlin deducir que `a` y `b` son `Int` y que la lambda debe producir un `Int`. Si el tipo no se puede deducir por el contexto, habrá que indicarlo. Cuando el cuerpo tiene varias instrucciones, el valor de la última expresión es el resultado de la lambda:
+
+```kotlin
+val longitud: (String) -> Int = { texto ->
+	println("Calculando la longitud")
+	texto.length
+}
+
+println(longitud("Kotlin")) // 6
+```
+
+Como esta función recibe un único parámetro, Kotlin permite omitir su nombre y referirse a él como `it`, siempre que el tipo de la lambda ya se conozca:
+
+```kotlin
+val esPar: (Int) -> Boolean = { it % 2 == 0 }
+println(esPar(8)) // true
+```
+
+`it` solo es una abreviatura para una lambda de un parámetro. Si hay dos o más parámetros, se escriben y nombran antes de `->`, por ejemplo `{ numero, limite -> numero < limite }`. Dar un nombre explícito también es recomendable cuando hace que la condición se entienda mejor.
+
 ### 7.3 Funciones de orden superior
+
+Una **función de orden superior** es una función que recibe otra función como parámetro o devuelve una función como resultado. Esto permite separar una operación general de la regla concreta que debe aplicar.
 
 ```kotlin
 fun operacion(a: Int, b: Int, fn: (Int, Int) -> Int): Int = fn(a, b)
@@ -1153,7 +1228,11 @@ fun main() {
 }
 ```
 
-Una función de orden superior recibe o devuelve otra función. La lógica queda definida en el lugar de la llamada.
+El parámetro `fn` tiene tipo `(Int, Int) -> Int`, así que recibe dos enteros y devuelve uno. Dentro de `operacion`, la expresión `fn(a, b)` ejecuta ese comportamiento. Al llamar a `operacion`, se puede pasar una lambda distinta y reutilizar la misma función para sumar, restar o realizar otra operación compatible.
+
+Cuando el último parámetro de una función es otra función, Kotlin permite escribir la lambda fuera de los paréntesis. Esta forma se denomina **sintaxis de lambda final** y es la utilizada en el ejemplo anterior. También se podría escribir `operacion(2, 3, { a, b -> a + b })`.
+
+Un caso frecuente aparece al recorrer colecciones. La función `printValuesOfArr` recibe un array y una condición; imprime únicamente los valores para los que esa condición devuelve `true`:
 
 ```kotlin
 fun printValuesOfArr(arr: IntArray, fn: (Int) -> Boolean) {
@@ -1176,7 +1255,39 @@ fun main() {
 }
 ```
 
-Otros ejemplos son `forEach`, `count`, `all` y `any`:
+El tipo `(Int) -> Boolean` expresa que cada llamada recibe un entero y decide si ese valor cumple el criterio. La función `filter` aplica la condición a cada elemento y devuelve los que la cumplen. Por ejemplo, `{ it % 2 == 0 }` selecciona los pares; `{ it >= 50 }` selecciona los valores mayores o iguales que 50. En el último caso se usa un `when` para expresar una condición formada por varios intervalos.
+
+La llamada `IntArray(10) { ... }` crea un array de diez elementos; en este caso cada posición recibe un entero aleatorio entre 0 y 98. Como son aleatorios, el contenido y los resultados cambian en cada ejecución. La llamada `printValuesOfArr(myArr) { true }` acepta todos los valores, ya que la condición siempre devuelve `true`.
+
+### 7.4 Lambdas con colecciones
+
+Kotlin ofrece funciones de orden superior para realizar operaciones habituales sobre colecciones sin escribir manualmente todos los bucles. Algunas de las más comunes son:
+
+* **`forEach`** ejecuta una acción para cada elemento. Se usa cuando interesa realizar un efecto, como imprimirlo.
+* **`count`** cuenta los elementos que cumplen una condición y devuelve un entero.
+* **`all`** devuelve `true` si todos los elementos cumplen la condición.
+* **`any`** devuelve `true` si al menos un elemento la cumple.
+* **`filter`** crea una lista con los elementos que cumplen la condición.
+* **`map`** transforma cada elemento y devuelve una lista con los resultados.
+
+En los ejemplos siguientes, `it` representa el elemento que se está procesando en cada llamada:
+
+```kotlin
+fun main() {
+	val numeros = intArrayOf(3, 8, 12, 17)
+
+	numeros.forEach { println(it) }
+	println(numeros.count { it % 2 == 0 }) // 2
+	println(numeros.all { it > 0 })        // true
+	println(numeros.any { it > 10 })       // true
+	println(numeros.filter { it % 2 == 0 }) // [8, 12]
+	println(numeros.map { it * 2 })         // [6, 16, 24, 34]
+}
+```
+
+La lambda de `forEach` devuelve `Unit` porque su objetivo es ejecutar una acción. En `count`, `all`, `any` y `filter`, la lambda devuelve un `Boolean`, pues estas operaciones necesitan evaluar una condición. En `map`, la lambda devuelve el valor transformado; aquí cada número se multiplica por dos.
+
+También podemos escribir nuestras propias funciones que reciban una lambda. Estas versiones muestran de forma explícita el bucle que una operación como `count` puede encapsular:
 
 ```kotlin
 fun myFun(arr: IntArray, fn: (Int) -> Unit) {
@@ -1192,23 +1303,63 @@ fun myFun2(arr: IntArray, fn: (Int) -> Boolean): Int {
 fun myFun3(arr: IntArray, fn: (Int) -> Boolean): Int = arr.count(fn)
 ```
 
-### 7.4 ACTIVIDADES
+`myFun` recibe una acción que no devuelve un resultado y la ejecuta para cada valor. `myFun2` recibe una condición y aumenta el contador cuando esta devuelve `true`. `myFun3` obtiene el mismo tipo de resultado utilizando la función estándar `count`, evitando implementar el recorrido manualmente. Este patrón es la idea principal detrás de muchas funciones de colecciones de Kotlin.
 
-1. Define `saluda`, guarda su referencia en `miSaludo` e invócala con varios nombres.
-2. Define `multiplica`, `divide` y `resta`; cambia la función almacenada en `operacion`.
-3. Crea `sumaLambda` de tipo `(Int, Int) -> Int`.
-4. Cambia la lógica de `sumaLambda` para realizar una resta.
-5. Define `ejecutaOperacion` y úsala con suma y multiplicación.
-6. Define `aplicaFiltro` para filtrar pares, impares y múltiplos.
-7. Define `procesaArray` para contar y sumar usando lambdas.
-8. Simplifica el ejercicio mediante `filter` y `map`.
-9. Acepta lambdas anónimas que sumen, resten y multipliquen.
-10. Cuenta elementos que cumplen una condición.
-11. Suma elementos que cumplen una condición.
-12. Filtra y cuenta elementos.
-13. Imprime valores seleccionados por una lambda.
-14. Transforma datos con una lambda.
-15. Compón dos funciones y aplícalas en secuencia.
+### 7.5 Ejemplo guiado: aplicar descuentos con lambdas
+
+Vamos a construir un programa pequeño que calcula el precio de un producto con descuento. Empezaremos con una función normal y, paso a paso, convertiremos el cálculo en una lambda que se puede guardar y pasar a otra función.
+
+**Paso 1. Escribir el cálculo como una función normal.** Un descuento del 10 % significa que el cliente paga el 90 % del precio original. Por ejemplo, si el precio es 100 euros, el resultado es 90 euros:
+
+```kotlin
+fun precioConDescuentoDel10(precio: Double): Double {
+	return precio * 0.90
+}
+```
+
+La función recibe el precio y devuelve el precio final. Podemos llamarla directamente con `precioConDescuentoDel10(100.0)`.
+
+**Paso 2. Escribir el mismo cálculo como una lambda.** En vez de declarar una función con nombre, guardamos la operación en una variable:
+
+```kotlin
+val descuentoDel10: (Double) -> Double = { precio -> precio * 0.90 }
+```
+
+El tipo `(Double) -> Double` indica que esta función recibe un `Double` y devuelve otro `Double`. Dentro de las llaves, `precio` es el parámetro; la flecha `->` separa el parámetro de la operación; y `precio * 0.90` es el resultado. Para utilizarla, se llama a la variable como si fuera una función: `descuentoDel10(100.0)` devuelve `90.0`.
+
+**Paso 3. Crear una función que reciba el cálculo.** Así podemos reutilizar una misma función para mostrar el precio final, aunque el descuento concreto cambie:
+
+```kotlin
+fun mostrarPrecioFinal(precioOriginal: Double, calcularPrecio: (Double) -> Double) {
+	val precioFinal = calcularPrecio(precioOriginal)
+	println("Precio original: $precioOriginal euros")
+	println("Precio final: $precioFinal euros")
+}
+```
+
+`calcularPrecio` es un parámetro que contiene una función. Su tipo vuelve a ser `(Double) -> Double`: recibe el precio original y devuelve el precio con el descuento aplicado. La línea `calcularPrecio(precioOriginal)` ejecuta la función que se haya recibido.
+
+**Paso 4. Pasar distintas lambdas y ejecutar el programa.** La primera llamada pasa la lambda que ya guardamos en `descuentoDel10`. La segunda escribe una lambda nueva directamente en la llamada para aplicar un descuento del 20 %:
+
+```kotlin
+fun main() {
+	val descuentoDel10: (Double) -> Double = { precio -> precio * 0.90 }
+
+	mostrarPrecioFinal(100.0, descuentoDel10)
+
+	mostrarPrecioFinal(100.0) { precio -> precio * 0.80 }
+}
+```
+
+En la segunda llamada, Kotlin permite colocar la lambda fuera de los paréntesis porque es el último parámetro de `mostrarPrecioFinal`. El resultado será un precio de `90.0` euros en la primera llamada y `80.0` euros en la segunda. La función `mostrarPrecioFinal` no necesita conocer cómo se calcula el descuento: recibe la operación y la ejecuta. Esa es la utilidad práctica de pasar una lambda como argumento.
+
+### 7.6 Actividades
+
+**Ejercicio 1. Formateador de un mensaje.** Escribe una función de orden superior llamada `procesarMensaje` que reciba una cadena y una lambda de tipo `(String) -> String`, aplique esa lambda al texto y devuelva el resultado. En `main`, trabaja con el texto `"  hola, kotlin  "` y llama a la función dos veces: la primera lambda debe quitar los espacios sobrantes y convertir el texto a mayúsculas; la segunda debe quitar los espacios y añadir un signo de exclamación al final. Imprime los resultados y comprueba que sean `"HOLA, KOTLIN"` y `"hola, kotlin!"`, respectivamente. El ejercicio debe trabajar siempre con una sola cadena, sin crear listas ni arrays.
+
+**Ejercicio 2. Comprobador de palíndromos.** Un palíndromo es una palabra o frase que se lee igual de izquierda a derecha que de derecha a izquierda. Define una función de orden superior llamada `comprobarTexto` que reciba una cadena y una condición de tipo `(String) -> Boolean`, y devuelva el resultado de aplicar esa condición. Llámala pasando una lambda que convierta el texto a minúsculas, quite los espacios y compare el resultado con la misma cadena escrita al revés. Prueba la función con `"Anita lava la tina"` y `"Kotlin"`; debe devolver `true` para la primera cadena y `false` para la segunda. Muestra cada texto y el resultado, y trabaja con una cadena por llamada, sin listas ni arrays.
+
+**Ejercicio 3. Comprobador de números primos.** Define una función de orden superior llamada `comprobarNumero` que reciba un entero y una lambda de tipo `(Int) -> Boolean`, y devuelva el resultado de aplicar esa lambda al número. Pásale una lambda que compruebe si el número es primo: los números menores que `2` no son primos y, para los demás, hay que comprobar si existe algún divisor entre `2` y el número anterior. Prueba la función con `7`, `12` y `1`; los resultados deben ser `true`, `false` y `false`, respectivamente. Muestra cada número junto con el resultado y procesa un número por llamada.
 
 ## 8. PROGRAMACIÓN ORIENTADA A OBJETOS
 
@@ -1216,287 +1367,350 @@ La programación orientada a objetos (POO) organiza el programa alrededor de obj
 
 ### 8.1 Declaración de clases
 
-Una clase se declara con `class`. Sus propiedades y funciones miembro describen el estado y las operaciones disponibles. Para crear una instancia se llama al constructor, sin usar `new`.
+Una **clase** es una definición que describe qué datos y qué acciones tendrán los objetos de un tipo. Por ejemplo, una clase `Persona` puede definir el nombre y la edad de cada persona, además de operaciones relacionadas con ella. La declaración comienza con la palabra `class`, seguida del nombre de la clase. El cuerpo, entre llaves, contiene sus propiedades y métodos.
 
-En el constructor primario de `Persona`, `name` y `age` se convierten directamente en propiedades porque están declarados con `var`. Eso permite leerlos y cambiarlos desde el objeto. `isAdult()` es una función miembro: trabaja con el estado de la instancia sobre la que se invoca. `toString()` reemplaza la representación genérica heredada de `Any`, por lo que imprimir una persona muestra sus datos.
+En Kotlin, los datos de un objeto se suelen declarar como **propiedades** (a menudo también se llaman atributos). Las funciones declaradas dentro de una clase se llaman **métodos**: describen acciones que puede realizar un objeto. Observa esta clase sencilla:
 
 ```kotlin
-class Persona(var name: String, var age: Int) {
-	override fun toString() = "Nombre: $name y su edad: $age"
-	fun isAdult() = age >= 18
-}
-
-fun myFun(persons: Array<Persona>, fn: (String) -> Unit) {
-	persons.forEach { fn(it.name) }
-}
-
-fun main() {
-	val persons = arrayOf(
-		Persona("Juan", 46),
-		Persona("Sonia", 45),
-		Persona("Guille", 14),
-		Persona("Diego", 11)
-	)
-	var cantidad = 0
-	persons.forEach {
-		println(it)
-		if (it.isAdult()) cantidad++
+class Persona(
+	val nombre: String,
+	var edad: Int
+) {
+	fun esMayorDeEdad(): Boolean {
+		return edad >= 18
 	}
-	println("La cantidad de personas adultas es $cantidad")
-	myFun(persons) { if (it.count() > 5) println("$it tiene mas de 5 letras") }
+
+	fun cumplirAnios() {
+		edad++
+	}
 }
 ```
 
-Cada llamada a `Persona(...)` crea una instancia independiente. `val persona = Persona(...)` impide reasignar la referencia `persona`, pero no impide cambiar las propiedades declaradas con `var`. En `main`, el array contiene cuatro referencias a personas; `forEach` visita cada una, consulta sus datos e invoca sus métodos. `myFun` recibe un array y una función `(String) -> Unit`: al pasarle la lambda `{ ... }`, la función ejecuta ese comportamiento para el nombre de cada persona.
+La cabecera `Persona(...)` define los datos que se necesitan para crear una persona. `nombre` tiene tipo `String` y `edad` tiene tipo `Int`. Al llevar `val` o `var`, ambos parámetros del constructor también se convierten en propiedades del objeto:
+
+* `val nombre` se puede consultar, pero no se puede cambiar después de crear la persona.
+* `var edad` se puede consultar y modificar mientras el programa se ejecuta.
+
+Dentro de las llaves se declaran los métodos. `esMayorDeEdad()` devuelve `true` cuando la propiedad `edad` vale 18 o más, y `false` en caso contrario. `cumplirAnios()` incrementa esa propiedad en uno. Como estos métodos pertenecen a una persona concreta, pueden utilizar `edad` directamente: es la edad del objeto sobre el que se llamó al método.
+
+La declaración de la clase describe cómo serán las personas, pero por sí sola no crea ninguna. Para crear objetos, llamamos al constructor escribiendo el nombre de la clase y los valores iniciales entre paréntesis. En Kotlin no se utiliza `new`:
+
+```kotlin
+fun main() {
+	val ana = Persona("Ana", 17)
+
+	println(ana.nombre)             // Ana
+	println(ana.edad)               // 17
+	println(ana.esMayorDeEdad())    // false
+
+	ana.cumplirAnios()
+	println(ana.edad)               // 18
+	println(ana.esMayorDeEdad())    // true
+}
+```
+
+`ana` es un **objeto** (también llamado instancia) de la clase `Persona`. La expresión `Persona("Ana", 17)` crea ese objeto y asigna los valores iniciales a sus propiedades. Se accede a una propiedad con `objeto.propiedad`, como `ana.nombre`, y se llama a un método con `objeto.metodo()`, como `ana.esMayorDeEdad()`.
+
+Aunque `ana` se declara con `val`, sí podemos cambiar `ana.edad`: `val` impide que la variable `ana` pase a señalar a otro objeto, pero no convierte en inmutables las propiedades que el objeto tenga declaradas con `var`. En cambio, no sería válido intentar asignar otro nombre a `ana.nombre`, porque esa propiedad se declaró con `val`.
+
+#### Visibilidad de propiedades y métodos
+
+Además de decidir si una propiedad se puede modificar (`val` o `var`), podemos decidir **desde dónde se puede utilizar**. Esto se controla con modificadores de visibilidad. En Kotlin, las propiedades y los métodos son `public` por defecto, así que se pueden utilizar desde cualquier parte del programa donde el objeto sea accesible.
+
+* **`public`**: accesible desde cualquier parte. Es el valor predeterminado; normalmente no hace falta escribirlo.
+* **`private`**: accesible solo desde la propia clase. Se utiliza para ocultar datos o detalles internos que no queremos que se modifiquen directamente desde fuera.
+* **`protected`**: accesible desde la propia clase y desde las clases que hereden de ella. No se puede utilizar en declaraciones de nivel superior, fuera de una clase.
+* **`internal`**: accesible desde cualquier parte del mismo módulo. Un módulo suele ser, por ejemplo, el conjunto de código que se compila como una aplicación o biblioteca.
+
+Por ejemplo, una cuenta puede mantener privado su saldo y ofrecer métodos públicos para consultarlo o modificarlo de forma controlada:
+
+```kotlin
+class CuentaBancaria(
+	val titular: String,
+	private var saldo: Double
+) {
+	fun consultarSaldo(): Double {
+		return saldo
+	}
+
+	fun ingresar(cantidad: Double) {
+		if (cantidad > 0) {
+			saldo += cantidad
+		}
+	}
+}
+```
+
+`titular`, `consultarSaldo()` e `ingresar()` son públicos porque no llevan modificador. `saldo` es privado: no se puede leer ni cambiar directamente desde fuera de `CuentaBancaria`. En su lugar, el resto del programa utiliza los métodos públicos, que permiten controlar cómo se accede al saldo. Esta separación ayuda a proteger el estado del objeto.
 
 ### 8.2 Constructores, `init`, propiedades y accesores
 
-El constructor primario aparece en la cabecera de la clase. Si sus parámetros llevan `val` o `var`, también declaran propiedades. Los constructores secundarios se declaran con `constructor` y deben delegar en el primario mediante `this(...)`. Los bloques `init` se ejecutan al inicializar la instancia, después de evaluar el constructor primario y antes del cuerpo del constructor secundario.
+El **constructor primario** recibe los datos iniciales del objeto y se escribe en la cabecera de la clase. En este primer ejemplo solo necesitamos el nombre:
 
 ```kotlin
-class Alumno() {
-	var dni: String = ""
-	var name: String = ""
-		set(value) {
-			if (value.isNotEmpty()) field = value.uppercase()
-		}
-	var age: Int = 0
-	var phone: String = ""
-
-	constructor(dni: String, name: String, age: Int, phone: String) : this() {
-		this.dni = dni
-		this.name = name
-		this.age = age
-		this.phone = phone
-	}
-
+class Persona(val nombre: String) {
 	init {
-		dni = ""
+		require(nombre.isNotBlank()) { "El nombre no puede estar vacío" }
 	}
+}
 
-	override fun toString() = "Dni: $dni, nombre: $name, edad: $age, telefono: $phone"
+fun main() {
+	val ana = Persona("Ana") // Se crea correctamente
+
+	// Esta creación falla: init no permite un nombre vacío.
+	// val personaSinNombre = Persona("")
 }
 ```
 
-El bloque `init` se ejecuta al crear el objeto. Un setter usa `value` y `field`. Los atributos `private` sólo son visibles dentro de la clase.
+`Persona("Ana")` crea un objeto y asigna `"Ana"` a la propiedad `nombre`. Mientras Kotlin lo está creando, ejecuta automáticamente el bloque `init`. La instrucción `require(...)` comprueba que el nombre no esté vacío: si la condición es falsa, se produce un error y el objeto no llega a crearse. `init` no es un método que llamemos nosotros; es el lugar para poner instrucciones que deben ejecutarse al crear cada objeto.
 
-`field` es el campo de respaldo que Kotlin genera para una propiedad cuando hace falta almacenar el valor. Dentro de un getter o setter personalizado se usa para leer o cambiar ese valor sin volver a invocar el propio accesor. Se pueden definir solo getter, solo setter o ambos; una propiedad `val` no puede tener setter.
-
-En el ejemplo de `Alumno`, el constructor primario no tiene parámetros y asigna valores iniciales a las propiedades. El constructor secundario delega en él con `: this()`, y después copia los argumentos recibidos a las propiedades. El bloque `init` se ejecuta durante esa creación; a continuación se ejecuta el cuerpo del constructor secundario. El setter de `name` normaliza el valor a mayúsculas, mientras que el de `age` rechaza edades inferiores a 18 asignando cero.
-
-En `PersonaGetSet`, `name` es nullable porque empieza siendo `null`. Su setter solo reemplaza el valor cuando no está vacío y el getter ofrece un texto alternativo si sigue siendo nulo. El setter de `age` aplica una regla cada vez que alguien asigna un valor. Los accesores son un lugar apropiado para proteger invariantes sencillas, pero una operación de dominio más amplia suele expresarse mejor mediante una función miembro.
+Si queremos ofrecer otra forma de crear el mismo tipo de objeto, podemos añadir un **constructor secundario**. Se declara dentro de la clase con la palabra `constructor` y debe delegar en el constructor primario mediante `this(...)`:
 
 ```kotlin
-class PersonaGetSet {
-	var name: String? = null
-		set(value) {
-			if (value.isNullOrEmpty()) println("El valor debe contener texto") else field = value
-		}
-		get() = field ?: "<Sin nombre>"
+class Producto(
+	val nombre: String,
+	val precio: Double
+) {
+	init {
+		require(precio >= 0) { "El precio no puede ser negativo" }
+	}
 
-	var age: Int = 0
-		set(value) { field = if (value >= 18) value else 0 }
+	constructor(nombre: String) : this(nombre, 0.0)
+}
+
+fun main() {
+	val libro = Producto("Libro", 12.5)
+	val muestra = Producto("Muestra")
+
+	println(libro.precio)   // 12.5
+	println(muestra.precio) // 0.0
 }
 ```
+
+La llamada `Producto("Muestra")` utiliza el constructor secundario, que completa los datos llamando al primario con `this(nombre, 0.0)`. Después también se ejecuta `init` y se comprueba el precio. Así, los dos caminos de creación aplican la misma comprobación. A menudo se puede usar un valor predeterminado en el constructor primario en lugar de un constructor secundario; este último permite ofrecer otra forma de crear el objeto.
+
+### Getters y setters personalizados
+
+Kotlin proporciona accesores automáticos para las propiedades: una propiedad `val` tiene getter para leer su valor, y una propiedad `var` tiene getter y setter para leerlo y cambiarlo. Podemos personalizarlos si necesitamos transformar o validar el valor. El getter se ejecuta al leer la propiedad; el setter, cada vez que se le asigna un valor.
+
+```kotlin
+class Persona {
+	var nombre: String = ""
+		set(value) {
+			field = value.trim().uppercase()
+		}
+
+	var edad: Int = 0
+		set(value) {
+			if (value >= 0) {
+				field = value
+			}
+		}
+
+	val esMayorDeEdad: Boolean
+		get() = edad >= 18
+}
+```
+
+
+En `main`, no se suelen llamar los getters y setters por su nombre. Se lee o asigna la propiedad, y Kotlin ejecuta automáticamente el accesor correspondiente:
+
+```kotlin
+fun main() {
+	val persona = Persona()
+
+	// Leer la propiedad llama al getter de nombre.
+	println(persona.nombre) // ""
+
+	// Asignar la propiedad llama al setter de nombre.
+	persona.nombre = "  ana "
+	println(persona.nombre) // "ANA"
+
+	// Asignar y leer edad llama a su setter y a su getter.
+	persona.edad = 20
+	println(persona.edad) // 20
+	println(persona.esMayorDeEdad) // true: también se calcula mediante un getter
+
+	// El setter ignora los valores negativos y conserva la edad anterior.
+	persona.edad = -5
+	println(persona.edad) // 20
+}
+```
+
+En otros lenguajes podríamos escribir llamadas como `getNombre()` o `setNombre(...)`; en Kotlin, normalmente usamos `persona.nombre` tanto para leer como para asignar. La sintaxis parece un acceso directo, pero permite que se ejecute la lógica personalizada del getter o setter.
+
+En el setter de `nombre`, `value` es el texto nuevo que se intenta asignar. `trim()` quita espacios al principio y al final, y `uppercase()` lo convierte a mayúsculas. Por tanto, al asignar `persona.nombre = "  ana "`, se guarda `"ANA"`.
+
+`field` es el almacenamiento interno de la propiedad y solo se puede usar dentro de su getter o setter personalizado. Aquí se asigna el valor ya transformado. No se debe escribir `nombre = ...` dentro del setter, porque eso volvería a llamar al mismo setter repetidamente.
+
+El setter de `edad` solo actualiza el valor cuando no es negativo; si se intenta asignar una edad negativa, conserva el valor anterior. `esMayorDeEdad` es una propiedad calculada: su getter obtiene el resultado a partir de `edad` cada vez que se lee. Se consulta como `persona.esMayorDeEdad`, sin paréntesis, porque es una propiedad y no un método. Una propiedad `val` no tiene setter, ya que no permite asignar un valor nuevo después de inicializarse.
 
 ### 8.3 Lambdas y clases
 
-Una lambda es una función sin nombre que puede guardarse o pasarse como argumento. Una función que recibe otra función es una función de orden superior. En una clase, las lambdas permiten procesar el estado interno sin duplicar bucles: `count`, `all` y `any` reciben una condición y la aplican a cada elemento del array.
-
-El parámetro de esa condición es el elemento actual. Kotlin permite escribirlo como `it` cuando hay un único parámetro, o darle un nombre explícito para que la condición resulte más legible. `count` devuelve cuántos elementos cumplen la condición; `all` devuelve `true` solo si todos la cumplen; `any` devuelve `true` si al menos uno la cumple. Estas operaciones devuelven valores, no alteran el array.
+Una clase puede tener un método que recibe una lambda como parámetro. Así, la clase conserva sus datos, pero quien llama al método decide qué operación aplicar. En este ejemplo, `Mensaje` guarda un texto y `transformar` recibe una función que toma una cadena y devuelve otra:
 
 ```kotlin
-class MyArray(private val arr: IntArray = IntArray(10) { indice -> indice + 1 }) {
-
-	fun printArray() = println(arr.joinToString(", "))
-
-	fun printElementTo5() {
-		val cantidad = arr.count { elemento -> elemento <= 5 }
-		println("La cantidad de elementos menor o igual que 5 es $cantidad")
-	}
-
-	fun printAllTo9() {
-		val todosCumplen = arr.all { it <= 9 }
-		println(if (todosCumplen) "Todos son menores o iguales que 9" else "Hay números mayores que 9")
-	}
-
-	fun printElementoTo10() {
-		val existe = arr.any { it == 10 }
-		println(if (existe) "Hay un elemento que tiene un 10" else "No hay ningún elemento que sea 10")
+class Mensaje(val texto: String) {
+	fun transformar(operacion: (String) -> String): String {
+		return operacion(texto)
 	}
 }
 
 fun main() {
-	val datos = MyArray()
-	datos.printArray()
-	datos.printElementTo5()
-	datos.printAllTo9()
-	datos.printElementoTo10()
+	val mensaje = Mensaje("Hola, Kotlin")
+
+	val enMayusculas = mensaje.transformar { texto -> texto.uppercase() }
+	println(enMayusculas) // HOLA, KOTLIN
+
+	val conExclamacion = mensaje.transformar { texto -> "$texto!" }
+	println(conExclamacion) // Hola, Kotlin!
 }
 ```
 
-El inicializador `IntArray(10) { indice -> indice + 1 }` construye diez enteros y llama a la lambda una vez por posición; en este ejemplo se usa el índice para generar los valores del 1 al 10. `arr` es privado porque forma parte de la implementación de `MyArray`: desde fuera se piden resultados mediante sus métodos, pero no se puede reemplazar directamente el array. `printArray` usa `joinToString` para crear una representación legible sin escribir el bucle manualmente.
+La clase tiene el dato `texto`. El método `transformar` recibe `operacion`, cuya firma `(String) -> String` significa que recibe un texto y devuelve otro. La línea `operacion(texto)` ejecuta la lambda recibida usando el texto guardado en el objeto.
 
-Con esos datos, `count` cuenta los cinco valores menores o iguales que 5; `all` resulta falso porque 10 no cumple `<= 9`; y `any` resulta verdadero porque sí hay un 10. Se podría cambiar el inicializador por `IntArray(10) { kotlin.random.Random.nextInt(0, 11) }` para generar números aleatorios. En ese caso, los resultados de las tres consultas variarían en cada ejecución.
+En `main`, ambas llamadas utilizan el mismo objeto y el mismo método, pero pasan lambdas distintas: la primera convierte el mensaje a mayúsculas y la segunda añade `!`. La lambda no queda fijada dentro de la clase; se elige en cada llamada. Esa es la idea principal de combinar clases y lambdas.
 
-### 8.4 Relaciones entre clases
+### 8.4 Herencia y polimorfismo
 
-Una clase puede contener referencias a objetos de otras clases. Esta relación se conoce como composición cuando el objeto principal se construye usando otros objetos para colaborar o representar sus partes. No es necesario que exista herencia para relacionar tipos.
+La **herencia** permite crear una clase nueva a partir de otra. La clase original, llamada **clase base** o **superclase**, aporta datos y métodos comunes; la nueva, llamada **subclase**, los hereda y puede añadir o cambiar comportamientos.
+
+En Kotlin, una clase no permite herencia por defecto. Se marca con `open` para que otras clases puedan heredar de ella. También hay que marcar con `open` cada método que se quiera permitir sobrescribir. La subclase escribe `: NombreDeLaClase(...)` para indicar de quién hereda y qué valores envía al constructor de la clase base. Usa `override` para proporcionar una nueva versión de un método abierto.
 
 ```kotlin
-data class PersonalData(val name: String?, val phone: String?)
+open class Animal(val nombre: String) {
+	fun dormir() {
+		println("$nombre está durmiendo")
+	}
 
-class Employee(val nroEmp: Int, val personalData: PersonalData?)
-
-fun main() {
-	val enterprise = arrayOf(
-		Employee(1, null),
-		Employee(2, PersonalData(null, null)),
-		Employee(3, PersonalData("juan", null)),
-		Employee(4, PersonalData("sonia", "953 12 34 56"))
-	)
-	enterprise.forEach { employee ->
-		employee.personalData?.let { data ->
-			val name = data.name ?: "No tiene nombre"
-			val phone = data.phone ?: "No tiene teléfono"
-			println("$name. $phone")
-		}
+	open fun hacerSonido() {
+		println("$nombre hace un sonido")
 	}
 }
-```
 
-En este ejemplo, `Employee` tiene un `PersonalData` opcional. El operador `?.` permite acceder a sus propiedades solo cuando la referencia no es nula; `let` agrupa el trabajo que se realiza cuando el objeto existe. Conviene usar composición para expresar relaciones «tiene un» y reservar la herencia para relaciones «es un».
-
-`Employee` no crea ni hereda de `PersonalData`: guarda una referencia a ese objeto. El tipo `PersonalData?` indica que la información puede faltar, por eso el primer empleado no tiene datos asociados. El recorrido omite a ese empleado porque el bloque de `let` solo se ejecuta cuando `personalData` no es nulo. La referencia tampoco impone por sí sola cómo se comparten o cuánto viven esos objetos; esas decisiones dependen del diseño de la aplicación.
-
-### 8.5 Herencia y polimorfismo
-
-Para permitir que una clase sea clase base se usa `open`; la subclase indica su clase padre después de `:` y llama a su constructor. Los miembros también son finales por defecto: para sobrescribir un método o propiedad, la clase base debe declararlo `open` y la subclase debe usar `override`.
-
-```kotlin
-open class SeleccionFutbol(
-	protected var id: Int,
-	protected var name: String,
-	protected var surname: String,
-	protected var age: Int
-) {
-	fun concentrate() = println("El integrante se está concentrando")
-	fun travel() = println("El integrante está viajando")
-	override fun toString() = "integrante con id=$id, nombre es $name, $surname, con edad $age"
-}
-
-class Entrenador(id: Int, name: String, surname: String, age: Int, var idFederacion: String) :
-	SeleccionFutbol(id, name, surname, age) {
-	fun leadGame() = println("El entrenador con nombre $name está dirigiendo un partido de futbol")
-	fun leadTraining() = println("El entrenador con nombre $name está dirigiendo un entrenamiento")
-	override fun toString() = "${super.toString()}, idFederacion=$idFederacion-ES"
-}
-
-class Futbolista(
-	id: Int, name: String, surname: String, age: Int,
-	var dorsal: Int, var demarcacion: String = "Sin demarcacion..."
-) : SeleccionFutbol(id, name, surname, age) {
-	fun playGame() = println("El jugador con nombre $name, $surname, está jugando un partido de futbol")
-	fun train() = println("El jugador con nombre $name, $surname, está entrenando")
-}
-
-class Masajista(
-	id: Int, name: String, surname: String, age: Int,
-	var title: String, var ageExperience: Int
-) : SeleccionFutbol(id, name, surname, age) {
-	fun giveMassage() = println("El masajista con nombre $name, está dando un masaje")
-}
-```
-
-Los atributos que deban heredarse pueden ser `protected`. Las subclases llaman al constructor de la superclase y pueden invocar sus métodos.
-
-En el ejemplo, `Entrenador`, `Futbolista` y `Masajista` heredan el identificador, el nombre, los apellidos y la edad. Esos valores se reciben en sus constructores y se envían al constructor de `SeleccionFutbol`. El modificador `protected` permite que las subclases usen esas propiedades sin exponerlas como parte de la API pública. `super.toString()` reutiliza la descripción de la clase base antes de añadir el dato propio del entrenador.
-
-El polimorfismo permite tratar objetos de distintas subclases mediante un tipo común. Al llamar a un método sobrescrito, Kotlin ejecuta la implementación correspondiente al tipo real del objeto:
-
-```kotlin
-open class Figura {
-	open fun area(): Double = 0.0
-}
-
-class Circulo(private val radio: Double) : Figura() {
-	override fun area(): Double = Math.PI * radio * radio
-}
-
-class Rectangulo(private val ancho: Double, private val alto: Double) : Figura() {
-	override fun area(): Double = ancho * alto
-}
-
-fun main() {
-	val figuras: List<Figura> = listOf(Circulo(2.0), Rectangulo(3.0, 4.0))
-	figuras.forEach { println("Área: ${it.area()}") }
-}
-```
-
-La lista está declarada con el tipo común `Figura`, pero cada llamada a `area()` se resuelve usando la implementación de `Circulo` o `Rectangulo`.
-
-En Kotlin hay herencia simple: una clase tiene como máximo una clase padre, aunque puede implementar varias interfaces. Una subclase no puede sobrescribir miembros finales. Si una subclase sobrescribe a su vez un miembro `open`, la sobrescritura también puede volver a marcarse como `final` para cerrar esa rama. El despacho polimórfico evita preguntar manualmente qué subtipo se recibió antes de invocar el comportamiento compartido.
-
-### 8.6 Clases abstractas
-
-Una clase abstracta representa una idea general que no debe instanciarse directamente. Puede tener constructor, propiedades con estado y funciones ya implementadas, además de miembros abstractos sin cuerpo. Cada subclase concreta debe implementar esos miembros con `override`; si deja alguno pendiente, también deberá ser abstracta.
-
-```kotlin
-abstract class Integrante {
-	abstract fun training()
-}
-
-class EntrenadorAbstracto : Integrante() {
-	override fun training() = println("El entrenador está entrenando")
-}
-
-class FutbolistaAbstracto : Integrante() {
-	override fun training() = println("El jugador está entrenando")
-}
-
-fun main() {
-	val integrantes: List<Integrante> = listOf(EntrenadorAbstracto(), FutbolistaAbstracto())
-	integrantes.forEach { it.training() }
-}
-```
-
-Así no es necesario hacer conversiones de tipo al recorrer una lista de `Integrante`: cada objeto ofrece `training()` mediante el tipo común, y se ejecuta la implementación de la subclase real. Elige una clase abstracta cuando las subclases compartan estado o implementación; una interfaz suele encajar mejor cuando se quiere definir una capacidad que pueden tener clases distintas.
-
-### 8.7 Interfaces
-
-Una interfaz declara operaciones que una clase se compromete a implementar. Una clase puede implementar varias interfaces, pero solo heredar de una clase. Las interfaces no tienen constructor primario ni almacenan estado propio como una clase, aunque pueden incluir implementaciones por defecto.
-
-```kotlin
-interface IntegranteSeleccionFutbol {
-	var anio: Int
-	fun training()
-	fun travel()
-	fun concentrarse() {
-		println("Estamos concentrados desde la interfaz")
+class Perro(nombre: String, val raza: String) : Animal(nombre) {
+	override fun hacerSonido() {
+		println("$nombre ladra")
 	}
 }
-```
 
-Una clase que implementa la interfaz proporciona los miembros que no tienen implementación por defecto:
+class Gato(nombre: String) : Animal(nombre) {
+	override fun hacerSonido() {
+		println("$nombre maúlla")
+	}
+}
 
-```kotlin
-class JugadorSeleccion(override var anio: Int) : IntegranteSeleccionFutbol {
-	override fun training() = println("El jugador está entrenando")
-	override fun travel() = println("El jugador está viajando")
+fun hacerEmitirSonido(animal: Animal) {
+	animal.hacerSonido()
 }
 
 fun main() {
-	val integrante: IntegranteSeleccionFutbol = JugadorSeleccion(2025)
-	integrante.concentrarse()
-	integrante.training()
+	val perro = Perro("Toby", "Labrador")
+	println(perro.nombre) // Toby: propiedad heredada de Animal
+	println(perro.raza)   // Labrador: propiedad propia de Perro
+	perro.dormir()        // Método heredado de Animal
+
+	hacerEmitirSonido(perro)
+	hacerEmitirSonido(Gato("Misu"))
 }
 ```
 
-`IntegranteSeleccionFutbol` exige que quien la implemente proporcione `anio`, `training()` y `travel()`. `concentrarse()` ya tiene cuerpo y puede usarse sin sobrescritura, aunque una clase podría reemplazarlo con `override`. El objeto se guarda en una variable del tipo interfaz para mostrar que el código cliente depende del contrato y no de la clase concreta `JugadorSeleccion`.
+`Perro` y `Gato` heredan de `Animal`. Por eso ambos tienen `nombre` y pueden usar `dormir()` sin volver a definirlos. `Perro` añade su propiedad `raza`. El parámetro `nombre` de `Perro` se pasa a `Animal(nombre)`, que es quien inicializa la propiedad heredada.
 
-Si dos interfaces implementadas por una misma clase declaran una función con el mismo nombre y ambas tienen cuerpo, la clase debe resolver la ambigüedad sobrescribiendo esa función. Desde la sobrescritura puede llamar a una implementación concreta mediante `super<NombreInterfaz>.funcion()`.
+El **polimorfismo** consiste en poder trabajar con distintos tipos concretos usando el tipo común `Animal`. La función `hacerEmitirSonido` solo declara que recibe un `Animal`, pero al llamarla con un perro se ejecuta la versión de `Perro`; al llamarla con un gato, la de `Gato`. Kotlin elige la versión según el objeto real recibido. Así no hace falta escribir una función distinta para cada clase.
 
-### 8.8 Encapsulación y visibilidad
+En resumen: `open` permite heredar o sobrescribir, `:` indica la clase base, `override` reemplaza un método heredado y el polimorfismo permite usar varias subclases a través de su clase base. Si dentro de un método sobrescrito se necesita ejecutar además la versión original, se puede invocar con `super`, por ejemplo `super.hacerSonido()`.
+
+### 8.5 Clases abstractas
+
+Una **clase abstracta** es una clase incompleta que sirve como base para otras. Puede definir datos y métodos que sus subclases comparten, y también declarar métodos sin indicar cómo funcionan. Como está incompleta, no se puede crear un objeto directamente a partir de ella.
+
+```kotlin
+abstract class Animal(val nombre: String) {
+	fun presentarse() {
+		println("Soy $nombre")
+	}
+
+	abstract fun emitirSonido()
+}
+
+class Perro(nombre: String) : Animal(nombre) {
+	override fun emitirSonido() {
+		println("$nombre dice guau")
+	}
+}
+
+class Gato(nombre: String) : Animal(nombre) {
+	override fun emitirSonido() {
+		println("$nombre dice miau")
+	}
+}
+
+fun main() {
+	val perro = Perro("Toby")
+	perro.presentarse()
+	perro.emitirSonido()
+
+	val gato = Gato("Misu")
+	gato.presentarse()
+	gato.emitirSonido()
+}
+```
+
+`Animal` es abstracta porque no sabemos qué sonido hace cualquier animal. Por eso `emitirSonido()` se declara con `abstract` y sin cuerpo. `Perro` y `Gato` heredan de `Animal` y cada uno proporciona su propia versión con `override`; si una subclase concreta no implementa ese método, el código no compila.
+
+En cambio, `presentarse()` sí tiene un cuerpo dentro de `Animal`. Las subclases lo heredan y pueden usarlo directamente. El nombre también se define una sola vez en la clase base y se envía al crear cada subclase mediante `Animal(nombre)`. La clase abstracta reúne así lo común y deja a cada subclase completar lo específico.
+
+No se puede escribir `Animal("Toby")` para crear un animal genérico: solo se pueden crear objetos de clases concretas como `Perro` o `Gato`. Se utiliza una clase abstracta cuando varios tipos relacionados comparten datos o comportamiento, pero hay alguna operación que cada tipo debe resolver a su manera.
+
+### 8.6 Interfaces
+
+Una **interfaz** define una capacidad que una clase se compromete a ofrecer. No dice qué tipo de objeto es, sino qué acciones se pueden pedirle. Por ejemplo, una factura y un informe son objetos distintos, pero ambos pueden ofrecer la acción de imprimirse.
+
+```kotlin
+interface Imprimible {
+	fun imprimir()
+}
+
+class Factura(val numero: Int) : Imprimible {
+	override fun imprimir() {
+		println("Imprimiendo factura $numero")
+	}
+}
+
+class Informe(val titulo: String) : Imprimible {
+	override fun imprimir() {
+		println("Imprimiendo informe: $titulo")
+	}
+}
+
+fun imprimirDocumento(documento: Imprimible) {
+	documento.imprimir()
+}
+
+fun main() {
+	imprimirDocumento(Factura(101))
+	imprimirDocumento(Informe("Ventas del trimestre"))
+}
+```
+
+`Factura` e `Informe` escriben `: Imprimible` para indicar que implementan esa interfaz. Como `imprimir()` está declarado sin cuerpo, ambas clases deben proporcionar su propia versión usando `override`. La función `imprimirDocumento` recibe cualquier objeto `Imprimible`, por lo que puede trabajar con los dos tipos sin necesitar una función distinta para cada uno.
+
+Una interfaz también puede incluir métodos con una implementación común. No tiene constructor y no guarda estado propio; puede declarar propiedades que las clases implementadoras deben proporcionar. Una clase puede implementar varias interfaces.
+
+#### Diferencia entre una clase abstracta y una interfaz
+
+Ambas permiten definir operaciones que las subclases o clases implementadoras deben completar y ambas pueden ofrecer métodos con una implementación común. La diferencia principal es el propósito:
+
+| Clase abstracta | Interfaz |
+| --- | --- |
+| Representa una base común para tipos de la misma familia, como `Animal` para `Perro` y `Gato`. | Representa una capacidad o contrato, como `Imprimible` para una `Factura` y un `Informe`. |
+| Puede tener constructor, propiedades con estado y métodos compartidos. | No tiene constructor ni almacena estado propio; declara operaciones y puede ofrecer implementaciones comunes. |
+| Una clase solo puede heredar de una clase base. | Una clase puede implementar varias interfaces. |
+
+Como orientación: usa una **clase abstracta** cuando las clases comparten una identidad y datos o comportamiento; usa una **interfaz** cuando clases que pueden ser distintas necesitan ofrecer la misma capacidad.
+
+### 8.7 Encapsulación y visibilidad
 
 La encapsulación protege el estado interno y expone operaciones controladas. En Kotlin, los modificadores de visibilidad son:
 
@@ -1507,177 +1721,76 @@ La encapsulación protege el estado interno y expone operaciones controladas. En
 | `protected` | Visible en la clase y sus subclases. Solo se aplica a miembros de clases. |
 | `internal` | Visible en el mismo módulo de compilación. |
 
-El siguiente ejemplo permite consultar el saldo, pero solo modificarlo a través de operaciones validadas:
+En este ejemplo, un contador guarda cuántas veces se ha llamado a `incrementar()`:
 
 ```kotlin
-class CuentaBancaria(saldoInicial: Int) {
-	var saldoCentimos: Int = saldoInicial
+class Contador {
+	var valor: Int = 0
 		private set
 
-	fun ingresar(centimos: Int) {
-		require(centimos > 0) { "El ingreso debe ser positivo" }
-		saldoCentimos += centimos
-	}
-
-	fun retirar(centimos: Int) {
-		require(centimos > 0) { "La retirada debe ser positiva" }
-		require(centimos <= saldoCentimos) { "Saldo insuficiente" }
-		saldoCentimos -= centimos
-	}
-}
-```
-
-`private set` deja la propiedad legible desde fuera, pero restringe su escritura a la clase. Así se evita que cualquier código asigne un saldo inválido directamente.
-
-La encapsulación no consiste únicamente en ocultar variables: define qué operaciones se permiten y mantiene las reglas del objeto en un único lugar. `require` valida los argumentos y lanza `IllegalArgumentException` si una condición no se cumple. Al mantener el setter privado, todos los cambios del saldo pasan por `ingresar` o `retirar`, donde se comprueban las cantidades y el saldo disponible.
-
-### 8.9 Igualdad entre objetos
-
-En Kotlin, `==` comprueba igualdad estructural: equivale a llamar de forma segura a `equals`. `===` comprueba identidad referencial: indica si dos referencias apuntan exactamente al mismo objeto. Una clase normal hereda la igualdad por identidad de `Any`; puede sobrescribir `equals` y `hashCode` para definir igualdad por sus propiedades. Las `data class` generan estas operaciones a partir de las propiedades del constructor primario; se explican en el apartado 10.2.
-
-```kotlin
-class Punto(val x: Int, val y: Int)
-
-fun main() {
-	val primero = Punto(2, 3)
-	val segundo = Punto(2, 3)
-	val mismaReferencia = primero
-
-	println(primero == segundo)
-	println(primero === segundo)
-	println(primero === mismaReferencia)
-}
-```
-
-Aunque `primero` y `segundo` contienen las mismas coordenadas, son instancias diferentes. Al no sobrescribir `equals`, `==` también resulta falso. `mismaReferencia` apunta al mismo objeto que `primero`, por lo que `===` resulta verdadero.
-
-Cuando se sobrescribe `equals`, también hay que sobrescribir `hashCode`: dos objetos considerados iguales deben producir el mismo código hash. Esta regla es necesaria para que funcionen correctamente como claves de mapas o elementos de conjuntos hash. No se debe usar `===` para comparar el contenido de dos objetos.
-
-### 8.10 Declaraciones `object` y `companion object`
-
-Una declaración `object` crea un único objeto (singleton) y permite agrupar estado y funciones que no necesitan una instancia de una clase. Se inicializa cuando se accede a él por primera vez.
-
-```kotlin
-object ConfiguracionApp {
-	const val NOMBRE = "Mi aplicación"
-	var modoDepuracion: Boolean = false
-
-	fun mostrarNombre() = println(NOMBRE)
-}
-
-fun main() {
-	ConfiguracionApp.modoDepuracion = true
-	ConfiguracionApp.mostrarNombre()
-}
-```
-
-Un `companion object` es un objeto asociado a una clase. Sus miembros se pueden invocar usando el nombre de la clase, sin crear una instancia. Puede implementar interfaces y tener un nombre opcional.
-
-```kotlin
-class Usuario private constructor(val nombre: String) {
-	companion object {
-		fun invitado(): Usuario = Usuario("Invitado")
+	fun incrementar() {
+		valor++
 	}
 }
 
 fun main() {
-	val usuario = Usuario.invitado()
-	println(usuario.nombre)
+	val contador = Contador()
+
+	println(contador.valor) // 0: se puede leer
+	contador.incrementar()
+	println(contador.valor) // 1: el método de la clase lo ha cambiado
+
+	// contador.valor = 10 // No compila: el setter es private
 }
 ```
 
-Kotlin no define miembros `static` como Java. Los miembros del `companion object` son miembros de ese objeto asociado, aunque la sintaxis `Usuario.invitado()` permite acceder a ellos a través del nombre de la clase. En el ejemplo, el constructor privado impide crear usuarios directamente desde fuera; la función fábrica decide cómo se crea el usuario invitado. Un `object` global debe reservarse para estado realmente compartido, porque todas las partes del programa observan la misma instancia.
+`var valor: Int = 0` declara una propiedad llamada `valor`, de tipo entero (`Int`), cuyo valor inicial es `0`. La línea `private set` **pertenece a esa propiedad y va justo debajo**: no declara otra variable ni es una llamada. Hace privado solo el setter, es decir, la operación de asignar un valor nuevo.
 
-### 8.11 Clases anidadas e internas
+El getter sigue siendo público, así que `main` puede leer `contador.valor`. Sin embargo, no puede asignarle directamente `10`. El método `incrementar()` sí puede cambiarlo porque está dentro de `Contador`. En resumen: se puede consultar el valor desde fuera, pero solo la propia clase puede modificarlo.
 
-Una clase declarada dentro de otra es anidada y, por defecto, no conserva una referencia a una instancia de la clase exterior. La palabra `inner` hace que la clase interna sí tenga esa referencia y pueda acceder a los miembros de la instancia exterior.
+La diferencia con `private var valor: Int = 0` es que `private` delante de `var` oculta la propiedad entera. Desde `main` no se podría ni consultar `contador.valor` ni asignarle un valor. En cambio, con `var valor: Int = 0` seguido de `private set`, la lectura sigue permitida y solo se restringe la asignación desde fuera:
+
+| Declaración dentro de la clase | Leer desde `main` | Asignar desde `main` | Modificar desde un método de la clase |
+| --- | --- | --- | --- |
+| `private var valor: Int = 0` | No | No | Sí |
+| `var valor: Int = 0` seguido de `private set` | Sí | No | Sí |
+
+Esta estructura resulta útil cuando queremos que otros lugares consulten un dato, pero obligar a que sus cambios pasen por métodos de la clase.
+
+### 8.8 Enumeraciones
+
+Una enumeración se declara con `enum class` y sirve para representar un conjunto pequeño y fijo de opciones. Por ejemplo, una tarea solo puede estar pendiente, en curso o completada:
 
 ```kotlin
-class Exterior(private val mensaje: String) {
-	class Anidada {
-		fun describir() = "Clase anidada"
-	}
+enum class EstadoTarea {
+	PENDIENTE,
+	EN_CURSO,
+	COMPLETADA
+}
 
-	inner class Interna {
-		fun describir() = "Clase interna: $mensaje"
-	}
+fun mostrarEstado(estado: EstadoTarea): String = when (estado) {
+	EstadoTarea.PENDIENTE -> "La tarea todavía no ha empezado"
+	EstadoTarea.EN_CURSO -> "La tarea se está realizando"
+	EstadoTarea.COMPLETADA -> "La tarea ha terminado"
 }
 
 fun main() {
-	println(Exterior.Anidada().describir())
-	println(Exterior("Hola").Interna().describir())
+	val estado = EstadoTarea.EN_CURSO
+	println(mostrarEstado(estado))
 }
 ```
 
-La clase `Anidada` se crea con `Exterior.Anidada()` y no necesita una instancia de `Exterior`. La clase `Interna`, en cambio, necesita primero `Exterior("Hola")`; esa instancia queda asociada a la interna y permite leer su propiedad privada `mensaje`. Esa referencia adicional puede ser útil, pero también mantiene viva la instancia exterior mientras se conserve la instancia interna.
+`EstadoTarea` es el nuevo tipo y sus opciones se declaran dentro de las llaves, separadas por comas. Para elegir una opción se escribe `EstadoTarea.EN_CURSO`. La función recibe un valor de ese tipo y `when` decide qué mensaje mostrar. Como se han contemplado todas las opciones, no hace falta añadir `else`.
 
-### 8.12 Enumeraciones y jerarquías selladas
+Usa una enumeración cuando las opciones posibles estén definidas de antemano y sean del mismo tipo, como los estados de una tarea.
 
-Una enumeración (`enum class`) representa un conjunto finito y conocido de constantes. Cada constante es una instancia de la enumeración. Puede incluir propiedades, constructor y funciones; cuando una expresión `when` contempla todas las constantes, no necesita una rama `else`.
+### 8.9 Actividades
 
-```kotlin
-enum class EstadoPedido(val descripcion: String) {
-	PENDIENTE("Pendiente de preparación"),
-	ENVIADO("En camino"),
-	ENTREGADO("Entregado"),
-	CANCELADO("Cancelado")
-}
+**Ejercicio 1. Ficha de un libro.** Crea una clase `Libro` con un constructor primario que reciba un ISBN, un título y un precio. El ISBN no debe poder cambiar después de crear el libro, mientras que el título y el precio sí se podrán modificar. Usa `init` para impedir títulos vacíos y precios negativos, y crea un método `aplicarDescuento(porcentaje: Double)` que acepte únicamente porcentajes entre 0 y 100 y actualice el precio. Añade otro método que muestre la ficha completa del libro. En `main`, crea un libro con ISBN `"9781234567890"`, título `"Kotlin básico"` y precio `30.0`, aplica un descuento del 10 % y muestra la ficha; el precio final debe ser `27.0`.
 
-fun describir(estado: EstadoPedido): String = when (estado) {
-	EstadoPedido.PENDIENTE -> estado.descripcion
-	EstadoPedido.ENVIADO -> estado.descripcion
-	EstadoPedido.ENTREGADO -> estado.descripcion
-	EstadoPedido.CANCELADO -> estado.descripcion
-}
-```
+**Ejercicio 2. Nóminas de empleados.** Crea una interfaz `Imprimible` con el método `imprimir()` y una clase abstracta `Empleado` que guarde el nombre, declare el método abstracto `calcularSueldo(): Double` e implemente `imprimir()` mostrando el nombre y el sueldo calculado. A partir de ella, crea `EmpleadoFijo`, cuyo sueldo sea un salario mensual, y `EmpleadoPorHoras`, cuyo sueldo se calcule multiplicando las horas trabajadas por la tarifa por hora. Implementa las comprobaciones necesarias para que los importes, las horas y la tarifa no sean negativos. En `main`, crea un empleado fijo con sueldo de `1500.0` y uno por horas con 10 horas a `15.0` cada una; llama a `imprimir()` en ambos y comprueba que muestran `1500.0` y `150.0`. Este ejercicio debe permitir tratar ambas clases como `Empleado` e `Imprimible` sin perder el comportamiento específico de cada tipo.
 
-Una clase sellada (`sealed class`) permite definir una jerarquía cerrada de subtipos. Es apropiada para representar alternativas conocidas que pueden tener datos diferentes, como el resultado de una operación. El compilador puede comprobar que un `when` cubre todas las alternativas declaradas.
-
-```kotlin
-sealed class Resultado<out T> {
-	data class Exito<T>(val dato: T) : Resultado<T>()
-	data class Fallo(val mensaje: String) : Resultado<Nothing>()
-	object Cargando : Resultado<Nothing>()
-}
-
-fun describir(resultado: Resultado<String>): String = when (resultado) {
-	is Resultado.Exito -> "Resultado: ${resultado.dato}"
-	is Resultado.Fallo -> "Error: ${resultado.mensaje}"
-	Resultado.Cargando -> "La operación está en curso"
-}
-```
-
-Usa `enum class` cuando las opciones sean constantes simples del mismo tipo. Usa una jerarquía sellada cuando cada alternativa necesite propiedades o comportamientos propios. Ambas permiten aprovechar `when` exhaustivos y evitan representar estados conocidos mediante cadenas arbitrarias.
-
-Las constantes de una enumeración también se pueden recorrer mediante `EstadoPedido.entries`. Su propiedad `name` contiene el identificador declarado y `ordinal` la posición; evita guardar `ordinal` como dato persistente, ya que reordenar las constantes cambiaría ese número. En una jerarquía sellada, las alternativas pueden transportar datos distintos y el `when` queda comprobado por el compilador, reduciendo el riesgo de olvidar un caso al añadir uno nuevo.
-
-### 8.13 ACTIVIDADES
-
-1. Declara `Animal` con nombre, edad y `toString()`.
-2. Crea `Vehiculo` con constructor secundario y método de impresión.
-3. Crea `Estudiante` e implementa `isAprobado()`.
-4. Crea `Libro` con setter de título en mayúsculas.
-5. Crea `CuentaBancaria` con método privado para actualizar el saldo.
-6. Crea `Producto` y aplica un descuento porcentual.
-7. Crea `Punto` y calcula la distancia entre dos puntos.
-8. Crea `Empleado` con datos personales anulables.
-9. Crea `Matriz` y suma sus diagonales.
-10. Crea `Rectangulo` y calcula el área.
-11. Implementa herencia con `Animal`, `Perro` y `Gato`.
-12. Implementa herencia con `Vehiculo`, `Coche` y `Motocicleta`.
-13. Implementa una clase abstracta `Animal` con `hacerSonido()`.
-14. Implementa una clase abstracta `Vehiculo` con `mover()`.
-15. Define `ComportamientoAnimal`, una clase abstracta `Animal` y las subclases `Perro` y `Gato`, aprovechando polimorfismo para llamar a `hacerSonido()`, `moverse()`, `dormir()` y `alimentarse()`.
-16. Crea una `CuentaBancaria` con saldo privado, ingreso y retirada validados. Explica qué miembros pueden consultarse y modificarse desde fuera.
-17. Define `Figura`, `Circulo` y `Rectangulo`. Guarda ambas figuras en una lista de `Figura` e invoca `area()` para practicar polimorfismo.
-18. Implementa una interfaz `Imprimible` en dos clases diferentes y recorre una lista de elementos `Imprimible`.
-19. Crea una clase normal `Punto`, compara dos instancias con `==` y `===`, y después implementa igualdad estructural sobrescribiendo correctamente `equals` y `hashCode`.
-20. Crea un `object` para almacenar una configuración compartida y una clase con `companion object` que ofrezca una función fábrica.
-21. Define una clase anidada y una clase `inner`; demuestra cuál de las dos puede acceder a una propiedad de la instancia exterior.
-22. Diseña una relación de composición entre `Pedido` y `Producto`. Explica por qué no se modela mediante herencia.
-23. Define una enumeración `EstadoTarea` y usa un `when` exhaustivo para mostrar una acción para cada estado.
-24. Modela el resultado de una búsqueda con una clase sellada que incluya los casos de éxito, error y carga; procesa todos los casos con `when`.
-
+**Ejercicio 3. Gestión de pedidos.** Define la enumeración `EstadoPedido` con las opciones `CREADO`, `ENVIADO`, `ENTREGADO` y `CANCELADO`, y crea una clase `Pedido` con un código, un importe y un estado inicial `CREADO`. El código y el importe se reciben al construir el pedido; usa `init` para rechazar códigos vacíos e importes negativos. El estado debe poder consultarse desde fuera, pero su setter será privado para impedir cambios directos: crea métodos `enviar()`, `entregar()` y `cancelar()` que permitan solo estas transiciones: de `CREADO` a `ENVIADO` o `CANCELADO`, y de `ENVIADO` a `ENTREGADO` o `CANCELADO`. Añade un método que use `when` para devolver una descripción del estado. En `main`, crea un pedido, envíalo y entrégalo, mostrando el estado después de cada operación; intenta también razonar qué debería ocurrir si se intenta entregar un pedido que aún no se ha enviado.
 ## 9. COLECCIONES
 
 Una colección agrupa varios elementos y permite consultarlos, recorrerlos y transformarlos. Kotlin proporciona interfaces y funciones para trabajar con listas, conjuntos y mapas en `kotlin.collections`. Las colecciones permiten expresar operaciones habituales de forma clara, sin tener que implementar manualmente búsquedas, filtros o recorridos.
