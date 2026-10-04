@@ -1821,353 +1821,316 @@ Los arrays (`Array<T>`, `IntArray`, etc.) no son listas, aunque permiten acceder
 
 ### 9.1 Listas
 
-Una lista conserva el orden de inserción y permite repetir valores. La primera posición tiene índice `0`; el último índice es `size - 1`. `listOf` crea una lista de solo lectura y `mutableListOf` crea una lista modificable.
+`listOf` crea una lista de solo lectura y `mutableListOf` crea una lista modificable.
 
 #### Listas de solo lectura
 
-Una lista `List<T>` permite consultar y recorrer los elementos, pero no proporciona operaciones para cambiar su contenido. Puede declararse el tipo explícitamente o dejar que Kotlin lo infiera.
+Una lista `List<T>` permite consultar y recorrer elementos, pero no ofrece operaciones para cambiar su estructura. Conserva el orden, admite repetidos y utiliza índices que empiezan en `0`. `first()` y `last()` obtienen los extremos; si la lista puede estar vacía, `firstOrNull()` y `lastOrNull()` devuelven `null` en lugar de lanzar una excepción. El acceso `lista[indice]` requiere un índice válido; `getOrNull(indice)` permite tratar un índice no válido de forma segura.
 
 ```kotlin
-val numbers: List<Int> = listOf(1, 2, 3, 4, 5)
-println(numbers)
+val frutas = listOf("pera", "manzana", "pera")
+
+println(frutas[0])       // pera
+println(frutas.size)     // 3
+println(frutas.last())   // pera
+println(frutas.getOrNull(5)) // null
 ```
 
-También se puede inicializar con una lambda:
+Se puede recorrer una lista con `for`, `forEach` o por índices mediante `indices`. `List(n) { ... }` crea una lista de tamaño `n` calculando cada elemento con una lambda.
 
 ```kotlin
-data class PersonalData(val name: String, val phone: String?)
-
-val listSamePersonal = List(3) { PersonalData("Juan", "953 34 54 34") }
-val listAnonymous = List(3) { PersonalData("Anonimo_repetido", null) }
-val listPersonal = listOf(
-	PersonalData("Juan", "953 34 54 34"),
-	PersonalData("Sonia", "953 34 54 35"),
-	PersonalData("Guille", null),
-	PersonalData("Diego", null)
-)
-
-println("Total de la lista ${listPersonal.size}")
-println("Primero de la lista -> ${listPersonal.first()}")
-println("Elemento en posición 1 -> ${listPersonal[1]}")
-println("Último de la lista -> ${listPersonal.last()}")
-listPersonal.forEach { println("Personal -> $it") }
-```
-
-Que la lista sea de solo lectura no impide que se cambien propiedades mutables de los objetos que contiene. También existen `firstOrNull()` y `lastOrNull()`, que devuelven `null` si la lista está vacía. En cambio, `first()` y `last()` lanzan una excepción en ese caso. El acceso `lista[indice]` también falla si el índice no existe; para validar el índice se puede consultar `indices`.
-
-```kotlin
-val colores = listOf("rojo", "verde", "azul")
-println(colores.firstOrNull())
-println(colores.getOrNull(10))
-
-for (indice in colores.indices) {
-	println("$indice: ${colores[indice]}")
-}
-```
-
-```kotlin
-data class Tarea(val descripcion: String, var completada: Boolean)
-
-val tareas: List<Tarea> = listOf(Tarea("Estudiar Kotlin", false))
-tareas[0].completada = true
-```
-
-`List(n) { ... }` genera una lista de tamaño `n` invocando la lambda para cada índice. Es útil para construir valores calculados:
-
-```kotlin
-val cuadrados = List(5) { indice -> indice * indice }
-println(cuadrados) // [0, 1, 4, 9, 16]
+val cuadrados = List(4) { indice -> indice * indice }
+println(cuadrados) // [0, 1, 4, 9]
 ```
 
 #### Listas mutables
 
-`MutableList<T>` permite insertar, reemplazar y eliminar elementos. Las operaciones más comunes son `add`, `addAll`, `remove`, `removeAt`, `clear` y la asignación mediante un índice existente.
+Una `MutableList<T>` permite añadir, reemplazar y eliminar elementos. Las operaciones más habituales son:
+
+- `add(elemento)` y `addAll(coleccion)`: añaden uno o varios elementos.
+- `lista[indice] = elemento`: reemplaza el elemento de una posición existente.
+- `remove(elemento)` y `removeAt(indice)`: eliminan por valor o por posición.
+- `removeAll { condicion }`: elimina los elementos que cumplen una condición.
+- `clear()`: elimina todos los elementos.
+- `toMutableList()`: crea una copia mutable de otra lista.
 
 ```kotlin
-data class PersonalDataMutable(val name: String, val phone: String?)
-
-fun main() {
-	val listPersonal = mutableListOf<PersonalDataMutable>()
-	listPersonal.add(PersonalDataMutable("Juan", "953 34 54 34"))
-	listPersonal.add(PersonalDataMutable("Sonia", "953 34 54 35"))
-	listPersonal.add(PersonalDataMutable("Diego", null))
-	listPersonal.add(PersonalDataMutable("Guille", null))
-
-	listPersonal.removeAt(0)
-	val numbersPhone = listPersonal.count { it.phone != null }
-	println("El numero de telefonos disponibles son $numbersPhone")
-	listPersonal.removeAll { it.phone == null }
-	listPersonal.removeAll { it.name.count() >= 5 }
-	println("El numero de Personal es de ${listPersonal.count()}")
-}
+val tareas = mutableListOf("Estudiar", "Practicar")
+tareas.add("Repasar")
+tareas.removeAt(0)
+println(tareas) // [Practicar, Repasar]
 ```
-
-`toMutableList()` convierte una lista en mutable sin alterar la lista original:
-
-```kotlin
-val immutableList = listOf("Elemento 1", "Elemento 2", "Elemento 3")
-val mutableList = immutableList.toMutableList()
-mutableList.add("Elemento 4")
-mutableList[1] = "Elemento Modificado"
-println("Lista mutable: $mutableList")
-println("Lista inmutable original: $immutableList")
-```
-
-`toMutableList()` crea una nueva lista mutable con los elementos actuales. Modificar esa copia no cambia la estructura de la lista original. Del mismo modo, `toList()` devuelve una lista de solo lectura, aunque la conversión no realiza una copia profunda de los objetos contenidos.
 
 #### Operaciones habituales
 
-Las funciones de extensión permiten consultar y transformar listas. Normalmente producen un resultado nuevo y no modifican la colección original:
+Las operaciones de transformación suelen producir una lista nueva y no modificar la original. Las más utilizadas son:
+
+- `map { ... }`: transforma cada elemento.
+- `filter { ... }`: conserva los elementos que cumplen una condición.
+- `mapNotNull { ... }`: transforma los elementos y descarta los resultados `null`.
+- `flatMap { ... }`: transforma cada elemento en una colección y combina los resultados.
+- `distinct()`: elimina repeticiones, conservando la primera aparición.
+- `sorted()` y `sortedBy { ... }`: ordenan valores o por una propiedad.
+- `take(n)` y `drop(n)`: obtienen o descartan los primeros `n` elementos.
+- `firstOrNull { ... }` o `find { ... }`: buscan el primer elemento que cumple una condición.
+- `any { ... }` y `all { ... }`: comprueban si algún elemento o todos cumplen una condición.
+- `count { ... }`: cuenta los elementos que cumplen una condición.
+- `sum()`, `sumOf { ... }`, `average()`, `minOrNull()` y `maxOrNull()`: realizan cálculos.
+- `groupBy { ... }`: agrupa los elementos según una clave.
 
 ```kotlin
-val numeros = listOf(1, 2, 3, 4, 5, 6)
-
-val dobles = numeros.map { it * 2 }
-val pares = numeros.filter { it % 2 == 0 }
-val primerMayorQueCuatro = numeros.firstOrNull { it > 4 }
-val hayImpares = numeros.any { it % 2 != 0 }
-val todosPositivos = numeros.all { it > 0 }
-val cantidadPares = numeros.count { it % 2 == 0 }
-
-println(dobles)
-println(pares)
-println("Primer mayor que cuatro: $primerMayorQueCuatro")
-println("Hay impares: $hayImpares; todos positivos: $todosPositivos")
-println("Cantidad de pares: $cantidadPares")
+val numeros = listOf(1, 2, 3, 4)
+val paresDuplicados = numeros.filter { it % 2 == 0 }.map { it * 2 }
+println(paresDuplicados) // [4, 8]
 ```
 
-Operaciones útiles adicionales:
+Para ordenar objetos por una propiedad se puede usar, por ejemplo, `productos.sortedBy { it.nombre }`. `partition` divide una colección en los elementos que cumplen una condición y los que no; `zip` combina dos listas por posición hasta que se acaba la más corta; `reversed` devuelve el orden inverso; `fold` y `reduce` acumulan un resultado.
 
-- `mapNotNull` transforma los elementos y descarta los resultados nulos.
-- `flatMap` transforma cada elemento en una colección y concatena los resultados.
-- `find` busca el primer elemento que cumple una condición y devuelve `null` si no existe; equivale a `firstOrNull { ... }`.
-- `distinct` elimina repetidos conservando el orden de su primera aparición.
-- `sorted`, `sortedDescending`, `sortedBy` y `sortedByDescending` generan listas ordenadas.
-- `take(n)` obtiene los primeros elementos; `drop(n)` descarta los primeros.
-- `zip` combina elementos de dos listas por posición hasta agotar la más corta.
-- `reversed` devuelve una lista en orden inverso; `partition` separa los elementos en dos listas según una condición.
-- `groupBy` agrupa los elementos por una clave; `fold` y `reduce` acumulan un resultado recorriendo la colección.
-- `sum`, `average`, `minOrNull`, `maxOrNull` y `sumOf` realizan cálculos sobre los valores.
+`Sequence` permite encadenar operaciones de forma diferida: cada elemento pasa por las operaciones antes de procesar el siguiente. Puede ser útil con colecciones grandes, aunque las listas normales suelen ser más sencillas.
 
 ```kotlin
-data class Producto(val nombre: String, val precio: Double)
-
-val productos = listOf(
-	Producto("Cuaderno", 2.5),
-	Producto("Mochila", 24.0),
-	Producto("Bolígrafo", 1.2)
-)
-
-val nombresCaros = productos
-	.filter { it.precio >= 10.0 }
-	.sortedBy { it.nombre }
-	.map { it.nombre }
-
-val total = productos.sumOf { it.precio }
-println(nombresCaros)
-println("Total: $total")
-```
-
-El encadenamiento se ejecuta operación por operación y cada transformación intermedia suele crear una colección. Para recorridos grandes con muchas transformaciones se pueden usar `Sequence`, que evalúa las operaciones de forma diferida y elemento a elemento:
-
-```kotlin
-val resultado = (1..1_000_000).asSequence()
+val primerosPares = (1..10).asSequence()
 	.filter { it % 2 == 0 }
-	.map { it * it }
-	.take(3)
+	.take(2)
 	.toList()
-
-println(resultado)
+println(primerosPares) // [2, 4]
 ```
-
-Una secuencia no almacena necesariamente todos los resultados intermedios. Se materializa al convertirla, por ejemplo con `toList()`, o al ejecutar una operación terminal como `sum()` o `first()`. Para colecciones pequeñas, las operaciones normales suelen ser más sencillas.
 
 ### 9.2 Conjuntos
 
-Un conjunto (`Set<T>`) almacena valores únicos según la igualdad de sus elementos. Al crear un conjunto a partir de valores repetidos, las repeticiones no se conservan. `setOf` crea un conjunto de solo lectura y `mutableSetOf` uno mutable. `linkedSetOf` conserva el orden de inserción; `sortedSetOf` mantiene los elementos ordenados.
+Un conjunto (`Set<T>`) almacena elementos únicos. A diferencia de una lista, no tiene índices y no conserva varias apariciones del mismo elemento. Por eso resulta útil, por ejemplo, para guardar etiquetas sin repetir o comprobar si un nombre ya está registrado.
+
+En los conjuntos, dos valores se consideran repetidos si son iguales. Para objetos, esa igualdad se basa en `equals` y `hashCode`; las `data class` los generan a partir de las propiedades del constructor principal.
+
+#### Conjuntos de solo lectura
+
+`Set<T>` permite consultar y recorrer sus elementos, pero no ofrece operaciones para cambiar el conjunto desde esa referencia. `setOf(...)` crea un conjunto de solo lectura:
 
 ```kotlin
-val letras: Set<Char> = setOf('a', 'b', 'a', 'c')
-println(letras)
-println('b' in letras)
-
-val etiquetas = mutableSetOf("Kotlin", "Android")
-etiquetas.add("Kotlin")
-etiquetas.add("Compose")
-etiquetas.remove("Android")
-println(etiquetas)
+val letras = setOf('a', 'b', 'a')
+println(letras.size) // 2: el segundo 'a' no se añade
+println('b' in letras) // true: comprueba si pertenece
 ```
 
-Los conjuntos son convenientes para comprobar pertenencia y eliminar duplicados. La comprobación `elemento in conjunto` expresa directamente esa intención.
+No se debe depender del orden en que se recorren los elementos de un `Set` genérico. Si el orden de inserción es importante, se puede crear un `linkedSetOf(...)`; para mantenerlos ordenados, se puede usar `sortedSetOf(...)`.
+
+#### Conjuntos mutables
+
+`MutableSet<T>` permite añadir y quitar elementos. Las funciones habituales son:
+
+- `mutableSetOf(...)`: crea un conjunto mutable.
+- `add(elemento)`: añade el elemento; devuelve `false` si ya estaba.
+- `remove(elemento)`: elimina el elemento si existe.
+- `addAll(coleccion)`, `removeAll { condicion }` y `clear()`: añaden varios elementos, eliminan los que cumplen una condición o vacían el conjunto.
+- `contains(elemento)` o `elemento in conjunto`: comprueban si un elemento pertenece al conjunto.
+- `toSet()` y `distinct()`: obtienen elementos sin repeticiones a partir de una colección.
 
 ```kotlin
-val grupoA = setOf("Ana", "Luis", "Eva")
-val grupoB = setOf("Eva", "Marta", "Luis")
+val materias = mutableSetOf("Kotlin", "Bases de datos")
+materias.add("Android")
+val yaEstaba = materias.add("Kotlin")
+materias.remove("Bases de datos")
 
-println(grupoA union grupoB)
-println(grupoA intersect grupoB)
-println(grupoA subtract grupoB)
+println(yaEstaba) // false: Kotlin ya estaba, no se añadió otra vez
+println(materias.contains("Android")) // true
 ```
 
-Estas operaciones devuelven conjuntos nuevos. También se pueden aplicar los operadores `+` y `-` para obtener conjuntos con elementos añadidos o eliminados, sin modificar el conjunto original.
+Los elementos se pueden recorrer con `for` o `forEach`. Las operaciones de conjuntos más habituales son `union` (unión), `intersect` (elementos comunes) y `subtract` (elementos que están en el primero, pero no en el segundo). Devuelven un conjunto nuevo y no modifican los conjuntos originales.
+
+```kotlin
+val cursoA = setOf("Ana", "Luis")
+val cursoB = setOf("Luis", "Eva")
+
+val todos = cursoA union cursoB
+val comunes = cursoA intersect cursoB
+val soloEnA = cursoA subtract cursoB
+
+println("Total de personas: ${todos.size}")
+println("¿Luis está en ambos cursos?: ${"Luis" in comunes}")
+println("¿Ana está solo en A?: ${"Ana" in soloEnA}")
+```
+
+También se pueden usar los operadores `+` y `-` para obtener conjuntos con elementos añadidos o eliminados. No conviene cambiar las propiedades que determinan la igualdad de un objeto mientras está almacenado en un conjunto.
 
 ### 9.3 Mapas
 
-Un mapa asocia claves de tipo `K` con valores de tipo `V`. Cada clave aparece una sola vez; los valores sí pueden repetirse. `mapOf` crea un `Map<K, V>` de solo lectura y `mutableMapOf` un `MutableMap<K, V>`. Se recorre por entradas, claves o valores.
+Un mapa (`Map<K, V>`) asocia cada clave de tipo `K` con un valor de tipo `V`. Las claves son únicas, aunque varios elementos pueden tener el mismo valor. Por ejemplo, un mapa puede relacionar el ISBN de un libro con su título, o el nombre de una persona con su edad.
+
+`Map<K, V>` proporciona una vista de solo lectura; `MutableMap<K, V>` permite añadir, cambiar y eliminar asociaciones. `mapOf` y `mutableMapOf` crean esas variantes. Si se incluye más de una vez la misma clave al construir un mapa, prevalece la última asociación.
 
 #### Mapas de solo lectura
 
+Un mapa de solo lectura permite consultar asociaciones, no añadirlas ni cambiarlas. Se accede a un valor mediante su clave. Si la clave no existe, `mapa[clave]` devuelve `null`.
+
 ```kotlin
-fun main() {
-	val immutableMap = mapOf(
-		"clave1" to "valor1",
-		"clave2" to "valor2",
-		"clave3" to "valor3"
-	)
-	println("Map inmutable: $immutableMap")
-	println("Valor asociado con 'clave2': ${immutableMap["clave2"]}")
-	for ((clave, valor) in immutableMap) println("Clave: $clave, Valor: $valor")
+val edades = mapOf("Ana" to 20, "Luis" to 22)
+
+println(edades["Ana"]) // 20
+println(edades["Eva"]) // null: no existe la clave
+
+for ((nombre, edad) in edades) {
+	println("$nombre tiene $edad años")
 }
 ```
 
-```kotlin
-fun main() {
-	val countries: Map<String, Int> = mapOf(
-		Pair("España", 47000000),
-		Pair("Francia", 60000000),
-		"Alemania" to 80000000
-	)
-	val listCities = listOf(
-		"Albacete" to 200000,
-		"Jaen" to 120000,
-		"Toledo" to 180000
-	)
-	val cities = listCities.toMap()
-	countries.forEach { println("Pais-> ${it.key}, Hab-> ${it.value}") }
-	cities.forEach { (city, population) -> println("Ciudad-> $city, Hab-> $population") }
-	val numHabTo = cities.count { it.value > 150000 }
-	println("Número de ciudades con mas de 150000 habitantes: $numHabTo")
-	var totalHab = 0
-	countries.forEach { totalHab += it.value }
-	println("Número de habitantes de todos los paises: $totalHab")
-	var totalHabLess = 0
-	cities.forEach { if (it.value < 200000) totalHabLess += it.value }
-	println("Suma de habitantes de ciudades inferiores a 200000: $totalHabLess")
-}
-```
+Funciones y propiedades habituales:
+
+- `mapOf(clave to valor, ...)`: crea un mapa de solo lectura.
+- `mapa[clave]`: obtiene el valor asociado o `null` si no existe.
+- `getOrDefault(clave, alternativo)`: obtiene el valor o devuelve el alternativo.
+- `getValue(clave)`: obtiene el valor o lanza una excepción si la clave no existe.
+- `containsKey(clave)` y `containsValue(valor)`: comprueban si existe una clave o un valor.
+- `keys`, `values` y `entries`: consultan las claves, los valores y las asociaciones.
+
+Si el tipo de los valores permite `null`, `containsKey` permite distinguir entre clave ausente y clave existente con valor nulo.
 
 #### Mapas mutables
 
-Un mapa mutable permite añadir o reemplazar una asociación mediante `put` o con `mapa[clave] = valor`, eliminarla con `remove` y borrar todas las entradas con `clear`. Si se inserta una clave que ya existe, su valor anterior se reemplaza.
+En un mapa mutable, `mapa[clave] = valor` o `put` añade una asociación o sustituye el valor de esa clave. `remove` elimina una asociación y `clear` elimina todas. Funciones y propiedades habituales:
 
-El acceso `mapa[clave]` devuelve un valor nullable, porque la clave podría no existir. Se puede usar `getOrDefault` para un valor alternativo o `getValue` si se desea una excepción cuando falta la clave. `getOrPut` obtiene el valor existente o calcula, guarda y devuelve uno nuevo.
+- `mutableMapOf(clave to valor, ...)`: crea un mapa mutable.
+- `put(clave, valor)` o `mapa[clave] = valor`: añade o actualiza una asociación.
+- `putAll(otroMapa)`: añade las asociaciones de otro mapa.
+- `remove(clave)` y `clear()`: eliminan una entrada o todas las entradas.
+- `getOrPut(clave) { valor }`: devuelve el valor existente o calcula y guarda uno nuevo.
+- `filter { ... }`, `filterKeys { ... }` y `filterValues { ... }`: crean mapas filtrados.
+- `mapValues { ... }`: transforma los valores y devuelve un mapa nuevo.
 
 ```kotlin
 val edades = mutableMapOf("Ana" to 20, "Luis" to 22)
-edades["Ana"] = 21
-edades["Marta"] = 19
+edades["Ana"] = 21 // Cambia el valor
+edades["Marta"] = 19 // Añade una clave
+edades.remove("Luis")
 
-val edadLuis = edades["Luis"]
-val edadEva = edades.getOrDefault("Eva", 0)
-val edadPablo = edades.getOrPut("Pablo") { 18 }
-
-println("Luis: $edadLuis; Eva: $edadEva; Pablo: $edadPablo")
-edades.remove("Marta")
+println(edades)
 ```
 
-Se pueden recorrer las entradas con `for ((clave, valor) in mapa)` o con `forEach`. `keys` y `values` permiten consultar las claves y los valores. Algunas funciones prácticas son `filter`, `filterKeys`, `filterValues`, `mapValues` y `getOrPut`.
-
-`apply` permite configurar el objeto dentro de un bloque de inicialización.
-
-```kotlin
-data class Signature(var name: String, var note: Double = 0.0)
-
-class Alumn(var dni: String, var name: String) {
-	val signatures: MutableList<Signature> = mutableListOf()
-
-	fun addSignature(name: String, note: Double) {
-		signatures.add(Signature(name, note))
-	}
-
-	fun removeSignature(name: String) {
-		signatures.removeAll { it.name == name }
-	}
-
-	fun devSignatureNotab(): List<Signature> = signatures.filter { it.note >= 7 }
-
-	override fun toString(): String = "(dni): $dni, (Alumno): $name\n$signatures"
-}
-
-fun printAll(alumns: MutableMap<String, Alumn>) {
-	alumns.forEach { println(it.value) }
-}
-
-fun printAllWithSignature(alumns: MutableMap<String, Alumn>, fn: (String) -> Unit) {
-	alumns.forEach { fn(it.key) }
-}
-
-fun main() {
-	val alumns = mutableMapOf<String, Alumn>().apply {
-		listOf(
-			"11111" to Alumn("11111", "Juan"),
-			"22222" to Alumn("22222", "Sonia"),
-			"33333" to Alumn("33333", "Mariano")
-		).forEach { (dni, alum) -> put(dni, alum) }
-	}
-
-	alumns["11111"]?.apply {
-		addSignature("Matematicas", 6.87)
-		addSignature("Fisica", 7.87)
-		addSignature("Tecnologia", 9.87)
-		addSignature("Filosofia", 3.68)
-		println(this)
-		println(devSignatureNotab())
-		removeSignature("Fisica")
-	}
-
-	printAll(alumns)
-	printAllWithSignature(alumns) { dni ->
-		val alum = alumns[dni]
-		val failed = alum?.signatures?.count { it.note < 5 } ?: 0
-		println("El alumno ${alum?.name} tiene $failed asignaturas suspensas")
-	}
-}
-```
+Se recorre un mapa por entradas con `for ((clave, valor) in mapa)` o con `forEach`. Las transformaciones como `filter` y `mapValues` devuelven mapas nuevos y no cambian el original.
 
 ### 9.4 Elegir y combinar colecciones
 
-La elección depende de cómo se consultarán los datos: una `List` cuando importan el orden, las posiciones o los duplicados; un `Set` cuando cada valor debe aparecer una sola vez o se comprueba pertenencia; un `Map` cuando se necesita localizar un valor a partir de una clave. Las colecciones pueden convertirse entre sí y combinarse con otras operaciones.
+La estructura se elige según qué representa cada dato y cómo se va a consultar. Las interfaces `List`, `Set` y `Map` son de solo lectura; sus variantes mutables (`MutableList`, `MutableSet` y `MutableMap`) permiten cambiar la colección.
+
+| Estructura | Qué almacena | Duplicados | Acceso y consulta | Úsala cuando... |
+|---|---|---|---|---|
+| `List<T>` | Elementos en una secuencia | Sí | Por índice (`lista[i]`), recorrido o búsqueda | Importan el orden, las posiciones o conservar repeticiones; por ejemplo, una lista de tareas |
+| `Set<T>` | Elementos únicos | No | Por pertenencia (`elemento in conjunto`) o recorrido; no tiene índices | Hay que evitar duplicados o consultar si un elemento ya existe; por ejemplo, etiquetas únicas |
+| `Map<K, V>` | Asociaciones de clave a valor | Claves: no; valores: sí | Por clave (`mapa[clave]`) o recorrido de entradas | Se necesita encontrar un valor usando una clave; por ejemplo, DNI → alumno |
+
+Conversiones y agrupaciones habituales:
+
+- `toList()`, `toSet()` y `toMutableList()`: crean una lista, un conjunto o una lista mutable a partir de una colección.
+- `toMap()`: convierte una colección de pares clave-valor en un mapa.
+- `associate { ... }` y `associateBy { ... }`: construyen mapas a partir de los elementos.
+- `associateWith { ... }`: usa cada elemento como clave y calcula su valor asociado.
+- `groupBy { ... }`: agrupa elementos en listas según una clave.
+- `groupingBy { ... }.eachCount()`: cuenta los elementos de cada grupo.
+
+Estas operaciones generan colecciones nuevas y no suelen modificar la original. Al convertir a `Set` se eliminan los duplicados; al convertir pares a un mapa, una clave repetida queda asociada al último valor.
 
 ```kotlin
 val palabras = listOf("sol", "luna", "sol", "mar")
 val palabrasUnicas = palabras.toSet()
-val longitudesPorPalabra = palabrasUnicas.associateWith { it.length }
-val letrasContadas = palabras.flatMap { it.toList() }.groupingBy { it }.eachCount()
+val longitudPorPalabra = palabrasUnicas.associateWith { it.length }
 
-println(palabrasUnicas)
-println(longitudesPorPalabra)
-println(letrasContadas)
+println("Sin repeticiones: $palabrasUnicas")
+println("Longitud de cada palabra: $longitudPorPalabra")
 ```
-
-`associate` construye un mapa a partir de los pares que devuelve la transformación; `associateBy` usa una propiedad como clave. Si se generan claves repetidas, el mapa conserva una única entrada por clave y el valor posterior sustituye al anterior. `groupBy` agrupa elementos en listas por una clave; `groupingBy(...).eachCount()` cuenta cuántos elementos hay en cada grupo.
 
 ### 9.5 ACTIVIDADES
 
-1. Crea una lista de enteros del 1 al 10. Muestra su tamaño, el primer y último elemento y los elementos en posiciones pares.
-2. Dada una lista de nombres, crea otra con los nombres en mayúsculas, filtra los que empiezan por una letra elegida y cuenta los resultados.
-3. Genera una lista de 15 números aleatorios. Cuenta los menores que 5 y crea otra lista sin los mayores que 8.
-4. Crea una lista mutable de tareas. Añade tareas, marca una como completada, elimina otra y muestra las pendientes.
-5. Convierte una lista mutable en una lista de solo lectura y explica qué operaciones permite cada referencia.
-6. Dadas dos listas de nombres, calcula sus elementos comunes y los que aparecen solo en la primera.
-7. A partir de una lista con nombres repetidos, crea un conjunto y verifica qué ocurre con las repeticiones. Recorre un `linkedSetOf` y un `sortedSetOf` para comparar sus órdenes.
-8. Crea un mapa inmutable de tres países y sus poblaciones. Recorre sus entradas, claves y valores, y calcula la población total.
-9. Convierte una lista de pares ciudad-población en un mapa. Filtra las ciudades con más de 150.000 habitantes y suma las poblaciones inferiores a esa cifra.
-10. Crea un mapa mutable de productos y precios. Añade productos, cambia un precio, consulta una clave ausente con `getOrDefault` y elimina una entrada.
-11. Define `Autor` y `Libro`. Crea una lista de libros, agrúpalos por autor y comprueba si existe algún libro de un autor determinado.
-12. Dada una lista de palabras, cuenta cuántas veces aparece cada una con `groupingBy` y `eachCount`.
-13. Define `Producto(nombre, precio, categoria)`. Filtra por precio, ordena por nombre, calcula el precio total y construye un mapa de productos por nombre.
-14. Dada una lista de frases, utiliza `flatMap` para obtener todas sus palabras, `distinct` para eliminar repeticiones y `sorted` para ordenarlas.
-15. Repite una transformación de filtrado y mapeo sobre una lista grande usando `Sequence`. Compara el resultado con el de las operaciones de colección y explica cuándo resulta útil la evaluación diferida.
+Crea un programa completo en Kotlin que permita registrar libros y socios, prestar libros y consultar el catálogo. Organiza el código en varias clases y, preferiblemente, en varios archivos `.kt`.
+
+#### Requisitos del programa
+
+- Define una clase `Libro` con, al menos, ISBN, título, autor y género. Define también una clase `Socio` con identificador, nombre y una colección de ISBN prestados.
+- Crea una clase `Biblioteca` que gestione el catálogo y los socios. Como orientación, utiliza un `MutableMap<String, Libro>` para localizar libros por ISBN, un `MutableMap<String, Socio>` para localizar socios y un `MutableSet<String>` en cada socio para evitar registrar dos veces el mismo préstamo. Antes de prestar un libro, comprueba que su ISBN no esté ya en el conjunto de préstamos de ningún socio.
+- Implementa operaciones para registrar libros y socios, prestar un libro, devolverlo, buscar libros por título o autor y mostrar el catálogo ordenado. Un libro no puede prestarse si no existe o ya está prestado; un socio no puede devolver un libro que no tiene.
+- Utiliza listas para presentar resultados ordenados o filtrados, y un conjunto para obtener los géneros sin repeticiones. Añade validaciones y mensajes comprensibles para las operaciones que no se puedan realizar.
+- Incluye un `main()` con un menú de consola que permita probar las operaciones. Separa, como mínimo, el modelo (`Libro` y `Socio`), la lógica de gestión (`Biblioteca`) y el punto de entrada (`main`) en archivos distintos. Puedes añadir clases o funciones auxiliares si mejoran la organización.
+- Prueba varios casos: ISBN o socio inexistente, préstamo correcto, segundo intento de prestar el mismo libro, devolución correcta y búsqueda sin resultados. No guardes los datos en disco: basta con que permanezcan mientras se ejecuta el programa.
+
+#### Organización de archivos, clases e imports
+
+Una aplicación Kotlin no tiene por qué estar en un único archivo. Se suele separar el modelo de datos, la lógica y el punto de entrada. En un proyecto Kotlin/JVM con Gradle, los archivos fuente se guardan en `src/main/kotlin`; las carpetas reflejan normalmente los paquetes:
+
+```text
+biblioteca/
+├── build.gradle.kts
+└── src/main/kotlin/
+    └── es/ejemplo/biblioteca/
+        ├── Main.kt
+        ├── modelo/
+        │   ├── Libro.kt
+        │   └── Socio.kt
+        └── servicio/
+            └── Biblioteca.kt
+```
+
+Cada archivo declara su paquete al principio. El paquete agrupa clases y evita conflictos entre nombres iguales. Aunque la estructura de carpetas suele coincidir con el paquete, Kotlin no obliga a que coincidan exactamente. Es habitual guardar cada clase principal en un archivo con el mismo nombre.
+
+`Libro.kt`:
+
+```kotlin
+package es.ejemplo.biblioteca.modelo
+
+data class Libro(val isbn: String, val titulo: String)
+```
+
+`Socio.kt`:
+
+```kotlin
+package es.ejemplo.biblioteca.modelo
+
+class Socio(val identificador: String, val nombre: String) {
+	val prestamos = mutableSetOf<String>()
+}
+```
+
+`Biblioteca.kt` declara su propio paquete e importa la clase `Libro`, porque pertenece a otro paquete:
+
+```kotlin
+package es.ejemplo.biblioteca.servicio
+
+import es.ejemplo.biblioteca.modelo.Libro
+import es.ejemplo.biblioteca.modelo.Socio
+
+class Biblioteca {
+	private val libros = mutableMapOf<String, Libro>()
+	private val socios = mutableMapOf<String, Socio>()
+
+	fun agregar(libro: Libro) {
+		libros[libro.isbn] = libro
+	}
+
+	fun agregar(socio: Socio) {
+		socios[socio.identificador] = socio
+	}
+
+	fun buscar(isbn: String): Libro? = libros[isbn]
+}
+```
+
+El archivo `Main.kt` contiene la función `main()`, que es el punto de entrada de la aplicación de consola. Desde ella se crean los objetos y se llama a la lógica:
+
+```kotlin
+package es.ejemplo.biblioteca
+
+import es.ejemplo.biblioteca.modelo.Libro
+import es.ejemplo.biblioteca.modelo.Socio
+import es.ejemplo.biblioteca.servicio.Biblioteca
+
+fun main() {
+	val biblioteca = Biblioteca()
+	biblioteca.agregar(Libro("978-1", "Kotlin básico"))
+	biblioteca.agregar(Socio("S1", "Ana"))
+	println(biblioteca.buscar("978-1"))
+}
+```
+
+`import` permite usar una clase de otro paquete escribiendo su nombre corto (`Libro`) en lugar del nombre completo (`es.ejemplo.biblioteca.modelo.Libro`). Las clases del mismo paquete no necesitan importarse, y las colecciones básicas de Kotlin (`List`, `Set`, `Map`, etc.) están disponibles sin import explícito. El IDE puede añadir los imports al completar el nombre de una clase.
+
+En Kotlin, `main()` suele ser una función de nivel superior: no hace falta declararla dentro de una clase. En bytecode JVM, una función ubicada en `Main.kt` se expone mediante una clase generada llamada `MainKt`; normalmente no es necesario crear esa clase manualmente. Si se añade una clase nueva, se crea otro archivo `.kt` con su `package`, las declaraciones de clase y los `import` que necesite.
 
 ## 10. OTROS ELEMENTOS DE KOTLIN
 
@@ -2355,4 +2318,3 @@ En una aplicación Android no sería necesario este `sleep` de consola: el ciclo
 4. Comprueba que el hilo principal no queda bloqueado y que el callback se ejecuta después de la operación.
 
 ---
-
