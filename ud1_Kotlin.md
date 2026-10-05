@@ -2107,64 +2107,7 @@ biblioteca/
 
 Cada archivo declara su paquete al principio. El paquete agrupa clases y evita conflictos entre nombres iguales. Aunque la estructura de carpetas suele coincidir con el paquete, Kotlin no obliga a que coincidan exactamente. Es habitual guardar cada clase principal en un archivo con el mismo nombre.
 
-`Libro.kt`:
-
-```kotlin
-package es.ejemplo.biblioteca.modelo
-
-data class Libro(val isbn: String, val titulo: String)
-```
-
-`Socio.kt`:
-
-```kotlin
-package es.ejemplo.biblioteca.modelo
-
-class Socio(val identificador: String, val nombre: String) {
-	val prestamos = mutableSetOf<String>()
-}
-```
-
-`Biblioteca.kt` declara su propio paquete e importa la clase `Libro`, porque pertenece a otro paquete:
-
-```kotlin
-package es.ejemplo.biblioteca.servicio
-
-import es.ejemplo.biblioteca.modelo.Libro
-import es.ejemplo.biblioteca.modelo.Socio
-
-class Biblioteca {
-	private val libros = mutableMapOf<String, Libro>()
-	private val socios = mutableMapOf<String, Socio>()
-
-	fun agregar(libro: Libro) {
-		libros[libro.isbn] = libro
-	}
-
-	fun agregar(socio: Socio) {
-		socios[socio.identificador] = socio
-	}
-
-	fun buscar(isbn: String): Libro? = libros[isbn]
-}
-```
-
 El archivo `Main.kt` contiene la función `main()`, que es el punto de entrada de la aplicación de consola. Desde ella se crean los objetos y se llama a la lógica:
-
-```kotlin
-package es.ejemplo.biblioteca
-
-import es.ejemplo.biblioteca.modelo.Libro
-import es.ejemplo.biblioteca.modelo.Socio
-import es.ejemplo.biblioteca.servicio.Biblioteca
-
-fun main() {
-	val biblioteca = Biblioteca()
-	biblioteca.agregar(Libro("978-1", "Kotlin básico"))
-	biblioteca.agregar(Socio("S1", "Ana"))
-	println(biblioteca.buscar("978-1"))
-}
-```
 
 `import` permite usar una clase de otro paquete escribiendo su nombre corto (`Libro`) en lugar del nombre completo (`es.ejemplo.biblioteca.modelo.Libro`). Las clases del mismo paquete no necesitan importarse, y las colecciones básicas de Kotlin (`List`, `Set`, `Map`, etc.) están disponibles sin import explícito. El IDE puede añadir los imports al completar el nombre de una clase.
 
