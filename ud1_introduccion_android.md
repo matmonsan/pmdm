@@ -16,14 +16,12 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 9. [Intents (Navegación) y Gestión de Permisos](#9-intents-navegación-y-gestión-de-permisos)
 10. [Introducción al Desarrollo Moderno con Jetpack Compose](#10-introducción-al-desarrollo-moderno-con-jetpack-compose)
 
----
-
 ## 1. EVOLUCIÓN DE LAS TECNOLOGÍAS MÓVILES
 
 El desarrollo de software móvil ha ido de la mano de la evolución de las redes de telefonía inalámbrica. Cada generación tecnológica introdujo capacidades de red que condicionaron el tipo de aplicaciones que los desarrolladores podían crear.
 
-![Figura 1. Línea temporal de la evolución de las tecnologías de redes móviles (1G a 5G)](./assets/img/redes-moviles.jpg){: width="480" }  
-*Descripción de la Figura 1: Esquema cronológico que muestra desde la telefonía analógica 1G hasta la llegada de la quinta generación (5G) enfocada en ultrabaja latencia e Internet de las Cosas (IoT).*
+![Figura 1. Línea temporal de la evolución de las tecnologías de redes móviles (1G a 5G)](./assets/img/redes-moviles.jpg){: width="580" }  
+*Figura 1: Esquema cronológico que muestra desde la telefonía analógica 1G hasta la llegada de la quinta generación (5G) enfocada en ultrabaja latencia e Internet de las Cosas (IoT).*
 
 ### 1.1 Primera Generación (1G)
 * **Tecnología:** Analógica (TACS, NMT, AMPS).
@@ -50,8 +48,6 @@ El desarrollo de software móvil ha ido de la mano de la evolución de las redes
 * **Características:** Latencias extremadamente bajas (< 1 ms), velocidades teóricas de hasta 10-20 Gbps y capacidad de conectar millones de dispositivos por $\text{km}^2$.
 * **Impacto en desarrollo:** Desarrollo orientado a IoT (Internet de las Cosas), Realidad Aumentada (AR), Realidad Virtual (VR), conducción autónoma e integración de Modelos de Inteligencia Artificial ejecutable en la nube/dispositivo.
 
----
-
 ## 2. HISTORIA Y VERSIONES DEL SISTEMA OPERATIVO ANDROID
 
 Android es un sistema operativo móvil basado en el Kernel de Linux, creado por Android Inc. (fundada por Andy Rubin en 2003) y posteriormente adquirido por Google en octubre de 2005.
@@ -59,8 +55,8 @@ Android es un sistema operativo móvil basado en el Kernel de Linux, creado por 
 ### 2.1 Filosofía del Proyecto
 Google lanzó la **Open Handset Alliance (OHA)** en 2007, una alianza de empresas de hardware, software y telecomunicaciones dedicada a impulsar un estándar abierto en dispositivos móviles. El código fuente principal de Android se distribuye bajo el proyecto **AOSP (Android Open Source Project)** con licenciamiento de código abierto.
 
-![Figura 2. Logotipo de Android y evolución estética del sistema](./assets/img/versiones_android.jpg){: width="480" }  
-*Descripción de la Figura 2: Evolución gráfica del logotipo e identidad visual de Android a lo largo de las distintas versiones.*
+![Figura 2. Logotipo de Android y evolución estética del sistema](./assets/img/versiones_android.jpg){: width="580" }  
+*Figura 2: Evolución gráfica del logotipo e identidad visual de Android a lo largo de las distintas versiones.*
 
 ### 2.2 Cuadro Histórico de Versiones y Nivel de API (API Level)
 
@@ -96,8 +92,6 @@ No siempre existe una correspondencia de uno a uno: una versión puede abarcar v
 | **Android 16** | 16.0 | 36 | 10 de junio de 2025 | Actualizaciones continuas del SDK, mejoras avanzadas de rendimiento y privacidad. |
 | **Android 17** | 17.0 | 37 | 16 de junio de 2026 | Nuevas características y optimizaciones enfocadas en el ecosistema actual. |
 
----
-
 ## 3. GLOSARIO DE CONCEPTOS FUNDAMENTALES DE ANDROID
 
 Para dominar el desarrollo móvil con Android es imprescindible entender los conceptos de la infraestructura y el kit de herramientas del sistema:
@@ -111,8 +105,8 @@ Número entero único que representa la revisión de la API de framework proporc
 ### 3.3 Kernel de Linux
 Es la capa base sobre la que se asienta Android. Se encarga de la gestión de memoria de bajo nivel, gestión de procesos, controladores de hardware (cámara, Wi-Fi, bluetooth) y seguridad/aislamiento de aplicaciones.
 
-![Figura 3. Arquitectura del sistema Android](./assets/img/Arquitectura-Android-que-es.jpg){: width="480" }  
-*Descripción de la Figura 3: Diagrama por capas que muestra desde el Kernel de Linux en la base, HAL, Librerías nativas/Android Runtime, Framework de aplicaciones Java/Kotlin y Aplicaciones en la capa superior.*
+![Figura 3. Arquitectura del sistema Android](./assets/img/Arquitectura-Android-que-es.jpg){: width="580" }  
+* Figura 3: Diagrama por capas que muestra desde el Kernel de Linux en la base, HAL, Librerías nativas/Android Runtime, Framework de aplicaciones Java/Kotlin y Aplicaciones en la capa superior.*
 
 ### 3.4 Entorno de Ejecución: Dalvik vs ART
 * **Dalvik (Legacy):** Ejecutaba código bytecode Dalvik (`.dex`). Utilizaba compilación **JIT (Just-In-Time)**, traduciendo el código a instrucciones de máquina en tiempo real durante la ejecución, lo que consumía más batería y CPU.
@@ -125,14 +119,12 @@ Es la capa base sobre la que se asienta Android. Se encarga de la gestión de me
 ### 3.6 Gradle
 Herramienta de automatización de compilación (*build system*) utilizada por Android Studio. Permite gestionar dependencias externas, configurar variantes de compilación (*build types*, *flavors*) y empaquetar la app. En proyectos modernos se escribe en **Kotlin DSL** (`build.gradle.kts`).
 
----
-
 ## 4. COMPONENTES PRINCIPALES DE UNA APLICACIÓN ANDROID
 
 Cualquier aplicación Android se construye combinando cuatro bloques fundamentales del sistema, junto con otros elementos auxiliares de interfaz y lógica.
 
-![Figura 4. Componentes fundamentales del ecosistema Android](./assets/img/componentes_android.jpg){: width="480" }  
-*Descripción de la Figura 4: Relación estructural entre Activities, Services, Broadcast Receivers y Content Providers.*
+![Figura 4. Componentes fundamentales del ecosistema Android](./assets/img/componentes_android.jpg){: width="580" }  
+*Figura 4: Relación estructural entre Activities, Services, Broadcast Receivers y Content Providers.*
 
 ### 4.1 Componentes de Aplicación
 
@@ -163,14 +155,12 @@ Android define cuatro componentes principales de aplicación. La interfaz tambi�
    * Es una parte reutilizable de la interfaz y el comportamiento de una Activity, con ciclo de vida propio ligado al de esta.
    * Ayuda a organizar la interfaz y adaptarla a distintos tamaños de pantalla.
 
----
-
 ## 5. ENTORNO DE DESARROLLO: ANDROID STUDIO Y AVD
 
 Android Studio es el IDE oficial para el desarrollo de aplicaciones Android, basado en **IntelliJ IDEA** de JetBrains.
 
-![Figura 5. Interfaz principal del entorno Android Studio](/images/figura_5_android_studio_ide.png){: width="480" }  
-*Descripción de la Figura 5: Captura de pantalla de la ventana principal de Android Studio en la que se distingue el panel de proyecto a la izquierda, editor central y herramientas inferiores como Logcat.*
+![Figura 5. Interfaz principal del entorno Android Studio](/images/figura_5_android_studio_ide.png){: width="580" }  
+*Figura 5: Captura de pantalla de la ventana principal de Android Studio en la que se distingue el panel de proyecto a la izquierda, editor central y herramientas inferiores como Logcat.*
 
 ### 5.1 Características Principales de Android Studio
 * Integración nativa con Gradle.
@@ -193,13 +183,11 @@ Para ejecutar y probar aplicaciones en un móvil físico, es necesario seguir lo
 3. En Opciones de desarrollo, activar la casilla **Depuración por USB**.
 4. Conectar el móvil al PC mediante cable de datos y autorizar la clave RSA en la pantalla del teléfono.
 
----
-
 ## 6. ESTRUCTURA DE UN PROYECTO EN ANDROID Y ANDROIDMANIFEST.XML
 
 Al crear un nuevo proyecto en Android Studio, la estructura de directorios se organiza de una forma lógica para diferenciar el código fuente, los recursos estáticos y los scripts de compilación.
 
-![Figura 6. Estructura de carpetas en vista "Android" dentro de Android Studio](/images/figura_6_estructura_proyecto.png){: width="480" }  
+![Figura 6. Estructura de carpetas en vista "Android" dentro de Android Studio](/images/figura_6_estructura_proyecto.png){: width="580" }  
 *Descripción de la Figura 6: Vista lógica del árbol del proyecto mostrando las carpetas manifests, java y res.*
 
 ### 6.1 Directorios Principales
@@ -211,8 +199,6 @@ Al crear un nuevo proyecto en Android Studio, la estructura de directorios se or
   * `mipmap/`: Iconos de la aplicación en distintas densidades ($mdpi, hdpi, xhdpi, xxhdpi, xxxhdpi$).
   * `values/`: Constantes globales como cadenas (`strings.xml`), colores (`colors.xml`) y temas (`themes.xml`).
 * `Gradle Scripts/`: Ficheros de configuración del sistema de construcción (`build.gradle.kts` a nivel de proyecto y a nivel de módulo `app`).
-
----
 
 ### 6.2 El Archivo AndroidManifest.xml
 Es el fichero fundamental de configuración de cualquier aplicación Android. Describe la estructura de la app al sistema operativo antes de ejecutarse.
@@ -263,13 +249,11 @@ Es el fichero fundamental de configuración de cualquier aplicación Android. De
 </manifest>
 ```
 
----
-
 ## 7. EL CICLO DE VIDA DE UNA ACTIVITY
 
 Una **Activity** no permanece abierta indefinidamente ni controla de forma absoluta su propio destino. El sistema operativo Android gestiona la memoria destruyendo o pausando actividades según las necesidades del dispositivo (llamadas entrantes, falta de RAM, rotación de pantalla).
 
-![Figura 7. Diagrama oficial del Ciclo de Vida de una Activity](/images/figura_7_ciclo_vida_activity.png){: width="480" }  
+![Figura 7. Diagrama oficial del Ciclo de Vida de una Activity](/images/figura_7_ciclo_vida_activity.png){: width="580" }  
 *Descripción de la Figura 7: Diagrama de estados y funciones callback correspondientes: onCreate(), onStart(), onResume(), onPause(), onStop(), onDestroy() y onRestart().*
 
 ### 7.1 Métodos Callback del Ciclo de Vida
@@ -294,8 +278,6 @@ Una **Activity** no permanece abierta indefinidamente ni controla de forma absol
    * **Uso:** Limpieza total de recursos y subprocesos.
 7. **`onRestart()`**
    * **Cuándo ocurre:** La Activity pasa de estar en estado *Stopped* a reactivarse de nuevo antes de volver a llamar a `onStart()`.
-
----
 
 ### 7.2 Conservación del Estado de la Interfaz (`Bundle`)
 Cuando ocurre un cambio de configuración (como **rotar la pantalla**), Android destruye y vuelve a crear la Activity por defecto. Para evitar la pérdida de datos introducidos por el usuario:
@@ -323,13 +305,11 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
----
-
 ## 8. GESTIÓN DE EVENTOS E INTERACCIÓN EN LA INTERFAZ
 
 Para reaccionar a los toques del usuario sobre los botones u otros componentes visuales, el sistema ofrece varios enfoques de control de eventos.
 
-![Figura 8. Interacción de eventos mediante Listener en Kotlin](/images/figura_8_gestion_eventos.png){: width="480" }  
+![Figura 8. Interacción de eventos mediante Listener en Kotlin](/images/figura_8_gestion_eventos.png){: width="580" }  
 *Descripción de la Figura 8: Diagrama del flujo entre la interacción del usuario con un View (Button) y la captura del evento vía Listener.*
 
 ### 8.1 Métodos de Implementación de Escuchadores (`OnClickListener`)
@@ -369,13 +349,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 }
 ```
 
----
-
 ## 9. INTENTS (NAVEGACIÓN) Y GESTIÓN DE PERMISOS
 
 Un **Intent** es el mecanismo fundamental de comunicación de Android para solicitar acciones a otros componentes.
 
-![Figura 9. Diferencia conceptual entre Intents Explícitos e Implícitos](/images/figura_9_intents.png){: width="480" }  
+![Figura 9. Diferencia conceptual entre Intents Explícitos e Implícitos](/images/figura_9_intents.png){: width="580" }  
 *Descripción de la Figura 9: Diagrama comparativo donde un Intent explícito apunta directamente a un componente concreto de la app, mientras que el implícito consulta al sistema operativo para encontrar aplicaciones capaces de realizar la acción.*
 
 ### 9.1 Intents Explícitos
@@ -403,8 +381,6 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
----
-
 ### 9.2 Intents Implícitos
 No especifican la clase exacta de destino; en su lugar, declaran una **Acción General** (`ACTION_VIEW`, `ACTION_DIAL`, etc.) para que el sistema busque qué aplicaciones instaladas pueden responder a esa petición.
 
@@ -417,8 +393,6 @@ startActivity(urlIntent)
 val dialIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:961234567"))
 startActivity(dialIntent)
 ```
-
----
 
 ### 9.3 Permisos en Tiempo de Ejecución (Runtime Permissions)
 Desde **Android 6.0 (API Level 23 - Marshmallow)**, los permisos considerados "peligrosos" (acceso a cámara, ubicación, llamadas, almacenamiento) no solo deben declararse en el `AndroidManifest.xml`, sino que **deben ser solicitados explícitamente al usuario en tiempo de ejecución**.
@@ -495,13 +469,11 @@ Desde **Android 6.0 (API Level 23 - Marshmallow)**, los permisos considerados "p
    }
    ```
 
----
-
 ## 10. INTRODUCCIÓN AL DESARROLLO MODERNO CON JETPACK COMPOSE
 
 **Jetpack Compose** es el kit de herramientas moderno recomendado por Google para construir interfaces de usuario nativas en Android. Sustituye el modelo clásico basado en XML por un paradigma **Declarativo**.
 
-![Figura 10. Comparativa entre el modelo Imperativo (XML) y el Declarativo (Jetpack Compose)](/images/figura_10_compose_vs_xml.png){: width="480" }  
+![Figura 10. Comparativa entre el modelo Imperativo (XML) y el Declarativo (Jetpack Compose)](/images/figura_10_compose_vs_xml.png){: width="580" }  
 *Descripción de la Figura 10: Esquema ilustrativo que compara la manipulación explícita del árbol de vistas en XML frente a la emisión automática de la interfaz mediante funciones Composable según el Estado.*
 
 ### 10.1 Conceptos Clave de Jetpack Compose
@@ -509,14 +481,10 @@ Desde **Android 6.0 (API Level 23 - Marshmallow)**, los permisos considerados "p
 * **Funciones `@Composable`:** Funciones de Kotlin anotadas con `@Composable` que emiten elementos de interfaz gráfica.
 * **Estado (`State`):** Los datos que determinan lo que muestra la UI. Cuando el estado cambia, Compose ejecuta una **Recomposición** automáticamente para redibujar solo las partes de la UI afectadas.
 
----
-
 ### 10.2 Contenedores Básicos de Estructura
 * **`Column`:** Modificador de diseño equivalente a un `LinearLayout` vertical.
 * **`Row`:** Modificador de diseño equivalente a un `LinearLayout` horizontal.
 * **`Box`:** Apila elementos uno encima de otro (similar a un `FrameLayout`).
-
----
 
 ### 10.3 Ejemplo Completo de Interfaz Interactiva en Jetpack Compose
 
@@ -587,8 +555,6 @@ fun PreviewPantallaContador() {
     }
 }
 ```
-
----
 
 ## RESUMEN DE LA UNIDAD
 * Android ha evolucionado impulsado por el avance de las redes móviles (de 1G a 5G) hasta convertirse en un sistema moderno basado en Linux y el entorno **ART**.
