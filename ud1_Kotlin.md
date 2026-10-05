@@ -1803,7 +1803,18 @@ Las tres familias principales son:
 | `Set<T>` | Elementos de tipo `T` | No admite elementos repetidos. No se debe confiar en el orden salvo que se elija una implementación ordenada. |
 | `Map<K, V>` | Pares de clave y valor | Las claves son únicas; cada clave identifica un valor. `Map` no es un subtipo de `Collection`. |
 
-En cada familia existen interfaces de solo lectura (`List`, `Set`, `Map`) e interfaces mutables (`MutableList`, `MutableSet`, `MutableMap`). Las primeras no ofrecen operaciones para cambiar la estructura; las segundas sí. «Solo lectura» no significa necesariamente que ningún otro código pueda modificar el mismo objeto: tampoco hace inmutables los objetos guardados dentro de la colección.
+En cada familia hay una interfaz de solo lectura (`List`, `Set`, `Map`) y otra mutable (`MutableList`, `MutableSet`, `MutableMap`). **Ambas permiten consultar, buscar y recorrer los datos**; la diferencia es si se puede cambiar la colección desde esa referencia:
+
+| Operación | Solo lectura (`List`, `Set`, `Map`) | Mutable (`MutableList`, `MutableSet`, `MutableMap`) |
+| --- | --- | --- |
+| Consultar, buscar y recorrer | Sí | Sí |
+| Añadir elementos o asociaciones | No | Sí |
+| Eliminar elementos o asociaciones | No | Sí |
+| Cambiar contenido existente | No | Sí, según la colección: en una lista se puede reemplazar un elemento por índice; en un mapa, cambiar el valor de una clave. En un conjunto no se reemplaza por posición: se quita el elemento y se añade otro. |
+
+Por ejemplo, en una `MutableList` se puede usar `add`, `remove` y `lista[indice] = valor`; en una `List` esas operaciones no están disponibles. En un `MutableMap` se puede usar `mapa[clave] = valor` para añadir una asociación o cambiar su valor, y `remove(clave)` para eliminarla. Un `MutableSet` permite `add` y `remove`, pero no admite duplicados.
+
+«Solo lectura» significa que **esa referencia** no ofrece operaciones para cambiar la colección; no garantiza que ningún otro código pueda cambiar el mismo objeto si conserva una referencia mutable. Tampoco impide modificar las propiedades de los objetos guardados dentro de la colección, si esos objetos son mutables.
 
 Las colecciones son genéricas: el tipo entre `< >` indica qué elementos admiten. `List<String?>` es una lista que puede contener cadenas nulas; `List<String>?` es una referencia a una lista que puede ser nula. Son tipos diferentes y Kotlin obliga a tratar cada posible `null` de forma segura.
 
@@ -1879,9 +1890,27 @@ Las operaciones de transformación suelen producir una lista nueva y no modifica
 - `groupBy { ... }`: agrupa los elementos según una clave.
 
 ```kotlin
-val numeros = listOf(1, 2, 3, 4)
-val paresDuplicados = numeros.filter { it % 2 == 0 }.map { it * 2 }
-println(paresDuplicados) // [4, 8]
+val numeros = mutableListOf(1, 2, 3, 2, 4)
+val duplicados = numeros.map { it * 2 } // [2, 4, 6, 4, 8]
+val pares = numeros.filter { it % 2 == 0 } // [2, 2, 4]
+val noNulos = mutableListOf(1, null, 3).mapNotNull { it } // Descarta el null: [1, 3]
+val aplanados = numeros.flatMap { listOf(it, it * 10) } // Combina las listas producidas por cada elemento
+val unicos = numeros.distinct() // [1, 2, 3, 4]
+val ordenados = numeros.sorted() // Devuelve una lista nueva ordenada
+val porLongitud = listOf("sol", "luna", "mar").sortedBy { it.length }
+val primerosDos = numeros.take(2) // [1, 2]
+val sinPrimerosDos = numeros.drop(2) // [3, 2, 4]
+val primerPar = numeros.firstOrNull { it % 2 == 0 } // 2
+val primerMayorQueTres = numeros.find { it > 3 } // 4; equivalente aquí a firstOrNull
+val hayImpares = numeros.any { it % 2 != 0 } // true: alguno cumple
+val todosPositivos = numeros.all { it > 0 } // true: todos cumplen
+val cantidadDePares = numeros.count { it % 2 == 0 } // 3
+val suma = numeros.sum() // 12
+val sumaDeCuadrados = numeros.sumOf { it * it } // 34
+val media = numeros.average() // 2.4
+val minimo = numeros.minOrNull() // 1
+val maximo = numeros.maxOrNull() // 4
+val porParidad = numeros.groupBy { if (it % 2 == 0) "par" else "impar" }
 ```
 
 Para ordenar objetos por una propiedad se puede usar, por ejemplo, `productos.sortedBy { it.nombre }`. `partition` divide una colección en los elementos que cumplen una condición y los que no; `zip` combina dos listas por posición hasta que se acaba la más corta; `reversed` devuelve el orden inverso; `fold` y `reduce` acumulan un resultado.
@@ -1927,19 +1956,23 @@ No se debe depender del orden en que se recorren los elementos de un `Set` gené
 
 ```kotlin
 val materias = mutableSetOf("Kotlin", "Bases de datos")
-materias.add("Android")
-val yaEstaba = materias.add("Kotlin")
-materias.remove("Bases de datos")
-
-println(yaEstaba) // false: Kotlin ya estaba, no se añadió otra vez
-println(materias.contains("Android")) // true
+materias.add("Android") // Añade si todavía no está
+val yaEstaba = materias.add("Kotlin") // false: no duplica un elemento existente
+materias.remove("Bases de datos") // Elimina si existe
+materias.addAll(listOf("Programación", "Diseño")) // Añade varios
+materias.removeAll { it.startsWith("Diseño") } // Elimina los que cumplen la condición
+val contieneAndroid = materias.contains("Android") // true
+val contieneKotlin = "Kotlin" in materias // También comprueba pertenencia
+val sinDuplicadosComoConjunto = mutableListOf("Kotlin", "Android", "Kotlin").toSet()
+val sinDuplicadosComoLista = mutableListOf("Kotlin", "Android", "Kotlin").distinct()
+materias.clear() // Vacía el conjunto mutable
 ```
 
 Los elementos se pueden recorrer con `for` o `forEach`. Las operaciones de conjuntos más habituales son `union` (unión), `intersect` (elementos comunes) y `subtract` (elementos que están en el primero, pero no en el segundo). Devuelven un conjunto nuevo y no modifican los conjuntos originales.
 
 ```kotlin
-val cursoA = setOf("Ana", "Luis")
-val cursoB = setOf("Luis", "Eva")
+val cursoA = mutableSetOf("Ana", "Luis")
+val cursoB = mutableSetOf("Luis", "Eva")
 
 val todos = cursoA union cursoB
 val comunes = cursoA intersect cursoB
@@ -1998,11 +2031,16 @@ En un mapa mutable, `mapa[clave] = valor` o `put` añade una asociación o susti
 
 ```kotlin
 val edades = mutableMapOf("Ana" to 20, "Luis" to 22)
-edades["Ana"] = 21 // Cambia el valor
-edades["Marta"] = 19 // Añade una clave
-edades.remove("Luis")
-
-println(edades)
+edades.put("Ana", 21) // put añade o sustituye el valor de una clave
+edades["Marta"] = 19 // [] también añade o actualiza
+edades.putAll(mapOf("Eva" to 18, "Pablo" to 23)) // Añade varias asociaciones
+edades.remove("Luis") // Elimina una asociación por su clave
+val edadDeSofia = edades.getOrPut("Sofía") { 20 } // Calcula y guarda el valor si falta la clave
+val mayoresDeEdad = edades.filter { (_, edad) -> edad >= 18 }
+val edadesDeAnaYEva = edades.filterKeys { it == "Ana" || it == "Eva" }
+val mayoresDeVeinte = edades.filterValues { it > 20 }
+val edadesEnMeses = edades.mapValues { (_, edad) -> edad * 12 }
+edades.clear() // Elimina todas las asociaciones
 ```
 
 Se recorre un mapa por entradas con `for ((clave, valor) in mapa)` o con `forEach`. Las transformaciones como `filter` y `mapValues` devuelven mapas nuevos y no cambian el original.
