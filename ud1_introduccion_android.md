@@ -22,7 +22,7 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 
 El desarrollo de software móvil ha ido de la mano de la evolución de las redes de telefonía inalámbrica. Cada generación tecnológica introdujo capacidades de red que condicionaron el tipo de aplicaciones que los desarrolladores podían crear.
 
-![Figura 1. Línea temporal de la evolución de las tecnologías de redes móviles (1G a 5G)](/images/figura_1_evolucion_redes.png)  
+![Figura 1. Línea temporal de la evolución de las tecnologías de redes móviles (1G a 5G)](./assets/img/redes-moviles.jpg){: width="480" }  
 *Descripción de la Figura 1: Esquema cronológico que muestra desde la telefonía analógica 1G hasta la llegada de la quinta generación (5G) enfocada en ultrabaja latencia e Internet de las Cosas (IoT).*
 
 ### 1.1 Primera Generación (1G)
@@ -59,36 +59,42 @@ Android es un sistema operativo móvil basado en el Kernel de Linux, creado por 
 ### 2.1 Filosofía del Proyecto
 Google lanzó la **Open Handset Alliance (OHA)** en 2007, una alianza de empresas de hardware, software y telecomunicaciones dedicada a impulsar un estándar abierto en dispositivos móviles. El código fuente principal de Android se distribuye bajo el proyecto **AOSP (Android Open Source Project)** con licenciamiento de código abierto.
 
-![Figura 2. Logotipo de Android y evolución estética del sistema](/images/figura_2_android_history.png)  
+![Figura 2. Logotipo de Android y evolución estética del sistema](./assets/img/versiones_android.jpg){: width="480" }  
 *Descripción de la Figura 2: Evolución gráfica del logotipo e identidad visual de Android a lo largo de las distintas versiones.*
 
 ### 2.2 Cuadro Histórico de Versiones y Nivel de API (API Level)
 
-En Android, la compatibilidad del código no solo se gestiona por el nombre de la versión comercial, sino fundamentalmente a través del **API Level** (número entero que identifica la revisión de la plataforma).
+La **versión de Android** es el nombre o número comercial que identifica una edición del sistema operativo (por ejemplo, Android 14). El **API Level** es un número entero que identifica la revisión de las API del framework de Android disponibles en esa edición. Por tanto, la versión es la denominación familiar para las personas usuarias y el API Level es la referencia técnica que utilizan las herramientas y aplicaciones para determinar la compatibilidad.
 
-| Nombre en Clave | Versión de Android | API Level | Hito / Novedad Destacada |
-| :--- | :--- | :--- | :--- |
-| *(Sin nombre dulce)* | 1.0 / 1.1 | 1 / 2 | Primera versión comercial, integración con servicios Google. |
-| **Cupcake** | 1.5 | 3 | Teclado en pantalla, widgets, soporte para vídeos. |
-| **Donut** | 1.6 | 4 | Búsqueda por voz, soporte para diferentes resoluciones de pantalla. |
-| **Eclair** | 2.0 / 2.1 | 5 - 7 | Navegación GPS paso a paso (Google Maps), fondos animados. |
-| **Froyo** | 2.2 | 8 | Compilador JIT en Dalvik, tethering por Wi-Fi. |
-| **Gingerbread** | 2.3 | 9 - 10 | Soporte NFC, interfaz optimizada, gestión de batería mejorada. |
-| **Honeycomb** | 3.0 - 3.2 | 11 - 13 | Exclusivo para tablets, introducción de la ActionBar y Fragments. |
-| **Ice Cream Sandwich**| 4.0 | 14 - 15 | Unificación de móviles y tablets, diseño *Holo*, desbloqueo facial. |
-| **Jelly Bean** | 4.1 - 4.3 | 16 - 18 | *Project Butter* (60 fps), Google Now, notificaciones enriquecidas. |
-| **KitKat** | 4.4 | 19 - 20 | Optimización de memoria RAM (512 MB), modo inmersivo. |
-| **Lollipop** | 5.0 - 5.1 | 21 - 22 | **Material Design**, introducción de ART (Android Runtime) definitivo. |
-| **Marshmallow** | 6.0 | 23 | **Permisos en tiempo de ejecución**, modo *Doze* de ahorro energético. |
-| **Nougat** | 7.0 - 7.1 | 24 - 25 | Multiventana nativa, respuesta rápida en notificaciones, Vulkan API. |
-| **Oreo** | 8.0 - 8.1 | 26 - 27 | Project Treble, modo Picture-in-Picture (PiP), límites en segundo plano. |
-| **Pie** | 9.0 | 28 | Navegación por gestos, Batería Inteligente, recorte de pantalla (notch). |
-| **Android 10** | 10.0 | 29 | Tema oscuro global, fin de nombres de postres públicos, permisos de ubicación mejorados. |
-| **Android 11** | 11.0 | 30 | Burbujas de conversación, grabación de pantalla nativa, permisos de un solo uso. |
-| **Android 12 / 12L**| 12.0 | 31 - 32 | **Material You** (colores dinámicos), panel de privacidad (*Privacy Dashboard*). |
-| **Android 13** | 13.0 | 33 | Idiomas por aplicación, selector de fotos independiente, permiso de notificaciones. |
-| **Android 14** | 14.0 | 34 | Personalización de pantalla de bloqueo, mejoras en accesibilidad y eficiencia. |
-| **Android 15** | 15.0 | 35 | Espacio privado (*Private Space*), edge-to-edge por defecto, optimizaciones para la IA. |
+No siempre existe una correspondencia de uno a uno: una versión puede abarcar varios API Levels si hubo actualizaciones de la plataforma, como Android 12 (API 31) y Android 12L (API 32). Por eso, al desarrollar se suelen configurar estos niveles en Gradle: `minSdk` indica el API Level mínimo en el que se puede instalar la app, `targetSdk` declara para qué nivel se ha adaptado su comportamiento y `compileSdk` especifica el API Level con cuyas API se compila.
+
+**Ejemplo:** Android 14 corresponde al API Level 34 y Android 15 al API Level 35. Si una aplicación establece `minSdk = 34`, podrá instalarse en Android 14 y versiones posteriores, siempre que el dispositivo cumpla los demás requisitos.
+
+| Nombre en Clave | Versión de Android | API Level | Fecha de Lanzamiento | Hito / Novedad Destacada |
+| :--- | :--- | :--- | :--- | :--- |
+| *(Sin nombre dulce)* | 1.0 / 1.1 | 1 / 2 | 23 de septiembre de 2008 | Primera versión comercial, integración con servicios Google. |
+| **Cupcake** | 1.5 | 3 | 27 de abril de 2009 | Teclado en pantalla, widgets, soporte para vídeos. |
+| **Donut** | 1.6 | 4 | 15 de septiembre de 2009 | Búsqueda por voz, soporte para diferentes resoluciones de pantalla. |
+| **Eclair** | 2.0 / 2.1 | 5 - 7 | 26 de octubre de 2009 | Navegación GPS paso a paso (Google Maps), fondos animados. |
+| **Froyo** | 2.2 | 8 | 20 de mayo de 2010 | Compilador JIT en Dalvik, tethering por Wi-Fi. |
+| **Gingerbread** | 2.3 | 9 - 10 | 6 de diciembre de 2010 | Soporte NFC, interfaz optimizada, gestión de batería mejorada. |
+| **Honeycomb** | 3.0 - 3.2 | 11 - 13 | 22 de febrero de 2011 | Exclusivo para tablets, introducción de la ActionBar y Fragments. |
+| **Ice Cream Sandwich**| 4.0 | 14 - 15 | 18 de octubre de 2011 | Unificación de móviles y tablets, diseño *Holo*, desbloqueo facial. |
+| **Jelly Bean** | 4.1 - 4.3 | 16 - 18 | 9 de julio de 2012 | *Project Butter* (60 fps), Google Now, notificaciones enriquecidas. |
+| **KitKat** | 4.4 | 19 - 20 | 31 de octubre de 2013 | Optimización de memoria RAM (512 MB), modo inmersivo. |
+| **Lollipop** | 5.0 - 5.1 | 21 - 22 | 12 de noviembre de 2014 | **Material Design**, introducción de ART (Android Runtime) definitivo. |
+| **Marshmallow** | 6.0 | 23 | 5 de octubre de 2015 | **Permisos en tiempo de ejecución**, modo *Doze* de ahorro energético. |
+| **Nougat** | 7.0 - 7.1 | 24 - 25 | 22 de agosto de 2016 | Multiventana nativa, respuesta rápida en notificaciones, Vulkan API. |
+| **Oreo** | 8.0 - 8.1 | 26 - 27 | 21 de agosto de 2017 | Project Treble, modo Picture-in-Picture (PiP), límites en segundo plano. |
+| **Pie** | 9.0 | 28 | 6 de agosto de 2018 | Navegación por gestos, Batería Inteligente, recorte de pantalla (notch). |
+| **Android 10** | 10.0 | 29 | 3 de septiembre de 2019 | Tema oscuro global, fin de nombres de postres públicos, permisos de ubicación mejorados. |
+| **Android 11** | 11.0 | 30 | 8 de septiembre de 2020 | Burbujas de conversación, grabación de pantalla nativa, permisos de un solo uso. |
+| **Android 12 / 12L**| 12.0 | 31 - 32 | 4 de octubre de 2021 | **Material You** (colores dinámicos), panel de privacidad (*Privacy Dashboard*). |
+| **Android 13** | 13.0 | 33 | 15 de agosto de 2022 | Idiomas por aplicación, selector de fotos independiente, permiso de notificaciones. |
+| **Android 14** | 14.0 | 34 | 4 de octubre de 2023 | Personalización de pantalla de bloqueo, mejoras en accesibilidad y eficiencia. |
+| **Android 15** | 15.0 | 35 | 3 de septiembre de 2024 | Espacio privado (*Private Space*), edge-to-edge por defecto, optimizaciones para la IA. |
+| **Android 16** | 16.0 | 36 | 10 de junio de 2025 | Actualizaciones continuas del SDK, mejoras avanzadas de rendimiento y privacidad. |
+| **Android 17** | 17.0 | 37 | 16 de junio de 2026 | Nuevas características y optimizaciones enfocadas en el ecosistema actual. |
 
 ---
 
@@ -105,7 +111,7 @@ Número entero único que representa la revisión de la API de framework proporc
 ### 3.3 Kernel de Linux
 Es la capa base sobre la que se asienta Android. Se encarga de la gestión de memoria de bajo nivel, gestión de procesos, controladores de hardware (cámara, Wi-Fi, bluetooth) y seguridad/aislamiento de aplicaciones.
 
-![Figura 3. Arquitectura del sistema Android](/images/figura_3_arquitectura_android.png)  
+![Figura 3. Arquitectura del sistema Android](./assets/img/Arquitectura-Android-que-es.jpg){: width="480" }  
 *Descripción de la Figura 3: Diagrama por capas que muestra desde el Kernel de Linux en la base, HAL, Librerías nativas/Android Runtime, Framework de aplicaciones Java/Kotlin y Aplicaciones en la capa superior.*
 
 ### 3.4 Entorno de Ejecución: Dalvik vs ART
@@ -125,28 +131,37 @@ Herramienta de automatización de compilación (*build system*) utilizada por An
 
 Cualquier aplicación Android se construye combinando cuatro bloques fundamentales del sistema, junto con otros elementos auxiliares de interfaz y lógica.
 
-![Figura 4. Componentes fundamentales del ecosistema Android](/images/figura_4_componentes_android.png)  
+![Figura 4. Componentes fundamentales del ecosistema Android](./assets/img/componentes_android.jpg){: width="480" }  
 *Descripción de la Figura 4: Relación estructural entre Activities, Services, Broadcast Receivers y Content Providers.*
 
-### 4.1 Componentes de Aplicación (Core Components)
+### 4.1 Componentes de Aplicación
 
-1. **Activities (Actividades):**
-   * Representan una única pantalla con la que el usuario puede interactuar.
-   * Contienen la interfaz de usuario (View/Layout) y la lógica de negocio asociada.
-2. **Services (Servicios):**
-   * Componentes que se ejecutan en segundo plano sin ofrecer una interfaz gráfica de usuario.
-   * Ejemplos: Descarga de ficheros pesados, reproducción de música en segundo plano.
-3. **Broadcast Receivers (Receptores de Emisiones):**
-   * Escuchan y responden a anuncios o eventos globales emitidos por el sistema o por otras aplicaciones.
-   * Ejemplos: Evento de batería baja, cambio a modo avión, recepción de un SMS.
-4. **Content Providers (Proveedores de Contenido):**
-   * Administran un conjunto compartido de datos de la aplicación para exponerlos a otras apps de forma segura (mediante una interfaz estándar tipo URI).
-   * Ejemplos: Acceso a la agenda de contactos del sistema o a la galería de imágenes.
+Android define cuatro componentes principales de aplicación. La interfaz también se construye con Views, Layouts y Fragments, mientras que los Intents permiten iniciar componentes y comunicar acciones entre ellos.
 
-### 4.2 Componentes Auxiliares
-* **Intents:** Mensajes o peticiones que comunican componentes entre sí (por ejemplo, iniciar una Activity o enviar un evento).
-* **Fragments:** Porciones modulares y reutilizables de interfaz gráfica dentro de una misma Activity.
-* **Views y Layouts:** Elementos visuales gráficos (Botones, Textos) y contenedores de estructura (Columnas, Filas, ConstraintLayout).
+1. **Activity (Actividad):**
+   * Representa una pantalla o punto de interacción con el usuario y tiene su propio ciclo de vida.
+   * Aloja la interfaz de usuario y coordina la interacción con otros componentes.
+2. **Service (Servicio):**
+   * Permite realizar operaciones sin una interfaz de usuario propia, por ejemplo, reproducir audio o mantener una tarea activa.
+   * El Service no crea automáticamente un hilo de trabajo independiente; las operaciones largas deben ejecutarse de forma asíncrona o en un hilo apropiado.
+3. **Broadcast Receiver (Receptor de emisiones):**
+   * Recibe y responde a anuncios (*broadcasts*) del sistema o de otras aplicaciones.
+   * Ejemplos: cambios en el estado de la batería o del modo avión. Según el evento, el receptor se registra en el manifiesto o en tiempo de ejecución.
+4. **Content Provider (Proveedor de contenido):**
+   * Gestiona y expone datos de forma estructurada a otros componentes o aplicaciones, normalmente mediante URI.
+   * Por ejemplo, permite consultar los contactos del dispositivo; el acceso puede requerir permisos.
+5. **View (Vista):**
+   * Es la clase base de la que heredan muchos elementos de la interfaz, como botones y campos de texto.
+   * Representa una región de la interfaz y puede dibujarse y responder a eventos del usuario.
+6. **Layout (Diseño o contenedor):**
+   * Organiza las Views y otros contenedores, determinando su posición y tamaño.
+   * Algunos ejemplos son `LinearLayout` y `ConstraintLayout`.
+7. **Intent (Intento):**
+   * Es un mensaje que permite solicitar una acción a otro componente, como iniciar una Activity o un Service.
+   * Un Intent explícito identifica el componente de destino; uno implícito describe la acción y Android busca un componente compatible.
+8. **Fragment (Fragmento):**
+   * Es una parte reutilizable de la interfaz y el comportamiento de una Activity, con ciclo de vida propio ligado al de esta.
+   * Ayuda a organizar la interfaz y adaptarla a distintos tamaños de pantalla.
 
 ---
 
@@ -154,7 +169,7 @@ Cualquier aplicación Android se construye combinando cuatro bloques fundamental
 
 Android Studio es el IDE oficial para el desarrollo de aplicaciones Android, basado en **IntelliJ IDEA** de JetBrains.
 
-![Figura 5. Interfaz principal del entorno Android Studio](/images/figura_5_android_studio_ide.png)  
+![Figura 5. Interfaz principal del entorno Android Studio](/images/figura_5_android_studio_ide.png){: width="480" }  
 *Descripción de la Figura 5: Captura de pantalla de la ventana principal de Android Studio en la que se distingue el panel de proyecto a la izquierda, editor central y herramientas inferiores como Logcat.*
 
 ### 5.1 Características Principales de Android Studio
@@ -184,7 +199,7 @@ Para ejecutar y probar aplicaciones en un móvil físico, es necesario seguir lo
 
 Al crear un nuevo proyecto en Android Studio, la estructura de directorios se organiza de una forma lógica para diferenciar el código fuente, los recursos estáticos y los scripts de compilación.
 
-![Figura 6. Estructura de carpetas en vista "Android" dentro de Android Studio](/images/figura_6_estructura_proyecto.png)  
+![Figura 6. Estructura de carpetas en vista "Android" dentro de Android Studio](/images/figura_6_estructura_proyecto.png){: width="480" }  
 *Descripción de la Figura 6: Vista lógica del árbol del proyecto mostrando las carpetas manifests, java y res.*
 
 ### 6.1 Directorios Principales
@@ -254,7 +269,7 @@ Es el fichero fundamental de configuración de cualquier aplicación Android. De
 
 Una **Activity** no permanece abierta indefinidamente ni controla de forma absoluta su propio destino. El sistema operativo Android gestiona la memoria destruyendo o pausando actividades según las necesidades del dispositivo (llamadas entrantes, falta de RAM, rotación de pantalla).
 
-![Figura 7. Diagrama oficial del Ciclo de Vida de una Activity](/images/figura_7_ciclo_vida_activity.png)  
+![Figura 7. Diagrama oficial del Ciclo de Vida de una Activity](/images/figura_7_ciclo_vida_activity.png){: width="480" }  
 *Descripción de la Figura 7: Diagrama de estados y funciones callback correspondientes: onCreate(), onStart(), onResume(), onPause(), onStop(), onDestroy() y onRestart().*
 
 ### 7.1 Métodos Callback del Ciclo de Vida
@@ -314,7 +329,7 @@ class MainActivity : AppCompatActivity() {
 
 Para reaccionar a los toques del usuario sobre los botones u otros componentes visuales, el sistema ofrece varios enfoques de control de eventos.
 
-![Figura 8. Interacción de eventos mediante Listener en Kotlin](/images/figura_8_gestion_eventos.png)  
+![Figura 8. Interacción de eventos mediante Listener en Kotlin](/images/figura_8_gestion_eventos.png){: width="480" }  
 *Descripción de la Figura 8: Diagrama del flujo entre la interacción del usuario con un View (Button) y la captura del evento vía Listener.*
 
 ### 8.1 Métodos de Implementación de Escuchadores (`OnClickListener`)
@@ -360,7 +375,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
 Un **Intent** es el mecanismo fundamental de comunicación de Android para solicitar acciones a otros componentes.
 
-![Figura 9. Diferencia conceptual entre Intents Explícitos e Implícitos](/images/figura_9_intents.png)  
+![Figura 9. Diferencia conceptual entre Intents Explícitos e Implícitos](/images/figura_9_intents.png){: width="480" }  
 *Descripción de la Figura 9: Diagrama comparativo donde un Intent explícito apunta directamente a un componente concreto de la app, mientras que el implícito consulta al sistema operativo para encontrar aplicaciones capaces de realizar la acción.*
 
 ### 9.1 Intents Explícitos
@@ -486,7 +501,7 @@ Desde **Android 6.0 (API Level 23 - Marshmallow)**, los permisos considerados "p
 
 **Jetpack Compose** es el kit de herramientas moderno recomendado por Google para construir interfaces de usuario nativas en Android. Sustituye el modelo clásico basado en XML por un paradigma **Declarativo**.
 
-![Figura 10. Comparativa entre el modelo Imperativo (XML) y el Declarativo (Jetpack Compose)](/images/figura_10_compose_vs_xml.png)  
+![Figura 10. Comparativa entre el modelo Imperativo (XML) y el Declarativo (Jetpack Compose)](/images/figura_10_compose_vs_xml.png){: width="480" }  
 *Descripción de la Figura 10: Esquema ilustrativo que compara la manipulación explícita del árbol de vistas en XML frente a la emisión automática de la interfaz mediante funciones Composable según el Estado.*
 
 ### 10.1 Conceptos Clave de Jetpack Compose
