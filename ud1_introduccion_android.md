@@ -203,7 +203,7 @@ Al crear un nuevo proyecto en Android Studio, la estructura de directorios se or
 ### 6.2 El Archivo AndroidManifest.xml
 Es el fichero fundamental de configuración de cualquier aplicación Android. Describe la estructura de la app al sistema operativo antes de ejecutarse.
 
-#### Ejemplo Exhaustivo de un `AndroidManifest.xml`:
+#### Ejemplo de un `AndroidManifest.xml`:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -253,8 +253,8 @@ Es el fichero fundamental de configuración de cualquier aplicación Android. De
 
 Una **Activity** no permanece abierta indefinidamente ni controla de forma absoluta su propio destino. El sistema operativo Android gestiona la memoria destruyendo o pausando actividades según las necesidades del dispositivo (llamadas entrantes, falta de RAM, rotación de pantalla).
 
-![Figura 7. Diagrama oficial del Ciclo de Vida de una Activity](/images/figura_7_ciclo_vida_activity.png){: width="580" }  
-*Descripción de la Figura 7: Diagrama de estados y funciones callback correspondientes: onCreate(), onStart(), onResume(), onPause(), onStop(), onDestroy() y onRestart().*
+![Figura 7. Diagrama oficial del Ciclo de Vida de una Activity](./assets/img/ciclo.jpg){: width="580" }  
+*Figura 7: Diagrama de estados y funciones callback correspondientes: onCreate(), onStart(), onResume(), onPause(), onStop(), onDestroy() y onRestart().*
 
 ### 7.1 Métodos Callback del Ciclo de Vida
 
@@ -282,6 +282,12 @@ Una **Activity** no permanece abierta indefinidamente ni controla de forma absol
 ### 7.2 Conservación del Estado de la Interfaz (`Bundle`)
 Cuando ocurre un cambio de configuración (como **rotar la pantalla**), Android destruye y vuelve a crear la Activity por defecto. Para evitar la pérdida de datos introducidos por el usuario:
 
+1. **¿Qué es un `Bundle`?** Es un objeto que sirve como una pequeña caja para guardar varios datos temporalmente. Cada dato se guarda con una etiqueta (una clave) y tiene un tipo, por ejemplo, un número entero o un texto. En este ejemplo, la etiqueta `"KEY_CONTADOR"` identifica el número del contador.
+2. **Guardar el dato:** antes de recrear la Activity, Android llama a `onSaveInstanceState()` y le entrega la caja vacía `outState`. El código mete en ella el valor actual del contador con `putInt("KEY_CONTADOR", contador)`: `putInt` indica que se guarda un número entero.
+3. **Crear de nuevo la pantalla:** después de un cambio como girar el móvil, Android crea otra instancia de la Activity y llama a `onCreate()`. Si había guardado el estado, le pasa la caja con los datos en `savedInstanceState`. Cuando la pantalla se abre por primera vez, no hay una caja anterior y el parámetro vale `null`.
+4. **Recuperar el dato:** si `savedInstanceState` no es `null`, `getInt("KEY_CONTADOR", 0)` busca el número guardado con la etiqueta `"KEY_CONTADOR"`. Ese número se asigna a `contador`; el `0` es el valor inicial alternativo si no se encuentra la etiqueta. La clave y el tipo (`Int`) deben coincidir al guardar y al recuperar.
+5. **¿Para qué sirve y para qué no?** Permite que la pantalla recupere datos sencillos cuando Android la recrea, por ejemplo, al girar el dispositivo. Es un guardado temporal: no está pensado para conservar datos al cerrar la aplicación o después de que Android termine el proceso. Para eso se usa almacenamiento persistente, como una base de datos.
+
 ```kotlin
 class MainActivity : AppCompatActivity() {
 
@@ -291,7 +297,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Restaurar estado si viene de una recreación
         if (savedInstanceState != null) {
             contador = savedInstanceState.getInt("KEY_CONTADOR", 0)
         }
@@ -299,7 +304,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // Guardar el dato clave-valor antes de la destrucción de la Activity
         outState.putInt("KEY_CONTADOR", contador)
     }
 }
@@ -307,71 +311,82 @@ class MainActivity : AppCompatActivity() {
 
 ## 8. GESTIÓN DE EVENTOS E INTERACCIÓN EN LA INTERFAZ
 
-Para reaccionar a los toques del usuario sobre los botones u otros componentes visuales, el sistema ofrece varios enfoques de control de eventos.
+Un **evento** es algo que ocurre mientras se usa la aplicación, como pulsar un botón. Para responder a ese evento, el botón necesita un **listener** (escuchador): una función que Android ejecuta cuando detecta la pulsación. En Kotlin, la forma habitual de definir esa acción es con una **lambda**.
 
-![Figura 8. Interacción de eventos mediante Listener en Kotlin](/images/figura_8_gestion_eventos.png){: width="580" }  
-*Descripción de la Figura 8: Diagrama del flujo entre la interacción del usuario con un View (Button) y la captura del evento vía Listener.*
+### 8.1 Listener de clic con una lambda
 
-### 8.1 Métodos de Implementación de Escuchadores (`OnClickListener`)
+El botón se define en el archivo de diseño XML `activity_main.xml`, dentro de la carpeta `app/src/main/res/layout`. El archivo describe los elementos que aparecen en la pantalla. Este ejemplo crea un contenedor vertical y coloca dentro el botón:
 
-#### Opción A: Expresión Lambda en Kotlin (Recomendada y Moderna)
-Es la forma más limpia y estándar en el desarrollo actual.
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-```kotlin
-val btnAceptar = findViewById<Button>(R.id.btnAceptar)
-btnAceptar.setOnClickListener { 
-    Toast.makeText(this, "¡Botón pulsado correctamente!", Toast.LENGTH_SHORT).show()
-}
+    <Button
+        android:id="@+id/btnAceptar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aceptar" />
+
+</LinearLayout>
 ```
 
-#### Opción B: Implementar la Interfaz en la Activity
+El botón muestra el texto **Aceptar**. `android:id="@+id/btnAceptar"` le asigna el identificador `btnAceptar`; ese nombre debe coincidir con `R.id.btnAceptar` en Kotlin. `layout_width` y `layout_height` indican que el botón ocupará el espacio necesario para su contenido. El `LinearLayout` es el contenedor que organiza los elementos de la pantalla en vertical.
+
+**¿Qué es `R`?** Es una clase que Android genera automáticamente al compilar el proyecto. Contiene referencias a los recursos de la aplicación, organizadas por tipo: por ejemplo, `R.layout.activity_main` identifica el diseño `activity_main.xml` y `R.id.btnAceptar` identifica el botón. Así, desde Kotlin se puede hacer referencia a recursos del proyecto sin escribir directamente sus rutas. No se debe editar `R`: Android la vuelve a generar cuando cambian los recursos.
+
+El siguiente código carga ese diseño y muestra un mensaje breve cuando el usuario pulsa el botón:
 
 ```kotlin
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val btnUno = findViewById<Button>(R.id.btnUno)
-        val btnDos = findViewById<Button>(R.id.btnDos)
+        val btnAceptar = findViewById<Button>(R.id.btnAceptar)
 
-        btnUno.setOnClickListener(this)
-        btnDos.setOnClickListener(this)
-    }
-
-    override fun onClick(v: View?) {
-        when (v?.id) {
-            R.id.btnUno -> { /* Acción Botón 1 */ }
-            R.id.btnDos -> { /* Acción Botón 2 */ }
+        btnAceptar.setOnClickListener {
+            Toast.makeText(
+                this,
+                "¡Botón pulsado correctamente!",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 }
 ```
 
+1. **Encontrar el botón:** `findViewById<Button>(R.id.btnAceptar)` busca en la pantalla el botón cuyo identificador es `btnAceptar`. El identificador debe coincidir con el definido en el archivo XML. El resultado se guarda en `btnAceptar` para poder usarlo desde Kotlin.
+2. **Indicar qué hacer al pulsarlo:** `setOnClickListener { ... }` registra la acción que debe ejecutarse cuando Android detecte un toque en ese botón. Las instrucciones entre llaves forman la lambda; no se ejecutan al registrar el listener, sino cada vez que el usuario pulsa el botón.
+3. **Mostrar la respuesta:** `Toast.makeText(...)` prepara un mensaje emergente breve. `this` indica el contexto de la Activity, el texto es el mensaje que se verá y `Toast.LENGTH_SHORT` establece que dure poco. La llamada a `.show()` es la que finalmente lo muestra en pantalla.
+
 ## 9. INTENTS (NAVEGACIÓN) Y GESTIÓN DE PERMISOS
 
-Un **Intent** es el mecanismo fundamental de comunicación de Android para solicitar acciones a otros componentes.
+Un **Intent** es un mensaje que una Activity entrega a Android para pedirle que haga algo. Por ejemplo, puede pedir que se abra otra pantalla de la propia aplicación, que se muestre una página web o que se abra el marcador del teléfono.
 
-![Figura 9. Diferencia conceptual entre Intents Explícitos e Implícitos](/images/figura_9_intents.png){: width="580" }  
-*Descripción de la Figura 9: Diagrama comparativo donde un Intent explícito apunta directamente a un componente concreto de la app, mientras que el implícito consulta al sistema operativo para encontrar aplicaciones capaces de realizar la acción.*
+Un Intent puede indicar el destino o la acción que se quiere realizar y, si hace falta, incluir datos que el receptor necesitará. Android recibe esa petición y la envía al componente que corresponda. Según cómo se indique el destino, se distinguen los Intents explícitos y los implícitos.
 
 ### 9.1 Intents Explícitos
-Se utilizan para navegar entre pantallas (Activities) dentro de la **misma aplicación**.
+Un **Intent explícito** indica exactamente qué Activity debe abrirse. Se usa normalmente para navegar entre pantallas de la misma aplicación. En este ejemplo, `MainActivity` abre `DetailActivity` y le envía un nombre y una edad:
 
-#### Código para Navegar y Enviar Datos:
 ```kotlin
-// Desde MainActivity.kt
 val intent = Intent(this, DetailActivity::class.java).apply {
-    putExtra("EXTRA_USUARIO", "Santiago Rodenas")
+    putExtra("EXTRA_USUARIO", "Ana")
     putExtra("EXTRA_EDAD", 25)
 }
 startActivity(intent)
 ```
 
-#### Código para Recibir los Datos:
+* `Intent(this, DetailActivity::class.java)` crea una petición cuyo destino es `DetailActivity`. `this` es la Activity actual.
+* `putExtra(clave, valor)` añade un dato a la petición. La clave, como `"EXTRA_USUARIO"`, sirve para identificarlo al recuperarlo. Se pueden enviar distintos tipos de datos, como textos y números.
+* `startActivity(intent)` envía la petición a Android, que crea y muestra la pantalla de destino.
+
+La Activity que se abre puede leer esos datos al crearse:
+
 ```kotlin
-// En DetailActivity.kt
 override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_detail)
@@ -381,132 +396,178 @@ override fun onCreate(savedInstanceState: Bundle?) {
 }
 ```
 
+`intent` es la petición con la que se abrió esta Activity. `getStringExtra()` recupera el texto y `getIntExtra()` recupera el número. La clave debe escribirse igual que al enviar el dato; en `getIntExtra()`, el `0` es el valor alternativo si no se recibió la edad. Para que Android pueda abrir `DetailActivity`, esta debe formar parte de la aplicación y estar declarada en el `AndroidManifest.xml` (Android Studio suele registrarla al crearla).
+
 ### 9.2 Intents Implícitos
-No especifican la clase exacta de destino; en su lugar, declaran una **Acción General** (`ACTION_VIEW`, `ACTION_DIAL`, etc.) para que el sistema busque qué aplicaciones instaladas pueden responder a esa petición.
+Un **Intent implícito** no indica el nombre de una Activity concreta. Describe una acción general y, si hace falta, los datos sobre los que se realizará. Android busca una aplicación capaz de atenderla; por ejemplo, un navegador para mostrar una dirección web.
 
 ```kotlin
-// Ejemplo: Abrir una página web en el navegador del dispositivo
-val urlIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com"))
-startActivity(urlIntent)
+val paginaWeb = Intent(
+    Intent.ACTION_VIEW,
+    Uri.parse("https://www.example.com")
+)
+startActivity(paginaWeb)
 
-// Ejemplo: Abrir el marcador telefónico con un número preparado
-val dialIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:961234567"))
-startActivity(dialIntent)
+val marcador = Intent(
+    Intent.ACTION_DIAL,
+    Uri.parse("tel:961234567")
+)
+startActivity(marcador)
 ```
 
-### 9.3 Permisos en Tiempo de Ejecución (Runtime Permissions)
-Desde **Android 6.0 (API Level 23 - Marshmallow)**, los permisos considerados "peligrosos" (acceso a cámara, ubicación, llamadas, almacenamiento) no solo deben declararse en el `AndroidManifest.xml`, sino que **deben ser solicitados explícitamente al usuario en tiempo de ejecución**.
+* `Intent.ACTION_VIEW` pide que se muestre el contenido indicado. Para una dirección web, Android suele abrir un navegador.
+* `Intent.ACTION_DIAL` pide que se abra la aplicación de teléfono con el número preparado. **No inicia la llamada**: el usuario todavía debe pulsar el botón de llamada.
+* `Uri.parse(...)` convierte el texto de la dirección o del número en un `Uri`, el formato que Android utiliza para identificar esos datos.
 
-#### Flujo Completo para Realizar una Llamada Telefónica Directa (`ACTION_CALL`):
+Un Intent implícito puede ser atendido por más de una aplicación. Android puede mostrar un selector para que la persona elija. Si no hay ninguna aplicación capaz de realizar la acción, Android no podrá completar la petición.
 
-1. **Declaración en `AndroidManifest.xml`:**
-   ```xml
-   <uses-permission android:name="android.permission.CALL_PHONE" />
-   ```
+### 9.3 Permisos en Tiempo de Ejecución
+Un **permiso** es la autorización que necesita una aplicación para acceder a ciertas funciones o datos protegidos del dispositivo, como la cámara, la ubicación o la posibilidad de iniciar llamadas directamente. Android pide al usuario que conceda esos permisos para que la aplicación no acceda a ellos sin su conocimiento.
 
-2. **Verificación y Solicitud en la Activity (`MainActivity.kt`):**
-   ```kotlin
-   import android.Manifest
-   import android.content.Intent
-   import android.content.pm.PackageManager
-   import android.net.Uri
-   import android.os.Bundle
-   import android.widget.Button
-   import android.widget.Toast
-   import androidx.appcompat.app.AppCompatActivity
-   import androidx.core.app.ActivityCompat
-   import androidx.core.content.ContextCompat
+En dispositivos con Android 6.0 (API 23) o superior, las aplicaciones que usan permisos considerados peligrosos deben pedirlos mientras se ejecutan, además de declararlos en el manifiesto. La solicitud debe hacerse cuando el usuario intenta usar la función que necesita ese permiso.
 
-   class MainActivity : AppCompatActivity() {
+Para una función que requiere permiso, el proceso general es:
+1. **Declararlo en el manifiesto:** se indica qué permiso podría necesitar la aplicación. Declararlo no significa que el permiso ya esté concedido.
+2. **Comprobarlo cuando se necesita la función:** antes de acceder a la función protegida, la aplicación verifica si el permiso ya está concedido.
+3. **Pedirlo al usuario si hace falta:** Android muestra su propio diálogo. El usuario puede aceptar o denegar la petición.
+4. **Actuar según la respuesta:** solo si se concede el permiso se ejecuta la acción protegida. Si se deniega, la aplicación no debe realizar esa acción.
 
-       private val CALL_PERMISSION_CODE = 101
+#### Permisos habituales
 
-       override fun onCreate(savedInstanceState: Bundle?) {
-           super.onCreate(savedInstanceState)
-           setContentView(R.layout.activity_main)
+Estos son algunos permisos que se encuentran con frecuencia. El nombre completo es el que se escribe en `AndroidManifest.xml`. Según la versión de Android y la forma de implementar una función, puede haber permisos distintos o no ser necesario pedir uno (por ejemplo, se puede elegir una foto mediante el selector del sistema sin solicitar acceso general a las imágenes).
 
-           val btnLlamar = findViewById<Button>(R.id.btnLlamar)
-           btnLlamar.setOnClickListener {
-               hacerLlamadaDirecta("961234567")
-           }
-       }
+| Permiso | ¿Para qué se usa? |
+|---|---|
+| `android.permission.CAMERA` | Usar la cámara desde la aplicación para hacer fotos o grabar vídeo. |
+| `android.permission.RECORD_AUDIO` | Grabar audio con el micrófono. |
+| `android.permission.ACCESS_COARSE_LOCATION` | Obtener una ubicación aproximada. |
+| `android.permission.ACCESS_FINE_LOCATION` | Obtener una ubicación precisa, por ejemplo, mediante GPS. |
+| `android.permission.READ_CONTACTS` | Leer los contactos guardados en el dispositivo. |
+| `android.permission.CALL_PHONE` | Iniciar una llamada telefónica directamente desde la aplicación. Abrir el marcador con `ACTION_DIAL` no requiere este permiso. |
+| `android.permission.SEND_SMS` | Enviar mensajes SMS directamente desde la aplicación. |
+| `android.permission.POST_NOTIFICATIONS` | Mostrar notificaciones en Android 13 (API 33) y versiones posteriores. |
+| `android.permission.BLUETOOTH_CONNECT` | Conectarse o comunicarse con dispositivos Bluetooth cercanos en Android 12 (API 31) y versiones posteriores. |
+| `android.permission.READ_MEDIA_IMAGES` | Leer imágenes creadas por otras aplicaciones en Android 13 (API 33) y versiones posteriores. Android define permisos específicos también para vídeo y audio. |
 
-       private fun hacerLlamadaDirecta(numero: String) {
-           // 1. Comprobar si el permiso ya está concedido
-           if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
-               != PackageManager.PERMISSION_GRANTED) {
+La lista no es idéntica para todas las versiones: Android puede cambiar los permisos necesarios o dividirlos en permisos más específicos. Consulta la [documentación oficial de permisos en tiempo de ejecución](https://developer.android.com/training/permissions/requesting) para aprender a solicitarlos y la [referencia oficial completa de `Manifest.permission`](https://developer.android.com/reference/android/Manifest.permission) para consultar todos los permisos disponibles.
 
-               // 2. Si no está concedido, solicitarlo al usuario mediante diálogo del sistema
-               ActivityCompat.requestPermissions(
-                   this,
-                   arrayOf(Manifest.permission.CALL_PHONE),
-                   CALL_PERMISSION_CODE
-               )
-           } else {
-               // 3. Si ya tiene el permiso, ejecutar el Intent directo
-               val intent = Intent(Intent.ACTION_CALL, Uri.parse("tel:$numero"))
-               startActivity(intent)
-           }
-       }
+Una aplicación debe pedir solo los permisos que necesita para las funciones que ofrece, y explicar al usuario por qué los necesita.
 
-       // 4. Capturar la respuesta del usuario al diálogo de permisos
-       override fun onRequestPermissionsResult(
-           requestCode: Int,
-           permissions: Array<out String>,
-           grantResults: IntArray
-       ) {
-           super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+El siguiente ejemplo inicia una llamada directamente. Por eso necesita el permiso `CALL_PHONE`. Si solo se quisiera abrir el marcador para que el usuario confirme la llamada, se podría usar `ACTION_DIAL`, que no requiere este permiso.
 
-           if (requestCode == CALL_PERMISSION_CODE) {
-               if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                   Toast.makeText(this, "Permiso concedido. Realizando llamada...", Toast.LENGTH_SHORT).show()
-                   hacerLlamadaDirecta("961234567")
-               } else {
-                   Toast.makeText(this, "Permiso denegado. No se puede realizar la llamada.", Toast.LENGTH_SHORT).show()
-               }
-           }
-       }
-   }
-   ```
+Primero se declara el permiso en `AndroidManifest.xml`, dentro de `<manifest>` y fuera de `<application>`:
+
+```xml
+<uses-permission android:name="android.permission.CALL_PHONE" />
+```
+
+Después, la Activity comprueba y solicita el permiso cuando el usuario pulsa el botón. El ejemplo usa la API de AndroidX para recibir la respuesta al diálogo:
+
+El botón `btnLlamar` debe estar incluido en `activity_main.xml` y tener ese mismo identificador, igual que el botón de la sección anterior.
+
+```kotlin
+
+class MainActivity : AppCompatActivity() {
+
+    private val solicitudPermisoLlamada =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { concedido ->
+            if (concedido) {
+                hacerLlamada()
+            } else {
+                Toast.makeText(
+                    this,
+                    "Sin permiso no se puede iniciar la llamada.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val btnLlamar = findViewById<Button>(R.id.btnLlamar)
+        btnLlamar.setOnClickListener {
+            comprobarPermisoYLlamar()
+        }
+    }
+
+    private fun comprobarPermisoYLlamar() {
+        val permisoConcedido = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.CALL_PHONE
+        ) == PackageManager.PERMISSION_GRANTED
+
+        if (permisoConcedido) {
+            hacerLlamada()
+        } else {
+            solicitudPermisoLlamada.launch(Manifest.permission.CALL_PHONE)
+        }
+    }
+
+    private fun hacerLlamada() {
+        val llamada = Intent(
+            Intent.ACTION_CALL,
+            Uri.parse("tel:961234567")
+        )
+        startActivity(llamada)
+    }
+}
+```
+
+1. Al pulsar `btnLlamar`, se ejecuta `comprobarPermisoYLlamar()`.
+2. `checkSelfPermission()` comprueba si el permiso ya está concedido. Si lo está, se llama a `hacerLlamada()` directamente.
+3. Si no está concedido, `launch()` solicita el permiso y Android muestra el diálogo del sistema.
+4. Cuando el usuario responde, se ejecuta el bloque registrado con `registerForActivityResult`. Si acepta, se inicia la llamada; si deniega, se muestra un mensaje y no se intenta llamar.
+5. `ACTION_CALL` inicia la llamada directamente, por lo que este ejemplo solo lo hace después de que el usuario pulse el botón y conceda el permiso.
 
 ## 10. INTRODUCCIÓN AL DESARROLLO MODERNO CON JETPACK COMPOSE
 
-**Jetpack Compose** es el kit de herramientas moderno recomendado por Google para construir interfaces de usuario nativas en Android. Sustituye el modelo clásico basado en XML por un paradigma **Declarativo**.
+**Jetpack Compose** es el conjunto de herramientas moderno de Android para crear interfaces nativas usando Kotlin. En lugar de diseñar la pantalla en XML y buscar cada vista desde la Activity, se describe la interfaz mediante funciones de Kotlin. Compose se encarga de dibujarla y actualizarla cuando cambian los datos.
+
+Por ejemplo, en una aplicación clásica se carga un diseño con `setContentView(...)`; en una Activity que usa Compose se establece la interfaz con `setContent { ... }`. Dentro de esas llaves se llama a una función `@Composable` que construye la pantalla.
 
 ![Figura 10. Comparativa entre el modelo Imperativo (XML) y el Declarativo (Jetpack Compose)](/images/figura_10_compose_vs_xml.png){: width="580" }  
 *Descripción de la Figura 10: Esquema ilustrativo que compara la manipulación explícita del árbol de vistas en XML frente a la emisión automática de la interfaz mediante funciones Composable según el Estado.*
 
-### 10.1 Conceptos Clave de Jetpack Compose
-* **Paradigma Declarativo:** La interfaz describe *cómo debe verse* la pantalla para un estado determinado, en lugar de instruir paso a paso cómo modificar las vistas.
-* **Funciones `@Composable`:** Funciones de Kotlin anotadas con `@Composable` que emiten elementos de interfaz gráfica.
-* **Estado (`State`):** Los datos que determinan lo que muestra la UI. Cuando el estado cambia, Compose ejecuta una **Recomposición** automáticamente para redibujar solo las partes de la UI afectadas.
+### 10.1 Cómo funciona Compose
 
-### 10.2 Contenedores Básicos de Estructura
-* **`Column`:** Modificador de diseño equivalente a un `LinearLayout` vertical.
-* **`Row`:** Modificador de diseño equivalente a un `LinearLayout` horizontal.
-* **`Box`:** Apila elementos uno encima de otro (similar a un `FrameLayout`).
+* **Interfaz declarativa:** se escribe qué elementos deben aparecer para los datos actuales. No se dan instrucciones manuales para cambiar cada vista.
+* **Funciones `@Composable`:** son funciones de Kotlin que describen partes de la interfaz. Se pueden combinar; por ejemplo, una pantalla puede llamar a otras funciones que dibujan una barra, una lista o un botón.
+* **Estado:** es un dato que puede cambiar mientras se usa la pantalla, como el texto de un campo o el número de veces que se ha pulsado un botón.
+* **Recomposición:** cuando cambia un estado observado por Compose, este vuelve a ejecutar las funciones necesarias para actualizar la parte de la interfaz que depende de ese dato. Por ejemplo, al incrementar el contador, se vuelve a mostrar su nuevo valor.
+* **Eventos:** las acciones del usuario, como pulsar un botón o escribir, se responden con parámetros como `onClick` y `onValueChange`. El evento actualiza el estado y la interfaz refleja el cambio.
 
-### 10.3 Ejemplo Completo de Interfaz Interactiva en Jetpack Compose
+### 10.2 Elementos principales de una interfaz
+
+Los elementos de Compose también se escriben como funciones. Se suelen combinar en estas categorías:
+
+**Elementos para mostrar información**
+* **`Text`:** muestra texto.
+* **`Image`:** muestra una imagen o un icono.
+
+**Elementos interactivos**
+* **`Button`** y **`IconButton`:** ejecutan una acción al pulsarlos.
+* **`TextField`:** permite introducir y editar texto.
+* **`Checkbox`**, **`Switch`** y **`RadioButton`:** permiten elegir o activar opciones.
+
+**Elementos para organizar contenido**
+* **`Column`:** coloca sus elementos uno debajo de otro, en vertical.
+* **`Row`:** coloca sus elementos uno junto a otro, en horizontal.
+* **`Box`:** permite colocar elementos superpuestos o alinearlos dentro de un espacio.
+* **`LazyColumn`** y **`LazyRow`:** muestran listas verticales u horizontales y crean los elementos a medida que se necesitan, algo útil para listas largas.
+* **`Scaffold`:** ofrece una estructura habitual de pantalla, con espacios para componentes como una barra superior, contenido principal o un botón de acción.
+
+**`Modifier`** se utiliza para cambiar cómo se muestra o se comporta un elemento: por ejemplo, su tamaño, el espacio alrededor, el fondo o la respuesta a un clic. Los modificadores se encadenan en orden, como en `.fillMaxSize().padding(16.dp)`.
+
+### 10.3 Ejemplo: contador interactivo
+
+Este ejemplo reúne varios de los conceptos anteriores: `setContent` carga la interfaz Compose, `Column` organiza los elementos en vertical, `Text` muestra el contador y `Button` permite incrementarlo.
 
 ```kotlin
-package es.santiagorodenas.miaplicacion
-
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Sustituye a setContentView(R.layout...)
         setContent {
             MaterialTheme {
                 Surface(
@@ -522,7 +583,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PantallaContador() {
-    // Declaración del Estado persistente ante recomposiciones
+    // remember conserva el valor entre recomposiciones mientras esta pantalla siga activa.
     var contador by remember { mutableStateOf(0) }
 
     Column(
@@ -546,7 +607,6 @@ fun PantallaContador() {
     }
 }
 
-// Vista previa en tiempo real en Android Studio sin necesidad de emulador
 @Preview(showBackground = true)
 @Composable
 fun PreviewPantallaContador() {
@@ -555,6 +615,10 @@ fun PreviewPantallaContador() {
     }
 }
 ```
+
+Al abrir la pantalla, `contador` empieza en `0`. Al pulsar el botón, `contador++` cambia el estado; Compose detecta el cambio y vuelve a dibujar el texto con el nuevo valor. `remember` conserva el estado durante las recomposiciones, pero por sí solo no lo guarda si la Activity se destruye; para conservarlo ante cambios de configuración se puede usar `rememberSaveable`.
+
+Para profundizar, consulta la [documentación oficial de Jetpack Compose](https://developer.android.com/develop/ui/compose/documentation) y la [ruta oficial de aprendizaje de Compose para Android](https://developer.android.com/courses/pathways/jetpack-compose-for-android-developers).
 
 ## RESUMEN DE LA UNIDAD
 * Android ha evolucionado impulsado por el avance de las redes móviles (de 1G a 5G) hasta convertirse en un sistema moderno basado en Linux y el entorno **ART**.
