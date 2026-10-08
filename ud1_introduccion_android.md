@@ -5,16 +5,16 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 [⌂ Volver al inicio](index.md)
 
 ## Índice
-1. [Evolución de las Tecnologías Móviles](#1-evolución-de-las-tecnologías-móviles)
-2. [Historia y Versiones del Sistema Operativo Android](#2-historia-y-versiones-del-sistema-operativo-android)
-3. [Glosario de Conceptos Fundamentales de Android](#3-glosario-de-conceptos-fundamentales-de-android)
-4. [Componentes Principales de una Aplicación Android](#4-componentes-principales-de-una-aplicación-android)
-5. [Entorno de Desarrollo: Android Studio y AVD](#5-entorno-de-desarrollo-android-studio-y-avd)
-6. [Estructura de un Proyecto en Android y AndroidManifest.xml](#6-estructura-de-un-proyecto-en-android-y-androidmanifestxml)
-7. [El Ciclo de Vida de una Activity](#7-el-ciclo-de-vida-de-una-activity)
-8. [Gestión de Eventos e Interacción en la Interfaz](#8-gestión-de-eventos-e-interacción-en-la-interfaz)
-9. [Intents (Navegación) y Gestión de Permisos](#9-intents-navegación-y-gestión-de-permisos)
-10. [Introducción al Desarrollo Moderno con Jetpack Compose](#10-introducción-al-desarrollo-moderno-con-jetpack-compose)
+1. [Evolución de las tecnologías móviles](#1-evolución-de-las-tecnologías-móviles)
+2. [Historia y versiones del sistema operativo Android](#2-historia-y-versiones-del-sistema-operativo-android)
+3. [Glosario de conceptos fundamentales de Android](#3-glosario-de-conceptos-fundamentales-de-android)
+4. [Componentes principales de una aplicación Android](#4-componentes-principales-de-una-aplicación-android)
+5. [Entorno de desarrollo: Android Studio y AVD](#5-entorno-de-desarrollo-android-studio-y-avd)
+6. [Estructura de un proyecto en Android y AndroidManifest.xml](#6-estructura-de-un-proyecto-en-android-y-androidmanifestxml)
+7. [El ciclo de vida de una Activity](#7-el-ciclo-de-vida-de-una-activity)
+8. [Introducción al desarrollo moderno con Jetpack Compose](#8-introducción-al-desarrollo-moderno-con-jetpack-compose)
+9. [Gestión de eventos e interacción en la interfaz](#9-gestión-de-eventos-e-interacción-en-la-interfaz)
+10. [Intents (navegación) y gestión de permisos](#10-intents-navegación-y-gestión-de-permisos)
 
 ## 1. EVOLUCIÓN DE LAS TECNOLOGÍAS MÓVILES
 
@@ -159,7 +159,7 @@ Android define cuatro componentes principales de aplicación. La interfaz tambi�
 
 Android Studio es el IDE oficial para el desarrollo de aplicaciones Android, basado en **IntelliJ IDEA** de JetBrains.
 
-![Figura 5. Interfaz principal del entorno Android Studio](/images/figura_5_android_studio_ide.png){: width="580" }  
+![Figura 5. Interfaz principal del entorno Android Studio](./assets/img/android.png){: width="580" }  
 *Figura 5: Captura de pantalla de la ventana principal de Android Studio en la que se distingue el panel de proyecto a la izquierda, editor central y herramientas inferiores como Logcat.*
 
 ### 5.1 Características Principales de Android Studio
@@ -187,9 +187,6 @@ Para ejecutar y probar aplicaciones en un móvil físico, es necesario seguir lo
 
 Al crear un nuevo proyecto en Android Studio, la estructura de directorios se organiza de una forma lógica para diferenciar el código fuente, los recursos estáticos y los scripts de compilación.
 
-![Figura 6. Estructura de carpetas en vista "Android" dentro de Android Studio](/images/figura_6_estructura_proyecto.png){: width="580" }  
-*Descripción de la Figura 6: Vista lógica del árbol del proyecto mostrando las carpetas manifests, java y res.*
-
 ### 6.1 Directorios Principales
 * `manifests/`: Contiene el archivo clave **`AndroidManifest.xml`**.
 * `java/` (o `kotlin/`): Contiene los paquetes de código fuente de la aplicación (`.kt` o `.java`), además de las carpetas para pruebas unitarias (`test/`) e instrumentadas (`androidTest/`).
@@ -200,7 +197,13 @@ Al crear un nuevo proyecto en Android Studio, la estructura de directorios se or
   * `values/`: Constantes globales como cadenas (`strings.xml`), colores (`colors.xml`) y temas (`themes.xml`).
 * `Gradle Scripts/`: Ficheros de configuración del sistema de construcción (`build.gradle.kts` a nivel de proyecto y a nivel de módulo `app`).
 
-### 6.2 El Archivo AndroidManifest.xml
+### 6.2 La clase `R` y los recursos
+
+Android genera automáticamente la clase `R` al compilar el proyecto. Esta clase contiene identificadores para los recursos de la aplicación, agrupados por tipo. Por ejemplo, `R.layout.activity_main` hace referencia al diseño `activity_main.xml`, `R.id.btnAceptar` al elemento de interfaz con ese identificador y `R.string.app_name` a una cadena definida en `res/values/strings.xml`. Así, el código Kotlin puede usar los recursos sin escribir directamente sus rutas.
+
+No se debe editar `R`: Android la vuelve a generar cuando cambian los recursos del proyecto.
+
+### 6.3 El Archivo AndroidManifest.xml
 Es el fichero fundamental de configuración de cualquier aplicación Android. Describe la estructura de la app al sistema operativo antes de ejecutarse.
 
 #### Ejemplo de un `AndroidManifest.xml`:
@@ -309,13 +312,220 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-## 8. GESTIÓN DE EVENTOS E INTERACCIÓN EN LA INTERFAZ
+### Nota: conservación del estado en Compose
+
+El ejemplo anterior muestra el mecanismo clásico con `onSaveInstanceState()` y `Bundle`. En Jetpack Compose, para conservar valores sencillos de la interfaz durante cambios de configuración, como girar el dispositivo, se suele usar `rememberSaveable`. En la actividad guiada de los apartados 8–10 usaremos `rememberSaveable` para mantener el nombre escrito. Son mecanismos para enfoques distintos; no se implementan ambos a la vez en la misma pantalla.
+
+## 8. INTRODUCCIÓN AL DESARROLLO MODERNO CON JETPACK COMPOSE
+
+**Jetpack Compose** es el conjunto de herramientas moderno de Android para crear interfaces nativas usando Kotlin. En lugar de diseñar la pantalla en XML y buscar cada vista desde la Activity, se describe la interfaz mediante funciones de Kotlin. Compose se encarga de dibujarla y actualizarla cuando cambian los datos.
+
+Por ejemplo, en una aplicación clásica se carga un diseño con `setContentView(...)`; en una Activity que usa Compose se establece la interfaz con `setContent { ... }`. Dentro de esas llaves se llama a una función `@Composable` que construye la pantalla.
+
+### 8.1 Cómo se creaban las interfaces antes de Compose
+
+Antes de Jetpack Compose, era habitual definir la interfaz en archivos XML y conectar sus elementos con el código de una `Activity`. El XML describía la estructura y el aspecto; en Kotlin, la Activity cargaba ese diseño, buscaba las vistas por su identificador y les asignaba acciones. Este enfoque basado en vistas sigue siendo válido y se conoce como sistema de vistas de Android.
+
+Por ejemplo, el botón se declaraba en `res/layout/activity_main.xml`:
+
+```xml
+<Button
+    android:id="@+id/btnAceptar"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Aceptar" />
+```
+
+Después, la Activity cargaba el diseño y registraba qué hacer al pulsar el botón:
+
+```kotlin
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val btnAceptar = findViewById<Button>(R.id.btnAceptar)
+        btnAceptar.setOnClickListener {
+            Toast.makeText(this, "¡Botón pulsado!", Toast.LENGTH_SHORT).show()
+        }
+    }
+}
+```
+
+En este modelo, `setContentView` muestra el diseño XML y `findViewById` obtiene una vista a partir de su identificador. El listener define la respuesta a la acción del usuario. A diferencia de Compose, la interfaz y su comportamiento quedan repartidos entre el archivo XML y el código de la Activity.
+
+### 8.2 Cómo funciona Compose
+
+* **Interfaz declarativa:** se escribe qué elementos deben aparecer para los datos actuales. No se dan instrucciones manuales para cambiar cada vista.
+* **Funciones `@Composable`:** son funciones de Kotlin que describen partes de la interfaz. Se pueden combinar; por ejemplo, una pantalla puede llamar a otras funciones que dibujan una barra, una lista o un botón.
+* **Estado:** es un dato que puede cambiar mientras se usa la pantalla, como el texto de un campo o el número de veces que se ha pulsado un botón.
+* **Recomposición:** cuando cambia un estado observado por Compose, este vuelve a ejecutar las funciones necesarias para actualizar la parte de la interfaz que depende de ese dato. Por ejemplo, al incrementar el contador, se vuelve a mostrar su nuevo valor.
+* **Eventos:** las acciones del usuario, como pulsar un botón o escribir, se responden con parámetros como `onClick` y `onValueChange`. El evento actualiza el estado y la interfaz refleja el cambio.
+
+### 8.3 Elementos principales de una interfaz
+
+Los elementos de Compose también se escriben como funciones. Se suelen combinar en estas categorías:
+
+**Elementos para mostrar información**
+* **`Text`:** muestra texto.
+* **`Image`:** muestra una imagen o un icono.
+
+**Elementos interactivos**
+* **`Button`** y **`IconButton`:** ejecutan una acción al pulsarlos.
+* **`TextField`:** permite introducir y editar texto.
+* **`Checkbox`**, **`Switch`** y **`RadioButton`:** permiten elegir o activar opciones.
+
+**Elementos para organizar contenido**
+* **`Column`:** coloca sus elementos uno debajo de otro, en vertical.
+* **`Row`:** coloca sus elementos uno junto a otro, en horizontal.
+* **`Box`:** permite colocar elementos superpuestos o alinearlos dentro de un espacio.
+* **`LazyColumn`** y **`LazyRow`:** muestran listas verticales u horizontales y crean los elementos a medida que se necesitan, algo útil para listas largas.
+* **`Scaffold`:** ofrece una estructura habitual de pantalla, con espacios para componentes como una barra superior, contenido principal o un botón de acción.
+
+**`Modifier`** se utiliza para cambiar cómo se muestra o se comporta un elemento: por ejemplo, su tamaño, el espacio alrededor, el fondo o la respuesta a un clic. Los modificadores se encadenan en orden, como en `.fillMaxSize().padding(16.dp)`.
+
+### 8.4 Ejemplo: contador interactivo
+
+Este ejemplo reúne varios de los conceptos anteriores: `setContent` carga la interfaz Compose, `Column` organiza los elementos en vertical, `Text` muestra el contador y `Button` permite incrementarlo.
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // setContent es el punto de entrada de la interfaz Compose en la Activity.
+        setContent {
+            // MaterialTheme aplica estilos y colores coherentes a los componentes.
+            MaterialTheme {
+                // Surface actúa como una superficie de fondo para el contenido.
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    PantallaContador()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PantallaContador() {
+    // @Composable indica que esta función describe una parte de la interfaz.
+    // El estado se conserva entre recomposiciones mientras la pantalla siga activa.
+    var contador by remember { mutableStateOf(0) }
+
+    // Column organiza los elementos en vertical; Modifier define tamaño y márgenes.
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        // Text muestra el valor actual; Compose lo actualiza cuando cambia contador.
+        Text(
+            text = "Has pulsado: $contador veces",
+            fontSize = 22.sp,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+
+        // Button ejecuta su lambda al pulsarlo; incrementar el estado actualiza el texto.
+        Button(
+            onClick = { contador++ }
+        ) {
+            Text(text = "Incrementar Contador")
+        }
+    }
+}
+
+// Preview permite ver una representación de la interfaz desde Android Studio.
+@Preview(showBackground = true)
+@Composable
+fun PreviewPantallaContador() {
+    MaterialTheme {
+        PantallaContador()
+    }
+}
+```
+
+Al abrir la pantalla, `contador` empieza en `0`. Al pulsar el botón, `contador++` cambia el estado; Compose detecta el cambio y vuelve a dibujar el texto con el nuevo valor. `remember` conserva el estado durante las recomposiciones, pero por sí solo no lo guarda si la Activity se destruye; para conservarlo ante cambios de configuración se puede usar `rememberSaveable`.
+
+Para profundizar, consulta la [documentación oficial de Jetpack Compose](https://developer.android.com/develop/ui/compose/documentation) y la [ruta oficial de aprendizaje de Compose para Android](https://developer.android.com/courses/pathways/jetpack-compose-for-android-developers).
+
+### 8.5 Actividad guiada: mi primera app (paso 1, crear la interfaz con Compose)
+
+#### Preparar el proyecto
+
+En Android Studio, selecciona **New Project** y elige la plantilla **Empty Activity** que usa **Jetpack Compose**. Asigna un nombre (por ejemplo, `MiPrimeraApp`), selecciona Kotlin y termina la creación. Esta plantilla crea `MainActivity.kt`; no crees un diseño `activity_main.xml`, porque las pantallas de esta actividad se construirán con Compose.
+
+Usaremos este mismo proyecto en los apartados 8, 9 y 10: primero crearemos la interfaz, después conectaremos su estado e interacción y, por último, añadiremos la navegación y el permiso.
+
+#### Crear las funciones de pantalla
+
+Abre `MainActivity.kt` y, debajo de la clase generada, añade estas dos funciones `@Composable`. La primera define la pantalla inicial con un campo de texto y un botón; la segunda define la pantalla de saludo y el botón para volver. En este primer paso construimos la interfaz y dejamos las acciones preparadas para conectarlas después.
+
+```kotlin
+@Composable
+fun PantallaInicio(
+    nombre: String,
+    onNombreChange: (String) -> Unit,
+    onContinuar: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Mi primera app")
+
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = onNombreChange,
+            label = { Text("Escribe tu nombre") },
+            singleLine = true
+        )
+
+        Button(
+            onClick = onContinuar,
+            enabled = nombre.isNotBlank()
+        ) {
+            Text("Continuar")
+        }
+    }
+}
+
+@Composable
+fun PantallaDetalle(nombre: String, onVolver: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("¡Hola, $nombre!")
+
+        Button(onClick = onVolver) {
+            Text("Volver")
+        }
+    }
+}
+```
+
+**Pasos:**
+1. Android Studio crea parte de los imports automáticamente; acepta los que proponga para `Composable`, `Column`, `Text`, `OutlinedTextField`, `Button`, `Modifier`, `Alignment`, `Arrangement` y `dp`.
+2. Comprueba que cada función tiene la anotación `@Composable`.
+3. En este paso las funciones describen la interfaz, pero todavía no están conectadas a `MainActivity`. En el apartado 9 añadiremos el estado y la interacción; en el 10 completaremos la navegación.
+
+## 9. GESTIÓN DE EVENTOS E INTERACCIÓN EN LA INTERFAZ
 
 Un **evento** es algo que ocurre mientras se usa la aplicación, como pulsar un botón. Para responder a ese evento, el botón necesita un **listener** (escuchador): una función que Android ejecuta cuando detecta la pulsación. En Kotlin, la forma habitual de definir esa acción es con una **lambda**.
 
-### 8.1 Listener de clic con una lambda
+### 9.1 Listener de clic en una interfaz XML
 
-El botón se define en el archivo de diseño XML `activity_main.xml`, dentro de la carpeta `app/src/main/res/layout`. El archivo describe los elementos que aparecen en la pantalla. Este ejemplo crea un contenedor vertical y coloca dentro el botón:
+Este ejemplo corresponde al sistema de vistas clásico de Android, no a Jetpack Compose. El botón se define en el archivo de diseño XML `activity_main.xml`, dentro de la carpeta `app/src/main/res/layout`. El archivo describe los elementos que aparecen en la pantalla. Este ejemplo crea un contenedor vertical y coloca dentro el botón:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -333,11 +543,9 @@ El botón se define en el archivo de diseño XML `activity_main.xml`, dentro de 
 </LinearLayout>
 ```
 
-El botón muestra el texto **Aceptar**. `android:id="@+id/btnAceptar"` le asigna el identificador `btnAceptar`; ese nombre debe coincidir con `R.id.btnAceptar` en Kotlin. `layout_width` y `layout_height` indican que el botón ocupará el espacio necesario para su contenido. El `LinearLayout` es el contenedor que organiza los elementos de la pantalla en vertical.
+El botón muestra el texto **Aceptar**. `android:id="@+id/btnAceptar"` le asigna el identificador `btnAceptar`. El prefijo `@+id/` indica que se crea ese identificador si todavía no existe; al compilar, Android lo incluye como `R.id.btnAceptar`. Kotlin usa ese mismo identificador para encontrar la vista. `layout_width` y `layout_height` indican que el botón ocupará el espacio necesario para su contenido. El `LinearLayout` es el contenedor que organiza los elementos de la pantalla en vertical.
 
-**¿Qué es `R`?** Es una clase que Android genera automáticamente al compilar el proyecto. Contiene referencias a los recursos de la aplicación, organizadas por tipo: por ejemplo, `R.layout.activity_main` identifica el diseño `activity_main.xml` y `R.id.btnAceptar` identifica el botón. Así, desde Kotlin se puede hacer referencia a recursos del proyecto sin escribir directamente sus rutas. No se debe editar `R`: Android la vuelve a generar cuando cambian los recursos.
-
-El siguiente código carga ese diseño y muestra un mensaje breve cuando el usuario pulsa el botón:
+El siguiente código carga el diseño XML con `setContentView`, busca el botón mediante `findViewById` y muestra un mensaje breve cuando el usuario lo pulsa:
 
 ```kotlin
 class MainActivity : AppCompatActivity() {
@@ -359,17 +567,95 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-1. **Encontrar el botón:** `findViewById<Button>(R.id.btnAceptar)` busca en la pantalla el botón cuyo identificador es `btnAceptar`. El identificador debe coincidir con el definido en el archivo XML. El resultado se guarda en `btnAceptar` para poder usarlo desde Kotlin.
-2. **Indicar qué hacer al pulsarlo:** `setOnClickListener { ... }` registra la acción que debe ejecutarse cuando Android detecte un toque en ese botón. Las instrucciones entre llaves forman la lambda; no se ejecutan al registrar el listener, sino cada vez que el usuario pulsa el botón.
+1. **Encontrar el botón:** `findViewById<Button>(R.id.btnAceptar)` busca en la pantalla el botón cuyo identificador se declaró en el archivo XML. El resultado se guarda en `btnAceptar` para poder usarlo desde Kotlin.
+2. **Indicar qué hacer al pulsarlo:** `setOnClickListener { ... }` registra la acción para esa vista clásica de Android. Las instrucciones entre llaves forman la lambda; se ejecutan cada vez que el usuario pulsa el botón.
 3. **Mostrar la respuesta:** `Toast.makeText(...)` prepara un mensaje emergente breve. `this` indica el contexto de la Activity, el texto es el mensaje que se verá y `Toast.LENGTH_SHORT` establece que dure poco. La llamada a `.show()` es la que finalmente lo muestra en pantalla.
 
-## 9. INTENTS (NAVEGACIÓN) Y GESTIÓN DE PERMISOS
+Este modo de definir el botón por XML y conectarlo con `findViewById` y `setOnClickListener` solo se aplica a las vistas clásicas. En Compose no se asigna `android:id` ni se busca el componente con `findViewById`: la acción se indica directamente en el parámetro `onClick` del elemento, por ejemplo, `Button(onClick = { /* acción */ })`.
+
+### 9.2 El mismo evento en Jetpack Compose
+
+En Compose, el botón y su contenido se describen directamente con funciones de Kotlin. No hace falta definirlo antes en XML ni asignarle un identificador: la acción se escribe en el parámetro `onClick`.
+
+```kotlin
+@Composable
+fun BotonAceptar() {
+    val contexto = LocalContext.current
+
+    Button(
+        onClick = {
+            Toast.makeText(
+                contexto,
+                "¡Botón pulsado correctamente!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    ) {
+        Text("Aceptar")
+    }
+}
+```
+
+`Button` dibuja el botón y el bloque final contiene el texto que muestra. `onClick` recibe una lambda con la acción que se ejecuta al pulsarlo. `LocalContext.current` obtiene el contexto de Android necesario para mostrar el `Toast`. Así, Compose combina la definición del elemento y su comportamiento en el mismo código.
+
+### 9.3 Eventos habituales
+
+En Compose, cada componente ofrece los parámetros o modificadores adecuados para responder a las acciones del usuario. Estos son algunos de los más habituales:
+
+* **Pulsación:** `onClick`, por ejemplo, en `Button`.
+* **Pulsación prolongada:** `onLongClick`, normalmente mediante `Modifier.combinedClickable`.
+* **Entrada de texto:** `onValueChange` en un campo de texto.
+* **Cambio de una opción:** `onCheckedChange` en un `Checkbox` o `Switch`; `onClick` en un `RadioButton`.
+* **Gestos, como arrastrar o tocar:** detectores de gestos mediante `Modifier.pointerInput`.
+* **Cambio de foco o pulsación de teclas:** modificadores como `onFocusChanged` y `onKeyEvent`.
+
+Los nombres y la forma de registrar el evento dependen del componente. En el sistema clásico de vistas se utilizan listeners como `setOnClickListener`; en Compose, se usan parámetros `on...` o modificadores.
+
+Para consultar más eventos, gestos y ejemplos, visita la documentación oficial de Android sobre [entrada táctil y gestos en Compose](https://developer.android.com/develop/ui/compose/touch-input) y la guía para [detectar gestos](https://developer.android.com/develop/ui/compose/touch-input/pointer-input/understand-gestures).
+
+### 9.4 Actividad guiada: mi primera app (paso 2, conectar estado e interacción)
+
+Ahora conecta `PantallaInicio` a `MainActivity`. Sustituye el contenido de la clase `MainActivity` generada por Android Studio por este código. Conserva las funciones `PantallaInicio` y `PantallaDetalle` añadidas en el apartado 8:
+
+```kotlin
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContent {
+            var nombre by rememberSaveable { mutableStateOf("") }
+
+            MaterialTheme {
+                PantallaInicio(
+                    nombre = nombre,
+                    onNombreChange = { nombre = it },
+                    onContinuar = {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Preparado para continuar, $nombre",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                )
+            }
+        }
+    }
+}
+```
+
+**Pasos:**
+1. Añade los imports que Android Studio solicite para `ComponentActivity`, `setContent`, `rememberSaveable`, `mutableStateOf`, `getValue`, `setValue`, `MaterialTheme` y `Toast`.
+2. Ejecuta la app, escribe un nombre y pulsa **Continuar**: debe aparecer un mensaje con el texto escrito.
+3. Gira el dispositivo: el nombre debe seguir en el campo. `rememberSaveable` conserva estado sencillo durante cambios de configuración, pero no guarda datos permanentemente.
+4. En el apartado 10 sustituiremos el mensaje por la navegación a la segunda pantalla.
+
+## 10. INTENTS (NAVEGACIÓN) Y GESTIÓN DE PERMISOS
 
 Un **Intent** es un mensaje que una Activity entrega a Android para pedirle que haga algo. Por ejemplo, puede pedir que se abra otra pantalla de la propia aplicación, que se muestre una página web o que se abra el marcador del teléfono.
 
 Un Intent puede indicar el destino o la acción que se quiere realizar y, si hace falta, incluir datos que el receptor necesitará. Android recibe esa petición y la envía al componente que corresponda. Según cómo se indique el destino, se distinguen los Intents explícitos y los implícitos.
 
-### 9.1 Intents Explícitos
+### 10.1 Intents Explícitos
 Un **Intent explícito** indica exactamente qué Activity debe abrirse. Se usa normalmente para navegar entre pantallas de la misma aplicación. En este ejemplo, `MainActivity` abre `DetailActivity` y le envía un nombre y una edad:
 
 ```kotlin
@@ -398,7 +684,7 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 `intent` es la petición con la que se abrió esta Activity. `getStringExtra()` recupera el texto y `getIntExtra()` recupera el número. La clave debe escribirse igual que al enviar el dato; en `getIntExtra()`, el `0` es el valor alternativo si no se recibió la edad. Para que Android pueda abrir `DetailActivity`, esta debe formar parte de la aplicación y estar declarada en el `AndroidManifest.xml` (Android Studio suele registrarla al crearla).
 
-### 9.2 Intents Implícitos
+### 10.2 Intents Implícitos
 Un **Intent implícito** no indica el nombre de una Activity concreta. Describe una acción general y, si hace falta, los datos sobre los que se realizará. Android busca una aplicación capaz de atenderla; por ejemplo, un navegador para mostrar una dirección web.
 
 ```kotlin
@@ -421,7 +707,7 @@ startActivity(marcador)
 
 Un Intent implícito puede ser atendido por más de una aplicación. Android puede mostrar un selector para que la persona elija. Si no hay ninguna aplicación capaz de realizar la acción, Android no podrá completar la petición.
 
-### 9.3 Permisos en Tiempo de Ejecución
+### 10.3 Permisos en Tiempo de Ejecución
 Un **permiso** es la autorización que necesita una aplicación para acceder a ciertas funciones o datos protegidos del dispositivo, como la cámara, la ubicación o la posibilidad de iniciar llamadas directamente. Android pide al usuario que conceda esos permisos para que la aplicación no acceda a ellos sin su conocimiento.
 
 En dispositivos con Android 6.0 (API 23) o superior, las aplicaciones que usan permisos considerados peligrosos deben pedirlos mientras se ejecutan, además de declararlos en el manifiesto. La solicitud debe hacerse cuando el usuario intenta usar la función que necesita ese permiso.
@@ -521,104 +807,179 @@ class MainActivity : AppCompatActivity() {
 4. Cuando el usuario responde, se ejecuta el bloque registrado con `registerForActivityResult`. Si acepta, se inicia la llamada; si deniega, se muestra un mensaje y no se intenta llamar.
 5. `ACTION_CALL` inicia la llamada directamente, por lo que este ejemplo solo lo hace después de que el usuario pulse el botón y conceda el permiso.
 
-## 10. INTRODUCCIÓN AL DESARROLLO MODERNO CON JETPACK COMPOSE
+### 10.4 Actividad guiada: mi primera app (paso 3, navegación y permiso)
 
-**Jetpack Compose** es el conjunto de herramientas moderno de Android para crear interfaces nativas usando Kotlin. En lugar de diseñar la pantalla en XML y buscar cada vista desde la Activity, se describe la interfaz mediante funciones de Kotlin. Compose se encarga de dibujarla y actualizarla cuando cambian los datos.
+En este último paso conectamos las pantallas con un **Intent explícito** y solicitamos el permiso de cámara. Sigue los pasos y, al terminar, tendrás el código completo de la aplicación.
 
-Por ejemplo, en una aplicación clásica se carga un diseño con `setContentView(...)`; en una Activity que usa Compose se establece la interfaz con `setContent { ... }`. Dentro de esas llaves se llama a una función `@Composable` que construye la pantalla.
+#### Paso 1: completar `PantallaInicio`
 
-![Figura 10. Comparativa entre el modelo Imperativo (XML) y el Declarativo (Jetpack Compose)](/images/figura_10_compose_vs_xml.png){: width="580" }  
-*Descripción de la Figura 10: Esquema ilustrativo que compara la manipulación explícita del árbol de vistas en XML frente a la emisión automática de la interfaz mediante funciones Composable según el Estado.*
+En `MainActivity.kt`, sustituye la versión de `PantallaInicio` del apartado 8.5 por esta. Se añade un callback y un botón para solicitar la cámara; la Activity será responsable de ejecutar la solicitud.
 
-### 10.1 Cómo funciona Compose
+```kotlin
+@Composable
+fun PantallaInicio(
+    nombre: String,
+    onNombreChange: (String) -> Unit,
+    onContinuar: () -> Unit,
+    onSolicitarCamara: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Mi primera app")
 
-* **Interfaz declarativa:** se escribe qué elementos deben aparecer para los datos actuales. No se dan instrucciones manuales para cambiar cada vista.
-* **Funciones `@Composable`:** son funciones de Kotlin que describen partes de la interfaz. Se pueden combinar; por ejemplo, una pantalla puede llamar a otras funciones que dibujan una barra, una lista o un botón.
-* **Estado:** es un dato que puede cambiar mientras se usa la pantalla, como el texto de un campo o el número de veces que se ha pulsado un botón.
-* **Recomposición:** cuando cambia un estado observado por Compose, este vuelve a ejecutar las funciones necesarias para actualizar la parte de la interfaz que depende de ese dato. Por ejemplo, al incrementar el contador, se vuelve a mostrar su nuevo valor.
-* **Eventos:** las acciones del usuario, como pulsar un botón o escribir, se responden con parámetros como `onClick` y `onValueChange`. El evento actualiza el estado y la interfaz refleja el cambio.
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = onNombreChange,
+            label = { Text("Escribe tu nombre") },
+            singleLine = true
+        )
 
-### 10.2 Elementos principales de una interfaz
+        Button(
+            onClick = onContinuar,
+            enabled = nombre.isNotBlank()
+        ) {
+            Text("Continuar")
+        }
 
-Los elementos de Compose también se escriben como funciones. Se suelen combinar en estas categorías:
+        Button(onClick = onSolicitarCamara) {
+            Text("Solicitar permiso de cámara")
+        }
+    }
+}
+```
 
-**Elementos para mostrar información**
-* **`Text`:** muestra texto.
-* **`Image`:** muestra una imagen o un icono.
+#### Paso 2: sustituir `MainActivity`
 
-**Elementos interactivos**
-* **`Button`** y **`IconButton`:** ejecutan una acción al pulsarlos.
-* **`TextField`:** permite introducir y editar texto.
-* **`Checkbox`**, **`Switch`** y **`RadioButton`:** permiten elegir o activar opciones.
-
-**Elementos para organizar contenido**
-* **`Column`:** coloca sus elementos uno debajo de otro, en vertical.
-* **`Row`:** coloca sus elementos uno junto a otro, en horizontal.
-* **`Box`:** permite colocar elementos superpuestos o alinearlos dentro de un espacio.
-* **`LazyColumn`** y **`LazyRow`:** muestran listas verticales u horizontales y crean los elementos a medida que se necesitan, algo útil para listas largas.
-* **`Scaffold`:** ofrece una estructura habitual de pantalla, con espacios para componentes como una barra superior, contenido principal o un botón de acción.
-
-**`Modifier`** se utiliza para cambiar cómo se muestra o se comporta un elemento: por ejemplo, su tamaño, el espacio alrededor, el fondo o la respuesta a un clic. Los modificadores se encadenan en orden, como en `.fillMaxSize().padding(16.dp)`.
-
-### 10.3 Ejemplo: contador interactivo
-
-Este ejemplo reúne varios de los conceptos anteriores: `setContent` carga la interfaz Compose, `Column` organiza los elementos en vertical, `Text` muestra el contador y `Button` permite incrementarlo.
+Reemplaza la clase `MainActivity` del apartado 9.4 por esta versión. Mantiene el nombre con `rememberSaveable`, abre `SegundaActivity` y muestra el resultado de la solicitud de permiso.
 
 ```kotlin
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            MaterialTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    PantallaContador()
+            var nombre by rememberSaveable { mutableStateOf("") }
+
+            val solicitudCamara = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission()
+            ) { concedido ->
+                val mensaje = if (concedido) {
+                    "Permiso de cámara concedido"
+                } else {
+                    "Permiso de cámara denegado"
                 }
+                Toast.makeText(
+                    this@MainActivity,
+                    mensaje,
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            MaterialTheme {
+                PantallaInicio(
+                    nombre = nombre,
+                    onNombreChange = { nombre = it },
+                    onContinuar = {
+                        val navegacion = Intent(
+                            this@MainActivity,
+                            SegundaActivity::class.java
+                        ).putExtra(EXTRA_NOMBRE, nombre)
+                        startActivity(navegacion)
+                    },
+                    onSolicitarCamara = {
+                        solicitudCamara.launch(Manifest.permission.CAMERA)
+                    }
+                )
             }
         }
     }
 }
+```
 
-@Composable
-fun PantallaContador() {
-    // remember conserva el valor entre recomposiciones mientras esta pantalla siga activa.
-    var contador by remember { mutableStateOf(0) }
+#### Paso 3: añadir la segunda Activity
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Has pulsado: $contador veces",
-            fontSize = 22.sp,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
+En el mismo archivo `MainActivity.kt`, después de `MainActivity`, añade la clave y la nueva Activity. Esta recupera el nombre del Intent y reutiliza `PantallaDetalle`, creada en el apartado 8.5.
 
-        Button(
-            onClick = { contador++ }
-        ) {
-            Text(text = "Incrementar Contador")
+```kotlin
+private const val EXTRA_NOMBRE = "es.ejemplo.miapp.EXTRA_NOMBRE"
+
+class SegundaActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val nombre = intent.getStringExtra(EXTRA_NOMBRE).orEmpty()
+
+        setContent {
+            MaterialTheme {
+                PantallaDetalle(
+                    nombre = nombre,
+                    onVolver = { finish() }
+                )
+            }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewPantallaContador() {
-    MaterialTheme {
-        PantallaContador()
     }
 }
 ```
 
-Al abrir la pantalla, `contador` empieza en `0`. Al pulsar el botón, `contador++` cambia el estado; Compose detecta el cambio y vuelve a dibujar el texto con el nuevo valor. `remember` conserva el estado durante las recomposiciones, pero por sí solo no lo guarda si la Activity se destruye; para conservarlo ante cambios de configuración se puede usar `rememberSaveable`.
+`EXTRA_NOMBRE` puede ser cualquier texto constante, pero debe usarse la misma clave al enviar y recuperar el dato. Cambia `es.ejemplo.miapp` por el identificador de paquete de tu proyecto si lo deseas.
 
-Para profundizar, consulta la [documentación oficial de Jetpack Compose](https://developer.android.com/develop/ui/compose/documentation) y la [ruta oficial de aprendizaje de Compose para Android](https://developer.android.com/courses/pathways/jetpack-compose-for-android-developers).
+#### Paso 4: actualizar `AndroidManifest.xml`
+
+Añade el permiso de cámara dentro de `<manifest>` y fuera de `<application>`:
+
+```xml
+<uses-permission android:name="android.permission.CAMERA" />
+```
+
+Dentro de `<application>`, declara `SegundaActivity`. Conserva la declaración existente de `MainActivity` y el filtro `MAIN`/`LAUNCHER`:
+
+```xml
+<activity
+    android:name=".SegundaActivity"
+    android:exported="false" />
+```
+
+#### Paso 5: imports y ejecución
+
+Android Studio puede insertar imports al pegar el código. Comprueba que están disponibles estas clases y funciones:
+
+```kotlin
+import android.Manifest
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+```
+
+Deja al principio de `MainActivity.kt` la línea `package ...` generada para tu proyecto; no copies una línea de paquete de ejemplo. Ejecuta la app y comprueba:
+1. El botón **Continuar** abre la segunda pantalla y muestra el nombre escrito.
+2. **Volver** regresa a la primera pantalla con el nombre aún escrito.
+3. Al rotar cualquiera de las pantallas, el nombre se conserva.
+4. **Solicitar permiso de cámara** muestra el diálogo; al conceder o denegar, la app informa del resultado. No se abre la cámara ni se toma ninguna fotografía.
 
 ## RESUMEN DE LA UNIDAD
 * Android ha evolucionado impulsado por el avance de las redes móviles (de 1G a 5G) hasta convertirse en un sistema moderno basado en Linux y el entorno **ART**.
