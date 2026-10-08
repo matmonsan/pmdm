@@ -460,6 +460,8 @@ En Android Studio, selecciona **New Project** y elige la plantilla **Empty Activ
 
 Usaremos este mismo proyecto en los apartados 8, 9 y 10: primero crearemos la interfaz, después conectaremos su estado e interacción y, por último, añadiremos la navegación y el permiso.
 
+La plantilla suele crear una función de ejemplo `Greeting`, un tema con el nombre de la app y una función `GreetingPreview`. Ese `GreetingPreview` solo funciona mientras existan las funciones `Greeting` y el tema que referencia. Puedes conservarlo o sustituirlo por la vista previa de esta actividad que aparece abajo. Escribe las anotaciones y declaraciones en líneas separadas; no unas `@Preview`, `@Composable` y `fun` en una sola cadena.
+
 #### Crear las funciones de pantalla
 
 Abre `MainActivity.kt` y, debajo de la clase generada, añade estas dos funciones `@Composable`. La primera define la pantalla inicial con un campo de texto y un botón; la segunda define la pantalla de saludo y el botón para volver. En este primer paso construimos la interfaz y dejamos las acciones preparadas para conectarlas después.
@@ -518,6 +520,28 @@ fun PantallaDetalle(nombre: String, onVolver: () -> Unit) {
 1. Android Studio crea parte de los imports automáticamente; acepta los que proponga para `Composable`, `Column`, `Text`, `OutlinedTextField`, `Button`, `Modifier`, `Alignment`, `Arrangement` y `dp`.
 2. Comprueba que cada función tiene la anotación `@Composable`.
 3. En este paso las funciones describen la interfaz, pero todavía no están conectadas a `MainActivity`. En el apartado 9 añadiremos el estado y la interacción; en el 10 completaremos la navegación.
+
+#### Vista previa de la pantalla inicial (opcional)
+
+Si quieres reemplazar el `GreetingPreview` generado, añade esta función al final de `MainActivity.kt`, fuera de las otras funciones y clases. Como `PantallaInicio` recibe parámetros, la vista previa debe proporcionarle valores de ejemplo y callbacks vacíos:
+
+```kotlin
+@Preview(showBackground = true)
+@Composable
+fun PreviewPantallaInicio() {
+    MaterialTheme {
+        PantallaInicio(
+            nombre = "Ana",
+            onNombreChange = {},
+            onContinuar = {}
+        )
+    }
+}
+```
+
+Añade el import `androidx.compose.ui.tooling.preview.Preview` si Android Studio lo solicita. Esta vista previa solo permite visualizar la interfaz en el editor; todavía no ejecuta la navegación.
+
+Cuando en el paso 3 añadas el parámetro `onSolicitarCamara` a `PantallaInicio`, actualiza también esta vista previa añadiendo `onSolicitarCamara = {}` en la llamada. La lambda vacía satisface el parámetro obligatorio, pero no realiza ninguna acción al pulsar el botón desde la vista previa.
 
 ## 9. GESTIÓN DE EVENTOS E INTERACCIÓN EN LA INTERFAZ
 
