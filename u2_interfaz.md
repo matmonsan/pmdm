@@ -6,22 +6,40 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 
 # UD 2. Interfaz de usuario con Jetpack Compose
 
-> **Criterio de esta unidad:** todos los ejemplos de interfaz se escriben en **Kotlin** y con **Jetpack Compose**. No se utilizan layouts XML, `findViewById`, `ViewBinding`, `Activity` con vistas tradicionales ni Java.
+> **Si es tu primer día con Android Studio, empieza por los apartados 1, 3, 4, 5, 6 y 7.** Después, para completar una pantalla con texto, interacción y entrada de datos, continúa por **9 → 13.1 → 10 → 11**. El resto amplía lo aprendido y puede trabajarse más adelante. No hace falta entender toda la unidad de una vez.
 
-Jetpack Compose es el toolkit moderno de Android para construir interfaces nativas mediante funciones de Kotlin. En lugar de describir una pantalla en un fichero XML y modificar objetos `View`, escribimos una función `@Composable` que describe qué interfaz debe mostrarse para un estado determinado.
+En esta unidad crearemos pantallas Android escribiendo Kotlin. Usaremos **Jetpack Compose**, un conjunto de herramientas que permite describir con código qué elementos aparecen en la pantalla: textos, botones, campos para escribir y otros componentes.
 
-La idea central puede resumirse así:
+Piensa en la pantalla como una receta: escribimos qué elementos queremos y Compose se encarga de dibujarlos. Si más adelante cambia un dato, Compose actualiza la parte de la pantalla que lo muestra.
 
-```text
-estado de la aplicación -> composición -> interfaz visible
-```
+No necesitas conocer antes XML, `findViewById` ni el sistema antiguo de vistas. Si aparecen en la unidad, será solo para comparar o como material complementario.
 
-Cuando el estado cambia, Compose vuelve a ejecutar las partes necesarias de la composición. Este proceso se llama **recomposición**. El programador no debe indicar manualmente cómo encontrar cada control ni cómo actualizarlo; debe modelar el estado y describir la interfaz que corresponde a ese estado.
+### Antes de empezar
+
+- Conviene saber lo básico de Kotlin: variables, funciones, tipos de datos y bloques entre llaves.
+- En la unidad anterior se propone crear y ejecutar una primera aplicación. Si todavía no lo has hecho, puedes seguir directamente el apartado 3 de esta unidad.
+- Android Studio y el emulador pueden tardar un poco en iniciar o compilar la primera vez. Eso no significa necesariamente que el proyecto esté mal.
+
+### Palabras que usaremos
+
+| Palabra | Significado sencillo |
+|---|---|
+| Proyecto | La carpeta con todos los archivos de la aplicación. |
+| `MainActivity` | El punto de entrada habitual de una aplicación sencilla. |
+| Composable | Una función de Kotlin que describe una parte de la pantalla. |
+| Componente | Un elemento visual, como `Text` (texto) o `Button` (botón). |
+| Estado | Un dato que puede cambiar mientras se usa la aplicación, por ejemplo, el número de pulsaciones. |
+| Preview o vista previa | Una representación de la interfaz dentro de Android Studio; no ejecuta la aplicación. |
+| Emulador | Un teléfono Android simulado que permite probar la aplicación en el ordenador. |
+
+### Recorrido recomendado
+
+No intentes memorizar todos los nombres a la vez. Para crear una pantalla sencilla, sigue **3 → 4 → 5 → 6 → 7**. Después, para completar la interfaz, sigue **9 → 13.1 → 10 → 11**. Los apartados posteriores son ampliaciones y material de consulta.
 
 ## Índice
 
 1. [Objetivos](#1-objetivos)
-2. [Del layout clásico a Compose](#2-del-layout-clásico-a-compose)
+2. [Del layout clásico a Compose (comparación)](#2-del-layout-clásico-a-compose)
 3. [Preparación del proyecto](#3-preparación-del-proyecto)
 4. [El modelo mental de Compose](#4-el-modelo-mental-de-compose)
 5. [Funciones `@Composable` y composición](#5-funciones-composable-y-composición)
@@ -33,45 +51,40 @@ Cuando el estado cambia, Compose vuelve a ejecutar las partes necesarias de la c
 11. [Entrada de texto y teclado](#11-entrada-de-texto-y-teclado)
 12. [Controles de selección](#12-controles-de-selección)
 13. [Estado y eventos](#13-estado-y-eventos)
-14. [Material Design y temas](#14-material-design-y-temas)
-15. [Visibilidad, diálogos y mensajes](#15-visibilidad-diálogos-y-mensajes)
-16. [Animaciones y transiciones](#16-animaciones-y-transiciones)
-17. [Operaciones asíncronas y `ProgressIndicator`](#17-operaciones-asíncronas-y-progressindicator)
-18. [Navegación entre pantallas](#18-navegación-entre-pantallas)
-19. [Accesibilidad y diseño adaptable](#19-accesibilidad-y-diseño-adaptable)
-20. [Arquitectura de una pantalla](#20-arquitectura-de-una-pantalla)
-21. [Prácticas guiadas](#21-prácticas-guiadas)
-22. [Proyecto de unidad](#22-proyecto-de-unidad)
-23. [Errores frecuentes](#23-errores-frecuentes)
-24. [Comprobación de conocimientos](#24-comprobación-de-conocimientos)
-25. [Documentación y videotutoriales](#25-documentación-y-videotutoriales)
+14. [Material Design y temas (ampliación)](#14-material-design-y-temas)
+15. [Visibilidad, diálogos y mensajes (ampliación)](#15-visibilidad-diálogos-y-mensajes)
+16. [Animaciones y transiciones (ampliación)](#16-animaciones-y-transiciones)
+17. [Operaciones asíncronas y `ProgressIndicator` (ampliación)](#17-operaciones-asíncronas-y-progressindicator)
+18. [Navegación entre pantallas (ampliación)](#18-navegación-entre-pantallas)
+19. [Accesibilidad y diseño adaptable (ampliación)](#19-accesibilidad-y-diseño-adaptable)
+20. [Arquitectura de una pantalla (ampliación)](#20-arquitectura-de-una-pantalla)
+21. [Una pantalla completa paso a paso](#21-una-pantalla-completa-paso-a-paso)
+22. [Resumen de términos](#22-resumen-de-términos)
+23. [Prácticas](#23-prácticas)
+24. [Documentación y videotutoriales](#24-documentación-y-videotutoriales)
 
 ---
 
 ## 1. Objetivos
 
-Al finalizar esta unidad el alumnado será capaz de:
+Al terminar el recorrido básico, podrás:
 
-1. Explicar qué problema resuelve Jetpack Compose y diferenciarlo del sistema de vistas tradicional.
-2. Crear funciones reutilizables anotadas con `@Composable`.
-3. Organizar una pantalla con `Column`, `Row`, `Box`, `Surface` y `Card`.
-4. Aplicar tamaño, márgenes visuales, relleno, alineación, fondo, borde y clics con `Modifier`.
-5. Mostrar texto, imágenes, iconos, botones y tarjetas usando Material 3.
-6. Recoger texto mediante `TextField` y validar formularios.
-7. Implementar `Checkbox`, `RadioButton`, `Switch`, `Slider` y menús desplegables.
-8. Separar el estado de la interfaz y elevarlo al componente adecuado.
-9. Comprender la recomposición y evitar efectos secundarios durante la composición.
-10. Presentar listas eficientes con `LazyColumn` y `LazyVerticalGrid`.
-11. Crear temas coherentes con colores, tipografías y formas de Material 3.
-12. Añadir animaciones, indicadores de progreso, diálogos y navegación.
-13. Diseñar interfaces que se adapten a distintas pantallas y sean accesibles.
-14. Probar componentes Compose y justificar las decisiones de diseño.
+1. Abrir un proyecto y localizar el archivo donde se dibuja su pantalla.
+2. Mostrar texto y organizarlo en vertical u horizontal.
+3. Añadir espacios y cambiar el tamaño de los elementos.
+4. Crear un botón que responda a una pulsación.
+5. Guardar un dato que cambia y mostrarlo en pantalla.
+6. Crear un campo de texto sencillo.
+
+Las listas, los temas, la navegación, las animaciones y las pruebas aparecen como ampliaciones. No son requisitos para dar los primeros pasos.
 
 ---
 
 ## 2. Del layout clásico a Compose
 
-Los PDF de partida presentan una jerarquía de `View` y `ViewGroup`, layouts XML, `TextView`, `Button`, `EditText`, `ConstraintLayout`, `CardView` y controles de selección. Esos conceptos siguen siendo útiles para entender el problema, pero en esta asignatura se implementan con Compose.
+> **Comparación opcional:** este apartado sirve si ya has visto interfaces con XML. Si es tu primera interfaz, puedes saltar directamente al apartado 3. En esta unidad empezaremos con Compose y no necesitas conocer los nombres de la tabla.
+
+En Android también existe un sistema anterior de interfaces con archivos XML y elementos llamados `View`. Compose permite describir esas pantallas directamente con Kotlin. Esta tabla es solo una equivalencia de consulta:
 
 | Concepto tradicional | Equivalente recomendado en Compose |
 |---|---|
@@ -138,137 +151,131 @@ La función no devuelve una `View`. Su salida es una descripción de UI que Comp
 
 ## 3. Preparación del proyecto
 
-Se recomienda crear en Android Studio un proyecto **Empty Activity** con Kotlin y Jetpack Compose. La plantilla actual suele configurar Compose y Material 3 automáticamente. Si se configura el proyecto manualmente, las versiones concretas deben corresponderse con la documentación oficial y con el catálogo de versiones del proyecto.
+Vamos a crear un proyecto nuevo para poder seguir los ejemplos sin modificar otros trabajos. Los nombres exactos de algunos botones pueden cambiar según la versión de Android Studio.
 
-Ejemplo conceptual de dependencias en Gradle Kotlin DSL:
+### 3.1 Crear una aplicación con Compose
+
+1. Abre Android Studio y, en la pantalla de bienvenida, pulsa **New Project** (o **Nuevo proyecto**).
+2. Elige la plantilla **Empty Activity**. Comprueba que la descripción indique que utiliza **Jetpack Compose**; no elijas una plantilla de vistas/XML para esta unidad.
+3. Escribe un nombre, por ejemplo `MiPrimeraInterfaz`. El nombre puede ser distinto, pero evita espacios y tildes.
+4. Deja el lenguaje en **Kotlin**. Mantén las demás opciones que propone Android Studio, salvo que el profesor indique otra cosa.
+5. Pulsa **Finish** y espera a que termine la preparación del proyecto. Si aparece una tarea de sincronización o descarga, espera a que finalice antes de continuar.
+
+**¿Qué ha hecho Android Studio?** Ha creado los archivos iniciales y configurado las librerías necesarias para Compose. En este primer ejercicio no vamos a editar Gradle ni a añadir dependencias.
+
+### 3.2 Encontrar el código de la pantalla
+
+1. En el panel **Project** (normalmente a la izquierda), selecciona la vista **Android** si está disponible.
+2. Despliega `app`, después `kotlin+java` (en algunas versiones aparece como `kotlin` o `java`) y abre el paquete de tu aplicación.
+3. Abre `MainActivity.kt`.
+4. Busca `setContent { ... }`. Dentro suele aparecer el nombre de un tema terminado en `Theme` y, dentro de este, una pantalla de ejemplo llamada `Greeting`.
+
+`MainActivity.kt` es un archivo de Kotlin. No hace falta entender ahora toda la clase: para esta práctica localiza únicamente el bloque `setContent` y la función composable de ejemplo.
+
+### 3.3 Cambiar la pantalla de ejemplo
+
+Dentro de `setContent`, conserva el tema que haya creado la plantilla, pero quita el contenido de ejemplo. Si ves un `Scaffold { ... }` que contiene `Greeting(...)`, elimina ese `Scaffold` y su bloque completo también. Dentro del tema, deja esta llamada:
 
 ```kotlin
-dependencies {
-    implementation(platform("androidx.compose:compose-bom:2025.10.00"))
-    implementation("androidx.activity:activity-compose:1.11.0")
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.compose.material:material-icons-extended")
-
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2025.10.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-}
+PantallaInicio()
 ```
 
-> Las versiones son orientativas. Antes de copiar el bloque, comprueba las versiones estables actuales en la documentación de Android y en el proyecto generado por Android Studio. No se deben mezclar versiones incompatibles de librerías Compose.
-
-Una actividad mínima queda reducida a proporcionar el contenido Compose:
+La estructura quedará parecida a esta; **no copies literalmente `NombreDeTuProyectoTheme`**, usa el nombre real del tema que ya aparece en tu archivo:
 
 ```kotlin
-class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            AppTheme {
-                PantallaPrincipal()
-            }
-        }
+setContent {
+    NombreDeTuProyectoTheme {
+        PantallaInicio()
     }
 }
 ```
 
-La actividad no construye controles ni contiene la lógica de cada botón. Su responsabilidad inicial es conectar el ciclo de vida de Android con el árbol de composición.
+Después, fuera de `MainActivity` y al final del mismo archivo, añade:
+
+```kotlin
+@Composable
+fun PantallaInicio() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+    ) {
+        Text("Mi primera pantalla")
+        Text("Estoy aprendiendo a crear interfaces.")
+    }
+}
+```
+
+Si Android Studio marca en rojo `Composable`, `Column`, `Modifier`, `fillMaxSize`, `padding`, `Arrangement`, `dp` o `Text`, coloca el cursor sobre el nombre y usa la sugerencia **Import** (en Windows/Linux suele ser `Alt+Enter`; en macOS, `Option+Enter`). Los imports son líneas que permiten usar código de otras partes de Android y Compose. Si no aparece una sugerencia, comprueba que escribiste el nombre correctamente y que el proyecto terminó de sincronizarse.
+
+No borres la línea `package ...` de la parte superior del archivo. Tampoco borres `MainActivity` ni el código del tema. Si la plantilla usa un nombre de tema propio, consérvalo.
+
+### 3.4 Ejecutar y comprobar
+
+1. En la barra superior, selecciona un emulador Android disponible. Si no hay ninguno, crea uno desde **Device Manager** siguiendo las indicaciones del profesor.
+2. Pulsa el triángulo verde **Run**.
+3. Espera a que termine la compilación y se abra la aplicación.
+
+**Resultado esperado:** en el teléfono o emulador aparecen los dos textos, aproximadamente centrados y con espacio alrededor. Si no aparece, revisa que `PantallaInicio()` se llame dentro de `setContent` y que la función esté fuera de la clase `MainActivity`.
+
+> La primera compilación puede tardar. Si aparece un error, lee primero el mensaje rojo de la ventana **Build**: suele indicar el archivo y la línea que hay que revisar. No cambies Gradle al azar.
 
 ---
 
 ## 4. El modelo mental de Compose
 
-### 4.1 Composición, recomposición y abandono
+### 4.1 ¿Qué hace una función composable?
 
-- **Composición:** primera ejecución de una función `@Composable`.
-- **Recomposición:** ejecución posterior de las partes que dependen de un estado que ha cambiado.
-- **Abandono:** Compose elimina una parte cuando deja de pertenecer al árbol.
-
-Ejemplo:
+En la práctica anterior, `PantallaInicio` es una función: tiene un nombre, se escribe como código Kotlin y contiene instrucciones entre llaves. La marca `@Composable` le indica a Compose que esa función describe elementos de una interfaz.
 
 ```kotlin
 @Composable
-fun Contador() {
-    var contador by remember { mutableIntStateOf(0) }
+fun Mensaje() {
+    Text("Hola")
+}
+```
 
+`Text` también es una función composable. Puedes pensar que `PantallaInicio` coloca un elemento `Text` en la pantalla. Llamar a `Mensaje()` desde otra función composable permite reutilizar esa pequeña parte.
+
+### 4.2 La pantalla se construye con piezas
+
+Una pantalla suele tener elementos dentro de otros elementos. Por ejemplo, `Column` organiza su contenido de arriba abajo:
+
+```kotlin
+@Composable
+fun PantallaInicio() {
     Column {
-        Text(text = "Pulsaciones: $contador")
-        Button(onClick = { contador++ }) {
-            Text("Sumar")
-        }
+        Text("Primer texto")
+        Text("Segundo texto")
     }
 }
 ```
 
-Al pulsar el botón, cambia `contador`. Compose vuelve a ejecutar las funciones afectadas y el texto pasa a mostrar el nuevo valor.
+Las llaves de `Column { ... }` contienen los elementos que se muestran dentro. Si añades otra llamada a `Text`, aparecerá otro texto debajo. Prueba a cambiar el texto entre comillas, guarda el archivo y vuelve a ejecutar la aplicación.
 
-### 4.2 Composables puros
+### 4.3 ¿Qué significa recomposición?
 
-Un composable debería comportarse como una función: mismos parámetros, misma UI. No debe lanzar una petición de red, escribir en una base de datos ni modificar un singleton cada vez que se recompone.
+Cuando un dato que se muestra cambia, Compose vuelve a dibujar la parte necesaria de la pantalla. A esa actualización se le llama **recomposición**. Más adelante, en el apartado 13, veremos cómo declarar un dato observable para que un botón pueda cambiarlo.
 
-La interfaz recibe datos y eventos:
-
-```kotlin
-@Composable
-fun FilaProducto(
-    nombre: String,
-    precio: String,
-    onEliminar: () -> Unit,
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column {
-            Text(text = nombre, style = MaterialTheme.typography.titleMedium)
-            Text(text = precio, style = MaterialTheme.typography.bodyMedium)
-        }
-        IconButton(onClick = onEliminar) {
-            Icon(
-                imageVector = Icons.Default.Delete,
-                contentDescription = "Eliminar $nombre",
-            )
-        }
-    }
-}
-```
-
-Este patrón se denomina **flujo unidireccional de datos**:
-
-```text
-estado -> composable -> evento -> propietario del estado -> nuevo estado
-```
-
-### 4.3 `remember` y `rememberSaveable`
-
-`remember` conserva un valor durante recomposiciones, pero no necesariamente ante la recreación de la actividad:
-
-```kotlin
-var texto by remember { mutableStateOf("") }
-```
-
-`rememberSaveable` permite conservar valores simples cuando Android recrea la actividad por un cambio de configuración:
-
-```kotlin
-var texto by rememberSaveable { mutableStateOf("") }
-```
-
-No es un sustituto de un `ViewModel`. Para estado de pantalla importante, especialmente si procede de repositorios o debe sobrevivir a procesos, se utiliza una arquitectura con `ViewModel` y `StateFlow`.
+Por ahora, basta con recordar: describimos la pantalla con composables y Compose se ocupa de mostrarla. No es necesario buscar cada texto o botón para actualizarlo manualmente.
 
 ---
 
 ## 5. Funciones `@Composable` y composición
 
-Una función composable:
+En el apartado anterior has usado una función para agrupar varios elementos. Para crear una función que dibuje elementos Compose, se escribe `@Composable` justo encima del nombre:
 
-1. Lleva la anotación `@Composable`.
-2. Puede llamar a otros composables.
-3. Puede recibir parámetros normales y lambdas.
-4. No tiene que devolver un objeto visual.
+```kotlin
+@Composable
+fun Cabecera() {
+    Text("Mi aplicación")
+}
+```
+
+`fun` inicia una función de Kotlin; `Cabecera` es el nombre que le damos; y `Text("Mi aplicación")` indica qué texto mostrar. El nombre de la función empieza con mayúscula por convención de Compose. Puedes llamarla desde otra función composable escribiendo `Cabecera()`.
+
+Los ejemplos siguientes muestran distintas formas de organizar una pantalla. Si aparece un nombre subrayado en rojo, prueba la sugerencia de importación de Android Studio como hiciste en el apartado 3.
 
 ```kotlin
 @Composable
@@ -310,9 +317,11 @@ fun PantallaPerfil() {
 }
 ```
 
-`Scaffold` proporciona espacios para elementos comunes de una pantalla, como barra superior, barra inferior, botón de acción flotante y mensajes.
+`Scaffold` es un contenedor para pantallas que tienen elementos comunes, como una barra superior o una barra inferior. **No lo necesitas para la primera pantalla**; aquí aparece como ejemplo de consulta.
 
 ### 5.2 Previsualizaciones
+
+En este ejemplo, `AppTheme` representa el tema de la aplicación. Si el tema de tu proyecto tiene otro nombre, utiliza ese nombre en su lugar. Puedes saltarte las previews y ejecutar la app con **Run** mientras estás empezando.
 
 ```kotlin
 @Preview(showBackground = true)
@@ -333,11 +342,13 @@ Una preview debe ser rápida y no depender de red, base de datos ni navegación 
 
 ## 6. Medidas, unidades y modificadores
 
+Un **modificador** es una instrucción que cambia cómo se coloca o se ve un elemento. En el ejemplo inicial, `Modifier.fillMaxSize()` pide usar el espacio disponible y `Modifier.padding(24.dp)` deja espacio alrededor. Las instrucciones se encadenan con un punto y se leen de arriba abajo.
+
 ### 6.1 `dp`, `sp` y píxeles
 
-- `dp` representa una unidad independiente de la densidad para tamaños y espacios.
-- `sp` se utiliza para texto y respeta la escala de fuente elegida por la persona usuaria.
-- Los píxeles físicos no deben utilizarse como medida de diseño normal.
+- `dp` se usa normalmente para tamaños y espacios de la interfaz.
+- `sp` se usa normalmente para el texto y respeta el tamaño de letra elegido en el teléfono.
+- No hace falta calcular píxeles físicos para los ejemplos de esta unidad.
 
 ```kotlin
 Text(
@@ -350,6 +361,8 @@ Text(
 La accesibilidad exige no fijar tamaños de texto que impidan que el usuario amplíe la fuente.
 
 ### 6.2 El orden de los modificadores importa
+
+Por ahora basta con probar `padding` y `fillMaxWidth`. Más adelante, al añadir un fondo y un borde, sí será importante el orden de las instrucciones.
 
 ```kotlin
 Text(
@@ -372,6 +385,8 @@ Text(
 ```
 
 ### 6.3 Modificadores esenciales
+
+No es necesario aprenderse esta lista. En los ejemplos utilizaremos sobre todo `fillMaxSize`, `fillMaxWidth`, `padding` y `size`.
 
 ```kotlin
 Modifier
@@ -409,6 +424,12 @@ Card(
 ---
 
 ## 7. Layouts: `Column`, `Row`, `Box` y pesos
+
+Un **layout** es un contenedor que ordena otros elementos. Se elige según cómo queremos colocarlos:
+
+- `Column`: uno debajo de otro.
+- `Row`: uno al lado del otro.
+- `Box`: elementos superpuestos, como texto encima de una imagen.
 
 ### 7.1 `Column`
 
@@ -716,6 +737,8 @@ fun Avatar(url: String, nombre: String) {
 
 ## 10. Botones y acciones
 
+Un botón necesita saber qué hacer al pulsarlo. Ese comportamiento se escribe entre llaves después de `onClick`. Si todavía no has visto cómo guardar un dato que cambia, lee primero [13.1 Estado local](#131-estado-local) y vuelve aquí.
+
 Compose Material ofrece distintos botones según la importancia de la acción:
 
 ```kotlin
@@ -772,6 +795,8 @@ Button(
 
 ## 11. Entrada de texto y teclado
 
+En Compose, un campo de texto muestra un valor y avisa cuando el usuario lo cambia. Por eso `TextField` recibe tanto el texto actual (`value`) como una función (`onValueChange`) que recibirá el texto nuevo. El apartado 13.1 explica el dato cambiante que conecta ambas cosas.
+
 ### 11.1 `TextField` y `OutlinedTextField`
 
 ```kotlin
@@ -791,6 +816,29 @@ fun CampoNombre(
 ```
 
 El valor es controlado por el estado que recibe la función. El campo no guarda por su cuenta la verdad de la aplicación.
+
+Aquí tienes un ejemplo completo de campo y saludo. La variable `nombre` guarda lo que se escribe; `onValueChange` recibe el texto nuevo y lo guarda. Como `nombre` es estado, el saludo se actualiza al cambiarlo:
+
+```kotlin
+@Composable
+fun SaludoConNombre() {
+    var nombre by rememberSaveable { mutableStateOf("") }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = { textoNuevo -> nombre = textoNuevo },
+            label = { Text("Tu nombre") },
+            singleLine = true,
+        )
+        Text(
+            text = if (nombre.isBlank()) "Escribe tu nombre" else "¡Hola, $nombre!",
+        )
+    }
+}
+```
+
+Para probarlo, llama a `SaludoConNombre()` dentro de `setContent`, en el lugar donde antes llamabas a `PantallaInicio()`. Si Android Studio subraya `rememberSaveable` o `mutableStateOf`, importa esas funciones con la sugerencia del editor.
 
 ### 11.2 Contraseña, teclado y transformación
 
@@ -1027,27 +1075,27 @@ fun SelectorCurso(
 
 ### 13.1 Estado local
 
-Adecuado para un detalle de presentación que no necesita salir del componente:
+El **estado** es un dato que puede cambiar mientras se usa la aplicación. Por ejemplo, el contador empieza en cero y cambia al pulsar un botón. En Kotlin, `var` declara un dato que puede cambiar; `rememberSaveable` permite a Compose conservar este valor sencillo al actualizar la interfaz.
 
 ```kotlin
 @Composable
-fun MostrarOcultar() {
-    var visible by rememberSaveable { mutableStateOf(false) }
+fun Contador() {
+    var contador by rememberSaveable { mutableIntStateOf(0) }
 
     Column {
-        Button(onClick = { visible = !visible }) {
-            Text(if (visible) "Ocultar" else "Mostrar")
-        }
-        AnimatedVisibility(visible = visible) {
-            Text("Contenido visible")
+        Text("Pulsaciones: $contador")
+        Button(onClick = { contador++ }) {
+            Text("Sumar uno")
         }
     }
 }
 ```
 
+`$contador` inserta el valor de la variable dentro del texto. `contador++` suma uno. Al cambiar el estado, Compose actualiza el texto automáticamente; esta actualización se llama **recomposición**. Prueba el ejemplo y observa qué ocurre al pulsar el botón. Android Studio puede pedir que importes `rememberSaveable`, `mutableIntStateOf` y los operadores `getValue`/`setValue`.
+
 ### 13.2 Elevación del estado
 
-Si dos componentes necesitan el mismo dato, el estado se eleva a su ancestro común:
+Más adelante, si varios componentes necesitan el mismo dato, se puede guardar en una función común y pasar a cada componente solo los datos y acciones que necesita. A esto se le llama **elevar el estado**. No es necesario para el primer contador.
 
 ```kotlin
 @Composable
@@ -1078,7 +1126,7 @@ fun ControlesContador(
 }
 ```
 
-### 13.3 Estado de pantalla
+### 13.3 Estado de pantalla (ampliación)
 
 Para una pantalla real conviene modelar estados explícitos:
 
@@ -1107,7 +1155,7 @@ fun AlumnosContent(
 }
 ```
 
-### 13.4 Efectos
+### 13.4 Efectos (ampliación)
 
 `LaunchedEffect` ejecuta una corrutina asociada al ciclo de vida del composable:
 
@@ -1532,23 +1580,361 @@ Este diseño facilita las previews y las pruebas: `AlumnosScreen` no necesita An
 
 ---
 
-## 21. Prácticas guiadas
+## 21. Una pantalla completa paso a paso
 
-### Práctica 1. Presentación con `Column`, `Row` y `Box`
+Vamos a construir una **ficha de alumno** que reúne lo visto en la unidad: una cabecera con icono y nombre, un campo de texto, dos opciones, un botón y un resultado que aparece al pulsarlo. Hazlo en un proyecto nuevo creado como en el apartado 3, y **ejecuta la app al terminar cada paso** para comprobar que sigue funcionando.
 
-Construye una tarjeta de presentación con:
+El resultado final se parecerá a esto:
 
-- Imagen de avatar.
-- Nombre y curso.
-- Botón para editar.
-- Fondo y esquinas redondeadas.
-- Un texto superpuesto sobre una imagen mediante `Box`.
+```text
+ (icono)  Ana López
+          Ficha de alumno
 
-**Restricciones:** no usar coordenadas absolutas ni componentes XML.
+ [ Nombre ............... ]
+ [x] Soy delegado de clase
+ Recibir avisos        (switch)
+ [        Guardar        ]
+ ┌───────────────────────┐
+ │ Guardado: Ana López   │
+ └───────────────────────┘
+```
 
-**Entrega:** preview en tema claro y oscuro, código dividido en al menos tres composables.
+### Paso 1. Preparar el archivo
 
-### Práctica 2. Calculadora con Compose
+En `MainActivity.kt`, deja dentro del tema (el nombre acaba en `Theme`) solo esta llamada:
+
+```kotlin
+setContent {
+    NombreDeTuProyectoTheme {
+        FichaAlumno()
+    }
+}
+```
+
+Al final del archivo, crea la pantalla con un título. `verticalScroll` permite desplazarse si el contenido no cabe (por ejemplo, con el teléfono girado), y `spacedBy(16.dp)` separa los elementos sin escribir un `padding` en cada uno:
+
+```kotlin
+@Composable
+fun FichaAlumno() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Text("Ficha de alumno", style = MaterialTheme.typography.headlineMedium)
+    }
+}
+```
+
+Importa con `Alt+Enter` lo que aparezca en rojo. **Comprueba:** se ve el título con espacio alrededor.
+
+### Paso 2. Guardar los datos que cambian (estado)
+
+Antes de la `Column`, dentro de `FichaAlumno`, declara cuatro datos. Cada uno es un estado: cuando cambie, la pantalla se actualizará sola.
+
+```kotlin
+var nombre by rememberSaveable { mutableStateOf("") }
+var esDelegado by rememberSaveable { mutableStateOf(false) }
+var avisos by rememberSaveable { mutableStateOf(true) }
+var resumen by rememberSaveable { mutableStateOf("") }
+```
+
+Aún no se ve nada nuevo. Es normal: primero guardamos los datos y en los pasos siguientes los usaremos.
+
+### Paso 3. La cabecera
+
+Crea una función aparte, fuera de `FichaAlumno`, para no mezclarlo todo en un solo bloque. Usa `Row` para colocar el icono y los textos en horizontal, y `Box` para dibujar el círculo de fondo del icono:
+
+```kotlin
+@Composable
+fun CabeceraFicha(nombre: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+            )
+        }
+        Column {
+            Text(
+                text = if (nombre.isBlank()) "Alumno sin nombre" else nombre,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Text(
+                text = "Ficha de alumno",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+```
+
+Dentro de la `Column` de `FichaAlumno`, **sustituye** el título del paso 1 por:
+
+```kotlin
+CabeceraFicha(nombre = nombre)
+```
+
+La cabecera recibe el `nombre` como parámetro: no guarda ningún dato propio, solo lo muestra. **Comprueba:** aparece el icono y el texto “Alumno sin nombre”.
+
+### Paso 4. El campo de texto
+
+Añade debajo de la cabecera, dentro de la `Column`:
+
+```kotlin
+OutlinedTextField(
+    value = nombre,
+    onValueChange = { textoNuevo -> nombre = textoNuevo },
+    label = { Text("Nombre") },
+    singleLine = true,
+    modifier = Modifier.fillMaxWidth(),
+)
+```
+
+**Comprueba:** al escribir, el nombre de la cabecera cambia a la vez. Eso es el estado en acción: `nombre` cambia y Compose actualiza todo lo que lo muestra.
+
+### Paso 5. Las dos opciones
+
+Crea dos funciones pequeñas para las opciones (fuera de `FichaAlumno`):
+
+```kotlin
+@Composable
+fun OpcionCheck(
+    texto: String,
+    marcada: Boolean,
+    onCambio: (Boolean) -> Unit,
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(checked = marcada, onCheckedChange = onCambio)
+        Text(texto)
+    }
+}
+
+@Composable
+fun OpcionSwitch(
+    texto: String,
+    activada: Boolean,
+    onCambio: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(texto)
+        Switch(checked = activada, onCheckedChange = onCambio)
+    }
+}
+```
+
+Y úsalas debajo del campo de texto. Cada una recibe el dato actual y una función que dice qué hacer cuando el usuario lo cambia (`it` es el valor nuevo):
+
+```kotlin
+OpcionCheck(
+    texto = "Soy delegado de clase",
+    marcada = esDelegado,
+    onCambio = { esDelegado = it },
+)
+OpcionSwitch(
+    texto = "Recibir avisos",
+    activada = avisos,
+    onCambio = { avisos = it },
+)
+```
+
+**Comprueba:** puedes marcar la casilla y mover el interruptor.
+
+### Paso 6. El botón y el resultado
+
+Añade debajo de las opciones. Si el nombre está vacío, el botón muestra un aviso; si no, guarda un texto resumen. El `Card` solo aparece cuando `resumen` no está vacío:
+
+```kotlin
+Button(
+    onClick = {
+        resumen = if (nombre.isBlank()) {
+            "Escribe un nombre antes de guardar"
+        } else {
+            val rol = if (esDelegado) "delegado" else "alumno"
+            val estadoAvisos = if (avisos) "con avisos" else "sin avisos"
+            "Guardado: $nombre ($rol, $estadoAvisos)"
+        }
+    },
+    modifier = Modifier.fillMaxWidth(),
+) {
+    Text("Guardar")
+}
+
+if (resumen.isNotEmpty()) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = resumen,
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+```
+
+**Comprueba:** pulsa **Guardar** con el campo vacío y luego con un nombre. Gira el emulador: los datos se conservan gracias a `rememberSaveable`.
+
+### Código completo
+
+Así queda `FichaAlumno` al terminar (las funciones `CabeceraFicha`, `OpcionCheck` y `OpcionSwitch` son las de los pasos anteriores):
+
+```kotlin
+@Composable
+fun FichaAlumno() {
+    var nombre by rememberSaveable { mutableStateOf("") }
+    var esDelegado by rememberSaveable { mutableStateOf(false) }
+    var avisos by rememberSaveable { mutableStateOf(true) }
+    var resumen by rememberSaveable { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        CabeceraFicha(nombre = nombre)
+
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = { textoNuevo -> nombre = textoNuevo },
+            label = { Text("Nombre") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        OpcionCheck(
+            texto = "Soy delegado de clase",
+            marcada = esDelegado,
+            onCambio = { esDelegado = it },
+        )
+        OpcionSwitch(
+            texto = "Recibir avisos",
+            activada = avisos,
+            onCambio = { avisos = it },
+        )
+
+        Button(
+            onClick = {
+                resumen = if (nombre.isBlank()) {
+                    "Escribe un nombre antes de guardar"
+                } else {
+                    val rol = if (esDelegado) "delegado" else "alumno"
+                    val estadoAvisos = if (avisos) "con avisos" else "sin avisos"
+                    "Guardado: $nombre ($rol, $estadoAvisos)"
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Guardar")
+        }
+
+        if (resumen.isNotEmpty()) {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = resumen,
+                    modifier = Modifier.padding(16.dp),
+                )
+            }
+        }
+    }
+}
+```
+
+**Si algo falla:** si un nombre sale en rojo, falta un import (`Alt+Enter`); si no compila `by`, importa `androidx.compose.runtime.getValue` y `setValue`; si la pantalla no cambia, comprueba que `FichaAlumno()` se llama dentro de `setContent`.
+
+**Para entender lo que has hecho:** la pantalla es una `Column` con piezas. Los **datos** viven en `FichaAlumno` (estado). Las piezas pequeñas **reciben** datos y **avisan** de los cambios con funciones (`onCambio`), sin guardar nada por su cuenta. Este reparto es la base de cualquier pantalla Compose.
+
+---
+
+## 22. Resumen de términos
+
+| Término | Qué significa |
+|---|---|
+| Jetpack Compose | Herramienta de Android para describir la interfaz con funciones de Kotlin. |
+| Android Studio | Programa en el que se escribe, ejecuta y depura la aplicación. |
+| Emulador | Teléfono Android simulado en el ordenador. |
+| `MainActivity` | Punto de entrada de la app; aquí se llama a `setContent`. |
+| `setContent` | Indica qué pantalla Compose se muestra al abrir la `Activity`. |
+| `@Composable` | Marca que una función describe una parte de la interfaz. |
+| Composable / componente | Función o elemento visual reutilizable: `Text`, `Button`, `Card`… |
+| Declarativo | Se describe cómo debe verse la pantalla para un estado, no cómo modificarla paso a paso. |
+| Composición | Primera vez que Compose construye la interfaz a partir de los composables. |
+| Recomposición | Actualización automática de la parte de la pantalla cuyo dato ha cambiado. |
+| Estado | Dato que puede cambiar y que Compose observa (`mutableStateOf`). |
+| `remember` | Conserva un valor mientras la pantalla se actualiza. |
+| `rememberSaveable` | Como `remember`, pero también conserva el valor al girar el dispositivo. |
+| `by` | Permite usar el estado como una variable normal (`nombre = "Ana"`). |
+| Elevar el estado | Guardar el dato en la función común que lo necesita y pasarlo a las demás. |
+| Evento / callback | Función que se ejecuta cuando ocurre algo: `onClick`, `onValueChange`, `onCambio`. |
+| Lambda | Bloque de código entre llaves que se pasa como parámetro: `{ contador++ }`. |
+| Modifier (modificador) | Instrucción encadenable que cambia tamaño, espacio, fondo o comportamiento. |
+| `padding` | Espacio alrededor o dentro de un elemento. |
+| `fillMaxSize` / `fillMaxWidth` | Ocupar todo el espacio disponible o todo el ancho. |
+| `dp` | Unidad de medida para tamaños y espacios. |
+| `sp` | Unidad de medida para el tamaño del texto. |
+| Layout | Contenedor que coloca a otros elementos. |
+| `Column` | Coloca los elementos uno debajo de otro. |
+| `Row` | Coloca los elementos uno al lado de otro. |
+| `Box` | Superpone elementos. |
+| `Arrangement` | Reparto del espacio entre hijos en el eje principal (`spacedBy`, `Center`, `SpaceBetween`). |
+| `Alignment` | Alineación de los hijos en el eje contrario (`CenterHorizontally`). |
+| `weight` | Reparte el espacio sobrante de forma proporcional. |
+| `Scaffold` | Estructura de pantalla con barras superior/inferior y mensajes. |
+| `Text` | Muestra texto. |
+| `Image` / `Icon` | Muestran una imagen o un icono; necesitan `contentDescription` para accesibilidad. |
+| `Button` | Botón con acción `onClick`. |
+| `TextField` / `OutlinedTextField` | Campo donde el usuario escribe; usa `value` y `onValueChange`. |
+| `Checkbox` | Casilla para marcar varias opciones. |
+| `RadioButton` | Elegir una única opción de un grupo. |
+| `Switch` | Interruptor de activar/desactivar. |
+| `Card` | Tarjeta que agrupa contenido relacionado. |
+| `LazyColumn` | Lista que solo dibuja los elementos visibles; adecuada para listas largas. |
+| Clave estable (`key`) | Identificador único de cada elemento de una lista. |
+| `MaterialTheme` | Colores, tipografías y formas comunes de toda la aplicación. |
+| Material Design 3 | Sistema de diseño de Google en el que se basan los componentes. |
+| `Snackbar` | Mensaje breve en la parte inferior. |
+| `AlertDialog` | Ventana emergente para confirmar una decisión. |
+| `AnimatedVisibility` | Muestra u oculta un elemento con animación. |
+| `ViewModel` | Guarda el estado de una pantalla fuera de los composables. |
+| Navegación | Cambio entre pantallas de la aplicación (`NavHost`). |
+| `@Preview` | Muestra una vista previa en Android Studio sin ejecutar la app. |
+| `contentDescription` | Texto que lee un lector de pantalla (TalkBack) para describir un icono o imagen. |
+
+---
+
+## 23. Prácticas
+
+Empieza por la práctica 1. Las prácticas 2–6 son retos de ampliación: puedes hacerlas cuando ya controles las funciones, los layouts y el estado.
+
+### Práctica 1. Mi primera pantalla
+
+Usa el proyecto del apartado 3 y modifica `PantallaInicio`:
+
+1. Cambia los dos textos por tu nombre y el nombre de la asignatura.
+2. Añade un tercer `Text` con una frase corta.
+3. Comprueba que los textos aparecen uno debajo del otro.
+4. Añade `horizontalAlignment = Alignment.CenterHorizontally` a `Column` para centrarlos.
+5. Ejecuta la aplicación y verifica el resultado en el emulador.
+
+**Resultado esperado:** una pantalla sencilla con tres textos centrados y espacio alrededor. No necesitas imágenes, temas, varias funciones ni una vista previa para completar esta práctica.
+
+**Cuando ya hayas visto el estado:** añade un botón que aumente un contador. Como reto, añade un campo de texto que muestre un saludo personalizado.
+
+### Práctica 2. Calculadora con Compose (ampliación)
 
 Recrea la calculadora planteada en los PDF utilizando una `Column` para la pantalla y varias `Row` para la botonera.
 
@@ -1581,7 +1967,7 @@ enum class Operador(val simbolo: String) {
 
 No se debe evaluar una expresión arbitraria con `eval` ni ejecutar texto como código. La operación debe controlarse con tipos y lógica propia.
 
-### Práctica 3. Formulario de inscripción
+### Práctica 3. Formulario de inscripción (ampliación)
 
 Diseña un formulario con:
 
@@ -1604,7 +1990,7 @@ Casos que deben probarse:
 5. Envío correcto.
 6. Rotación durante la edición.
 
-### Práctica 4. Lista de tarjetas
+### Práctica 4. Lista de tarjetas (ampliación)
 
 Crea una lista de productos o alumnos con `LazyColumn`:
 
@@ -1616,11 +2002,11 @@ Crea una lista de productos o alumnos con `LazyColumn`:
 - Diálogo de confirmación para eliminar.
 - `Snackbar` después de guardar.
 
-### Práctica 5. Animación de visibilidad
+### Práctica 5. Animación de visibilidad (ampliación)
 
 Crea un botón “Mostrar detalles” que expanda y contraiga una tarjeta. Debe utilizar `AnimatedVisibility` o `animateContentSize`, mantener la información en estado y tener una descripción accesible.
 
-### Práctica 6. Interfaz adaptable
+### Práctica 6. Interfaz adaptable (ampliación)
 
 Presenta los mismos datos en:
 
@@ -1632,132 +2018,7 @@ Prueba el emulador en orientación vertical y horizontal y con una fuente del si
 
 ---
 
-## 22. Proyecto de unidad
-
-Desarrolla una aplicación de gestión de módulos del curso.
-
-### Funcionalidades mínimas
-
-1. Pantalla de inicio con resumen.
-2. Lista de módulos en tarjetas.
-3. Filtro por texto.
-4. Selección de módulos favoritos.
-5. Pantalla de detalle.
-6. Formulario para añadir una nota.
-7. Validación de la nota entre 0 y 10.
-8. Estados de carga, error y vacío.
-9. Tema claro y oscuro.
-10. Navegación entre inicio y detalle.
-11. Diseño usable en teléfono y tablet.
-12. Al menos cinco tests de UI Compose.
-
-### Criterios de evaluación sugeridos
-
-| Criterio | Peso |
-|---|---:|
-| Uso correcto de composables y Kotlin | 20 % |
-| Estado y flujo unidireccional | 20 % |
-| Material 3 y coherencia visual | 15 % |
-| Entrada, validación y feedback | 15 % |
-| Listas, navegación y estados de carga | 15 % |
-| Accesibilidad y adaptación | 10 % |
-| Pruebas, limpieza y documentación | 5 % |
-
-### Checklist de entrega
-
-- [ ] No hay layouts XML ni acceso a `View` tradicional.
-- [ ] Los componentes reciben datos y callbacks.
-- [ ] No hay trabajo costoso en el cuerpo de un composable.
-- [ ] Las listas utilizan claves estables.
-- [ ] Los botones tienen textos o descripciones claras.
-- [ ] Se contemplan carga, error y contenido.
-- [ ] La interfaz funciona con tema oscuro.
-- [ ] Se ha probado una fuente grande.
-- [ ] Las previews muestran los estados importantes.
-- [ ] Los tests comprueban comportamiento, no detalles internos de implementación.
-
----
-
-## 23. Errores frecuentes
-
-### “Cambio una variable y la pantalla no se actualiza”
-
-La variable no es estado observable:
-
-```kotlin
-// Incorrecto
-var contador = 0
-```
-
-Usa:
-
-```kotlin
-var contador by remember { mutableIntStateOf(0) }
-```
-
-o eleva el estado a un propietario superior.
-
-### “La lista pierde el contenido de un campo”
-
-Faltan claves estables o el estado está colocado fuera del elemento correcto:
-
-```kotlin
-items(alumnos, key = { it.id }) { alumno ->
-    // estado del elemento
-}
-```
-
-### “La petición se ejecuta muchas veces”
-
-No ejecutes una petición directamente en el cuerpo del composable. Usa un `ViewModel` o un efecto con una clave adecuada.
-
-### “La interfaz se corta”
-
-Un `Column` normal no desplaza automáticamente su contenido. Para contenido largo, utiliza `LazyColumn` o `verticalScroll`.
-
-### “El botón ocupa toda la fila”
-
-Revisa dónde has puesto `fillMaxWidth` y el orden de los modificadores. El tamaño es consecuencia del padre y de la cadena de modificadores.
-
-### “La pantalla tiene demasiados colores”
-
-Centraliza la apariencia en `MaterialTheme`. Usa roles semánticos como `primary`, `surface`, `error` y sus colores `on...`.
-
-### “He usado `Toast` para todos los errores”
-
-Los errores relacionados con un campo deben aparecer junto al campo. Para eventos globales, usa `Snackbar`. Reserva diálogos para decisiones que requieren atención.
-
-### “Un icono no funciona con TalkBack”
-
-Añade `contentDescription` o usa `null` solo si el icono es puramente decorativo. El control que contiene la acción debe tener una descripción.
-
----
-
-## 24. Comprobación de conocimientos
-
-1. ¿Qué significa que Compose sea declarativo?
-2. ¿Qué provoca una recomposición?
-3. ¿Qué diferencia hay entre `remember` y `rememberSaveable`?
-4. ¿Cuándo usarías `Column`, `Row` y `Box`?
-5. ¿Qué sustituye a `layout_weight`?
-6. ¿Por qué `LazyColumn` es preferible a una `Column` para listas largas?
-7. ¿Qué es elevar el estado?
-8. ¿Qué diferencia hay entre un `Checkbox`, un `RadioButton` y un `Switch`?
-9. ¿Por qué no se debe iniciar una petición de red en el cuerpo de un composable?
-10. ¿Qué problema resuelve `Snackbar`?
-11. ¿Cómo se implementa un estado de carga?
-12. ¿Qué información debe incluir la descripción de un icono accionable?
-13. ¿Cómo harías una UI adaptable para una tablet?
-14. ¿Qué ventajas tiene separar una pantalla conectada de un contenido puro?
-15. ¿Qué son las claves estables en una lista?
-
-### Actividad de razonamiento
-
-Una pantalla muestra una lista vacía mientras carga, desaparece al terminar la petición y enseña un error si falla. Explica qué estado representarías y dibuja el `when` que decide el contenido. Después, indica qué código iría en un `ViewModel` y qué código permanecería en el composable.
-
----
-
-## 25. Documentación y videotutoriales
+## 24. Documentación y videotutoriales
 
 ### Documentación oficial
 
@@ -1790,13 +2051,3 @@ Los siguientes enlaces apuntan a vídeos o listas concretas de YouTube. Se recom
 - [Android Developers en español](https://www.youtube.com/@AndroidDevelopersES): canal oficial con contenido y novedades para la comunidad hispanohablante.
 - [Jetpack Compose playlist - Philipp Lackner](https://www.youtube.com/playlist?list=PLQkwcJG4YTCQ6wLhZ6YqN7uLhJ6u4n8mR): colección práctica de Kotlin y Compose.
 - [Android Basics with Compose - curso en vídeo de Android Developers](https://www.youtube.com/playlist?list=PLWz5rJ2EKKc9Ty3Zl1hvMVUsXfkn93NRk): vídeos complementarios al itinerario oficial.
-
-### Cómo utilizar los vídeos en clase
-
-1. Ver únicamente el fragmento indicado por el profesor.
-2. Pausar antes de cada cambio de estado y predecir qué se recompondrá.
-3. Reescribir el ejemplo sin copiar nombres ni colores.
-4. Añadir un estado de error y una preview de tema oscuro.
-5. Explicar qué parte del ejemplo pertenece a UI y qué parte pertenece al estado o al dominio.
-
-> La referencia principal siempre debe ser la documentación oficial. Un vídeo puede utilizar APIs antiguas; si existe una diferencia, se debe seguir la API documentada y estable del proyecto.
