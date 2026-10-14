@@ -180,11 +180,11 @@ Dentro de `setContent`, conserva el tema que haya creado la plantilla, pero quit
 PantallaInicio()
 ```
 
-La estructura quedará parecida a esta; **no copies literalmente `NombreDeTuProyectoTheme`**, usa el nombre real del tema que ya aparece en tu archivo:
+La estructura quedará parecida a esta. Si tu proyecto ya tiene un tema con nombre propio (termina en `Theme`), puedes usarlo en lugar de `MaterialTheme`, pero **no copies literalmente `NombreDeTuProyectoTheme`**: es solo un marcador y daría error.
 
 ```kotlin
 setContent {
-    NombreDeTuProyectoTheme {
+    MaterialTheme {
         PantallaInicio()
     }
 }
@@ -1582,30 +1582,19 @@ Este diseño facilita las previews y las pruebas: `AlumnosScreen` no necesita An
 
 ## 21. Una pantalla completa paso a paso
 
-Vamos a construir una **ficha de alumno** que reúne lo visto en la unidad: una cabecera con icono y nombre, un campo de texto, dos opciones, un botón y un resultado que aparece al pulsarlo. Hazlo en un proyecto nuevo creado como en el apartado 3, y **ejecuta la app al terminar cada paso** para comprobar que sigue funcionando.
+Vamos a construir una **ficha de alumno** que reúne lo visto en la unidad: una cabecera con inicial y nombre, un campo de texto, dos opciones, un botón y un resultado que aparece al pulsarlo. Hazlo en un proyecto nuevo creado como en el apartado 3, y **ejecuta la app al terminar cada paso** para comprobar que sigue funcionando.
 
 El resultado final se parecerá a esto:
 
-```text
- (icono)  Ana López
-          Ficha de alumno
-
- [ Nombre ............... ]
- [x] Soy delegado de clase
- Recibir avisos        (switch)
- [        Guardar        ]
- ┌───────────────────────┐
- │ Guardado: Ana López   │
- └───────────────────────┘
-```
+![Ejemplo pantalla](./assets/img/ejemplo_pantalla.png)
 
 ### Paso 1. Preparar el archivo
 
-En `MainActivity.kt`, deja dentro del tema (el nombre acaba en `Theme`) solo esta llamada:
+En `MainActivity.kt`, borra el contenido de `setContent` y deja solo esto. Usamos `MaterialTheme`, que siempre existe, para no depender del nombre del tema que haya generado tu proyecto:
 
 ```kotlin
 setContent {
-    NombreDeTuProyectoTheme {
+    MaterialTheme {
         FichaAlumno()
     }
 }
@@ -1645,7 +1634,7 @@ Aún no se ve nada nuevo. Es normal: primero guardamos los datos y en los pasos 
 
 ### Paso 3. La cabecera
 
-Crea una función aparte, fuera de `FichaAlumno`, para no mezclarlo todo en un solo bloque. Usa `Row` para colocar el icono y los textos en horizontal, y `Box` para dibujar el círculo de fondo del icono:
+Crea una función aparte, fuera de `FichaAlumno`, para no mezclarlo todo en un solo bloque. Usa `Row` para colocar el círculo con la inicial y los textos en horizontal, y `Box` para dibujar el círculo de fondo:
 
 ```kotlin
 @Composable
@@ -1661,9 +1650,9 @@ fun CabeceraFicha(nombre: String) {
                 .background(MaterialTheme.colorScheme.primaryContainer),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                imageVector = Icons.Default.Person,
-                contentDescription = null,
+            Text(
+                text = nombre.take(1).uppercase().ifEmpty { "?" },
+                style = MaterialTheme.typography.titleLarge,
             )
         }
         Column {
@@ -1686,7 +1675,7 @@ Dentro de la `Column` de `FichaAlumno`, **sustituye** el título del paso 1 por:
 CabeceraFicha(nombre = nombre)
 ```
 
-La cabecera recibe el `nombre` como parámetro: no guarda ningún dato propio, solo lo muestra. **Comprueba:** aparece el icono y el texto “Alumno sin nombre”.
+La cabecera recibe el `nombre` como parámetro: no guarda ningún dato propio, solo lo muestra. **Comprueba:** aparece un círculo con “?” y el texto “Alumno sin nombre”; cuando escribas el nombre en el paso 4, el círculo mostrará su inicial.
 
 ### Paso 4. El campo de texto
 
@@ -1789,9 +1778,59 @@ if (resumen.isNotEmpty()) {
 
 ### Código completo
 
-Así queda `FichaAlumno` al terminar (las funciones `CabeceraFicha`, `OpcionCheck` y `OpcionSwitch` son las de los pasos anteriores):
+Así queda el archivo `MainActivity.kt` completo al terminar, con los imports y la vista previa. Para usarlo:
+
+- Conserva la primera línea `package ...` de tu proyecto; no copies la del ejemplo.
+- Copia el código con sus saltos de línea. Cada `import` debe ir en su propia línea.
+- No hace falta importar ningún tema ni iconos: el ejemplo usa `MaterialTheme` y una letra.
 
 ```kotlin
+package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                FichaAlumno()
+            }
+        }
+    }
+}
+
 @Composable
 fun FichaAlumno() {
     var nombre by rememberSaveable { mutableStateOf("") }
@@ -1852,7 +1891,76 @@ fun FichaAlumno() {
         }
     }
 }
+
+@Composable
+fun CabeceraFicha(nombre: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = nombre.take(1).uppercase().ifEmpty { "?" },
+                style = MaterialTheme.typography.titleLarge,
+            )
+        }
+        Column {
+            Text(
+                text = if (nombre.isBlank()) "Alumno sin nombre" else nombre,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Text(
+                text = "Ficha de alumno",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+@Composable
+fun OpcionCheck(
+    texto: String,
+    marcada: Boolean,
+    onCambio: (Boolean) -> Unit,
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(checked = marcada, onCheckedChange = onCambio)
+        Text(texto)
+    }
+}
+
+@Composable
+fun OpcionSwitch(
+    texto: String,
+    activada: Boolean,
+    onCambio: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(texto)
+        Switch(checked = activada, onCheckedChange = onCambio)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FichaAlumnoPreview() {
+    MaterialTheme {
+        FichaAlumno()
+    }
+}
 ```
+
+La vista previa muestra la ficha con el campo vacío. Para comprobar que se actualiza al escribir, pulsa **Interactive mode** en el panel de la preview o ejecuta la app en el emulador.
 
 **Si algo falla:** si un nombre sale en rojo, falta un import (`Alt+Enter`); si no compila `by`, importa `androidx.compose.runtime.getValue` y `setValue`; si la pantalla no cambia, comprueba que `FichaAlumno()` se llama dentro de `setContent`.
 
