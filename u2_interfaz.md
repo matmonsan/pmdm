@@ -293,6 +293,68 @@ fun Cabecera(titulo: String, subtitulo: String?) {
 }
 ```
 
+### Qué se escribe entre paréntesis y qué va entre llaves en Compose
+
+En Compose, los componentes tienen parámetros definidos. Por ejemplo, `Column` recibe un `modifier` para configurar su aspecto y un parámetro `content` que describe los elementos que irán dentro. Kotlin permite escribir ese último parámetro —una función— entre llaves, fuera de los paréntesis:
+
+```kotlin
+Column(
+    modifier = Modifier.padding(16.dp),
+    content = {
+        Text("Primer elemento")
+        Text("Segundo elemento")
+    },
+)
+```
+
+La forma habitual en Compose aprovecha esa regla y deja el último parámetro, `content`, fuera de los paréntesis:
+
+```kotlin
+Column(
+    modifier = Modifier.padding(16.dp),
+) {
+    Text("Primer elemento")
+    Text("Segundo elemento")
+}
+```
+
+Es la misma llamada. Por eso, en `Column(...) { ... }`, **ambas partes son argumentos que recibe `Column`**: entre paréntesis se suelen poner parámetros de configuración, y entre llaves el parámetro final de contenido, es decir, los composables hijos.
+
+En una llamada como `Text`, normalmente no hay contenido hijo. Su texto y sus opciones se pasan entre paréntesis:
+
+```kotlin
+Text(
+    text = "Hola",
+    modifier = Modifier.padding(8.dp),
+)
+```
+
+También ocurre con otros contenedores. En `Row`, por ejemplo, `horizontalArrangement` configura la distribución y los composables dentro de las llaves son sus hijos:
+
+```kotlin
+Row(
+    horizontalArrangement = Arrangement.spacedBy(8.dp),
+) {
+    Text("Nombre")
+    Text("Apellidos")
+}
+```
+
+`Card` también recibe sus opciones entre paréntesis y su contenido entre llaves:
+
+```kotlin
+Card(
+    modifier = Modifier.padding(8.dp),
+) {
+    Text(
+        text = "Una tarjeta",
+        modifier = Modifier.padding(16.dp),
+    )
+}
+```
+
+En resumen: **las llaves exteriores pertenecen a la llamada del contenedor** y agrupan los elementos que este muestra dentro. Los valores que configuran el contenedor, como `modifier` o `horizontalArrangement`, se escriben entre paréntesis.
+
 ### 5.1 Composición de una pantalla
 
 ```kotlin
