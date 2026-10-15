@@ -264,6 +264,10 @@ Por ahora, basta con recordar: describimos la pantalla con composables y Compose
 
 ## 5. Funciones `@Composable` y composición
 
+[![Vídeo sobre funciones `@Composable` y composición](https://img.youtube.com/vi/yVIGAvMO3bc/hqdefault.jpg)](https://youtu.be/yVIGAvMO3bc?si=NRzzOlvFLVwXMq17&t=267)
+
+*Vídeo introductorio sobre funciones `@Composable` y composición.*
+
 En el apartado anterior has usado una función para agrupar varios elementos. Para crear una función que dibuje elementos Compose, se escribe `@Composable` justo encima del nombre:
 
 ```kotlin
@@ -404,6 +408,10 @@ Una preview debe ser rápida y no depender de red, base de datos ni navegación 
 
 ## 6. Medidas, unidades y modificadores
 
+[![Vídeo sobre modificadores](https://img.youtube.com/vi/GOQVWaG7fCU/hqdefault.jpg)](https://youtu.be/GOQVWaG7fCU?si=Snfu2kDhS_3MXdmK&t=130)
+
+*Vídeo sobre modificadores.*
+
 Un **modificador** es una instrucción que cambia cómo se coloca o se ve un elemento. En el ejemplo inicial, `Modifier.fillMaxSize()` pide usar el espacio disponible y `Modifier.padding(24.dp)` deja espacio alrededor. Las instrucciones se encadenan con un punto y se leen de arriba abajo.
 
 ### 6.1 `dp`, `sp` y píxeles
@@ -482,6 +490,21 @@ Card(
     )
 }
 ```
+
+### Práctica: crea tu primera pantalla
+
+Crea una pantalla sencilla de presentación utilizando únicamente lo aprendido en los apartados anteriores. La pantalla debe mostrar:
+
+- Un título con el nombre de la aplicación.
+- Un texto breve que explique para qué sirve.
+- Una tarjeta con el nombre de una persona y una descripción.
+- Una combinación de colores propia para diferenciar la aplicación.
+
+Organiza los elementos en una `Column` y utiliza `Modifier` para añadir espacio alrededor de la pantalla y dentro de la tarjeta. Crea una función composable para la pantalla y llámala desde el contenido principal de la aplicación.
+
+Abre los archivos del tema de tu proyecto y cambia algunos colores de la paleta, por ejemplo el color principal, el fondo o el color de las superficies. Utiliza esos colores del tema en la pantalla para que el título o la tarjeta destaquen, sin elegir combinaciones que dificulten la lectura.
+
+Ejecuta la aplicación en el emulador y cambia los textos para crear una pantalla relacionada con una aplicación que te gustaría diseñar. Comprueba que el contenido tiene separación suficiente, que la tarjeta ocupa el ancho disponible sin pegarse a los bordes y que el contraste entre el texto y el fondo es adecuado.
 
 ---
 
