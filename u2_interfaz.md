@@ -6,36 +6,6 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 
 # UD 2. Interfaz de usuario con Jetpack Compose
 
-> **Si es tu primer día con Android Studio, empieza por los apartados 1, 3, 4, 5, 6 y 7.** Después, para completar una pantalla con texto, interacción y entrada de datos, continúa por **9 → 13.1 → 10 → 11**. El resto amplía lo aprendido y puede trabajarse más adelante. No hace falta entender toda la unidad de una vez.
-
-En esta unidad crearemos pantallas Android escribiendo Kotlin. Usaremos **Jetpack Compose**, un conjunto de herramientas que permite describir con código qué elementos aparecen en la pantalla: textos, botones, campos para escribir y otros componentes.
-
-Piensa en la pantalla como una receta: escribimos qué elementos queremos y Compose se encarga de dibujarlos. Si más adelante cambia un dato, Compose actualiza la parte de la pantalla que lo muestra.
-
-No necesitas conocer antes XML, `findViewById` ni el sistema antiguo de vistas. Si aparecen en la unidad, será solo para comparar o como material complementario.
-
-### Antes de empezar
-
-- Conviene saber lo básico de Kotlin: variables, funciones, tipos de datos y bloques entre llaves.
-- En la unidad anterior se propone crear y ejecutar una primera aplicación. Si todavía no lo has hecho, puedes seguir directamente el apartado 3 de esta unidad.
-- Android Studio y el emulador pueden tardar un poco en iniciar o compilar la primera vez. Eso no significa necesariamente que el proyecto esté mal.
-
-### Palabras que usaremos
-
-| Palabra | Significado sencillo |
-|---|---|
-| Proyecto | La carpeta con todos los archivos de la aplicación. |
-| `MainActivity` | El punto de entrada habitual de una aplicación sencilla. |
-| Composable | Una función de Kotlin que describe una parte de la pantalla. |
-| Componente | Un elemento visual, como `Text` (texto) o `Button` (botón). |
-| Estado | Un dato que puede cambiar mientras se usa la aplicación, por ejemplo, el número de pulsaciones. |
-| Preview o vista previa | Una representación de la interfaz dentro de Android Studio; no ejecuta la aplicación. |
-| Emulador | Un teléfono Android simulado que permite probar la aplicación en el ordenador. |
-
-### Recorrido recomendado
-
-No intentes memorizar todos los nombres a la vez. Para crear una pantalla sencilla, sigue **3 → 4 → 5 → 6 → 7**. Después, para completar la interfaz, sigue **9 → 13.1 → 10 → 11**. Los apartados posteriores son ampliaciones y material de consulta.
-
 ## Índice
 
 1. [Objetivos](#1-objetivos)
@@ -77,6 +47,36 @@ Al terminar el recorrido básico, podrás:
 6. Crear un campo de texto sencillo.
 
 Las listas, los temas, la navegación, las animaciones y las pruebas aparecen como ampliaciones. No son requisitos para dar los primeros pasos.
+
+> **Si es tu primer día con Android Studio, empieza por los apartados 1, 3, 4, 5, 6 y 7.** Después, para completar una pantalla con texto, interacción y entrada de datos, continúa por **9 → 13.1 → 10 → 11**. El resto amplía lo aprendido y puede trabajarse más adelante. No hace falta entender toda la unidad de una vez.
+
+En esta unidad crearemos pantallas Android escribiendo Kotlin. Usaremos **Jetpack Compose**, un conjunto de herramientas que permite describir con código qué elementos aparecen en la pantalla: textos, botones, campos para escribir y otros componentes.
+
+Piensa en la pantalla como una receta: escribimos qué elementos queremos y Compose se encarga de dibujarlos. Si más adelante cambia un dato, Compose actualiza la parte de la pantalla que lo muestra.
+
+No necesitas conocer antes XML, `findViewById` ni el sistema antiguo de vistas. Si aparecen en la unidad, será solo para comparar o como material complementario.
+
+### Antes de empezar
+
+- Conviene saber lo básico de Kotlin: variables, funciones, tipos de datos y bloques entre llaves.
+- En la unidad anterior se propone crear y ejecutar una primera aplicación. Si todavía no lo has hecho, puedes seguir directamente el apartado 3 de esta unidad.
+- Android Studio y el emulador pueden tardar un poco en iniciar o compilar la primera vez. Eso no significa necesariamente que el proyecto esté mal.
+
+### Palabras que usaremos
+
+| Palabra | Significado sencillo |
+|---|---|
+| Proyecto | La carpeta con todos los archivos de la aplicación. |
+| `MainActivity` | El punto de entrada habitual de una aplicación sencilla. |
+| Composable | Una función de Kotlin que describe una parte de la pantalla. |
+| Componente | Un elemento visual, como `Text` (texto) o `Button` (botón). |
+| Estado | Un dato que puede cambiar mientras se usa la aplicación, por ejemplo, el número de pulsaciones. |
+| Preview o vista previa | Una representación de la interfaz dentro de Android Studio; no ejecuta la aplicación. |
+| Emulador | Un teléfono Android simulado que permite probar la aplicación en el ordenador. |
+
+### Recorrido recomendado
+
+No intentes memorizar todos los nombres a la vez. Para crear una pantalla sencilla, sigue **3 → 4 → 5 → 6 → 7**. Después, para completar la interfaz, sigue **9 → 13.1 → 10 → 11**. Los apartados posteriores son ampliaciones y material de consulta.
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 title: Versión 1.0 - Prototipo de la aplicación
-description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos Móviles <br> <strong>Curso:</strong> 2024/2025"
+description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos Móviles <br> <strong>Profesor:</strong> Matías Montávez Sánchez"
 ---
 [⌂ Volver al enunciado del proyecto](../enunciado_proyecto.md)
 
