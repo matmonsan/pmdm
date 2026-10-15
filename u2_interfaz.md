@@ -4,8 +4,6 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 ---
 [⌂ Volver al inicio](index.md)
 
-# UD 2. Interfaz de usuario con Jetpack Compose
-
 ## Índice
 
 1. [Objetivos](#1-objetivos)
