@@ -6,13 +6,13 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 
 A lo largo del curso desarrollaréis una aplicación Android individual. Podéis elegir libremente la temática: viajes, recetas, deporte, música, mascotas, comercio o cualquier otra propuesta que os interese.
 
-El proyecto será **evolutivo**. No tendréis que construirlo todo desde el primer día: cada entrega añadirá una funcionalidad nueva sobre la anterior. Al final, la aplicación tendrá pantallas en **Jetpack Compose**, datos propios de cada usuario, un CRUD completo, cámara, multimedia, ubicación y conexión con una API REST.
+El proyecto será evolutivo. No tendréis que construirlo todo desde el primer día: cada entrega añadirá una funcionalidad nueva sobre la anterior. Al final, la aplicación tendrá pantallas en Jetpack Compose, datos propios de cada usuario, un CRUD completo, cámara, multimedia, ubicación y conexión con una API REST.
 
-La interfaz se construirá siempre con funciones `@Composable` y componentes de **Jetpack Compose**. Se utilizarán layouts como `Column`, `Row` y `Box`, modificadores, temas y componentes de Material como `Card`, `ElevatedCard` u `OutlinedCard`. No se utilizarán diseños XML para construir las pantallas.
+La interfaz se construirá siempre con funciones `@Composable` y componentes de Jetpack Compose. Se utilizarán layouts como `Column`, `Row` y `Box`, modificadores, temas y componentes de Material como `Card`, `ElevatedCard` u `OutlinedCard`. No se utilizarán diseños XML para construir las pantallas.
 
 En clase se explicarán las tecnologías necesarias y se proporcionará código de apoyo. Ese código deberá adaptarse a la temática y a las decisiones de cada proyecto.
 
-> **Importante:** las funcionalidades se incorporarán de forma gradual. En cada versión solo será necesario implementar los objetivos indicados para ese momento; las funcionalidades más avanzadas se añadirán en las versiones posteriores.
+> Importante: las funcionalidades se incorporarán de forma gradual. En cada versión solo será necesario implementar los objetivos indicados para ese momento; las funcionalidades más avanzadas se añadirán en las versiones posteriores.
 
 ---
 
@@ -20,8 +20,8 @@ En clase se explicarán las tecnologías necesarias y se proporcionará código 
 
 La aplicación tendrá dos partes que se desarrollarán progresivamente:
 
-1. **Aplicación Android:** será la parte que utiliza el usuario. Mostrará las pantallas, listas, formularios, imágenes, botones y mapas.
-2. **Servidor y base de datos:** será la parte que guarda los datos y permite que la aplicación se comunique con una API REST.
+1. Aplicación Android: será la parte que utiliza el usuario. Mostrará las pantallas, listas, formularios, imágenes, botones y mapas.
+2. Servidor y base de datos: será la parte que guarda los datos y permite que la aplicación se comunique con una API REST.
 
 La temática es libre, pero la aplicación final debe cumplir los requisitos que se detallan a continuación.
 
@@ -29,49 +29,54 @@ La temática es libre, pero la aplicación final debe cumplir los requisitos que
 
 #### Datos de la aplicación
 
-- Cada elemento de la aplicación se representará mediante una `data class` de Kotlin.
-- Cada elemento propio del usuario tendrá al menos cuatro atributos, además de una imagen o fotografía.
-- Uno de esos atributos será una descripción detallada.
-- La aplicación mostrará dos tipos de información:
-  - Elementos comunes o públicos, visibles para todos los usuarios.
-  - Elementos creados y administrados por el usuario que ha iniciado sesión.
-- El usuario podrá crear, consultar, modificar y eliminar sus propios elementos. Este conjunto de acciones forma el **CRUD**.
+La temática y el tipo de información serán libres. Cada estudiante podrá elegir los nombres y las características que mejor encajen con su propuesta: libros, recetas, viajes, eventos, productos, mascotas, lugares u otras opciones.
+
+Como requisitos mínimos:
+
+- La información principal de la aplicación se organizará mediante una o varias `data class` de Kotlin.
+- El modelo de datos tendrá varios atributos adecuados a la temática. Como referencia, los elementos administrados por el usuario incluirán al menos cuatro datos y una imagen o fotografía, además de una descripción detallada.
+- La aplicación distinguirá entre información común o pública y la información que cada usuario puede administrar. La forma de presentar estas dos partes podrá adaptarse a la temática elegida.
+- El usuario podrá crear, consultar, modificar y eliminar los elementos que le correspondan. Este conjunto de acciones forma el CRUD.
 
 #### Pantallas y navegación
 
-- La primera pantalla permitirá registrarse o iniciar sesión.
-- Después de iniciar sesión se mostrará la pantalla principal.
-- La pantalla principal tendrá un menú lateral (`ModalNavigationDrawer`) con la fotografía, el nombre y el correo del usuario.
-- También tendrá una barra de navegación inferior (`NavigationBar`) para cambiar entre la lista de elementos comunes y la lista de elementos propios.
-- Al seleccionar un elemento se abrirá una pantalla de detalle con toda su información.
-- La navegación se realizará con **Jetpack Navigation Compose** (`NavHost`) y permitirá volver a la pantalla anterior.
+La organización de las pantallas podrá variar según la propuesta, pero la aplicación final deberá contemplar un flujo completo de acceso y navegación:
+
+- Una pantalla que permitirá registrarse o iniciar sesión.
+- Después del acceso se mostrará una pantalla principal adaptada a la temática del proyecto.
+- La aplicación incluirá un menú lateral (`ModalNavigationDrawer`) con la información básica del usuario, como su fotografía, nombre y correo.
+- También tendrá una navegación inferior (`NavigationBar`) o una solución equivalente de Compose para alternar entre las principales áreas de la aplicación, incluyendo la información común y la información administrada por el usuario.
+- Al seleccionar un elemento se abrirá una pantalla de detalle con la información que corresponda.
+- La navegación se realizará con Jetpack Navigation Compose (`NavHost`) y permitirá volver a la pantalla anterior.
 
 #### Componentes y diseño
 
-- Los elementos de las listas se mostrarán mediante tarjetas de Material (`Card`, `ElevatedCard` u `OutlinedCard`).
-- Las listas utilizarán componentes eficientes de Compose, como `LazyColumn` o `LazyVerticalGrid`.
-- La aplicación tendrá una pantalla inicial o *splash* con un vídeo o audio de presentación y un botón para saltarlo.
-- En la pantalla de creación o edición se podrá utilizar la cámara para capturar una imagen.
-- La aplicación incluirá al menos un audio o vídeo que el usuario pueda reproducir y detener mediante controles de *Play* y *Stop*. Este contenido no será editable.
-- Cada elemento podrá guardar una posición GPS y la pantalla de detalle mostrará su ubicación en un mapa.
+Los componentes concretos y la distribución visual se elegirán según la temática, respetando estos mínimos:
+
+- Los elementos que se muestren en listas utilizarán tarjetas de Material (`Card`, `ElevatedCard` u `OutlinedCard`) o un componente equivalente de Compose.
+- Las listas utilizarán componentes eficientes de Compose, como `LazyColumn` o `LazyVerticalGrid`, cuando el número de elementos lo requiera.
+- La aplicación tendrá una pantalla inicial o *splash* con un vídeo o audio de presentación y una opción para saltarlo.
+- En la pantalla de creación o edición se podrá utilizar la cámara para capturar una imagen relacionada con el elemento.
+- La aplicación incluirá al menos un audio o vídeo que el usuario pueda reproducir y detener mediante controles de *Play* y *Stop*. El contenido multimedia será de consulta y no editable.
+- Los elementos podrán incluir una posición GPS cuando tenga sentido para la temática. En ese caso, la pantalla de detalle mostrará su ubicación en un mapa.
 
 #### Organización interna
 
 La aplicación se organizará progresivamente con:
 
-- **MVVM**, separando los datos, la lógica y las pantallas.
-- **Clean Architecture**, separando las responsabilidades principales del proyecto.
+- MVVM, separando los datos, la lógica y las pantallas.
+- Clean Architecture, separando las responsabilidades principales del proyecto.
 - `StateFlow` y `UiState`, para representar de forma reactiva el estado de la interfaz.
-- **Hilt**, para facilitar la inyección de dependencias.
-- **Room**, para guardar los datos localmente.
-- **Preferences DataStore** o `SharedPreferences`, para conservar la sesión iniciada.
+- Hilt, para facilitar la inyección de dependencias.
+- Room, para guardar los datos localmente.
+- Preferences DataStore o `SharedPreferences`, para conservar la sesión iniciada.
 
 ### 2. Servidor y API REST
 
 En la última parte del proyecto la aplicación dejará de trabajar solo con datos locales y se conectará a un servidor propio.
 
-- La base de datos será **MariaDB**.
-- El servidor podrá desarrollarse con **PHP** o **Ktor**.
+- La base de datos será MariaDB.
+- El servidor podrá desarrollarse con PHP o Ktor.
 - La API tendrá, como mínimo, estos grupos de operaciones:
   - `/auth`: iniciar sesión.
   - `/register`: registrar usuarios.
@@ -80,7 +85,7 @@ En la última parte del proyecto la aplicación dejará de trabajar solo con dat
 - Las imágenes se guardarán físicamente en el servidor. En la base de datos se almacenará la URL de cada imagen.
 - Se entregará un archivo `docker-compose.yml` para levantar localmente el servidor web y MariaDB.
 - El despliegue en un servicio cloud como VPS, Render o Railway será opcional.
-- La sesión final utilizará un token JWT guardado en **Preferences DataStore**.
+- La sesión final utilizará un token JWT guardado en Preferences DataStore.
 
 ---
 
@@ -113,8 +118,22 @@ El orden recomendado es el siguiente:
 
 ## Normativa de Evaluación de las Entregas
 
+### Tareas del proyecto evaluables por unidad didáctica
+
+Las siguientes versiones del proyecto se utilizarán como evidencias prácticas de las unidades didácticas relacionadas. Una misma versión puede servir para evaluar más de una unidad cuando incluya contenidos compartidos.
+
+| Unidad didáctica | Tareas o versiones del proyecto que cuentan para la evaluación |
+|---|---|
+| **UD2: Layout de usuario** | Versión 1.0, con el prototipo de pantallas, y Versión 1.1, con la primera interfaz funcional en Jetpack Compose, sus layouts y modificadores. |
+| **UD3: Fragmentos, diálogos y listado de elementos** | Versión 1.2, con el CRUD en memoria, los formularios y el listado de elementos. |
+| **UD4: Navegación y menús** | Versión 1.3, con las pantallas de registro, inicio de sesión y recuperación de contraseña; Versión 1.4, con la navegación entre pantallas, el `Navigation Drawer` y la `NavigationBar`; Versión 1.5, con las dos listas principales; y Versión 3.2, con la navegación a la pantalla de detalle y la visualización de la ubicación. |
+| **UD5: Patrones de diseño** | Versión 1.6, con la organización del proyecto mediante MVVM, repositorios, `UiState`, `StateFlow` e inyección de dependencias con Hilt. |
+| **UD6: Almacenamiento local con Room** | Versión 2.0, con la sustitución de los datos en memoria por una base de datos local Room. |
+| **UD7: Servicios y conexión API REST mediante Retrofit** | Versión 4.1, con la conexión de la aplicación Android a la API REST, autenticación mediante JWT y sincronización de datos e imágenes. |
+| **UD8: Utilización de librerías multimedia** | Versión 3.1, con la incorporación de la cámara y del reproductor de audio o vídeo mediante las librerías correspondientes. |
+
 1. **Control de Versiones (Git):** Es **obligatorio** el uso de Git y la entrega mediante un repositorio remoto (GitHub, GitLab, etc.). Se evaluará el desarrollo incremental del proyecto a través del histórico de *commits* o etiquetas de versión (*tags*).
 2. **Documentación PDF:** Junto al código, en cada entrega se adjuntará un documento PDF con capturas de pantalla de la aplicación en ejecución y una descripción detallada de los cambios e innovaciones de dicha versión.
-3. **Vídeo Explicativo:** En la tarea habilitada en Moodle, se adjuntará obligatoriamente un **enlace a un vídeo explicativo** grabado mostrando el funcionamiento de la aplicación en un dispositivo físico o emulador. En la misma entrega se incluirá la URL del repositorio Git del proyecto.
-   > **Nota crítica:** Si el código subido al repositorio no coincide con la funcionalidad mostrada en el vídeo, la versión será evaluada automáticamente con una nota de **0.0**.
-4. **Política de Entregas Continuas:** La no entrega de más de **2 versiones contiguas** implicará el suspenso automático del módulo. Se permite omitir hasta un máximo de dos versiones consecutivas siempre que la siguiente incorpore íntegramente la funcionalidad acumulada de las anteriores. Las entregas fuera de plazo sufrirán la penalización en puntuación especificada en la guía docente.
+3. **Vídeo Explicativo:** En la tarea habilitada en Moodle, se adjuntará obligatoriamente un enlace a un vídeo explicativo grabado mostrando el funcionamiento de la aplicación en un dispositivo físico o emulador. En la misma entrega se incluirá la URL del repositorio Git del proyecto.
+   > Si el código subido al repositorio no coincide con la funcionalidad mostrada en el vídeo, la versión será evaluada automáticamente con una nota de 0.0.
+4. **Política de Entregas Continuas:** La no entrega de más de **2 versiones contiguas** implicará el suspenso automático del módulo. No se permiten entregas fuera de plazo.
