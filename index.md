@@ -3,6 +3,11 @@ title: Programación Multimedia y Dispositivos Móviles
 description: "<strong>Profesor:</strong> Matías Montávez Sánchez"
 ---
 
+## PROYECTO INDIVIDUAL
+> [**Enunciado del proyecto individual Android**](enunciado_proyecto.md)
+
+---
+
 ## UD 1: Lenguaje Kotlin e Introducción a Android
 
 - [UD 1.1: Lenguaje Kotlin](ud1_Kotlin.md)
@@ -11,3 +16,5 @@ description: "<strong>Profesor:</strong> Matías Montávez Sánchez"
 ## UD 2: Interfaz de usuario con Jetpack Compose
 
 - [UD 2: Interfaz de usuario con Jetpack Compose](u2_interfaz.md)
+
+
