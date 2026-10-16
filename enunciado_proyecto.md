@@ -95,17 +95,17 @@ Cada versión añade una pieza al proyecto. No se trata de hacer once aplicacion
 
 El orden recomendado es el siguiente:
 
-* [**Versión 1.0 (Diseño y Prototipado UX/UI)**](versiones/version_1_0.md): Definir la idea, las pantallas y el funcionamiento general antes de programar.
-* [**Versión 1.1 (Listas en Compose)**](versiones/version_1_1.md): Crear la primera pantalla funcional y mostrar elementos temporales en una lista `LazyColumn`.
-* [**Versión 1.2 (CRUD en memoria y repositorios)**](versiones/version_1_2.md): Añadir el alta, la consulta, la edición y el borrado de elementos usando datos en memoria.
-* [**Versión 1.3 (Autenticación con Firebase)**](versiones/version_1_3.md): Incorporar registro, inicio de sesión y recuperación de contraseña con Firebase Auth.
-* [**Versión 1.4 (Estructura de navegación)**](versiones/version_1_4.md): Conectar las pantallas mediante `ModalNavigationDrawer`, `NavigationBar` y `NavHost`.
-* [**Versión 1.5 (Lista global y datos compartidos)**](versiones/version_1_5.md): Añadir una segunda lista con elementos comunes para todos los usuarios.
-* [**Versión 1.6 (Arquitectura MVVM + Hilt)**](versiones/version_1_6.md): Organizar el código con MVVM, `StateFlow`, `UiState` y Hilt.
-* [**Versión 2.0 (Persistencia local con Room)**](versiones/version_2_0.md): Sustituir los datos temporales por una base de datos local Room.
-* [**Versión 3.1 (Cámara y multimedia)**](versiones/version_3_1.md): Añadir la captura de imágenes y un reproductor de audio o vídeo.
-* [**Versión 3.2 (Geolocalización)**](versiones/version_3_2.md): Guardar las coordenadas de los elementos y mostrar su ubicación en un mapa.
-* [**Versión 4.1 (API REST completa)**](versiones/version_4_1.md): Conectar la aplicación con la API propia, sustituir Firebase Auth por `/auth` y `/register`, usar JWT y sincronizar las imágenes con el servidor.
+* [**Versión 1.0 (Diseño y Prototipado UX/UI)**](versiones/version_1_0.md): Definir la idea, las pantallas y el funcionamiento general antes de programar. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: 29/10/2026</strong></span>
+* [**Versión 1.1 (Listas en Compose)**](versiones/version_1_1.md): Crear la primera pantalla funcional y mostrar elementos temporales en una lista `LazyColumn`. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: 29/10/2026</strong></span>
+* [**Versión 1.2 (CRUD en memoria y repositorios)**](versiones/version_1_2.md): Añadir el alta, la consulta, la edición y el borrado de elementos usando datos en memoria. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: 15/11/2026</strong></span>
+* [**Versión 1.3 (Autenticación con Firebase)**](versiones/version_1_3.md): Incorporar registro, inicio de sesión y recuperación de contraseña con Firebase Auth. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: 29/11/2026</strong></span>
+* [**Versión 1.4 (Estructura de navegación)**](versiones/version_1_4.md): Conectar las pantallas mediante `ModalNavigationDrawer`, `NavigationBar` y `NavHost`. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: 08/12/2026</strong></span>
+* [**Versión 1.5 (Lista global y datos compartidos)**](versiones/version_1_5.md): Añadir una segunda lista con elementos comunes para todos los usuarios. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: 15/12/2026</strong></span>
+* [**Versión 1.6 (Arquitectura MVVM + Hilt)**](versiones/version_1_6.md): Organizar el código con MVVM, `StateFlow`, `UiState` y Hilt. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: por planificar</strong></span>
+* [**Versión 2.0 (Persistencia local con Room)**](versiones/version_2_0.md): Sustituir los datos temporales por una base de datos local Room. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: por planificar</strong></span>
+* [**Versión 3.1 (Cámara y multimedia)**](versiones/version_3_1.md): Añadir la captura de imágenes y un reproductor de audio o vídeo. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: por planificar</strong></span>
+* [**Versión 3.2 (Geolocalización)**](versiones/version_3_2.md): Guardar las coordenadas de los elementos y mostrar su ubicación en un mapa. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: por planificar</strong></span>
+* [**Versión 4.1 (API REST completa)**](versiones/version_4_1.md): Conectar la aplicación con la API propia, sustituir Firebase Auth por `/auth` y `/register`, usar JWT y sincronizar las imágenes con el servidor. <span class="delivery-date">→ 📅 <strong>FECHA ENTREGA: por planificar</strong></span>
 
 ---
 
