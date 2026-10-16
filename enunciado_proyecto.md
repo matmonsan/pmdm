@@ -122,6 +122,7 @@ El orden recomendado es el siguiente:
 
 Las siguientes versiones del proyecto se utilizarán como evidencias prácticas de las unidades didácticas relacionadas. Una misma versión puede servir para evaluar más de una unidad cuando incluya contenidos compartidos.
 
+
 | Unidad didáctica | Tareas o versiones del proyecto que cuentan para la evaluación |
 |---|---|
 | **UD2: Layout de usuario** | Versión 1.0, con el prototipo de pantallas, y Versión 1.1, con la primera interfaz funcional en Jetpack Compose, sus layouts y modificadores. |
@@ -131,6 +132,7 @@ Las siguientes versiones del proyecto se utilizarán como evidencias prácticas 
 | **UD6: Almacenamiento local con Room** | Versión 2.0, con la sustitución de los datos en memoria por una base de datos local Room; y Versión 3.2, con la navegación a la pantalla de detalle y la visualización de la ubicación. |
 | **UD7: Servicios y conexión API REST mediante Retrofit** | Versión 4.1, con la conexión de la aplicación Android a la API REST, autenticación mediante JWT y sincronización de datos e imágenes. |
 | **UD8: Utilización de librerías multimedia** | Versión 3.1, con la incorporación de la cámara y del reproductor de audio o vídeo mediante las librerías correspondientes. |
+
 
 1. **Control de Versiones (Git):** Es **obligatorio** el uso de Git y la entrega mediante un repositorio remoto (GitHub, GitLab, etc.). Se evaluará el desarrollo incremental del proyecto a través del histórico de *commits* o etiquetas de versión (*tags*).
 2. **Documentación PDF:** Junto al código, en cada entrega se adjuntará un documento PDF con capturas de pantalla de la aplicación en ejecución y una descripción detallada de los cambios e innovaciones de dicha versión.
