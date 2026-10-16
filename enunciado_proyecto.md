@@ -100,7 +100,7 @@ El orden recomendado es el siguiente:
 * [**Versión 1.2 (CRUD en memoria y repositorios)**](versiones/version_1_2.md): Añadir el alta, la consulta, la edición y el borrado de elementos usando datos en memoria. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 15/11/2026</span>
 * [**Versión 1.3 (Autenticación con Firebase)**](versiones/version_1_3.md): Incorporar registro, inicio de sesión y recuperación de contraseña con Firebase Auth. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 29/11/2026</span>
 * [**Versión 1.4 (Estructura de navegación)**](versiones/version_1_4.md): Conectar las pantallas mediante `ModalNavigationDrawer`, `NavigationBar` y `NavHost`. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 08/12/2026</span>
-* [**Versión 1.5 (Lista global y datos compartidos)**](versiones/version_1_5.md): Añadir una segunda lista con elementos comunes para todos los usuarios. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 15/12/2026</span>
+* [**Versión 1.5 (Lista global y datos compartidos)**](versiones/version_1_5.md): Añadir una segunda lista con elementos comunes para todos los usuarios. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 13/12/2026</span>
 * [**Versión 1.6 (Arquitectura MVVM + Hilt)**](versiones/version_1_6.md): Organizar el código con MVVM, `StateFlow`, `UiState` y Hilt.
 * [**Versión 2.0 (Persistencia local con Room)**](versiones/version_2_0.md): Sustituir los datos temporales por una base de datos local Room.
 * [**Versión 3.1 (Cámara y multimedia)**](versiones/version_3_1.md): Añadir la captura de imágenes y un reproductor de audio o vídeo.

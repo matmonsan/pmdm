@@ -4,7 +4,7 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 ---
 [⌂ Volver al enunciado del proyecto](../enunciado_proyecto.md)
 
-# **FECHA DE ENTREGA:** 15/12/2026
+# **FECHA DE ENTREGA:** 13/12/2026
 
 # Versión 1.5 — Lista global y datos compartidos
 
