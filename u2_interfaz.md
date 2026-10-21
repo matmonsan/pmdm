@@ -1,11 +1,6 @@
----
-title: UD 2. Interfaz de usuario con Jetpack Compose
-description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos Móviles <br> <strong>Profesor:</strong> Matías Montávez Sánchez"
----
-[⌂ Volver al inicio](index.md)
-
 ## Índice
 
+0. [Resumen de términos](#0-resumen-de-términos)
 1. [Objetivos](#1-objetivos)
 2. [Del layout clásico a Compose (comparación)](#2-del-layout-clásico-a-compose)
 3. [Preparación del proyecto](#3-preparación-del-proyecto)
@@ -19,17 +14,67 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 11. [Entrada de texto y teclado](#11-entrada-de-texto-y-teclado)
 12. [Controles de selección](#12-controles-de-selección)
 13. [Estado y eventos](#13-estado-y-eventos)
-14. [Material Design y temas (ampliación)](#14-material-design-y-temas)
-15. [Visibilidad, diálogos y mensajes (ampliación)](#15-visibilidad-diálogos-y-mensajes)
-16. [Animaciones y transiciones (ampliación)](#16-animaciones-y-transiciones)
-17. [Operaciones asíncronas y `ProgressIndicator` (ampliación)](#17-operaciones-asíncronas-y-progressindicator)
-18. [Navegación entre pantallas (ampliación)](#18-navegación-entre-pantallas)
-19. [Accesibilidad y diseño adaptable (ampliación)](#19-accesibilidad-y-diseño-adaptable)
-20. [Arquitectura de una pantalla (ampliación)](#20-arquitectura-de-una-pantalla)
-21. [Una pantalla completa paso a paso](#21-una-pantalla-completa-paso-a-paso)
-22. [Resumen de términos](#22-resumen-de-términos)
-23. [Prácticas](#23-prácticas)
-24. [Documentación y videotutoriales](#24-documentación-y-videotutoriales)
+14. [Interfaces avanzadas](#14-interfaces-avanzadas)
+15. [Una pantalla completa paso a paso](#15-una-pantalla-completa-paso-a-paso)
+16. [Prácticas](#16-prácticas)
+    - [Práctica 1: pantalla con Layouts](#práctica-1-pantalla-con-layouts)
+17. [Documentación y videotutoriales](#17-documentación-y-videotutoriales)
+
+---
+
+## 0. Resumen de términos
+
+| Término | Qué significa |
+|---|---|
+| [Jetpack Compose](#2-del-layout-clásico-a-compose) | Herramienta de Android para describir la interfaz con funciones de Kotlin. |
+| [Android Studio](#3-preparación-del-proyecto) | Programa en el que se escribe, ejecuta y depura la aplicación. |
+| [Emulador](#34-ejecutar-y-comprobar) | Teléfono Android simulado en el ordenador. |
+| [`MainActivity`](#32-encontrar-el-código-de-la-pantalla) | Punto de entrada de la app; aquí se llama a `setContent`. |
+| [`setContent`](#33-cambiar-la-pantalla-de-ejemplo) | Indica qué pantalla Compose se muestra al abrir la `Activity`. |
+| [`@Composable`](#41-qué-hace-una-función-composable) | Marca que una función describe una parte de la interfaz. |
+| [Composable / componente](#42-la-pantalla-se-construye-con-piezas) | Función o elemento visual reutilizable: `Text`, `Button`, `Card`… |
+| [Declarativo](#21-la-interfaz-como-función) | Se describe cómo debe verse la pantalla para un estado, no cómo modificarla paso a paso. |
+| [Composición](#51-composición-de-una-pantalla) | Primera vez que Compose construye la interfaz a partir de los composables. |
+| [Recomposición](#43-qué-significa-recomposición) | Actualización automática de la parte de la pantalla cuyo dato ha cambiado. |
+| [Estado](#131-estado-local) | Dato que puede cambiar y que Compose observa (`mutableStateOf`). |
+| [`remember`](#131-estado-local) | Conserva un valor mientras la pantalla se actualiza. |
+| [`rememberSaveable`](#131-estado-local) | Como `remember`, pero también conserva el valor al girar el dispositivo. |
+| [`by`](#131-estado-local) | Permite usar el estado como una variable normal (`nombre = "Ana"`). |
+| [Elevar el estado](#132-elevación-del-estado) | Guardar el dato en la función común que lo necesita y pasarlo a las demás. |
+| [Evento / callback](#10-botones-y-acciones) | Función que se ejecuta cuando ocurre algo: `onClick`, `onValueChange`, `onCambio`. |
+| [Lambda](#10-botones-y-acciones) | Bloque de código entre llaves que se pasa como parámetro: `{ contador++ }`. |
+| [Modifier (modificador)](#63-modificadores-esenciales) | Instrucción encadenable que cambia tamaño, espacio, fondo o comportamiento. |
+| [`padding`](#64-márgenes-y-relleno) | Espacio alrededor o dentro de un elemento. |
+| [`fillMaxSize` / `fillMaxWidth`](#63-modificadores-esenciales) | Ocupar todo el espacio disponible o todo el ancho. |
+| [`dp`](#61-dp-sp-y-píxeles) | Unidad de medida para tamaños y espacios. |
+| [`sp`](#61-dp-sp-y-píxeles) | Unidad de medida para el tamaño del texto. |
+| [Layout](#7-layouts-column-row-box-y-pesos) | Contenedor que coloca a otros elementos. |
+| [`Column`](#71-column) | Coloca los elementos uno debajo de otro. |
+| [`Row`](#72-row) | Coloca los elementos uno al lado de otro. |
+| [`Box`](#73-box) | Superpone elementos. |
+| [`Arrangement`](#75-separación-y-arrangement) | Reparto del espacio entre hijos en el eje principal (`spacedBy`, `Center`, `SpaceBetween`). |
+| [`Alignment`](#7-layouts-column-row-box-y-pesos) | Alineación de los hijos en el eje contrario (`CenterHorizontally`). |
+| [`weight`](#74-peso-proporcional) | Reparte el espacio sobrante de forma proporcional. |
+| [`Scaffold`](#51-composición-de-una-pantalla) | Estructura de pantalla con barras superior/inferior y mensajes. |
+| [`Text`](#91-texto) | Muestra texto. |
+| [`Image` / `Icon`](#93-imágenes-locales) | Muestran una imagen o un icono; necesitan `contentDescription` para accesibilidad. |
+| [`Button`](#10-botones-y-acciones) | Botón con acción `onClick`. |
+| [`TextField` / `OutlinedTextField`](#111-textfield-y-outlinedtextfield) | Campo donde el usuario escribe; usa `value` y `onValueChange`. |
+| [`Checkbox`](#121-checkbox) | Casilla para marcar varias opciones. |
+| [`RadioButton`](#122-radiobutton) | Elegir una única opción de un grupo. |
+| [`Switch`](#123-switch) | Interruptor de activar/desactivar. |
+| [`Card`](#83-tarjetas-material) | Tarjeta que agrupa contenido relacionado. |
+| [`LazyColumn`](#81-lazycolumn) | Lista que solo dibuja los elementos visibles; adecuada para listas largas. |
+| [Clave estable (`key`)](#81-lazycolumn) | Identificador único de cada elemento de una lista. |
+| [`MaterialTheme`](#1411-tema-centralizado) | Colores, tipografías y formas comunes de toda la aplicación. |
+| [Material Design 3](#1413-material-3-y-recursos) | Sistema de diseño de Google en el que se basan los componentes. |
+| [`Snackbar`](#1423-snackbar) | Mensaje breve en la parte inferior. |
+| [`AlertDialog`](#1422-alertdialog) | Ventana emergente para confirmar una decisión. |
+| [`AnimatedVisibility`](#1431-aparición-y-desaparición) | Muestra u oculta un elemento con animación. |
+| [`ViewModel`](#147-arquitectura-de-una-pantalla) | Guarda el estado de una pantalla fuera de los composables. |
+| [Navegación](#145-navegación-entre-pantallas) | Cambio entre pantallas de la aplicación (`NavHost`). |
+| [`@Preview`](#52-previsualizaciones) | Muestra una vista previa en Android Studio sin ejecutar la app. |
+| [`contentDescription`](#1461-semántica) | Texto que lee un lector de pantalla (TalkBack) para describir un icono o imagen. |
 
 ---
 
@@ -488,21 +533,6 @@ Card(
     )
 }
 ```
-
-### Práctica: crea tu primera pantalla
-
-Crea una pantalla sencilla de presentación utilizando únicamente lo aprendido en los apartados anteriores. La pantalla debe mostrar:
-
-- Un título con el nombre de la aplicación.
-- Un texto breve que explique para qué sirve.
-- Una tarjeta con el nombre de una persona y una descripción.
-- Una combinación de colores propia para diferenciar la aplicación.
-
-Organiza los elementos en una `Column` y utiliza `Modifier` para añadir espacio alrededor de la pantalla y dentro de la tarjeta. Crea una función composable para la pantalla y llámala desde el contenido principal de la aplicación.
-
-Abre los archivos del tema de tu proyecto y cambia algunos colores de la paleta, por ejemplo el color principal, el fondo o el color de las superficies. Utiliza esos colores del tema en la pantalla para que el título o la tarjeta destaquen, sin elegir combinaciones que dificulten la lectura.
-
-Ejecuta la aplicación en el emulador y cambia los textos para crear una pantalla relacionada con una aplicación que te gustaría diseñar. Comprueba que el contenido tiene separación suficiente, que la tarjeta ocupa el ancho disponible sin pegarse a los bordes y que el contraste entre el texto y el fondo es adecuado.
 
 ---
 
@@ -1257,11 +1287,13 @@ La clave debe representar cuándo debe reiniciarse el efecto. Una clave que camb
 
 ---
 
-## 14. Material Design y temas
+## 14. Interfaces avanzadas
+
+### 14.1 Material Design y temas
 
 Material Design proporciona reglas de color, tipografía, formas, elevación, estados y componentes. Material 3 incorpora el sistema de diseño actual y Material You.
 
-### 14.1 Tema centralizado
+#### 14.1.1 Tema centralizado
 
 ```kotlin
 @Composable
@@ -1290,7 +1322,7 @@ Text(
 )
 ```
 
-### 14.2 Superficies y contraste
+#### 14.1.2 Superficies y contraste
 
 ```kotlin
 Surface(
@@ -1307,7 +1339,7 @@ Surface(
 
 Cada color de fondo debe tener un color de contenido con contraste suficiente. No se debe elegir texto claro sobre fondos claros solo por estética.
 
-### 14.3 Material 3 y recursos
+#### 14.1.3 Material 3 y recursos
 
 Los textos visibles deben externalizarse en recursos de Android cuando la aplicación vaya a traducirse. En Compose se pueden leer con `stringResource`:
 
@@ -1317,9 +1349,9 @@ Text(text = stringResource(R.string.bienvenida))
 
 ---
 
-## 15. Visibilidad, diálogos y mensajes
+### 14.2 Visibilidad, diálogos y mensajes
 
-### 15.1 Visibilidad condicional
+#### 14.2.1 Visibilidad condicional
 
 ```kotlin
 if (mostrarResultado) {
@@ -1339,7 +1371,7 @@ AnimatedVisibility(visible = mostrarResultado) {
 
 No existe una propiedad `visibility = invisible` que debamos manipular. La ausencia de un composable del árbol es la forma declarativa de ocultarlo.
 
-### 15.2 `AlertDialog`
+#### 14.2.2 `AlertDialog`
 
 ```kotlin
 @Composable
@@ -1368,7 +1400,7 @@ fun ConfirmarEliminacion(
 }
 ```
 
-### 15.3 `Snackbar`
+#### 14.2.3 `Snackbar`
 
 ```kotlin
 @Composable
@@ -1397,9 +1429,9 @@ Un `Snackbar` suele ser preferible a un `Toast` porque queda integrado en la com
 
 ---
 
-## 16. Animaciones y transiciones
+### 14.3 Animaciones y transiciones
 
-### 16.1 Aparición y desaparición
+#### 14.3.1 Aparición y desaparición
 
 ```kotlin
 AnimatedVisibility(visible = visible) {
@@ -1410,7 +1442,7 @@ AnimatedVisibility(visible = visible) {
 }
 ```
 
-### 16.2 Animar un valor
+#### 14.3.2 Animar un valor
 
 ```kotlin
 @Composable
@@ -1430,7 +1462,7 @@ fun TarjetaExpandible(expandida: Boolean) {
 }
 ```
 
-### 16.3 Buenas decisiones
+#### 14.3.3 Buenas decisiones
 
 - Animar cambios que ayuden a comprender una transición.
 - Evitar animaciones constantes o demasiado largas.
@@ -1439,7 +1471,7 @@ fun TarjetaExpandible(expandida: Boolean) {
 
 ---
 
-## 17. Operaciones asíncronas y `ProgressIndicator`
+### 14.4 Operaciones asíncronas y `ProgressIndicator`
 
 Una interfaz no debe bloquearse mientras carga datos. Se representa el estado de carga y se ejecuta el trabajo fuera del cuerpo de composición.
 
@@ -1516,7 +1548,7 @@ La interfaz puede recoger el flujo con `collectAsStateWithLifecycle()` para resp
 
 ---
 
-## 18. Navegación entre pantallas
+### 14.5 Navegación entre pantallas
 
 La navegación se implementa con Navigation Compose. La ruta es un contrato; conviene evitar construir rutas concatenando texto sin codificar.
 
@@ -1554,9 +1586,9 @@ La pantalla no debería crear directamente el repositorio ni asumir que siempre 
 
 ---
 
-## 19. Accesibilidad y diseño adaptable
+### 14.6 Accesibilidad y diseño adaptable
 
-### 19.1 Semántica
+#### 14.6.1 Semántica
 
 Compose genera semántica para muchos componentes Material. Cuando se construye un componente personalizado:
 
@@ -1579,7 +1611,7 @@ Buenas prácticas:
 - Permitir fuentes grandes y contenido desplazable.
 - Comprobar el orden de foco con TalkBack.
 
-### 19.2 Diseño adaptable
+#### 14.6.2 Diseño adaptable
 
 No hay que diseñar para una única resolución. Se deben usar `fillMaxWidth`, `weight`, `WindowSizeClass` y grids adaptativos.
 
@@ -1598,7 +1630,7 @@ No se debe colocar todo con offsets absolutos. El diseño debe responder a cambi
 
 ---
 
-## 20. Arquitectura de una pantalla
+### 14.7 Arquitectura de una pantalla
 
 Una separación útil consiste en tres capas:
 
@@ -1663,7 +1695,7 @@ Este diseño facilita las previews y las pruebas: `AlumnosScreen` no necesita An
 
 ---
 
-## 21. Una pantalla completa paso a paso
+## 15. Una pantalla completa paso a paso
 
 Vamos a construir una **ficha de alumno** que reúne lo visto en la unidad: una cabecera con inicial y nombre, un campo de texto, dos opciones, un botón y un resultado que aparece al pulsarlo. Hazlo en un proyecto nuevo creado como en el apartado 3, y **ejecuta la app al terminar cada paso** para comprobar que sigue funcionando.
 
@@ -2051,165 +2083,44 @@ La vista previa muestra la ficha con el campo vacío. Para comprobar que se actu
 
 ---
 
-## 22. Resumen de términos
+## 16. Prácticas
 
-| Término | Qué significa |
-|---|---|
-| Jetpack Compose | Herramienta de Android para describir la interfaz con funciones de Kotlin. |
-| Android Studio | Programa en el que se escribe, ejecuta y depura la aplicación. |
-| Emulador | Teléfono Android simulado en el ordenador. |
-| `MainActivity` | Punto de entrada de la app; aquí se llama a `setContent`. |
-| `setContent` | Indica qué pantalla Compose se muestra al abrir la `Activity`. |
-| `@Composable` | Marca que una función describe una parte de la interfaz. |
-| Composable / componente | Función o elemento visual reutilizable: `Text`, `Button`, `Card`… |
-| Declarativo | Se describe cómo debe verse la pantalla para un estado, no cómo modificarla paso a paso. |
-| Composición | Primera vez que Compose construye la interfaz a partir de los composables. |
-| Recomposición | Actualización automática de la parte de la pantalla cuyo dato ha cambiado. |
-| Estado | Dato que puede cambiar y que Compose observa (`mutableStateOf`). |
-| `remember` | Conserva un valor mientras la pantalla se actualiza. |
-| `rememberSaveable` | Como `remember`, pero también conserva el valor al girar el dispositivo. |
-| `by` | Permite usar el estado como una variable normal (`nombre = "Ana"`). |
-| Elevar el estado | Guardar el dato en la función común que lo necesita y pasarlo a las demás. |
-| Evento / callback | Función que se ejecuta cuando ocurre algo: `onClick`, `onValueChange`, `onCambio`. |
-| Lambda | Bloque de código entre llaves que se pasa como parámetro: `{ contador++ }`. |
-| Modifier (modificador) | Instrucción encadenable que cambia tamaño, espacio, fondo o comportamiento. |
-| `padding` | Espacio alrededor o dentro de un elemento. |
-| `fillMaxSize` / `fillMaxWidth` | Ocupar todo el espacio disponible o todo el ancho. |
-| `dp` | Unidad de medida para tamaños y espacios. |
-| `sp` | Unidad de medida para el tamaño del texto. |
-| Layout | Contenedor que coloca a otros elementos. |
-| `Column` | Coloca los elementos uno debajo de otro. |
-| `Row` | Coloca los elementos uno al lado de otro. |
-| `Box` | Superpone elementos. |
-| `Arrangement` | Reparto del espacio entre hijos en el eje principal (`spacedBy`, `Center`, `SpaceBetween`). |
-| `Alignment` | Alineación de los hijos en el eje contrario (`CenterHorizontally`). |
-| `weight` | Reparte el espacio sobrante de forma proporcional. |
-| `Scaffold` | Estructura de pantalla con barras superior/inferior y mensajes. |
-| `Text` | Muestra texto. |
-| `Image` / `Icon` | Muestran una imagen o un icono; necesitan `contentDescription` para accesibilidad. |
-| `Button` | Botón con acción `onClick`. |
-| `TextField` / `OutlinedTextField` | Campo donde el usuario escribe; usa `value` y `onValueChange`. |
-| `Checkbox` | Casilla para marcar varias opciones. |
-| `RadioButton` | Elegir una única opción de un grupo. |
-| `Switch` | Interruptor de activar/desactivar. |
-| `Card` | Tarjeta que agrupa contenido relacionado. |
-| `LazyColumn` | Lista que solo dibuja los elementos visibles; adecuada para listas largas. |
-| Clave estable (`key`) | Identificador único de cada elemento de una lista. |
-| `MaterialTheme` | Colores, tipografías y formas comunes de toda la aplicación. |
-| Material Design 3 | Sistema de diseño de Google en el que se basan los componentes. |
-| `Snackbar` | Mensaje breve en la parte inferior. |
-| `AlertDialog` | Ventana emergente para confirmar una decisión. |
-| `AnimatedVisibility` | Muestra u oculta un elemento con animación. |
-| `ViewModel` | Guarda el estado de una pantalla fuera de los composables. |
-| Navegación | Cambio entre pantallas de la aplicación (`NavHost`). |
-| `@Preview` | Muestra una vista previa en Android Studio sin ejecutar la app. |
-| `contentDescription` | Texto que lee un lector de pantalla (TalkBack) para describir un icono o imagen. |
+### Práctica 1: pantalla con Layouts
+
+En esta práctica crearás una pantalla sencilla de presentación combinando los layouts aprendidos (`Column`, `Row`, `Box` y `Card`), aplicando modificadores de espacio y personalizando los colores del tema.
+
+#### 1: Definir la estructura general y la función Composable
+1. Crea una función composable llamada `PantallaPresentacion()`.
+2. Llama a esta función desde el contenido principal (`setContent`) en `MainActivity`.
+3. Organiza la pantalla utilizando una `Column` principal que ocupe todo el espacio disponible (`fillMaxSize()`).
+4. Añade un espacio alrededor de la pantalla con `padding(24.dp)` y configura la separación vertical entre elementos con `verticalArrangement = Arrangement.spacedBy(16.dp)`.
+
+#### 2: Añadir el título y la descripción
+1. Dentro de la `Column`, añade un `Text` con el nombre de tu aplicación. Usa un estilo tipográfico del tema (como `MaterialTheme.typography.headlineMedium`) para destacar el título.
+2. Añade a continuación un segundo `Text` breve que explique para qué sirve la aplicación.
+
+#### 3: Diseñar la tarjeta combinando `Card`, `Row` y `Box`
+1. Añade una `Card` que ocupe todo el ancho disponible (`fillMaxWidth()`).
+2. Aplica un `padding` interno a la tarjeta (por ejemplo, `16.dp`) para dar margen a su contenido.
+3. Dentro de la tarjeta, utiliza una `Row` con `horizontalArrangement = Arrangement.spacedBy(16.dp)` para distribuir los datos horizontalmente:
+   - **Izquierda:** Coloca un `Box` con tamaño fijo (`size(48.dp)`), forma circular (`clip(CircleShape)`) y un color de fondo del tema (`primaryContainer`). Dentro del `Box`, añade la inicial del nombre centrada.
+   - **Derecha:** Coloca una `Column` que contenga:
+     - Un `Text` con el nombre de una persona (estilo `titleMedium`).
+     - Un `Text` con una breve descripción o rol (estilo `bodyMedium`).
+
+#### 4: Cambiar la paleta de colores en el tema
+1. Abre los archivos del tema de tu proyecto (`Color.kt` / `Theme.kt`).
+2. Cambia algunos colores de la paleta, por ejemplo el color principal (`primary`), el fondo (`background`) o el color de las superficies (`surface`).
+3. Utiliza esos colores en la pantalla para que el título o la tarjeta destaquen, sin elegir combinaciones que dificulten la lectura.
+
+#### 5: Ejecutar y comprobar en el emulador
+1. Ejecuta la aplicación en el emulador.
+2. Cambia los textos para adaptar la pantalla a la idea de una aplicación que te gustaría diseñar.
+3. Comprueba que el contenido tiene separación suficiente, que la tarjeta ocupa el ancho disponible sin pegarse a los bordes y que el contraste entre el texto y el fondo es adecuado.
 
 ---
 
-## 23. Prácticas
-
-Empieza por la práctica 1. Las prácticas 2–6 son retos de ampliación: puedes hacerlas cuando ya controles las funciones, los layouts y el estado.
-
-### Práctica 1. Mi primera pantalla
-
-Usa el proyecto del apartado 3 y modifica `PantallaInicio`:
-
-1. Cambia los dos textos por tu nombre y el nombre de la asignatura.
-2. Añade un tercer `Text` con una frase corta.
-3. Comprueba que los textos aparecen uno debajo del otro.
-4. Añade `horizontalAlignment = Alignment.CenterHorizontally` a `Column` para centrarlos.
-5. Ejecuta la aplicación y verifica el resultado en el emulador.
-
-**Resultado esperado:** una pantalla sencilla con tres textos centrados y espacio alrededor. No necesitas imágenes, temas, varias funciones ni una vista previa para completar esta práctica.
-
-**Cuando ya hayas visto el estado:** añade un botón que aumente un contador. Como reto, añade un campo de texto que muestre un saludo personalizado.
-
-### Práctica 2. Calculadora con Compose (ampliación)
-
-Recrea la calculadora planteada en los PDF utilizando una `Column` para la pantalla y varias `Row` para la botonera.
-
-Requisitos:
-
-- Números del 0 al 9.
-- Operaciones suma, resta, multiplicación y división.
-- Botón de borrar.
-- Resultado visible en la parte superior.
-- Distribución proporcional usando `weight`.
-- Estado elevado a un composable de pantalla.
-- Evitar división por cero con un mensaje claro.
-
-Modelo mínimo:
-
-```kotlin
-data class CalculadoraState(
-    val pantalla: String = "0",
-    val operando: Double? = null,
-    val operador: Operador? = null,
-)
-
-enum class Operador(val simbolo: String) {
-    SUMA("+"),
-    RESTA("-"),
-    MULTIPLICACION("×"),
-    DIVISION("÷"),
-}
-```
-
-No se debe evaluar una expresión arbitraria con `eval` ni ejecutar texto como código. La operación debe controlarse con tipos y lógica propia.
-
-### Práctica 3. Formulario de inscripción (ampliación)
-
-Diseña un formulario con:
-
-- Nombre.
-- Correo.
-- Contraseña.
-- Curso mediante menú desplegable.
-- Módulos mediante `Checkbox`.
-- Modalidad mediante `RadioButton`.
-- Aceptación de condiciones.
-- Botón de envío.
-- Estado de carga y mensaje de resultado.
-
-Casos que deben probarse:
-
-1. Envío vacío.
-2. Correo inválido.
-3. Contraseña corta.
-4. Condiciones no aceptadas.
-5. Envío correcto.
-6. Rotación durante la edición.
-
-### Práctica 4. Lista de tarjetas (ampliación)
-
-Crea una lista de productos o alumnos con `LazyColumn`:
-
-- Estado vacío.
-- Estado de carga.
-- Estado de error con reintento.
-- Claves estables.
-- Acción de favorito.
-- Diálogo de confirmación para eliminar.
-- `Snackbar` después de guardar.
-
-### Práctica 5. Animación de visibilidad (ampliación)
-
-Crea un botón “Mostrar detalles” que expanda y contraiga una tarjeta. Debe utilizar `AnimatedVisibility` o `animateContentSize`, mantener la información en estado y tener una descripción accesible.
-
-### Práctica 6. Interfaz adaptable (ampliación)
-
-Presenta los mismos datos en:
-
-- Una columna para ancho compacto.
-- Dos paneles para ancho amplio.
-- Un grid adaptativo para una galería.
-
-Prueba el emulador en orientación vertical y horizontal y con una fuente del sistema ampliada.
-
----
-
-## 24. Documentación y videotutoriales
+## 17. Documentación y videotutoriales
 
 ### Documentación oficial
 
