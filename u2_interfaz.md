@@ -1,3 +1,11 @@
+---
+title: UD 1.1. Lenguaje Kotlin
+description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos Móviles <br> <strong>Profesor:</strong> Matías Montávez Sánchez"
+---
+[⌂ Volver al inicio](index.md)
+
+[Simulador componentes](jetpack_compose_studio.html){:target="_blank"}
+
 ## Índice
 
 0. [Resumen de términos](#0-resumen-de-términos)

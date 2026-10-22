@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-950 text-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jetpack Compose Studio - Guía para Alumnos</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        m3: {
+                            primary: '#6750A4',
+                            onPrimary: '#FFFFFF',
+                            primaryContainer: '#EADDFF',
+                            onPrimaryContainer: '#21005D',
+                            surface: '#FEF7FF',
+                            onSurface: '#1D1B20',
+                            outline: '#79747E',
+                            cardBg: '#F3EDF7'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Alpine.js -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+        optgroup { font-weight: bold; font-style: normal; color: #a5b4fc; background-color: #0f172a; }
+        option { font-weight: normal; color: #f8fafc; background-color: #1e293b; padding: 4px; }
+    </style>
+</head>
+<body class="h-full flex flex-col overflow-hidden bg-slate-950 text-slate-100 select-none" x-data="composeApp()">
+
+    <!-- ENCABEZADO PRINCIPAL DE APRENDIZAJE -->
+    <header class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex flex-wrap items-center justify-between gap-3 shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-emerald-400 flex items-center justify-center text-slate-950 font-bold shadow-lg shadow-indigo-500/20">
+                <i class="fa-brands fa-android text-xl text-white"></i>
+            </div>
+            <div>
+                <div class="flex items-center gap-2">
+                    <h1 class="font-bold text-base text-white tracking-tight">Jetpack Compose Studio</h1>
+                    <span class="bg-indigo-500/20 text-indigo-300 text-xs px-2.5 py-0.5 rounded-full border border-indigo-500/30 font-semibold">Material 3 / Android Studio</span>
+                </div>
+                <p class="text-xs text-slate-400">Entorno interactivo de aprendizaje para estudiantes de desarrollo Android</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- LAYOUT PRINCIPAL DE 2 COLUMNAS -->
+    <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-slate-950">
+        
+        <!-- ================================================================= -->
+        <!-- COLUMNA IZQUIERDA: SELECTOR POR CATEGORÍAS Y CONFIGURADOR (5 COLS) -->
+        <!-- ================================================================= -->
+        <section class="lg:col-span-5 bg-slate-900 border-r border-slate-800 flex flex-col h-full overflow-hidden">
+            
+            <!-- SELECTOR CATEGORIZADO DE ELEMENTOS JETPACK COMPOSE -->
+            <div class="p-4 border-b border-slate-800 bg-slate-900 shrink-0">
+                <label class="block text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2 flex items-center justify-between">
+                    <span><i class="fa-solid fa-cubes text-indigo-400 mr-1.5"></i>Elemento Composable</span>
+                    <span class="text-[10px] text-slate-400 font-normal">13 Composables</span>
+                </label>
+                <div class="relative">
+                    <select x-model="selectedElement" class="w-full bg-slate-950 text-slate-100 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
+
+                        <optgroup label="Texto e Inputs">
+                            <option value="Text">Text (Tipografía)</option>
+                            <option value="OutlinedTextField">OutlinedTextField (Campo Entrada)</option>
+                        </optgroup>
+
+                        <optgroup label="Contenedores y Disposición">
+                            <option value="Column">Column (Disposición Vertical)</option>
+                            <option value="Row">Row (Disposición Horizontal)</option>
+                            <option value="Box">Box (Superposición / Capas)</option>
+                            <option value="Card">Card (Tarjeta Elevada)</option>
+                            <option value="LazyColumn">LazyColumn (Lista Eficiente)</option>
+                        </optgroup>
+
+                        <optgroup label="Botones e Controles">
+                            <option value="Button">Button (Botón de Acción)</option>
+                            <option value="FloatingActionButton">FloatingActionButton (FAB)</option>
+                            <option value="Switch">Switch (Interruptor Estado)</option>
+                            <option value="Slider">Slider (Barra Deslizante)</option>
+                            <option value="Checkbox">Checkbox (Casilla Selección)</option>
+                        </optgroup>
+
+                        <optgroup label="Multimedia y Gráficos">
+                            <option value="Image">Image (Imagen / Vector)</option>
+                        </optgroup>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                        <i class="fa-solid fa-chevron-down text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORMULARIO DE PARÁMETROS CONFIGURABLES -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-4">
+                
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <h2 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-sliders text-indigo-400"></i> Parámetros del Composable
+                    </h2>
+                    <span class="text-[11px] text-indigo-300 font-mono bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20" x-text="selectedElement"></span>
+                </div>
+
+                <!-- 1. FICHA COMPLETA -->
+                <template x-if="selectedElement === 'FichaAlumno'">
+                    <div class="space-y-3 text-xs">
+                        <p class="text-slate-400 leading-relaxed bg-slate-950 p-3 rounded-lg border border-slate-800">
+                            <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i> Ficha completa que combina estado con <code class="text-indigo-300 font-mono">rememberSaveable</code>, componentes de texto, checks, switches y cards.
+                        </p>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Nombre del alumno:</label>
+                            <input type="text" x-model="ficha.nombre" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none focus:border-indigo-500 font-medium">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer">
+                                <span class="text-slate-200 font-medium">¿Es delegado?</span>
+                                <input type="checkbox" x-model="ficha.esDelegado" class="accent-indigo-500 h-4 w-4 rounded">
+                            </label>
+                            <label class="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer">
+                                <span class="text-slate-200 font-medium">Avisos activos</span>
+                                <input type="checkbox" x-model="ficha.avisos" class="accent-indigo-500 h-4 w-4 rounded">
+                            </label>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- 2. TEXT -->
+                <template x-if="selectedElement === 'Text'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Texto a mostrar (text):</label>
+                            <input type="text" x-model="textComp.content" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Estilo de tipografía (style):</label>
+                            <select x-model="textComp.style" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                                <option value="MaterialTheme.typography.titleLarge">MaterialTheme.typography.titleLarge</option>
+                                <option value="MaterialTheme.typography.headlineMedium">MaterialTheme.typography.headlineMedium</option>
+                                <option value="MaterialTheme.typography.bodyLarge">MaterialTheme.typography.bodyLarge</option>
+                                <option value="MaterialTheme.typography.labelMedium">MaterialTheme.typography.labelMedium</option>
+                            </select>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- 3. OUTLINEDTEXTFIELD -->
+                <template x-if="selectedElement === 'OutlinedTextField'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Valor de entrada (value):</label>
+                            <input type="text" x-model="inputComp.value" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">EtiquetaFlotante (label):</label>
+                            <input type="text" x-model="inputComp.label" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                        </div>
+                        <label class="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer">
+                            <span class="text-slate-200 font-medium">Línea única (singleLine = true)</span>
+                            <input type="checkbox" x-model="inputComp.singleLine" class="accent-indigo-500 h-4 w-4 rounded">
+                        </label>
+                    </div>
+                </template>
+
+                <!-- 4. COLUMN -->
+                <template x-if="selectedElement === 'Column'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Espaciado vertical (spacedBy): <span x-text="columnComp.spacing + ' dp'" class="text-indigo-400 font-mono font-bold"></span></label>
+                            <input type="range" min="4" max="32" x-model="columnComp.spacing" class="w-full accent-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Alineación horizontal (horizontalAlignment):</label>
+                            <select x-model="columnComp.alignment" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                                <option value="Alignment.Start">Alignment.Start (Izquierda)</option>
+                                <option value="Alignment.CenterHorizontally">Alignment.CenterHorizontally (Centrado)</option>
+                                <option value="Alignment.End">Alignment.End (Derecha)</option>
+                            </select>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- 5. ROW -->
+                <template x-if="selectedElement === 'Row'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Espaciado horizontal (spacedBy): <span x-text="rowComp.spacing + ' dp'" class="text-indigo-400 font-mono font-bold"></span></label>
+                            <input type="range" min="4" max="32" x-model="rowComp.spacing" class="w-full accent-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Alineación vertical (verticalAlignment):</label>
+                            <select x-model="rowComp.alignment" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                                <option value="Alignment.Top">Alignment.Top (Arriba)</option>
+                                <option value="Alignment.CenterVertically">Alignment.CenterVertically (Centrado)</option>
+                                <option value="Alignment.Bottom">Alignment.Bottom (Abajo)</option>
+                            </select>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- 6. BOX -->
+                <template x-if="selectedElement === 'Box'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Alineación interna (contentAlignment):</label>
+                            <select x-model="boxComp.alignment" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                                <option value="Alignment.Center">Alignment.Center</option>
+                                <option value="Alignment.TopStart">Alignment.TopStart</option>
+                                <option value="Alignment.BottomEnd">Alignment.BottomEnd</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Tamaño de la caja (dp): <span x-text="boxComp.size + ' dp'" class="text-indigo-400 font-mono font-bold"></span></label>
+                            <input type="range" min="80" max="220" x-model="boxComp.size" class="w-full accent-indigo-500">
+                        </div>
+                    </div>
+                </template>
+
+                <!-- 7. CARD -->
+                <template x-if="selectedElement === 'Card'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Texto dentro de la tarjeta:</label>
+                            <input type="text" x-model="cardComp.text" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Elevación (elevation dp): <span x-text="cardComp.elevation + ' dp'" class="text-indigo-400 font-mono font-bold"></span></label>
+                            <input type="range" min="0" max="16" x-model="cardComp.elevation" class="w-full accent-indigo-500">
+                        </div>
+                    </div>
+                </template>
+
+                <!-- 8. LAZYCOLUMN -->
+                <template x-if="selectedElement === 'LazyColumn'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Número de elementos en la lista: <span x-text="lazyComp.itemCount" class="text-indigo-400 font-mono font-bold"></span></label>
+                            <input type="range" min="3" max="20" x-model="lazyComp.itemCount" class="w-full accent-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Prefijo de cada item:</label>
+                            <input type="text" x-model="lazyComp.itemPrefix" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                        </div>
+                    </div>
+                </template>
+
+                <!-- 9. BUTTON -->
+                <template x-if="selectedElement === 'Button'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Texto del botón:</label>
+                            <input type="text" x-model="buttonComp.label" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                        </div>
+                        <label class="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer">
+                            <span class="text-slate-200 font-medium">Ocupar todo el ancho (fillMaxWidth)</span>
+                            <input type="checkbox" x-model="buttonComp.fullWidth" class="accent-indigo-500 h-4 w-4 rounded">
+                        </label>
+                    </div>
+                </template>
+
+                <!-- 10. FLOATINGACTIONBUTTON -->
+                <template x-if="selectedElement === 'FloatingActionButton'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Texto FAB extendido (opcional):</label>
+                            <input type="text" x-model="fabComp.text" placeholder="Dejar en blanco para FAB circular con icono" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Icono Vectorial:</label>
+                            <select x-model="fabComp.icon" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                                <option value="Icons.Default.Add">Icons.Default.Add (+)</option>
+                                <option value="Icons.Default.Edit">Icons.Default.Edit (Editar)</option>
+                                <option value="Icons.Default.Share">Icons.Default.Share (Compartir)</option>
+                            </select>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- 11. SWITCH -->
+                <template x-if="selectedElement === 'Switch'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Texto descriptivo:</label>
+                            <input type="text" x-model="switchComp.text" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                        </div>
+                        <label class="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer">
+                            <span class="text-slate-200 font-medium">Activado inicialmente</span>
+                            <input type="checkbox" x-model="switchComp.checked" class="accent-indigo-500 h-4 w-4 rounded">
+                        </label>
+                    </div>
+                </template>
+
+                <!-- 12. SLIDER -->
+                <template x-if="selectedElement === 'Slider'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Valor actual: <span x-text="Math.round(sliderComp.value)" class="text-indigo-400 font-mono font-bold"></span></label>
+                            <input type="range" min="0" max="100" x-model="sliderComp.value" class="w-full accent-indigo-500">
+                        </div>
+                        <p class="text-slate-400 text-[11px]">Rango de selección configurable de <code class="text-indigo-300 font-mono">0f..100f</code></p>
+                    </div>
+                </template>
+
+                <!-- 13. CHECKBOX -->
+                <template x-if="selectedElement === 'Checkbox'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Texto descriptivo:</label>
+                            <input type="text" x-model="checkComp.text" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                        </div>
+                        <label class="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer">
+                            <span class="text-slate-200 font-medium">Marcado inicialmente</span>
+                            <input type="checkbox" x-model="checkComp.checked" class="accent-indigo-500 h-4 w-4 rounded">
+                        </label>
+                    </div>
+                </template>
+
+                <!-- 14. IMAGE -->
+                <template x-if="selectedElement === 'Image'">
+                    <div class="space-y-3 text-xs">
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Recorte de forma (clip):</label>
+                            <select x-model="imageComp.shape" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                                <option value="CircleShape">CircleShape (Circular)</option>
+                                <option value="RoundedCornerShape(16.dp)">RoundedCornerShape(16.dp) (Redondeada)</option>
+                                <option value="RectangleShape">RectangleShape (Rectangular)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Tamaño de imagen (dp): <span x-text="imageComp.size + ' dp'" class="text-indigo-400 font-mono font-bold"></span></label>
+                            <input type="range" min="40" max="160" x-model="imageComp.size" class="w-full accent-indigo-500">
+                        </div>
+                    </div>
+                </template>
+
+                <!-- MODIFICADORES COMUNES -->
+                <div class="p-3.5 bg-slate-950 rounded-xl border border-slate-800 space-y-3 mt-4">
+                    <span class="block font-bold text-indigo-400 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-layer-group"></i> Modificadores Globales del Contenedor
+                    </span>
+                    <div class="space-y-2.5 text-xs">
+                        <div>
+                            <label class="block text-slate-300 mb-1">Padding externo: <span x-text="globalPadding + ' dp'" class="text-indigo-400 font-mono font-bold"></span></label>
+                            <input type="range" min="8" max="32" x-model="globalPadding" class="w-full accent-indigo-500">
+                        </div>
+                        <label class="flex items-center justify-between cursor-pointer">
+                            <span class="text-slate-300 font-mono">Modifier.fillMaxSize()</span>
+                            <input type="checkbox" x-model="fillMaxSize" class="accent-indigo-500 h-4 w-4 rounded">
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PIE DE PÁGINA IZQUIERDA -->
+            <div class="p-3.5 border-t border-slate-800 bg-slate-900 shrink-0 text-center">
+                <p class="text-[11px] text-slate-400">Código preparado para pegar en tu proyecto de <strong class="text-slate-200">Android Studio</strong></p>
+            </div>
+
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- COLUMNA DERECHA: PESTAÑAS (VISTA PREVIA, CÓDIGO Y GUÍA ALUMNO) (7 COLS) -->
+        <!-- ================================================================= -->
+        <section class="lg:col-span-7 bg-slate-950 flex flex-col h-full overflow-hidden">
+            
+            <!-- BARRA SUPERIOR DE PESTAÑAS -->
+            <div class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center justify-between shrink-0">
+                <div class="flex gap-1.5 bg-slate-950 p-1 rounded-xl border border-slate-800">
+                    <button @click="activeTab = 'preview'" 
+                            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition"
+                            :class="activeTab === 'preview' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'">
+                        <span>Vista Previa Móvil</span>
+                    </button>
+                    <button @click="activeTab = 'code'" 
+                            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition"
+                            :class="activeTab === 'code' ? 'bg-indigo-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'">
+                        <span>Código Kotlin</span>
+                    </button>
+                    <button @click="activeTab = 'guide'" 
+                            class="px-3.5 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-2 transition"
+                            :class="activeTab === 'guide' ? 'bg-purple-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'">
+                        <span>Guía para el Alumno</span>
+                    </button>
+                </div>
+
+                <div class="hidden sm:flex items-center gap-2">
+                    <span class="text-[11px] font-mono text-purple-300 bg-purple-950/60 border border-purple-800/80 px-2.5 py-1 rounded-md">
+                        Android Studio Ready
+                    </span>
+                </div>
+            </div>
+
+            <!-- CONTENIDO DE LAS PESTAÑAS -->
+            <div class="flex-1 overflow-hidden relative p-4 flex flex-col">
+
+                <!-- ------------------------------------------------------------- -->
+                <!-- PESTAÑA 1: VISTA PREVIA INTERACTIVA (DISPOSITIVO ANDROID)    -->
+                <!-- ------------------------------------------------------------- -->
+                <div x-show="activeTab === 'preview'" class="h-full flex items-center justify-center overflow-auto">
+                    
+                    <div class="w-full max-w-[340px] h-[600px] rounded-[42px] border-[10px] border-slate-800 bg-slate-900 shadow-2xl flex flex-col overflow-hidden relative ring-1 ring-slate-800/80 my-auto shrink-0 select-none">
+                        
+                        <!-- NOTCH SUPERIOR -->
+                        <div class="absolute top-2 left-1/2 -translate-x-1/2 w-24 h-4 bg-slate-900 rounded-full z-30 flex items-center justify-center">
+                            <div class="w-2.5 h-2.5 bg-slate-950 rounded-full border border-slate-800"></div>
+                        </div>
+
+                        <!-- BARRA DE ESTADO DE ANDROID -->
+                        <div class="h-8 pt-2 px-6 flex justify-between items-center text-[10px] font-semibold text-slate-900 bg-slate-100 z-20 shrink-0">
+                            <span>10:30</span>
+                            <div class="flex items-center gap-1.5">
+                                <i class="fa-solid fa-wifi"></i>
+                                <i class="fa-solid fa-battery-full text-indigo-600"></i>
+                            </div>
+                        </div>
+
+                        <!-- PANTALLA MÓVIL (MATERIAL 3 LIGHT THEME) -->
+                        <div class="flex-1 overflow-y-auto bg-slate-50 text-slate-900 relative transition-all"
+                             :style="`padding: ${globalPadding}px;`">
+
+                            <!-- RENDERIZADO: FICHA COMPLETA -->
+                            <template x-if="selectedElement === 'FichaAlumno'">
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-14 h-14 rounded-full bg-purple-200 text-purple-900 flex items-center justify-center font-bold text-xl shadow-sm shrink-0">
+                                            <span x-text="ficha.nombre ? ficha.nombre.charAt(0).toUpperCase() : '?'"></span>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-bold text-base text-slate-900 leading-tight" x-text="ficha.nombre || 'Alumno sin nombre'"></h3>
+                                            <p class="text-xs text-slate-500 font-medium">Ficha de alumno</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-1">
+                                        <label class="block text-[11px] font-medium text-purple-800">Nombre</label>
+                                        <input type="text" x-model="ficha.nombre" placeholder="Escribe tu nombre..." class="w-full bg-slate-50 border border-slate-400 rounded-lg p-2.5 text-xs text-slate-900 outline-none focus:border-purple-600">
+                                    </div>
+
+                                    <div class="flex items-center gap-2 cursor-pointer" @click="ficha.esDelegado = !ficha.esDelegado">
+                                        <div class="w-4 h-4 rounded border border-slate-600 flex items-center justify-center transition"
+                                             :class="ficha.esDelegado ? 'bg-purple-600 border-purple-600 text-white' : 'bg-slate-50'">
+                                            <i class="fa-solid fa-check text-[10px]" x-show="ficha.esDelegado"></i>
+                                        </div>
+                                        <span class="text-xs text-slate-800">Soy delegado de clase</span>
+                                    </div>
+
+                                    <div class="flex items-center justify-between w-full py-1">
+                                        <span class="text-xs text-slate-800">Recibir avisos</span>
+                                        <button @click="ficha.avisos = !ficha.avisos" class="w-10 h-5 rounded-full p-0.5 transition-colors relative flex items-center" :class="ficha.avisos ? 'bg-purple-600' : 'bg-slate-400'">
+                                            <div class="w-4 h-4 rounded-full bg-white transition-transform" :class="ficha.avisos ? 'translate-x-5' : 'translate-x-0'"></div>
+                                        </button>
+                                    </div>
+
+                                    <button @click="guardarFicha()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium text-xs py-2.5 rounded-full shadow-md transition">
+                                        Guardar
+                                    </button>
+
+                                    <div x-show="ficha.resumen" class="p-3 bg-purple-100/70 border border-purple-200 rounded-xl text-xs text-purple-950 font-medium">
+                                        <span x-text="ficha.resumen"></span>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- TEXT -->
+                            <template x-if="selectedElement === 'Text'">
+                                <div class="p-2">
+                                    <p :class="{
+                                        'text-2xl font-bold text-slate-900': textComp.style.includes('titleLarge'),
+                                        'text-xl font-bold text-purple-900': textComp.style.includes('headlineMedium'),
+                                        'text-base text-slate-800': textComp.style.includes('bodyLarge'),
+                                        'text-xs font-semibold text-purple-700': textComp.style.includes('labelMedium')
+                                    }" x-text="textComp.content"></p>
+                                </div>
+                            </template>
+
+                            <!-- OUTLINEDTEXTFIELD -->
+                            <template x-if="selectedElement === 'OutlinedTextField'">
+                                <div class="p-2 space-y-1">
+                                    <label class="block text-xs font-medium text-purple-800" x-text="inputComp.label"></label>
+                                    <input type="text" x-model="inputComp.value" class="w-full bg-white border border-purple-600 rounded-lg p-2.5 text-xs text-slate-900 outline-none focus:ring-1 focus:ring-purple-600">
+                                </div>
+                            </template>
+
+                            <!-- COLUMN -->
+                            <template x-if="selectedElement === 'Column'">
+                                <div class="flex flex-col border border-dashed border-purple-300 rounded-xl p-3 w-full"
+                                     :class="{
+                                        'items-start': columnComp.alignment === 'Alignment.Start',
+                                        'items-center': columnComp.alignment === 'Alignment.CenterHorizontally',
+                                        'items-end': columnComp.alignment === 'Alignment.End'
+                                     }"
+                                     :style="`gap: ${columnComp.spacing}px;`">
+                                    <div class="bg-purple-600 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-sm">Elemento Vertical 1</div>
+                                    <div class="bg-purple-500 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-sm">Elemento Vertical 2</div>
+                                    <div class="bg-purple-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-sm">Elemento Vertical 3</div>
+                                </div>
+                            </template>
+
+                            <!-- ROW -->
+                            <template x-if="selectedElement === 'Row'">
+                                <div class="flex flex-row border border-dashed border-purple-300 rounded-xl p-3 w-full overflow-x-auto"
+                                     :class="{
+                                        'items-start': rowComp.alignment === 'Alignment.Top',
+                                        'items-center': rowComp.alignment === 'Alignment.CenterVertically',
+                                        'items-end': rowComp.alignment === 'Alignment.Bottom'
+                                     }"
+                                     :style="`gap: ${rowComp.spacing}px;`">
+                                    <div class="bg-purple-600 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-sm shrink-0">Item 1</div>
+                                    <div class="bg-purple-500 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-sm shrink-0">Item 2</div>
+                                    <div class="bg-purple-700 text-white text-xs font-medium px-3 py-1.5 rounded-lg shadow-sm shrink-0">Item 3</div>
+                                </div>
+                            </template>
+
+                            <!-- BOX -->
+                            <template x-if="selectedElement === 'Box'">
+                                <div class="flex justify-center p-2">
+                                    <div class="bg-purple-200 border-2 border-purple-400 rounded-2xl relative flex"
+                                         :style="`width: ${boxComp.size}px; height: ${boxComp.size}px;`"
+                                         :class="{
+                                            'items-center justify-center': boxComp.alignment === 'Alignment.Center',
+                                            'items-start justify-start p-2': boxComp.alignment === 'Alignment.TopStart',
+                                            'items-end justify-end p-2': boxComp.alignment === 'Alignment.BottomEnd'
+                                         }">
+                                        <div class="bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-lg">
+                                            Capa Superior
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- CARD -->
+                            <template x-if="selectedElement === 'Card'">
+                                <div class="p-2">
+                                    <div class="bg-purple-50 border border-purple-200 rounded-2xl p-4 text-slate-900 transition-all"
+                                         :style="`box-shadow: 0 ${cardComp.elevation}px ${cardComp.elevation * 2}px rgba(103, 80, 164, 0.25);`">
+                                        <h4 class="font-bold text-xs text-purple-900 mb-1">Tarjeta Material 3</h4>
+                                        <p class="text-xs text-slate-700 leading-relaxed" x-text="cardComp.text"></p>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- LAZYCOLUMN -->
+                            <template x-if="selectedElement === 'LazyColumn'">
+                                <div class="space-y-2 p-1">
+                                    <p class="text-[11px] font-bold text-purple-800 uppercase tracking-wider">Lista eficiente con LazyColumn</p>
+                                    <template x-for="i in parseInt(lazyComp.itemCount)" :key="i">
+                                        <div class="p-2.5 bg-white border border-purple-200 rounded-xl flex items-center justify-between shadow-sm">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-6 h-6 rounded-full bg-purple-100 text-purple-800 text-xs font-bold flex items-center justify-center" x-text="i"></div>
+                                                <span class="text-xs font-medium text-slate-800" x-text="`${lazyComp.itemPrefix} ${i}`"></span>
+                                            </div>
+                                            <i class="fa-solid fa-chevron-right text-[10px] text-slate-400"></i>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- BUTTON -->
+                            <template x-if="selectedElement === 'Button'">
+                                <div class="p-2 flex justify-center">
+                                    <button class="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-medium text-xs py-2.5 px-5 rounded-full shadow-md transition"
+                                            :class="buttonComp.fullWidth ? 'w-full' : 'w-auto'"
+                                            x-text="buttonComp.label"></button>
+                                </div>
+                            </template>
+
+                            <!-- FLOATINGACTIONBUTTON -->
+                            <template x-if="selectedElement === 'FloatingActionButton'">
+                                <div class="p-4 h-48 relative flex items-end justify-end border border-slate-200 rounded-2xl bg-white">
+                                    <p class="absolute top-3 left-3 text-[11px] text-slate-400">Posición habitual del FAB</p>
+                                    <button class="bg-purple-300 text-purple-950 font-bold px-4 py-3 rounded-2xl shadow-xl flex items-center gap-2 hover:bg-purple-400 transition">
+                                        <i class="fa-solid" :class="{
+                                            'fa-plus': fabComp.icon.includes('Add'),
+                                            'fa-pen': fabComp.icon.includes('Edit'),
+                                            'fa-share-nodes': fabComp.icon.includes('Share')
+                                        }"></i>
+                                        <span x-show="fabComp.text" x-text="fabComp.text" class="text-xs"></span>
+                                    </button>
+                                </div>
+                            </template>
+
+                            <!-- SWITCH -->
+                            <template x-if="selectedElement === 'Switch'">
+                                <div class="p-2 flex items-center justify-between bg-white rounded-xl p-3 border border-slate-200">
+                                    <span class="text-xs text-slate-800 font-medium" x-text="switchComp.text"></span>
+                                    <button @click="switchComp.checked = !switchComp.checked" class="w-10 h-5 rounded-full p-0.5 transition-colors relative flex items-center" :class="switchComp.checked ? 'bg-purple-600' : 'bg-slate-400'">
+                                        <div class="w-4 h-4 rounded-full bg-white transition-transform" :class="switchComp.checked ? 'translate-x-5' : 'translate-x-0'"></div>
+                                    </button>
+                                </div>
+                            </template>
+
+                            <!-- SLIDER -->
+                            <template x-if="selectedElement === 'Slider'">
+                                <div class="p-3 bg-white border border-purple-200 rounded-xl space-y-2">
+                                    <div class="flex justify-between items-center text-xs">
+                                        <span class="font-medium text-slate-700">Valor seleccionado:</span>
+                                        <span class="font-bold font-mono text-purple-700" x-text="Math.round(sliderComp.value)"></span>
+                                    </div>
+                                    <input type="range" min="0" max="100" x-model="sliderComp.value" class="w-full accent-purple-600">
+                                </div>
+                            </template>
+
+                            <!-- CHECKBOX -->
+                            <template x-if="selectedElement === 'Checkbox'">
+                                <div class="p-2 flex items-center gap-2 cursor-pointer bg-white rounded-xl p-3 border border-slate-200" @click="checkComp.checked = !checkComp.checked">
+                                    <div class="w-4 h-4 rounded border border-purple-600 flex items-center justify-center transition"
+                                         :class="checkComp.checked ? 'bg-purple-600 text-white' : 'bg-white'">
+                                        <i class="fa-solid fa-check text-[10px]" x-show="checkComp.checked"></i>
+                                    </div>
+                                    <span class="text-xs text-slate-800 font-medium" x-text="checkComp.text"></span>
+                                </div>
+                            </template>
+
+                            <!-- IMAGE -->
+                            <template x-if="selectedElement === 'Image'">
+                                <div class="p-2 flex flex-col items-center justify-center gap-2">
+                                    <div class="bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center text-white shadow-lg overflow-hidden border-2 border-purple-300"
+                                         :style="`width: ${imageComp.size}px; height: ${imageComp.size}px;`"
+                                         :class="{
+                                            'rounded-full': imageComp.shape.includes('CircleShape'),
+                                            'rounded-2xl': imageComp.shape.includes('RoundedCornerShape'),
+                                            'rounded-none': imageComp.shape.includes('RectangleShape')
+                                         }">
+                                        <i class="fa-solid fa-image text-3xl opacity-80"></i>
+                                    </div>
+                                    <span class="text-[11px] text-slate-500 font-mono" x-text="imageComp.shape"></span>
+                                </div>
+                            </template>
+
+                        </div>
+
+                        <!-- BARRA INFERIOR ANDROID -->
+                        <div class="h-6 flex justify-center items-center gap-8 text-slate-400 text-xs shrink-0 bg-slate-100">
+                            <div class="w-3 h-3 border-2 border-slate-500 rounded-sm"></div>
+                            <div class="w-3 h-3 bg-slate-500 rounded-full"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ------------------------------------------------------------- -->
+                <!-- PESTAÑA 2: CÓDIGO KOTLIN OFICIAL PARA COPIAR                  -->
+                <!-- ------------------------------------------------------------- -->
+                <div x-show="activeTab === 'code'" class="h-full flex flex-col overflow-hidden">
+                    
+                    <div class="flex items-center justify-between mb-3 shrink-0">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-brands fa-kotlin text-purple-400 text-base"></i>
+                            <span class="text-xs font-mono text-slate-300 font-semibold">MainActivity.kt</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button @click="copyCode()" class="text-xs bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5">
+                                <i class="fa-solid" :class="copied ? 'fa-check text-emerald-400' : 'fa-copy'"></i>
+                                <span x-text="copied ? '¡Copiado!' : 'Copiar Código'"></span>
+                            </button>
+                            <button @click="downloadFile()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 shadow-md shadow-indigo-600/20">
+                                <i class="fa-solid fa-download"></i>
+                                <span>Descargar .kt</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 bg-slate-950 rounded-xl p-4 border border-slate-800 overflow-y-auto font-mono text-xs leading-relaxed text-slate-200 selection:bg-indigo-500/30">
+                        <pre><code x-text="generateCode()"></code></pre>
+                    </div>
+                </div>
+
+                <!-- ------------------------------------------------------------- -->
+                <!-- PESTAÑA 3: GUÍA DIDÁCTICA EXCLUSIVA PARA EL ALUMNO             -->
+                <!-- ------------------------------------------------------------- -->
+                <div x-show="activeTab === 'guide'" class="h-full overflow-y-auto space-y-4 text-xs pr-1">
+
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
+                        <h3 class="font-bold text-amber-400 text-xs uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb"></i> Explicación del elemento actual: <span class="text-amber-300 font-mono" x-text="selectedElement"></span>
+                        </h3>
+
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 leading-relaxed text-slate-300 space-y-1">
+                            <strong class="text-indigo-300 block" x-text="guideInfo().title"></strong>
+                            <p x-html="guideInfo().what"></p>
+                        </div>
+
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 leading-relaxed text-slate-300 space-y-1.5">
+                            <strong class="text-emerald-300 block"><i class="fa-solid fa-hammer mr-1"></i>Cómo se construye</strong>
+                            <ol class="list-decimal list-inside space-y-1 pl-1">
+                                <template x-for="step in guideInfo().build" :key="step">
+                                    <li x-html="step"></li>
+                                </template>
+                            </ol>
+                        </div>
+
+                        <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 leading-relaxed text-slate-300 space-y-1.5">
+                            <strong class="text-purple-300 block"><i class="fa-solid fa-pen-to-square mr-1"></i>Posibles modificaciones</strong>
+                            <ul class="list-disc list-inside space-y-1 pl-1">
+                                <template x-for="mod in guideInfo().mods" :key="mod">
+                                    <li x-html="mod"></li>
+                                </template>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- NOTIFICACIÓN TOAST -->
+    <div x-show="copied" x-transition.opacity class="fixed bottom-5 right-5 bg-emerald-500 text-slate-950 font-bold px-4 py-2.5 rounded-xl shadow-2xl text-xs flex items-center gap-2 z-50">
+        <i class="fa-solid fa-circle-check text-base"></i>
+        <span>Código copiado al portapapeles</span>
+    </div>
+
+    <!-- LÓGICA Y GENERACIÓN DE CÓDIGO -->
+    <script>
+        function composeApp() {
+            return {
+                selectedElement: 'Text',
+                activeTab: 'preview',
+                copied: false,
+
+                // Explicación didáctica por elemento
+                guideInfo() {
+                    const c = (t) => `<code class="text-amber-300 font-mono">${t}</code>`;
+                    const info = {
+                        FichaAlumno: {
+                            title: 'Formulario completo de alumno',
+                            what: `Pantalla que combina varios composables en una sola función ${c('FichaAlumno()')}: cabecera, campo de texto, casillas, interruptor y botón.`,
+                            build: [
+                                `Se declaran los estados con ${c('rememberSaveable { mutableStateOf(...) }')} para que sobrevivan a rotaciones.`,
+                                `Se organiza todo en una ${c('Column')} con ${c('Arrangement.spacedBy')}.`,
+                                `Se extraen partes (como ${c('CabeceraFicha')}) a funciones ${c('@Composable')} propias, pasándoles solo los datos que necesitan.`,
+                                `El botón actualiza el estado ${c('resumen')} y la interfaz se recompone sola.`
+                            ],
+                            mods: [`Añadir nuevos campos (curso, edad) con más estados.`, `Mover el estado a un ViewModel (state hoisting).`, `Cambiar la ${c('Card')} por otro contenedor o aplicar otros colores del tema.`]
+                        },
+                        Text: {
+                            title: 'Text: mostrar texto con tipografía',
+                            what: `Muestra una cadena en pantalla. Es el composable más básico y casi todas las interfaces lo usan.`,
+                            build: [
+                                `Se llama a ${c('Text(text = "...")')} con el contenido a mostrar.`,
+                                `Se aplica un estilo del tema con ${c('style = MaterialTheme.typography.titleLarge')}.`,
+                                `Se ajusta con parámetros como ${c('color')}, ${c('fontWeight')}, ${c('fontSize')} o ${c('textAlign')}.`,
+                                `Se posiciona y se da margen con un ${c('Modifier')} (por ejemplo ${c('Modifier.padding(16.dp)')}).`
+                            ],
+                            mods: [`Cambiar el estilo a ${c('bodyMedium')}, ${c('headlineSmall')}, etc.`, `Limitar líneas con ${c('maxLines')} y ${c('overflow = TextOverflow.Ellipsis')}.`, `Usar ${c('stringResource(R.string.x)')} en lugar de texto fijo para poder traducir la app.`, `Usar ${c('buildAnnotatedString')} para mezclar estilos en una misma frase.`]
+                        },
+                        OutlinedTextField: {
+                            title: 'OutlinedTextField: entrada de texto',
+                            what: `Campo de texto con borde que permite al usuario escribir. Su contenido lo controla tu estado, no el componente.`,
+                            build: [
+                                `Se crea un estado: ${c('var texto by rememberSaveable { mutableStateOf("") }')}.`,
+                                `Se pasa a ${c('value = texto')} para mostrar el valor actual.`,
+                                `En ${c('onValueChange = { texto = it }')} se guarda lo que escribe el usuario; esto provoca la recomposición.`,
+                                `Se añade ${c('label')} o ${c('placeholder')} para indicar qué escribir.`
+                            ],
+                            mods: [`Cambiar el teclado con ${c('keyboardOptions')} (numérico, email...).`, `Añadir ${c('leadingIcon')} / ${c('trailingIcon')}.`, `Mostrar errores con ${c('isError')} y ${c('supportingText')}.`, `Limitar a una línea con ${c('singleLine = true')} o usar ${c('visualTransformation')} para contraseñas.`]
+                        },
+                        Column: {
+                            title: 'Column: disposición vertical',
+                            what: `Contenedor que coloca a sus hijos uno debajo de otro.`,
+                            build: [
+                                `Se escribe ${c('Column { ... }')} y dentro se añaden los composables hijos en orden.`,
+                                `Se reparte el espacio con ${c('verticalArrangement')} (por ejemplo ${c('Arrangement.spacedBy(8.dp)')}).`,
+                                `Se alinean horizontalmente con ${c('horizontalAlignment = Alignment.CenterHorizontally')}.`,
+                                `Se le da tamaño con ${c('Modifier.fillMaxSize()')} y margen con ${c('padding')}.`
+                            ],
+                            mods: [`Cambiar ${c('Arrangement')} a ${c('Center')}, ${c('SpaceBetween')} o ${c('SpaceEvenly')}.`, `Añadir ${c('Modifier.verticalScroll(rememberScrollState())')} si el contenido no cabe.`, `Usar ${c('Modifier.weight(1f)')} en un hijo para que ocupe el espacio sobrante.`]
+                        },
+                        Row: {
+                            title: 'Row: disposición horizontal',
+                            what: `Contenedor que coloca a sus hijos uno al lado de otro, de izquierda a derecha.`,
+                            build: [
+                                `Se escribe ${c('Row { ... }')} con los hijos dentro.`,
+                                `Se alinean en vertical con ${c('verticalAlignment = Alignment.CenterVertically')}.`,
+                                `Se distribuyen con ${c('horizontalArrangement')} (${c('spacedBy')}, ${c('SpaceBetween')}...).`,
+                                `Se ajusta el ancho con ${c('Modifier.fillMaxWidth()')}.`
+                            ],
+                            mods: [`Repartir el ancho con ${c('Modifier.weight(1f)')} en cada hijo.`, `Cambiar el espaciado y alineación.`, `Si hay muchos elementos, usar ${c('LazyRow')} o ${c('horizontalScroll')}.`]
+                        },
+                        Box: {
+                            title: 'Box: superposición de capas',
+                            what: `Contenedor que apila sus hijos unos sobre otros; el último dibujado queda encima.`,
+                            build: [
+                                `Se escribe ${c('Box(modifier = Modifier.size(...)) { ... }')}.`,
+                                `Se añade primero el elemento de fondo y después los que van encima.`,
+                                `Se coloca cada hijo con ${c('Modifier.align(Alignment.BottomEnd)')} o se centra todo con ${c('contentAlignment')}.`
+                            ],
+                            mods: [`Cambiar la alineación de los hijos.`, `Añadir ${c('Modifier.background')}, ${c('clip')} o ${c('border')} al Box.`, `Usarlo para una insignia sobre un icono o texto sobre una imagen.`]
+                        },
+                        Card: {
+                            title: 'Card: tarjeta elevada Material 3',
+                            what: `Contenedor con bordes redondeados y sombra, ideal para agrupar información relacionada.`,
+                            build: [
+                                `Se escribe ${c('Card { ... }')} y dentro se coloca normalmente una ${c('Column')} con el contenido.`,
+                                `Se define la sombra con ${c('elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)')}.`,
+                                `Se personaliza el color con ${c('colors = CardDefaults.cardColors(...)')}.`,
+                                `Se añade ${c('Modifier.padding')} dentro para separar el contenido del borde.`
+                            ],
+                            mods: [`Cambiar la elevación o la forma con ${c('shape = RoundedCornerShape(16.dp)')}.`, `Hacerla pulsable con la sobrecarga ${c('Card(onClick = {...})')}.`, `Usar ${c('ElevatedCard')} o ${c('OutlinedCard')}.`]
+                        },
+                        LazyColumn: {
+                            title: 'LazyColumn: lista eficiente',
+                            what: `Lista vertical con scroll que solo compone los elementos visibles. Sustituye al RecyclerView.`,
+                            build: [
+                                `Se escribe ${c('LazyColumn { ... }')}.`,
+                                `Se declaran los elementos con ${c('items(lista) { elemento -> ... }')} o ${c('item { ... }')} para elementos sueltos.`,
+                                `Dentro de cada ${c('items')} se compone la fila (un ${c('Text')}, una ${c('Card')}...).`,
+                                `Se añade espacio entre filas con ${c('verticalArrangement = Arrangement.spacedBy(8.dp)')}.`
+                            ],
+                            mods: [`Usar ${c('key = { it.id }')} para mantener el estado de cada fila.`, `Añadir ${c('contentPadding')} para márgenes de la lista.`, `Usar ${c('stickyHeader')} para cabeceras fijas.`, `Cambiar a ${c('LazyRow')} o ${c('LazyVerticalGrid')}.`]
+                        },
+                        Button: {
+                            title: 'Button: botón de acción',
+                            what: `Elemento pulsable que ejecuta código cuando el usuario lo toca.`,
+                            build: [
+                                `Se escribe ${c('Button(onClick = { ... }) { Text("...") }')}.`,
+                                `En ${c('onClick')} va la lógica: cambiar un estado, navegar, guardar...`,
+                                `El contenido del botón es una lambda; normalmente un ${c('Text')}, y opcionalmente un ${c('Icon')}.`,
+                                `Se controla su aspecto con ${c('colors')}, ${c('shape')} y ${c('enabled')}.`
+                            ],
+                            mods: [`Deshabilitarlo con ${c('enabled = false')} según una condición.`, `Cambiar el tipo: ${c('OutlinedButton')}, ${c('TextButton')}, ${c('ElevatedButton')}.`, `Añadir un icono delante del texto dentro de una ${c('Row')}.`]
+                        },
+                        FloatingActionButton: {
+                            title: 'FloatingActionButton (FAB)',
+                            what: `Botón circular flotante que destaca la acción principal de la pantalla.`,
+                            build: [
+                                `Se escribe ${c('FloatingActionButton(onClick = { ... }) { Icon(Icons.Default.Add, contentDescription = "Añadir") }')}.`,
+                                `Se suele colocar en el parámetro ${c('floatingActionButton')} de un ${c('Scaffold')} para que flote en la esquina.`,
+                                `Se personaliza con ${c('containerColor')} y ${c('contentColor')}.`
+                            ],
+                            mods: [`Usar ${c('ExtendedFloatingActionButton')} con texto e icono.`, `Cambiar el icono o el color.`, `Usar ${c('SmallFloatingActionButton')} o ${c('LargeFloatingActionButton')}.`]
+                        },
+                        Switch: {
+                            title: 'Switch: interruptor on/off',
+                            what: `Control booleano para activar o desactivar una opción. Su estado vive fuera del componente.`,
+                            build: [
+                                `Se crea el estado: ${c('var activo by rememberSaveable { mutableStateOf(false) }')}.`,
+                                `Se pasa como ${c('checked = activo')}.`,
+                                `En ${c('onCheckedChange = { activo = it }')} se actualiza el estado.`,
+                                `Normalmente se coloca en una ${c('Row')} junto a un ${c('Text')} que describe la opción.`
+                            ],
+                            mods: [`Personalizar colores con ${c('SwitchDefaults.colors')}.`, `Añadir un icono en el thumb con ${c('thumbContent')}.`, `Deshabilitarlo con ${c('enabled')}.`, `Elevar el estado a la función padre (state hoisting).`]
+                        },
+                        Checkbox: {
+                            title: 'Checkbox: casilla de selección',
+                            what: `Control booleano que marca o desmarca una opción, útil para listas de selección múltiple.`,
+                            build: [
+                                `Se crea un estado booleano con ${c('rememberSaveable')}.`,
+                                `Se enlaza con ${c('checked = marcado')} y ${c('onCheckedChange = { marcado = it }')}.`,
+                                `Se coloca en una ${c('Row')} con un ${c('Text')} al lado, con ${c('verticalAlignment = Alignment.CenterVertically')}.`
+                            ],
+                            mods: [`Cambiar colores con ${c('CheckboxDefaults.colors')}.`, `Usar ${c('TriStateCheckbox')} para un estado intermedio.`, `Hacer pulsable toda la fila con ${c('Modifier.toggleable')}.`]
+                        },
+                        Slider: {
+                            title: 'Slider: barra deslizante',
+                            what: `Permite elegir un valor numérico dentro de un rango arrastrando un control.`,
+                            build: [
+                                `Se crea un estado ${c('Float')}: ${c('var valor by remember { mutableStateOf(0.5f) }')}.`,
+                                `Se pasa a ${c('value = valor')} y se actualiza en ${c('onValueChange = { valor = it }')}.`,
+                                `Se limita el rango con ${c('valueRange = 0f..1f')}.`,
+                                `Se muestra el valor actual en un ${c('Text')} cercano.`
+                            ],
+                            mods: [`Cambiar el rango a ${c('0f..100f')}.`, `Añadir pasos con ${c('steps = 4')}.`, `Usar ${c('onValueChangeFinished')} para actuar solo al soltar.`, `Usar ${c('RangeSlider')} para elegir dos valores.`]
+                        },
+                        Image: {
+                            title: 'Image: imágenes y vectores',
+                            what: `Muestra una imagen o un vector desde los recursos de la app.`,
+                            build: [
+                                `Se añade el archivo a ${c('res/drawable')}.`,
+                                `Se carga con ${c('Image(painter = painterResource(R.drawable.foto), contentDescription = "...")')}.`,
+                                `Se da tamaño con ${c('Modifier.size(120.dp)')}.`,
+                                `Se recorta con ${c('Modifier.clip(CircleShape)')} y se ajusta con ${c('contentScale = ContentScale.Crop')}.`
+                            ],
+                            mods: [`Cambiar la forma: ${c('RoundedCornerShape')}, ${c('CircleShape')}.`, `Añadir ${c('border')}.`, `Cargar imágenes de internet con una librería como Coil (${c('AsyncImage')}).`, `Usar un ${c('Icon')} si es un vector sencillo.`]
+                        }
+                    };
+                    return info[this.selectedElement] || info.Text;
+                },
+
+                // Configuración Global Modificadores
+                globalPadding: 24,
+                fillMaxSize: true,
+
+                // Ficha Alumno
+                ficha: {
+                    nombre: 'Carlos',
+                    esDelegado: false,
+                    avisos: true,
+                    resumen: ''
+                },
+
+                // Componentes individuales
+                textComp: { content: '¡Hola Jetpack Compose!', style: 'MaterialTheme.typography.titleLarge' },
+                inputComp: { value: 'Texto de prueba', label: 'Nombre completo', singleLine: true },
+                columnComp: { spacing: 16, alignment: 'Alignment.Start' },
+                rowComp: { spacing: 16, alignment: 'Alignment.CenterVertically' },
+                boxComp: { alignment: 'Alignment.Center', size: 140 },
+                cardComp: { text: 'Esta es una tarjeta informativa elevada según las guías de Material 3.', elevation: 6 },
+                lazyComp: { itemCount: 8, itemPrefix: 'Elemento de lista' },
+                buttonComp: { label: 'Guardar cambios', fullWidth: true },
+                fabComp: { text: 'Nuevo', icon: 'Icons.Default.Add' },
+                switchComp: { text: 'Activar avisos de clase', checked: true },
+                sliderComp: { value: 65 },
+                checkComp: { text: 'Acepto la normativa de la asignatura', checked: true },
+                imageComp: { shape: 'CircleShape', size: 90 },
+
+                guardarFicha() {
+                    if (!this.ficha.nombre.trim()) {
+                        this.ficha.resumen = "Escribe un nombre antes de guardar";
+                    } else {
+                        const rol = this.ficha.esDelegado ? "delegado" : "alumno";
+                        const estadoAvisos = this.ficha.avisos ? "con avisos" : "sin avisos";
+                        this.ficha.resumen = `Guardado: ${this.ficha.nombre} (${rol}, ${estadoAvisos})`;
+                    }
+                },
+
+                loadPreset(elementName) {
+                    this.selectedElement = elementName;
+                    this.activeTab = 'code';
+                },
+
+                copyCode() {
+                    const code = this.generateCode();
+                    const el = document.createElement('textarea');
+                    el.value = code;
+                    document.body.appendChild(el);
+                    el.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(el);
+
+                    this.copied = true;
+                    setTimeout(() => { this.copied = false; }, 2000);
+                },
+
+                downloadFile() {
+                    const code = this.generateCode();
+                    const blob = new Blob([code], { type: 'text/plain;charset=utf-8' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `MainActivity.kt`;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                },
+
+                // CÓDIGO KOTLIN OFICIAL CON FORMATO APROBADO
+                generateCode() {
+                    if (this.selectedElement === 'FichaAlumno') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Switch
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                FichaAlumno()
+            }
+        }
+    }
+}
+
+@Composable
+fun FichaAlumno() {
+    var nombre by rememberSaveable { mutableStateOf("${this.ficha.nombre}") }
+    var esDelegado by rememberSaveable { mutableStateOf(${this.ficha.esDelegado}) }
+    var avisos by rememberSaveable { mutableStateOf(${this.ficha.avisos}) }
+    var resumen by rememberSaveable { mutableStateOf("${this.ficha.resumen}") }
+
+    Column(
+        modifier = Modifier
+            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
+            .verticalScroll(rememberScrollState())
+            .padding(${this.globalPadding}.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        CabeceraFicha(nombre = nombre)
+
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = { textoNuevo -> nombre = textoNuevo },
+            label = { Text("Nombre") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth(),
+        )
+
+        OpcionCheck(
+            texto = "Soy delegado de clase",
+            marcada = esDelegado,
+            onCambio = { esDelegado = it },
+        )
+        OpcionSwitch(
+            texto = "Recibir avisos",
+            activada = avisos,
+            onCambio = { avisos = it },
+        )
+
+        Button(
+            onClick = {
+                resumen = if (nombre.isBlank()) {
+                    "Escribe un nombre antes de guardar"
+                } else {
+                    val rol = if (esDelegado) "delegado" else "alumno"
+                    val estadoAvisos = if (avisos) "con avisos" else "sin avisos"
+                    "Guardado: $nombre ($rol, $estadoAvisos)"
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text("Guardar")
+        }
+
+        if (resumen.isNotEmpty()) {
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = resumen,
+                    modifier = Modifier.padding(16.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun CabeceraFicha(nombre: String) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Box(
+            modifier = Modifier
+                .size(64.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = nombre.take(1).uppercase().ifEmpty { "?" },
+                style = MaterialTheme.typography.titleLarge,
+            )
+        }
+        Column {
+            Text(
+                text = if (nombre.isBlank()) "Alumno sin nombre" else nombre,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Text(
+                text = "Ficha de alumno",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+}
+
+@Composable
+fun OpcionCheck(
+    texto: String,
+    marcada: Boolean,
+    onCambio: (Boolean) -> Unit,
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(checked = marcada, onCheckedChange = onCambio)
+        Text(texto)
+    }
+}
+
+@Composable
+fun OpcionSwitch(
+    texto: String,
+    activada: Boolean,
+    onCambio: (Boolean) -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(texto)
+        Switch(checked = activada, onCheckedChange = onCambio)
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun FichaAlumnoPreview() {
+    MaterialTheme {
+        FichaAlumno()
+    }
+}`;
+                    }
+
+                    // GENERACIÓN CÓDIGO ELEMENTOS INDIVIDUALES
+                    let innerCode = '';
+                    if (this.selectedElement === 'Text') {
+                        innerCode = `    Text(
+        text = "${this.textComp.content}",
+        style = ${this.textComp.style}
+    )`;
+                    } else if (this.selectedElement === 'OutlinedTextField') {
+                        innerCode = `    var texto by rememberSaveable { mutableStateOf("${this.inputComp.value}") }
+
+    OutlinedTextField(
+        value = texto,
+        onValueChange = { texto = it },
+        label = { Text("${this.inputComp.label}") },
+        singleLine = ${this.inputComp.singleLine},
+        modifier = Modifier.fillMaxWidth()
+    )`;
+                    } else if (this.selectedElement === 'Column') {
+                        innerCode = `    Column(
+        verticalArrangement = Arrangement.spacedBy(${this.columnComp.spacing}.dp),
+        horizontalAlignment = ${this.columnComp.alignment},
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("Elemento Vertical 1", style = MaterialTheme.typography.titleLarge)
+        Text("Elemento Vertical 2", style = MaterialTheme.typography.bodyLarge)
+        Button(onClick = { }) { Text("Elemento Vertical 3") }
+    }`;
+                    } else if (this.selectedElement === 'Row') {
+                        innerCode = `    Row(
+        horizontalArrangement = Arrangement.spacedBy(${this.rowComp.spacing}.dp),
+        verticalAlignment = ${this.rowComp.alignment},
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("Item 1")
+        Button(onClick = { }) { Text("Item 2") }
+        Text("Item 3")
+    }`;
+                    } else if (this.selectedElement === 'Box') {
+                        innerCode = `    Box(
+        contentAlignment = ${this.boxComp.alignment},
+        modifier = Modifier
+            .size(${this.boxComp.size}.dp)
+            .background(MaterialTheme.colorScheme.primaryContainer)
+    ) {
+        Text(
+            text = "Capa Superior",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(8.dp)
+        )
+    }`;
+                    } else if (this.selectedElement === 'Card') {
+                        innerCode = `    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = ${this.cardComp.elevation}.dp),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("Tarjeta Material 3", style = MaterialTheme.typography.titleLarge)
+            Text("${this.cardComp.text}", style = MaterialTheme.typography.bodyMedium)
+        }
+    }`;
+                    } else if (this.selectedElement === 'LazyColumn') {
+                        innerCode = `    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxSize()
+    ) {
+        items(${this.lazyComp.itemCount}) { index ->
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "${this.lazyComp.itemPrefix} \${index + 1}",
+                    modifier = Modifier.padding(12.dp)
+                )
+            }
+        }
+    }`;
+                    } else if (this.selectedElement === 'Button') {
+                        innerCode = `    Button(
+        onClick = { /* Acción al pulsar */ },
+        modifier = ${this.buttonComp.fullWidth ? 'Modifier.fillMaxWidth()' : 'Modifier'}
+    ) {
+        Text("${this.buttonComp.label}")
+    }`;
+                    } else if (this.selectedElement === 'FloatingActionButton') {
+                        innerCode = `    FloatingActionButton(
+        onClick = { /* Acción */ }
+    ) {
+        Icon(imageVector = ${this.fabComp.icon}, contentDescription = "${this.fabComp.text || 'Acción'}")
+    }`;
+                    } else if (this.selectedElement === 'Switch') {
+                        innerCode = `    var activado by rememberSaveable { mutableStateOf(${this.switchComp.checked}) }
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text("${this.switchComp.text}")
+        Switch(
+            checked = activado,
+            onCheckedChange = { activado = it }
+        )
+    }`;
+                    } else if (this.selectedElement === 'Slider') {
+                        innerCode = `    var valorSlider by rememberSaveable { mutableStateOf(${this.sliderComp.value}f) }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text("Valor: \${valorSlider.toInt()}", style = MaterialTheme.typography.titleLarge)
+        Slider(
+            value = valorSlider,
+            onValueChange = { valorSlider = it },
+            valueRange = 0f..100f
+        )
+    }`;
+                    } else if (this.selectedElement === 'Checkbox') {
+                        innerCode = `    var marcado by rememberSaveable { mutableStateOf(${this.checkComp.checked}) }
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Checkbox(
+            checked = marcado,
+            onCheckedChange = { marcado = it }
+        )
+        Text("${this.checkComp.text}")
+    }`;
+                    } else if (this.selectedElement === 'Image') {
+                        innerCode = `    Box(
+        modifier = Modifier
+            .size(${this.imageComp.size}.dp)
+            .clip(${this.imageComp.shape})
+            .background(MaterialTheme.colorScheme.primary),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("Imagen", color = MaterialTheme.colorScheme.onPrimary)
+    }`;
+                    }
+
+                    return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                Ejemplo${this.selectedElement}()
+            }
+        }
+    }
+}
+
+@Composable
+fun Ejemplo${this.selectedElement}() {
+    Column(
+        modifier = Modifier
+            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
+            .padding(${this.globalPadding}.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+${innerCode}
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun Ejemplo${this.selectedElement}Preview() {
+    MaterialTheme {
+        Ejemplo${this.selectedElement}()
+    }
+}`;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
