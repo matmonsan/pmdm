@@ -71,12 +71,9 @@
     <!-- LAYOUT PRINCIPAL DE 2 COLUMNAS -->
     <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-slate-950">
         
-        <!-- ================================================================= -->
         <!-- COLUMNA IZQUIERDA: SELECTOR POR CATEGORÍAS Y CONFIGURADOR (5 COLS) -->
-        <!-- ================================================================= -->
         <section class="lg:col-span-5 bg-slate-900 border-r border-slate-800 flex flex-col h-full overflow-hidden">
             
-            <!-- SELECTOR CATEGORIZADO DE ELEMENTOS JETPACK COMPOSE -->
             <div class="p-4 border-b border-slate-800 bg-slate-900 shrink-0">
                 <label class="block text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2 flex items-center justify-between">
                     <span><i class="fa-solid fa-cubes text-indigo-400 mr-1.5"></i>Elemento Composable</span>
@@ -84,12 +81,10 @@
                 </label>
                 <div class="relative">
                     <select x-model="selectedElement" class="w-full bg-slate-950 text-slate-100 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
-
                         <optgroup label="Texto e Inputs">
                             <option value="Text">Text (Tipografía)</option>
                             <option value="OutlinedTextField">OutlinedTextField (Campo Entrada)</option>
                         </optgroup>
-
                         <optgroup label="Contenedores y Disposición">
                             <option value="Column">Column (Disposición Vertical)</option>
                             <option value="Row">Row (Disposición Horizontal)</option>
@@ -97,7 +92,6 @@
                             <option value="Card">Card (Tarjeta Elevada)</option>
                             <option value="LazyColumn">LazyColumn (Lista Eficiente)</option>
                         </optgroup>
-
                         <optgroup label="Botones e Controles">
                             <option value="Button">Button (Botón de Acción)</option>
                             <option value="FloatingActionButton">FloatingActionButton (FAB)</option>
@@ -105,7 +99,6 @@
                             <option value="Slider">Slider (Barra Deslizante)</option>
                             <option value="Checkbox">Checkbox (Casilla Selección)</option>
                         </optgroup>
-
                         <optgroup label="Multimedia y Gráficos">
                             <option value="Image">Image (Imagen / Vector)</option>
                         </optgroup>
@@ -126,7 +119,7 @@
                     <span class="text-[11px] text-indigo-300 font-mono bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20" x-text="selectedElement"></span>
                 </div>
 
-                <!-- 1. FICHA COMPLETA -->
+                <!-- FICHA COMPLETA -->
                 <template x-if="selectedElement === 'FichaAlumno'">
                     <div class="space-y-3 text-xs">
                         <p class="text-slate-400 leading-relaxed bg-slate-950 p-3 rounded-lg border border-slate-800">
@@ -149,7 +142,7 @@
                     </div>
                 </template>
 
-                <!-- 2. TEXT -->
+                <!-- TEXT -->
                 <template x-if="selectedElement === 'Text'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -168,7 +161,7 @@
                     </div>
                 </template>
 
-                <!-- 3. OUTLINEDTEXTFIELD -->
+                <!-- OUTLINEDTEXTFIELD -->
                 <template x-if="selectedElement === 'OutlinedTextField'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -186,7 +179,7 @@
                     </div>
                 </template>
 
-                <!-- 4. COLUMN -->
+                <!-- COLUMN -->
                 <template x-if="selectedElement === 'Column'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -204,7 +197,7 @@
                     </div>
                 </template>
 
-                <!-- 5. ROW -->
+                <!-- ROW -->
                 <template x-if="selectedElement === 'Row'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -222,7 +215,7 @@
                     </div>
                 </template>
 
-                <!-- 6. BOX -->
+                <!-- BOX -->
                 <template x-if="selectedElement === 'Box'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -240,7 +233,7 @@
                     </div>
                 </template>
 
-                <!-- 7. CARD -->
+                <!-- CARD -->
                 <template x-if="selectedElement === 'Card'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -254,7 +247,7 @@
                     </div>
                 </template>
 
-                <!-- 8. LAZYCOLUMN -->
+                <!-- LAZYCOLUMN -->
                 <template x-if="selectedElement === 'LazyColumn'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -268,7 +261,7 @@
                     </div>
                 </template>
 
-                <!-- 9. BUTTON -->
+                <!-- BUTTON -->
                 <template x-if="selectedElement === 'Button'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -282,7 +275,7 @@
                     </div>
                 </template>
 
-                <!-- 10. FLOATINGACTIONBUTTON -->
+                <!-- FLOATINGACTIONBUTTON -->
                 <template x-if="selectedElement === 'FloatingActionButton'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -300,7 +293,7 @@
                     </div>
                 </template>
 
-                <!-- 11. SWITCH -->
+                <!-- SWITCH -->
                 <template x-if="selectedElement === 'Switch'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -314,7 +307,7 @@
                     </div>
                 </template>
 
-                <!-- 12. SLIDER -->
+                <!-- SLIDER -->
                 <template x-if="selectedElement === 'Slider'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -325,7 +318,7 @@
                     </div>
                 </template>
 
-                <!-- 13. CHECKBOX -->
+                <!-- CHECKBOX -->
                 <template x-if="selectedElement === 'Checkbox'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -339,7 +332,7 @@
                     </div>
                 </template>
 
-                <!-- 14. IMAGE -->
+                <!-- IMAGE -->
                 <template x-if="selectedElement === 'Image'">
                     <div class="space-y-3 text-xs">
                         <div>
@@ -383,9 +376,7 @@
 
         </section>
 
-        <!-- ================================================================= -->
         <!-- COLUMNA DERECHA: PESTAÑAS (VISTA PREVIA, CÓDIGO Y GUÍA ALUMNO) (7 COLS) -->
-        <!-- ================================================================= -->
         <section class="lg:col-span-7 bg-slate-950 flex flex-col h-full overflow-hidden">
             
             <!-- BARRA SUPERIOR DE PESTAÑAS -->
@@ -418,9 +409,7 @@
             <!-- CONTENIDO DE LAS PESTAÑAS -->
             <div class="flex-1 overflow-hidden relative p-4 flex flex-col">
 
-                <!-- ------------------------------------------------------------- -->
-                <!-- PESTAÑA 1: VISTA PREVIA INTERACTIVA (DISPOSITIVO ANDROID)    -->
-                <!-- ------------------------------------------------------------- -->
+                <!-- PESTAÑA 1: VISTA PREVIA INTERACTIVA (DISPOSITIVO ANDROID) -->
                 <div x-show="activeTab === 'preview'" class="h-full flex items-center justify-center overflow-auto">
                     
                     <div class="w-full max-w-[340px] h-[600px] rounded-[42px] border-[10px] border-slate-800 bg-slate-900 shadow-2xl flex flex-col overflow-hidden relative ring-1 ring-slate-800/80 my-auto shrink-0 select-none">
@@ -663,9 +652,7 @@
 
                 </div>
 
-                <!-- ------------------------------------------------------------- -->
-                <!-- PESTAÑA 2: CÓDIGO KOTLIN OFICIAL PARA COPIAR                  -->
-                <!-- ------------------------------------------------------------- -->
+                <!-- PESTAÑA 2: CÓDIGO KOTLIN OFICIAL PARA COPIAR -->
                 <div x-show="activeTab === 'code'" class="h-full flex flex-col overflow-hidden">
                     
                     <div class="flex items-center justify-between mb-3 shrink-0">
@@ -690,9 +677,7 @@
                     </div>
                 </div>
 
-                <!-- ------------------------------------------------------------- -->
-                <!-- PESTAÑA 3: GUÍA DIDÁCTICA EXCLUSIVA PARA EL ALUMNO             -->
-                <!-- ------------------------------------------------------------- -->
+                <!-- PESTAÑA 3: GUÍA DIDÁCTICA EXCLUSIVA PARA EL ALUMNO -->
                 <div x-show="activeTab === 'guide'" class="h-full overflow-y-auto space-y-4 text-xs pr-1">
 
                     <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 space-y-3">
@@ -746,7 +731,6 @@
                 activeTab: 'preview',
                 copied: false,
 
-                // Explicación didáctica por elemento
                 guideInfo() {
                     const c = (t) => `<code class="text-amber-300 font-mono">${t}</code>`;
                     const info = {
@@ -905,11 +889,9 @@
                     return info[this.selectedElement] || info.Text;
                 },
 
-                // Configuración Global Modificadores
                 globalPadding: 24,
                 fillMaxSize: true,
 
-                // Ficha Alumno
                 ficha: {
                     nombre: 'Carlos',
                     esDelegado: false,
@@ -917,7 +899,6 @@
                     resumen: ''
                 },
 
-                // Componentes individuales
                 textComp: { content: '¡Hola Jetpack Compose!', style: 'MaterialTheme.typography.titleLarge' },
                 inputComp: { value: 'Texto de prueba', label: 'Nombre completo', singleLine: true },
                 columnComp: { spacing: 16, alignment: 'Alignment.Start' },
@@ -971,8 +952,12 @@
                     URL.revokeObjectURL(url);
                 },
 
-                // CÓDIGO KOTLIN OFICIAL CON FORMATO APROBADO Y SIN REDUNDANCIAS
+                // CÓDIGO KOTLIN GENERADO SIN CONTENEDORES ENVOLVENTES
                 generateCode() {
+                    const pad = `${this.globalPadding}.dp`;
+                    const fill = this.fillMaxSize ? '.fillMaxSize()' : '';
+                    const modBase = fill ? `Modifier${fill}.padding(${pad})` : `Modifier.padding(${pad})`;
+
                     if (this.selectedElement === 'FichaAlumno') {
                         return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
 
@@ -1029,9 +1014,9 @@ fun FichaAlumno() {
 
     Column(
         modifier = Modifier
-            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
+            ${fill}
             .verticalScroll(rememberScrollState())
-            .padding(${this.globalPadding}.dp),
+            .padding(${pad}),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         CabeceraFicha(nombre = nombre)
@@ -1149,6 +1134,95 @@ fun FichaAlumnoPreview() {
 }`;
                     }
 
+                    if (this.selectedElement === 'Text') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploText()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploText() {
+    Text(
+        text = "${this.textComp.content}",
+        style = ${this.textComp.style},
+        modifier = ${modBase}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploTextPreview() {
+    MaterialTheme {
+        EjemploText()
+    }
+}`;
+                    }
+
+                    if (this.selectedElement === 'OutlinedTextField') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploOutlinedTextField()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploOutlinedTextField() {
+    var texto by rememberSaveable { mutableStateOf("${this.inputComp.value}") }
+
+    OutlinedTextField(
+        value = texto,
+        onValueChange = { texto = it },
+        label = { Text("${this.inputComp.label}") },
+        singleLine = ${this.inputComp.singleLine},
+        modifier = ${modBase}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploOutlinedTextFieldPreview() {
+    MaterialTheme {
+        EjemploOutlinedTextField()
+    }
+}`;
+                    }
+
                     if (this.selectedElement === 'Column') {
                         return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
 
@@ -1178,14 +1252,14 @@ class MainActivity : ComponentActivity() {
 fun EjemploColumn() {
     Column(
         modifier = Modifier
-            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
-            .padding(${this.globalPadding}.dp),
+            ${fill}
+            .padding(${pad}),
         verticalArrangement = Arrangement.spacedBy(${this.columnComp.spacing}.dp),
         horizontalAlignment = ${this.columnComp.alignment}
     ) {
         Text("Elemento Vertical 1", style = MaterialTheme.typography.titleLarge)
         Text("Elemento Vertical 2", style = MaterialTheme.typography.bodyLarge)
-        Button(onClick = { /* Acción del botón */ }) {
+        Button(onClick = { /* Acción */ }) {
             Text("Elemento Vertical 3")
         }
     }
@@ -1229,8 +1303,8 @@ class MainActivity : ComponentActivity() {
 fun EjemploRow() {
     Row(
         modifier = Modifier
-            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
-            .padding(${this.globalPadding}.dp),
+            ${fill}
+            .padding(${pad}),
         horizontalArrangement = Arrangement.spacedBy(${this.rowComp.spacing}.dp),
         verticalAlignment = ${this.rowComp.alignment}
     ) {
@@ -1281,8 +1355,8 @@ class MainActivity : ComponentActivity() {
 fun EjemploBox() {
     Box(
         modifier = Modifier
-            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
-            .padding(${this.globalPadding}.dp),
+            ${fill}
+            .padding(${pad}),
         contentAlignment = ${this.boxComp.alignment}
     ) {
         Box(
@@ -1304,6 +1378,52 @@ fun EjemploBox() {
 fun EjemploBoxPreview() {
     MaterialTheme {
         EjemploBox()
+    }
+}`;
+                    }
+
+                    if (this.selectedElement === 'Card') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploCard()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploCard() {
+    Card(
+        elevation = CardDefaults.cardElevation(defaultElevation = ${this.cardComp.elevation}.dp),
+        modifier = ${modBase}
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text("Tarjeta Material 3", style = MaterialTheme.typography.titleLarge)
+            Text("${this.cardComp.text}", style = MaterialTheme.typography.bodyMedium)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploCardPreview() {
+    MaterialTheme {
+        EjemploCard()
     }
 }`;
                     }
@@ -1337,8 +1457,8 @@ class MainActivity : ComponentActivity() {
 fun EjemploLazyColumn() {
     LazyColumn(
         modifier = Modifier
-            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
-            .padding(${this.globalPadding}.dp),
+            ${fill}
+            .padding(${pad}),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(${this.lazyComp.itemCount}) { index ->
@@ -1361,113 +1481,17 @@ fun EjemploLazyColumnPreview() {
 }`;
                     }
 
-                    // GENERACIÓN CÓDIGO ELEMENTOS INDIVIDUALES EN CONTENEDOR UNIFICADO
-                    let innerCode = '';
-                    if (this.selectedElement === 'Text') {
-                        innerCode = `    Text(
-        text = "${this.textComp.content}",
-        style = ${this.textComp.style}
-    )`;
-                    } else if (this.selectedElement === 'OutlinedTextField') {
-                        innerCode = `    var texto by rememberSaveable { mutableStateOf("${this.inputComp.value}") }
-
-    OutlinedTextField(
-        value = texto,
-        onValueChange = { texto = it },
-        label = { Text("${this.inputComp.label}") },
-        singleLine = ${this.inputComp.singleLine},
-        modifier = Modifier.fillMaxWidth()
-    )`;
-                    } else if (this.selectedElement === 'Card') {
-                        innerCode = `    Card(
-        elevation = CardDefaults.cardElevation(defaultElevation = ${this.cardComp.elevation}.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text("Tarjeta Material 3", style = MaterialTheme.typography.titleLarge)
-            Text("${this.cardComp.text}", style = MaterialTheme.typography.bodyMedium)
-        }
-    }`;
-                    } else if (this.selectedElement === 'Button') {
-                        innerCode = `    Button(
-        onClick = { /* Acción al pulsar */ },
-        modifier = ${this.buttonComp.fullWidth ? 'Modifier.fillMaxWidth()' : 'Modifier'}
-    ) {
-        Text("${this.buttonComp.label}")
-    }`;
-                    } else if (this.selectedElement === 'FloatingActionButton') {
-                        innerCode = `    FloatingActionButton(
-        onClick = { /* Acción */ }
-    ) {
-        Icon(imageVector = ${this.fabComp.icon}, contentDescription = "${this.fabComp.text || 'Acción'}")
-    }`;
-                    } else if (this.selectedElement === 'Switch') {
-                        innerCode = `    var activado by rememberSaveable { mutableStateOf(${this.switchComp.checked}) }
-
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text("${this.switchComp.text}")
-        Switch(
-            checked = activado,
-            onCheckedChange = { activado = it }
-        )
-    }`;
-                    } else if (this.selectedElement === 'Slider') {
-                        innerCode = `    var valorSlider by rememberSaveable { mutableStateOf(${this.sliderComp.value}f) }
-
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Text("Valor: \${valorSlider.toInt()}", style = MaterialTheme.typography.titleLarge)
-        Slider(
-            value = valorSlider,
-            onValueChange = { valorSlider = it },
-            valueRange = 0f..100f
-        )
-    }`;
-                    } else if (this.selectedElement === 'Checkbox') {
-                        innerCode = `    var marcado by rememberSaveable { mutableStateOf(${this.checkComp.checked}) }
-
-    Row(verticalAlignment = Alignment.CenterVertically) {
-        Checkbox(
-            checked = marcado,
-            onCheckedChange = { marcado = it }
-        )
-        Text("${this.checkComp.text}")
-    }`;
-                    } else if (this.selectedElement === 'Image') {
-                        innerCode = `    Box(
-        modifier = Modifier
-            .size(${this.imageComp.size}.dp)
-            .clip(${this.imageComp.shape})
-            .background(MaterialTheme.colorScheme.primary),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("Imagen", color = MaterialTheme.colorScheme.onPrimary)
-    }`;
-                    }
-
-                    return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+                    if (this.selectedElement === 'Button') {
+                        const btnMod = this.buttonComp.fullWidth ? `Modifier.fillMaxWidth().padding(${pad})` : modBase;
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -1476,31 +1500,266 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                Ejemplo${this.selectedElement}()
+                EjemploButton()
             }
         }
     }
 }
 
 @Composable
-fun Ejemplo${this.selectedElement}() {
-    Column(
-        modifier = Modifier
-            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
-            .padding(${this.globalPadding}.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+fun EjemploButton() {
+    Button(
+        onClick = { /* Acción al pulsar */ },
+        modifier = ${btnMod}
     ) {
-${innerCode}
+        Text("${this.buttonComp.label}")
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun Ejemplo${this.selectedElement}Preview() {
+fun EjemploButtonPreview() {
     MaterialTheme {
-        Ejemplo${this.selectedElement}()
+        EjemploButton()
     }
 }`;
+                    }
+
+                    if (this.selectedElement === 'FloatingActionButton') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploFloatingActionButton()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploFloatingActionButton() {
+    FloatingActionButton(
+        onClick = { /* Acción */ },
+        modifier = ${modBase}
+    ) {
+        Icon(imageVector = ${this.fabComp.icon}, contentDescription = "${this.fabComp.text || 'Acción'}")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploFloatingActionButtonPreview() {
+    MaterialTheme {
+        EjemploFloatingActionButton()
+    }
+}`;
+                    }
+
+                    if (this.selectedElement === 'Switch') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploSwitch()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploSwitch() {
+    var activado by rememberSaveable { mutableStateOf(${this.switchComp.checked}) }
+
+    Switch(
+        checked = activado,
+        onCheckedChange = { activado = it },
+        modifier = ${modBase}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploSwitchPreview() {
+    MaterialTheme {
+        EjemploSwitch()
+    }
+}`;
+                    }
+
+                    if (this.selectedElement === 'Slider') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploSlider()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploSlider() {
+    var valorSlider by rememberSaveable { mutableStateOf(${this.sliderComp.value}f) }
+
+    Slider(
+        value = valorSlider,
+        onValueChange = { valorSlider = it },
+        valueRange = 0f..100f,
+        modifier = ${modBase}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploSliderPreview() {
+    MaterialTheme {
+        EjemploSlider()
+    }
+}`;
+                    }
+
+                    if (this.selectedElement === 'Checkbox') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploCheckbox()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploCheckbox() {
+    var marcado by rememberSaveable { mutableStateOf(${this.checkComp.checked}) }
+
+    Checkbox(
+        checked = marcado,
+        onCheckedChange = { marcado = it },
+        modifier = ${modBase}
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploCheckboxPreview() {
+    MaterialTheme {
+        EjemploCheckbox()
+    }
+}`;
+                    }
+
+                    if (this.selectedElement === 'Image') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploImage()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploImage() {
+    Image(
+        painter = painterResource(id = android.R.drawable.ic_menu_gallery),
+        contentDescription = "Imagen de ejemplo",
+        modifier = Modifier
+            .size(${this.imageComp.size}.dp)
+            .clip(${this.imageComp.shape})
+            .padding(${pad})
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploImagePreview() {
+    MaterialTheme {
+        EjemploImage()
+    }
+}`;
+                    }
+
+                    return '';
                 }
             }
         }
