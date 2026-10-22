@@ -4,7 +4,7 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 ---
 [⌂ Volver al inicio](index.md)
 
-[Simulador componentes](jetpack_compose_studio.html){:target="_blank"}
+**[<span style="color: purple;">Simulador componentes</span>](jetpack_compose_studio.html)**
 
 ## Índice
 
