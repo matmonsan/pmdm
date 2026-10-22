@@ -971,7 +971,7 @@
                     URL.revokeObjectURL(url);
                 },
 
-                // CÓDIGO KOTLIN OFICIAL CON FORMATO APROBADO
+                // CÓDIGO KOTLIN OFICIAL CON FORMATO APROBADO Y SIN REDUNDANCIAS
                 generateCode() {
                     if (this.selectedElement === 'FichaAlumno') {
                         return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
@@ -1149,7 +1149,219 @@ fun FichaAlumnoPreview() {
 }`;
                     }
 
-                    // GENERACIÓN CÓDIGO ELEMENTOS INDIVIDUALES
+                    if (this.selectedElement === 'Column') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploColumn()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploColumn() {
+    Column(
+        modifier = Modifier
+            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
+            .padding(${this.globalPadding}.dp),
+        verticalArrangement = Arrangement.spacedBy(${this.columnComp.spacing}.dp),
+        horizontalAlignment = ${this.columnComp.alignment}
+    ) {
+        Text("Elemento Vertical 1", style = MaterialTheme.typography.titleLarge)
+        Text("Elemento Vertical 2", style = MaterialTheme.typography.bodyLarge)
+        Button(onClick = { /* Acción del botón */ }) {
+            Text("Elemento Vertical 3")
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploColumnPreview() {
+    MaterialTheme {
+        EjemploColumn()
+    }
+}`;
+                    }
+
+                    if (this.selectedElement === 'Row') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploRow()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploRow() {
+    Row(
+        modifier = Modifier
+            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
+            .padding(${this.globalPadding}.dp),
+        horizontalArrangement = Arrangement.spacedBy(${this.rowComp.spacing}.dp),
+        verticalAlignment = ${this.rowComp.alignment}
+    ) {
+        Text("Item 1")
+        Button(onClick = { /* Acción */ }) {
+            Text("Item 2")
+        }
+        Text("Item 3")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploRowPreview() {
+    MaterialTheme {
+        EjemploRow()
+    }
+}`;
+                    }
+
+                    if (this.selectedElement === 'Box') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploBox()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploBox() {
+    Box(
+        modifier = Modifier
+            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
+            .padding(${this.globalPadding}.dp),
+        contentAlignment = ${this.boxComp.alignment}
+    ) {
+        Box(
+            modifier = Modifier
+                .size(${this.boxComp.size}.dp)
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Capa Superior",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploBoxPreview() {
+    MaterialTheme {
+        EjemploBox()
+    }
+}`;
+                    }
+
+                    if (this.selectedElement === 'LazyColumn') {
+                        return `package com.example.miprimerainterfaz // <- deja el package de tu proyecto
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MaterialTheme {
+                EjemploLazyColumn()
+            }
+        }
+    }
+}
+
+@Composable
+fun EjemploLazyColumn() {
+    LazyColumn(
+        modifier = Modifier
+            ${this.fillMaxSize ? '.fillMaxSize()' : ''}
+            .padding(${this.globalPadding}.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(${this.lazyComp.itemCount}) { index ->
+            Card(modifier = Modifier.fillMaxWidth()) {
+                Text(
+                    text = "${this.lazyComp.itemPrefix} \${index + 1}",
+                    modifier = Modifier.padding(12.dp)
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun EjemploLazyColumnPreview() {
+    MaterialTheme {
+        EjemploLazyColumn()
+    }
+}`;
+                    }
+
+                    // GENERACIÓN CÓDIGO ELEMENTOS INDIVIDUALES EN CONTENEDOR UNIFICADO
                     let innerCode = '';
                     if (this.selectedElement === 'Text') {
                         innerCode = `    Text(
@@ -1166,39 +1378,6 @@ fun FichaAlumnoPreview() {
         singleLine = ${this.inputComp.singleLine},
         modifier = Modifier.fillMaxWidth()
     )`;
-                    } else if (this.selectedElement === 'Column') {
-                        innerCode = `    Column(
-        verticalArrangement = Arrangement.spacedBy(${this.columnComp.spacing}.dp),
-        horizontalAlignment = ${this.columnComp.alignment},
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text("Elemento Vertical 1", style = MaterialTheme.typography.titleLarge)
-        Text("Elemento Vertical 2", style = MaterialTheme.typography.bodyLarge)
-        Button(onClick = { }) { Text("Elemento Vertical 3") }
-    }`;
-                    } else if (this.selectedElement === 'Row') {
-                        innerCode = `    Row(
-        horizontalArrangement = Arrangement.spacedBy(${this.rowComp.spacing}.dp),
-        verticalAlignment = ${this.rowComp.alignment},
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text("Item 1")
-        Button(onClick = { }) { Text("Item 2") }
-        Text("Item 3")
-    }`;
-                    } else if (this.selectedElement === 'Box') {
-                        innerCode = `    Box(
-        contentAlignment = ${this.boxComp.alignment},
-        modifier = Modifier
-            .size(${this.boxComp.size}.dp)
-            .background(MaterialTheme.colorScheme.primaryContainer)
-    ) {
-        Text(
-            text = "Capa Superior",
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.padding(8.dp)
-        )
-    }`;
                     } else if (this.selectedElement === 'Card') {
                         innerCode = `    Card(
         elevation = CardDefaults.cardElevation(defaultElevation = ${this.cardComp.elevation}.dp),
@@ -1207,20 +1386,6 @@ fun FichaAlumnoPreview() {
         Column(modifier = Modifier.padding(16.dp)) {
             Text("Tarjeta Material 3", style = MaterialTheme.typography.titleLarge)
             Text("${this.cardComp.text}", style = MaterialTheme.typography.bodyMedium)
-        }
-    }`;
-                    } else if (this.selectedElement === 'LazyColumn') {
-                        innerCode = `    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxSize()
-    ) {
-        items(${this.lazyComp.itemCount}) { index ->
-            Card(modifier = Modifier.fillMaxWidth()) {
-                Text(
-                    text = "${this.lazyComp.itemPrefix} \${index + 1}",
-                    modifier = Modifier.padding(12.dp)
-                )
-            }
         }
     }`;
                     } else if (this.selectedElement === 'Button') {
@@ -1290,7 +1455,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
