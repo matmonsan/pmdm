@@ -10,38 +10,34 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 
 ## Objetivo
 
-Convertir la propuesta de la Versión 1.0 en una pequeña aplicación funcional con varias pantallas construidas en Jetpack Compose. El usuario podrá recorrer una pantalla de inicio, una lista de ejemplo y el detalle de un elemento.
+Convertir la propuesta de la Versión 1.0 en la primera pantalla funcional de la aplicación, construida en Jetpack Compose, y mostrar en ella una lista con elementos temporales de ejemplo. En esta versión no es necesario implementar varias pantallas ni conectarlas.
 
 ## Enunciado
 
-Implementad el primer recorrido de vuestra aplicación, adaptado a la temática y al prototipo. Debe incluir:
+Implementad una primera pantalla de vuestra aplicación, adaptada a la temática y al prototipo. Debe incluir:
 
-1. **Pantalla de inicio:** presenta el nombre, la identidad visual y una breve introducción a la aplicación, con una acción para abrir el contenido.
-2. **Pantalla de lista:** muestra varios elementos de ejemplo relacionados con la temática.
-3. **Pantalla de detalle:** al seleccionar un elemento, presenta más información sobre él y una acción para volver a la lista.
+1. **Identidad de la aplicación:** presenta su nombre y, si encaja con el prototipo, una breve introducción.
+2. **Lista de ejemplo:** muestra varios elementos temporales relacionados con la temática de la aplicación.
 
-Las pantallas deben respetar el prototipo en lo esencial. Podéis ajustar la distribución para que funcione correctamente en un dispositivo móvil, manteniendo la identidad visual y la organización propuestas. En esta versión los datos son de ejemplo y no se pueden crear ni modificar.
+La pantalla debe respetar el prototipo en lo esencial. Podéis ajustar la distribución para que funcione correctamente en un dispositivo móvil, manteniendo la identidad visual y la organización propuestas. En esta versión los datos son temporales: no hace falta crear, modificar, eliminar ni persistir elementos. Aunque el prototipo incluya varias pantallas, no es necesario implementarlas ni conectarlas todavía.
 
 ## Requisitos
 
 - Construid la interfaz con funciones `@Composable`; no uséis layouts XML.
 - Utilizad layouts y modificadores de Compose para organizar y espaciar los componentes.
-- Implementad las pantallas de inicio, lista y detalle como partes diferenciadas de la interfaz.
-- Permitid pasar de inicio a lista, seleccionar un elemento para abrir su detalle y volver a la lista o al inicio.
-- Para cambiar entre estas pantallas, basta con gestionar el estado de la interfaz en Compose; la navegación formal con `NavHost` se incorporará en la Versión 1.4.
+- Implementad una única primera pantalla funcional con Compose.
 - Mostrad los elementos en `LazyColumn` o en otro componente de lista adecuado.
 - Presentad cada elemento mediante una tarjeta de Material (`Card`, `ElevatedCard` u `OutlinedCard`) o un componente equivalente.
-- Incluid varios elementos de ejemplo con datos coherentes con la temática. La pantalla de detalle debe mostrar información adicional respecto a la tarjeta de la lista.
-- No hace falta crear, editar ni eliminar elementos ni persistir información.
-- Las pantallas deben seguir siendo legibles en distintos tamaños habituales de móvil.
+- Incluid varios elementos temporales con datos coherentes con la temática.
+- No hace falta implementar navegación entre pantallas en esta versión. La navegación formal de la aplicación se incorporará en la Versión 1.4.
+- La pantalla debe seguir siendo legible en distintos tamaños habituales de móvil.
 
 ## Criterios de finalización
 
 - El proyecto compila y se puede ejecutar en un emulador o dispositivo.
-- Se puede recorrer el flujo inicio → lista → detalle y regresar sin quedar en una pantalla bloqueada.
-- La lista muestra varios elementos propios de la aplicación y cada uno abre su información detallada correspondiente.
+- La primera pantalla muestra una lista con varios elementos de ejemplo propios de la aplicación.
 - La interfaz usa componentes de Compose, refleja la propuesta visual de la Versión 1.0 y no presenta textos o controles cortados.
 
 ## Entrega
 
-Entregad el código actualizado en el repositorio Git del proyecto. Añadid un PDF con capturas de las tres pantallas y una descripción de los cambios, y adjuntadlo a la actividad correspondiente de Moodle. Incluid también la URL del repositorio y un vídeo breve que muestre el recorrido entre inicio, lista y detalle. Consultad los requisitos comunes de entrega en el [enunciado general](../enunciado_proyecto.md).
+Entregad el código actualizado en el repositorio Git del proyecto. Añadid un PDF con una captura de la primera pantalla y una descripción de los cambios, y adjuntadlo a la actividad correspondiente de Moodle. Incluid también la URL del repositorio y, si se solicita un vídeo, mostrad la pantalla y su lista de ejemplo. Consultad los requisitos comunes de entrega en el [enunciado general](../enunciado_proyecto.md).

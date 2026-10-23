@@ -1558,6 +1558,8 @@ La interfaz puede recoger el flujo con `collectAsStateWithLifecycle()` para resp
 
 ### 14.5 Navegación entre pantallas
 
+> **Aplicación al proyecto:** este contenido sirve como referencia para una fase posterior. En la Versión 1.1 no se exige conectar pantallas. Las transiciones puntuales que se pidan en versiones posteriores pueden resolverse con estado de Compose; la navegación formal de la aplicación con Navigation Compose se incorporará en la Versión 1.4.
+
 La navegación se implementa con Navigation Compose. La ruta es un contrato; conviene evitar construir rutas concatenando texto sin codificar.
 
 ```kotlin

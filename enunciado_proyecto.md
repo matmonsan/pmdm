@@ -96,7 +96,7 @@ Cada versión añade una pieza al proyecto. No se trata de hacer once aplicacion
 El orden recomendado es el siguiente:
 
 * [**Versión 1.0 (Diseño y Prototipado UX/UI)**](versiones/version_1_0.md): Definir la idea, las pantallas y el funcionamiento general antes de programar. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 29/10/2026</span>
-* [**Versión 1.1 (Listas en Compose)**](versiones/version_1_1.md): Crear la primera pantalla funcional y mostrar elementos temporales en una lista `LazyColumn`. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 29/10/2026</span>
+* [**Versión 1.1 (Listas en Compose)**](versiones/version_1_1.md): Crear una única pantalla funcional en Jetpack Compose y mostrar varios elementos temporales en una lista `LazyColumn`. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 29/10/2026</span>
 * [**Versión 1.2 (CRUD en memoria y repositorios)**](versiones/version_1_2.md): Añadir el alta, la consulta, la edición y el borrado de elementos usando datos en memoria. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 15/11/2026</span>
 * [**Versión 1.3 (Autenticación con Firebase)**](versiones/version_1_3.md): Incorporar registro, inicio de sesión y recuperación de contraseña con Firebase Auth. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 29/11/2026</span>
 * [**Versión 1.4 (Estructura de navegación)**](versiones/version_1_4.md): Conectar las pantallas mediante `ModalNavigationDrawer`, `NavigationBar` y `NavHost`. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 08/12/2026</span>
