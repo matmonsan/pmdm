@@ -2610,37 +2610,19 @@ Dentro de `PantallaPerfil()`, declara con `rememberSaveable`:
 
 ### Práctica 5: varias pantallas
 
-En esta práctica crearás una aplicación con dos pantallas, una de login y otra de presentación. Cada pantalla será una `Activity` distinta (apartado 15), en su propio archivo y registrada en el Manifest. Las pantallas no se pasan ningún dato entre sí.
+Crea una aplicación con dos pantallas, una de **login** y otra de **presentación** de la app, aplicando lo visto en el apartado 15. Elige la opción que prefieras: una `Activity` por pantalla o varias pantallas en la misma `Activity`. Las pantallas no se pasan ningún dato entre sí.
 
-#### 1: Activity de login
-1. Crea una nueva actividad `LoginActivity` (clic derecho en el paquete → *New* → *Activity* → *Empty Activity*). Android Studio creará `LoginActivity.kt` y la registrará en el Manifest.
-2. En `setContent`, llama a un composable `PantallaLogin()` definido en el mismo archivo.
-3. Usa una `Column` con `fillMaxSize()`, `padding(24.dp)`, `verticalArrangement = Arrangement.Center` y `horizontalAlignment = Alignment.CenterHorizontally`.
-4. Añade un título «Iniciar sesión» (`headlineMedium`) y dos `OutlinedTextField`: «Usuario» y «Contraseña». Guarda cada texto con `rememberSaveable`.
-5. Añade un `Button` «Entrar», activo solo si ambos campos tienen texto (`enabled = usuario.isNotBlank() && clave.isNotBlank()`).
+**Requisitos**
+- **Login:** título, campo de usuario, campo de contraseña y botón «Entrar». El botón solo debe estar activo cuando ambos campos tengan texto.
+- **Presentación:** título, descripción de la app, una `Card` con alguna característica y un botón «Cerrar sesión» que vuelva al login.
+- La app debe arrancar en el login, y cada pantalla debe estar en su propio archivo `.kt`.
+- Los textos escritos deben conservarse al girar el dispositivo.
+- Usa el tema de la aplicación y mantén una separación y un contraste adecuados.
 
-#### 2: Activity de presentación
-1. Crea otra actividad `PresentacionActivity` con un composable `PantallaPresentacion()`.
-2. Usa una `Column` con `fillMaxSize()` y `padding(24.dp)`, con un título, un `Text` que describa la aplicación y una `Card` con alguna característica de la app.
-3. Añade un `Button` «Cerrar sesión».
-
-#### 3: Comprobar el Manifest
-1. Abre `AndroidManifest.xml` y comprueba que aparecen las dos `<activity>`.
-2. Haz que `LoginActivity` sea la que se abre al iniciar la app: debe llevar el `<intent-filter>` con `MAIN` y `LAUNCHER`, y `PresentacionActivity` no.
-
-#### 4: Cambiar de pantalla
-1. En `PantallaLogin`, recibe el contexto con `val contexto = LocalContext.current`.
-2. En el `onClick` de «Entrar», abre la otra actividad y cierra la actual:
-   ```kotlin
-   contexto.startActivity(Intent(contexto, PresentacionActivity::class.java))
-   (contexto as Activity).finish()
-   ```
-3. En «Cerrar sesión», haz lo mismo hacia `LoginActivity`.
-
-#### 5: Comprobar
-1. Ejecuta la aplicación y comprueba que «Entrar» solo se activa con los dos campos rellenos.
-2. Pulsa «Entrar» y «Cerrar sesión» y observa cómo cambia de pantalla.
-3. Quita la línea `finish()` y pulsa el botón «Atrás» del móvil. ¿Qué ocurre?
+**Comprueba**
+1. Que «Entrar» y «Cerrar sesión» cambian de pantalla correctamente.
+2. Que al girar el emulador no se pierde la pantalla ni lo escrito.
+3. Qué hace el botón «Atrás» del móvil en cada pantalla y si es lo que esperarías de la aplicación.
 
 ---
 
