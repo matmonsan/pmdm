@@ -23,14 +23,16 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 12. [Controles de selección](#12-controles-de-selección)
 13. [Gestión de temas](#13-gestión-de-temas)
 14. [Estado y eventos](#14-estado-y-eventos)
-15. [Interfaces avanzadas](#15-interfaces-avanzadas)
-16. [Una pantalla completa paso a paso](#16-una-pantalla-completa-paso-a-paso)
-17. [Prácticas](#17-prácticas)
+15. [Varias pantallas](#15-varias-pantallas)
+16. [Interfaces avanzadas](#16-interfaces-avanzadas)
+17. [Una pantalla completa paso a paso](#17-una-pantalla-completa-paso-a-paso)
+18. [Prácticas](#18-prácticas)
     - [Práctica 1: pantalla con Layouts](#práctica-1-pantalla-con-layouts)
     - [Práctica 2: contador con estado](#práctica-2-contador-con-estado)
     - [Práctica 3: formulario con eventos](#práctica-3-formulario-con-eventos)
     - [Práctica 4: tarjeta de perfil](#práctica-4-tarjeta-de-perfil)
-18. [Documentación y videotutoriales](#18-documentación-y-videotutoriales)
+    - [Práctica 5: varias pantallas](#práctica-5-varias-pantallas)
+19. [Documentación y videotutoriales](#19-documentación-y-videotutoriales)
 
 ---
 
@@ -81,14 +83,14 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 | [`MaterialTheme`](#13-gestión-de-temas) | Colores, tipografías y formas comunes de toda la aplicación. |
 | [`colorScheme`](#133-cambiar-los-colores) | Conjunto de colores del tema (`primary`, `surface`, `error`…). |
 | [Modo oscuro](#134-modo-claro-y-oscuro) | Variante del tema con fondos oscuros, elegida según el sistema o el usuario. |
-| [Material Design 3](#1513-material-3-y-recursos) | Sistema de diseño de Google en el que se basan los componentes. |
-| [`Snackbar`](#1523-snackbar) | Mensaje breve en la parte inferior. |
-| [`AlertDialog`](#1522-alertdialog) | Ventana emergente para confirmar una decisión. |
-| [`AnimatedVisibility`](#1531-aparición-y-desaparición) | Muestra u oculta un elemento con animación. |
-| [`ViewModel`](#157-arquitectura-de-una-pantalla) | Guarda el estado de una pantalla fuera de los composables. |
-| [Navegación](#155-navegación-entre-pantallas) | Cambio entre pantallas de la aplicación (`NavHost`). |
+| [Material Design 3](#1613-material-3-y-recursos) | Sistema de diseño de Google en el que se basan los componentes. |
+| [`Snackbar`](#1623-snackbar) | Mensaje breve en la parte inferior. |
+| [`AlertDialog`](#1622-alertdialog) | Ventana emergente para confirmar una decisión. |
+| [`AnimatedVisibility`](#1631-aparición-y-desaparición) | Muestra u oculta un elemento con animación. |
+| [`ViewModel`](#166-arquitectura-de-una-pantalla) | Guarda el estado de una pantalla fuera de los composables. |
+| [Varias pantallas](#15-varias-pantallas) | Una `Activity` por pantalla (registrada en el Manifest) o varias pantallas composables en una sola `Activity`. |
 | [`@Preview`](#52-previsualizaciones) | Muestra una vista previa en Android Studio sin ejecutar la app. |
-| [`contentDescription`](#1561-semántica) | Texto que lee un lector de pantalla (TalkBack) para describir un icono o imagen. |
+| [`contentDescription`](#1651-semántica) | Texto que lee un lector de pantalla (TalkBack) para describir un icono o imagen. |
 
 ---
 
@@ -1307,23 +1309,7 @@ MiAppTheme(modoOscuro = oscuro) {
 }
 ```
 
-### 13.5 Colores dinámicos (Material You)
-
-En Android 12 (API 31) o superior se pueden usar los colores del fondo de pantalla del usuario:
-
-```kotlin
-val contexto = LocalContext.current
-val esquema = when {
-    Build.VERSION.SDK_INT >= Build.VERSION_CODES.S ->
-        if (modoOscuro) dynamicDarkColorScheme(contexto) else dynamicLightColorScheme(contexto)
-    modoOscuro -> EsquemaOscuro
-    else -> EsquemaClaro
-}
-```
-
-Si quieres que la app mantenga su identidad de marca, no actives los colores dinámicos y usa siempre tu propia paleta.
-
-### 13.6 Tipografía y formas
+### 13.5 Tipografía y formas
 
 La tipografía se define en `Type.kt` y se aplica a todos los textos que usen un estilo del tema:
 
@@ -1362,7 +1348,7 @@ MaterialTheme(
 )
 ```
 
-### 13.7 Sobrescribir el tema en un punto concreto
+### 13.6 Sobrescribir el tema en un punto concreto
 
 A veces solo una parte de la pantalla necesita colores distintos. Se puede usar un `MaterialTheme` anidado o cambiar el color de un componente concreto:
 
@@ -1380,7 +1366,7 @@ Button(
 
 Aun así, el color se toma del tema (`MaterialTheme.colorScheme.error`) y no de un valor fijo.
 
-### 13.8 Barra de estado y recursos XML
+### 13.7 Barra de estado y recursos XML
 
 La app también tiene un tema XML en `res/values/themes.xml`. Define el aspecto de la ventana antes de que Compose dibuje nada (la barra de estado, el fondo inicial):
 
@@ -1390,7 +1376,7 @@ La app también tiene un tema XML en `res/values/themes.xml`. Define el aspecto 
 
 Si el fondo inicial no coincide con el del tema de Compose, se verá un parpadeo al abrir la app. Para dibujar la app bajo las barras del sistema se llama a `enableEdgeToEdge()` en `onCreate`, antes de `setContent`.
 
-### 13.9 Resumen del proceso
+### 13.8 Resumen del proceso
 
 1. Abre `ui/theme/Color.kt` y define o cambia los colores.
 2. En `Theme.kt`, asígnalos a los roles de `lightColorScheme` y `darkColorScheme`.
@@ -1571,13 +1557,172 @@ TarjetaAlumno(
 
 ---
 
-## 15. Interfaces avanzadas
+## 15. Varias pantallas
 
-### 15.1 Material Design y temas
+Una aplicación suele tener más de una pantalla: un login, un listado, un formulario… En Android, cada pantalla puede ser una **`Activity`** distinta. Cada una vive en su propio archivo `.kt`, tiene su propio `setContent` y se **registra en el `AndroidManifest.xml`**.
+
+### 15.1 Crear una nueva pantalla (Activity)
+
+En Android Studio: clic derecho sobre el paquete de la app → *New* → *Activity* → *Empty Activity*. Se indica el nombre (por ejemplo `PerfilActivity`) y el asistente hace tres cosas:
+
+1. Crea el archivo `PerfilActivity.kt`.
+2. Añade la `<activity>` al Manifest.
+3. Genera el código base de la clase.
+
+Cada archivo contiene la actividad y el composable de su pantalla:
+
+```kotlin
+class PerfilActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            MiAppTheme {
+                PantallaPerfil()
+            }
+        }
+    }
+}
+
+@Composable
+fun PantallaPerfil() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Text("Perfil", style = MaterialTheme.typography.headlineMedium)
+    }
+}
+```
+
+### 15.2 Registrar la pantalla en el Manifest
+
+Toda `Activity` debe estar declarada en `AndroidManifest.xml`, dentro de `<application>`. Si no está, la aplicación se cierra al intentar abrirla. Si la creas con el asistente, se añade sola; si creas la clase a mano, tienes que escribirla tú:
+
+```xml
+<application ...>
+    <activity
+        android:name=".MainActivity"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent-filter>
+    </activity>
+
+    <activity
+        android:name=".PerfilActivity"
+        android:exported="false" />
+</application>
+```
+
+- La actividad con el `<intent-filter>` de `MAIN` y `LAUNCHER` es **la primera pantalla** que se abre al iniciar la app. Solo debe tenerla una.
+- `android:exported="false"` indica que solo la abre tu propia app.
+
+### 15.3 Alternativa: varias pantallas en la misma Activity
+
+No siempre hace falta una `Activity` por pantalla. En Compose una pantalla es simplemente una función `@Composable`, así que una **única actividad** puede mostrar varias pantallas, una cada vez. Se guarda en una variable de estado (apartado 14.1) cuál se muestra y se cambia con un evento (apartado 14.2). No hay que tocar el Manifest ni Gradle.
+
+| | Una `Activity` por pantalla | Varias pantallas en una `Activity` |
+|---|---|---|
+| Cada pantalla es… | Una clase `Activity` | Una función `@Composable` |
+| Manifest | Hay que declarar cada una | No se toca |
+| Cambiar de pantalla | `Intent` | Cambiar una variable de estado |
+
+#### 15.3.1 Cada pantalla, un composable en su archivo
+
+Cada pantalla es una función independiente, en su propio archivo `.kt` (clic derecho sobre el paquete → *New* → *Kotlin Class/File* → *File*). Si necesita avisar de que el usuario quiere cambiar de pantalla, recibe una función (apartado 14.2.3):
+
+```kotlin
+@Composable
+fun PantallaInicio(onIrAPerfil: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Text("Inicio", style = MaterialTheme.typography.headlineMedium)
+        Button(onClick = onIrAPerfil) {
+            Text("Ir al perfil")
+        }
+    }
+}
+
+@Composable
+fun PantallaPerfil(onVolver: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+    ) {
+        Text("Perfil", style = MaterialTheme.typography.headlineMedium)
+        Button(onClick = onVolver) {
+            Text("Volver")
+        }
+    }
+}
+```
+
+Las pantallas **no saben** cuál es la otra: solo avisan. Los archivos deben tener el mismo `package` y sus propios `import`.
+
+#### 15.3.2 Elegir qué pantalla se muestra
+
+En una función `AppPantallas()` se guarda en un estado el nombre de la pantalla actual y se usa un `when` para mostrar la que corresponda:
+
+```kotlin
+@Composable
+fun AppPantallas() {
+    var pantalla by rememberSaveable { mutableStateOf("inicio") }
+
+    when (pantalla) {
+        "inicio" -> PantallaInicio(onIrAPerfil = { pantalla = "perfil" })
+        "perfil" -> PantallaPerfil(onVolver = { pantalla = "inicio" })
+    }
+}
+```
+
+El ciclo es el de siempre: el usuario pulsa un botón → se ejecuta el evento → la lambda **cambia el estado** `pantalla` → Compose dibuja la pantalla nueva. Se usa `rememberSaveable` para que, al girar el móvil, no se vuelva a la primera pantalla.
+
+#### 15.3.3 Cambios en el proyecto
+
+1. **Un archivo `.kt` por pantalla** (`PantallaInicio.kt`, `PantallaPerfil.kt`).
+2. **Crear `AppPantallas.kt`** con la variable de estado y el `when`.
+3. **Cambiar `MainActivity`**: `setContent` llama ahora a `AppPantallas()` en lugar de a una pantalla concreta:
+
+```kotlin
+setContent {
+    MiAppTheme {
+        AppPantallas()
+    }
+}
+```
+
+4. **Conectar los botones** mediante parámetros de tipo función (`onIrAPerfil`, `onVolver`) cuyo valor cambia el estado.
+
+Estructura resultante:
+
+```text
+app/src/main/java/com/ejemplo/miapp/
+├── MainActivity.kt
+├── AppPantallas.kt
+├── PantallaInicio.kt
+└── PantallaPerfil.kt
+```
+
+**No hay que añadir las pantallas al `AndroidManifest.xml`**: solo declara actividades, y aquí sigue habiendo una sola (`MainActivity`). Las pantallas son composables.
+
+---
+
+## 16. Interfaces avanzadas
+
+### 16.1 Material Design y temas
 
 Material Design proporciona reglas de color, tipografía, formas, elevación, estados y componentes. Material 3 incorpora el sistema de diseño actual y Material You.
 
-#### 15.1.1 Tema centralizado
+#### 16.1.1 Tema centralizado
 
 ```kotlin
 @Composable
@@ -1606,7 +1751,7 @@ Text(
 )
 ```
 
-#### 15.1.2 Superficies y contraste
+#### 16.1.2 Superficies y contraste
 
 ```kotlin
 Surface(
@@ -1623,7 +1768,7 @@ Surface(
 
 Cada color de fondo debe tener un color de contenido con contraste suficiente. No se debe elegir texto claro sobre fondos claros solo por estética.
 
-#### 15.1.3 Material 3 y recursos
+#### 16.1.3 Material 3 y recursos
 
 Los textos visibles deben externalizarse en recursos de Android cuando la aplicación vaya a traducirse. En Compose se pueden leer con `stringResource`:
 
@@ -1633,9 +1778,9 @@ Text(text = stringResource(R.string.bienvenida))
 
 ---
 
-### 15.2 Visibilidad, diálogos y mensajes
+### 16.2 Visibilidad, diálogos y mensajes
 
-#### 15.2.1 Visibilidad condicional
+#### 16.2.1 Visibilidad condicional
 
 ```kotlin
 if (mostrarResultado) {
@@ -1655,7 +1800,7 @@ AnimatedVisibility(visible = mostrarResultado) {
 
 No existe una propiedad `visibility = invisible` que debamos manipular. La ausencia de un composable del árbol es la forma declarativa de ocultarlo.
 
-#### 15.2.2 `AlertDialog`
+#### 16.2.2 `AlertDialog`
 
 ```kotlin
 @Composable
@@ -1684,7 +1829,7 @@ fun ConfirmarEliminacion(
 }
 ```
 
-#### 15.2.3 `Snackbar`
+#### 16.2.3 `Snackbar`
 
 ```kotlin
 @Composable
@@ -1713,9 +1858,9 @@ Un `Snackbar` suele ser preferible a un `Toast` porque queda integrado en la com
 
 ---
 
-### 15.3 Animaciones y transiciones
+### 16.3 Animaciones y transiciones
 
-#### 15.3.1 Aparición y desaparición
+#### 16.3.1 Aparición y desaparición
 
 ```kotlin
 AnimatedVisibility(visible = visible) {
@@ -1726,7 +1871,7 @@ AnimatedVisibility(visible = visible) {
 }
 ```
 
-#### 15.3.2 Animar un valor
+#### 16.3.2 Animar un valor
 
 ```kotlin
 @Composable
@@ -1746,7 +1891,7 @@ fun TarjetaExpandible(expandida: Boolean) {
 }
 ```
 
-#### 15.3.3 Buenas decisiones
+#### 16.3.3 Buenas decisiones
 
 - Animar cambios que ayuden a comprender una transición.
 - Evitar animaciones constantes o demasiado largas.
@@ -1755,7 +1900,7 @@ fun TarjetaExpandible(expandida: Boolean) {
 
 ---
 
-### 15.4 Operaciones asíncronas y `ProgressIndicator`
+### 16.4 Operaciones asíncronas y `ProgressIndicator`
 
 Una interfaz no debe bloquearse mientras carga datos. Se representa el estado de carga y se ejecuta el trabajo fuera del cuerpo de composición.
 
@@ -1832,49 +1977,9 @@ La interfaz puede recoger el flujo con `collectAsStateWithLifecycle()` para resp
 
 ---
 
-### 15.5 Navegación entre pantallas
+### 16.5 Accesibilidad y diseño adaptable
 
-> **Aplicación al proyecto:** este contenido sirve como referencia para una fase posterior. En la Versión 1.1 no se exige conectar pantallas. Las transiciones puntuales que se pidan en versiones posteriores pueden resolverse con estado de Compose; la navegación formal de la aplicación con Navigation Compose se incorporará en la Versión 1.4.
-
-La navegación se implementa con Navigation Compose. La ruta es un contrato; conviene evitar construir rutas concatenando texto sin codificar.
-
-```kotlin
-@Composable
-fun NavegacionPrincipal() {
-    val navController = rememberNavController()
-
-    NavHost(
-        navController = navController,
-        startDestination = "inicio",
-    ) {
-        composable("inicio") {
-            PantallaInicio(
-                onAbrirDetalle = { id ->
-                    navController.navigate("detalle/$id")
-                },
-            )
-        }
-        composable(
-            route = "detalle/{id}",
-            arguments = listOf(navArgument("id") {
-                type = NavType.IntType
-            }),
-        ) { entrada ->
-            val id = entrada.arguments?.getInt("id")
-                ?: return@composable
-            PantallaDetalle(id = id)
-        }
-    }
-}
-```
-
-La pantalla no debería crear directamente el repositorio ni asumir que siempre existe un argumento. Los errores de navegación deben modelarse y mostrarse de forma explícita.
-
----
-
-### 15.6 Accesibilidad y diseño adaptable
-
-#### 15.6.1 Semántica
+#### 16.5.1 Semántica
 
 Compose genera semántica para muchos componentes Material. Cuando se construye un componente personalizado:
 
@@ -1897,7 +2002,7 @@ Buenas prácticas:
 - Permitir fuentes grandes y contenido desplazable.
 - Comprobar el orden de foco con TalkBack.
 
-#### 15.6.2 Diseño adaptable
+#### 16.5.2 Diseño adaptable
 
 No hay que diseñar para una única resolución. Se deben usar `fillMaxWidth`, `weight`, `WindowSizeClass` y grids adaptativos.
 
@@ -1916,7 +2021,7 @@ No se debe colocar todo con offsets absolutos. El diseño debe responder a cambi
 
 ---
 
-### 15.7 Arquitectura de una pantalla
+### 16.6 Arquitectura de una pantalla
 
 Una separación útil consiste en tres capas:
 
@@ -1981,7 +2086,7 @@ Este diseño facilita las previews y las pruebas: `AlumnosScreen` no necesita An
 
 ---
 
-## 16. Una pantalla completa paso a paso
+## 17. Una pantalla completa paso a paso
 
 Vamos a construir una **ficha de alumno** que reúne lo visto en la unidad: una cabecera con inicial y nombre, un campo de texto, dos opciones, un botón y un resultado que aparece al pulsarlo. Hazlo en un proyecto nuevo creado como en el apartado 3, y **ejecuta la app al terminar cada paso** para comprobar que sigue funcionando.
 
@@ -2369,7 +2474,7 @@ La vista previa muestra la ficha con el campo vacío. Para comprobar que se actu
 
 ---
 
-## 17. Prácticas
+## 18. Prácticas
 
 ### Práctica 1: pantalla con Layouts
 
@@ -2503,9 +2608,43 @@ Dentro de `PantallaPerfil()`, declara con `rememberSaveable`:
 3. Deja los estados únicamente en `PantallaPerfil()` y comprueba que la aplicación funciona igual.
 4. Gira el emulador y verifica que no se pierde ningún dato.
 
+### Práctica 5: varias pantallas
+
+En esta práctica crearás una aplicación con dos pantallas, una de login y otra de presentación. Cada pantalla será una `Activity` distinta (apartado 15), en su propio archivo y registrada en el Manifest. Las pantallas no se pasan ningún dato entre sí.
+
+#### 1: Activity de login
+1. Crea una nueva actividad `LoginActivity` (clic derecho en el paquete → *New* → *Activity* → *Empty Activity*). Android Studio creará `LoginActivity.kt` y la registrará en el Manifest.
+2. En `setContent`, llama a un composable `PantallaLogin()` definido en el mismo archivo.
+3. Usa una `Column` con `fillMaxSize()`, `padding(24.dp)`, `verticalArrangement = Arrangement.Center` y `horizontalAlignment = Alignment.CenterHorizontally`.
+4. Añade un título «Iniciar sesión» (`headlineMedium`) y dos `OutlinedTextField`: «Usuario» y «Contraseña». Guarda cada texto con `rememberSaveable`.
+5. Añade un `Button` «Entrar», activo solo si ambos campos tienen texto (`enabled = usuario.isNotBlank() && clave.isNotBlank()`).
+
+#### 2: Activity de presentación
+1. Crea otra actividad `PresentacionActivity` con un composable `PantallaPresentacion()`.
+2. Usa una `Column` con `fillMaxSize()` y `padding(24.dp)`, con un título, un `Text` que describa la aplicación y una `Card` con alguna característica de la app.
+3. Añade un `Button` «Cerrar sesión».
+
+#### 3: Comprobar el Manifest
+1. Abre `AndroidManifest.xml` y comprueba que aparecen las dos `<activity>`.
+2. Haz que `LoginActivity` sea la que se abre al iniciar la app: debe llevar el `<intent-filter>` con `MAIN` y `LAUNCHER`, y `PresentacionActivity` no.
+
+#### 4: Cambiar de pantalla
+1. En `PantallaLogin`, recibe el contexto con `val contexto = LocalContext.current`.
+2. En el `onClick` de «Entrar», abre la otra actividad y cierra la actual:
+   ```kotlin
+   contexto.startActivity(Intent(contexto, PresentacionActivity::class.java))
+   (contexto as Activity).finish()
+   ```
+3. En «Cerrar sesión», haz lo mismo hacia `LoginActivity`.
+
+#### 5: Comprobar
+1. Ejecuta la aplicación y comprueba que «Entrar» solo se activa con los dos campos rellenos.
+2. Pulsa «Entrar» y «Cerrar sesión» y observa cómo cambia de pantalla.
+3. Quita la línea `finish()` y pulsa el botón «Atrás» del móvil. ¿Qué ocurre?
+
 ---
 
-## 18. Documentación y videotutoriales
+## 19. Documentación y videotutoriales
 
 ### Documentación oficial
 

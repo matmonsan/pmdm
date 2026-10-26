@@ -64,7 +64,7 @@ Al terminar esta unidad, podrás:
 
 Esta unidad construye, paso a paso, una aplicación de **gestión de hospedajes**: una lista de hoteles en la que se puede añadir, editar y borrar.
 
-> **Antes de empezar.** Esta unidad usa lo visto en la UD2: estado (`remember`, elevar el estado), eventos (lambdas) y layouts (`Row`, `Column`, `Card`). Si algo no te suena, repasa los apartados 8, 14 y 15 de la UD2.
+> **Antes de empezar.** Esta unidad usa lo visto en la UD2: estado (`remember`, elevar el estado), eventos (lambdas) y layouts (`Row`, `Column`, `Card`). Si algo no te suena, repasa los apartados 8, 14 y 16 de la UD2.
 
 > **Dependencias necesarias.** En `build.gradle` del módulo `app` hacen falta `io.coil-kt:coil-compose` (imágenes) y `androidx.lifecycle:lifecycle-viewmodel-compose` (`viewModel()`). Para descargar imágenes, añade en `AndroidManifest.xml` el permiso `<uses-permission android:name="android.permission.INTERNET" />`.
 
