@@ -85,6 +85,8 @@ Una aplicación necesita avisar al usuario de lo que ocurre: "Libro borrado", "G
 
 ### 2.1 Toast
 
+![Toast](./assets/img/toast.png)
+
 El `Toast` es el más sencillo: necesita el contexto de la aplicación, que se obtiene con `LocalContext.current`.
 
 ```kotlin
@@ -101,6 +103,8 @@ Button(onClick = {
 - No forma parte de la composición de Compose: no se puede personalizar ni lleva botones. Por eso Material recomienda `Snackbar`, pero sigue siendo útil por lo fácil que es.
 
 ### 2.2 Snackbar
+
+![Snackbar](./assets/img/snack.png)
 
 El `Snackbar` sí está integrado en Compose. Necesita tres piezas:
 
@@ -147,6 +151,8 @@ scope.launch {
 
 ### 2.3 AlertDialog
 
+![Alert](./assets/img/alert.png)
+
 Cuando hace falta que el usuario **decida** algo, se usa un diálogo. En Compose se muestra o se oculta según una variable de estado (se verá en detalle en el apartado 6):
 
 ```kotlin
@@ -175,6 +181,8 @@ if (mostrar) {
 ---
 
 ## 3. Listas con LazyColumn
+
+![LazyColumn](./assets/img/lazy.png)
 
 ### 3.1 Cómo funciona LazyColumn
 
