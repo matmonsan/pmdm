@@ -1143,4 +1143,5 @@ Crea un proyecto nuevo de Compose (`Biblioteca`) y trabaja en una sola pantalla;
 
 11. Mantén la lista en un estado: `var libros by remember { mutableStateOf(listaInicial) }`.
 12. Añade un botón en cada tarjeta para **borrar** el libro: crea una nueva lista sin él (`libros = libros.filter { it.id != libro.id }`) y avisa con un `Snackbar` ("Libro borrado").
-13. Añade un botón o `Checkbox` en cada tarjeta para marcar el libro como leído: sustituye el libro por una copia con `copy(leido = !libro.leido)` (`libros = libros.map { if (it.id == libro.id) it.copy(leido = !it.leido) else it }`) y comprueba que la pantalla se actualiza.
+13. Añade un botón o Checkbox en cada tarjeta para marcar el libro como leído.
+14. Añade una imagen de internet a cada tarjeta con `AsyncImage`.
