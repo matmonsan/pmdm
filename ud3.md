@@ -153,23 +153,50 @@ scope.launch {
 
 ![Alert](./assets/img/alert.png)
 
-Cuando hace falta que el usuario **decida** algo, se usa un diálogo. En Compose se muestra o se oculta según una variable de estado (se verá en detalle en el apartado 6):
+Cuando la aplicación necesita que el usuario tome una decisión antes de continuar —por ejemplo, confirmar un borrado— puede mostrar un `AlertDialog`. A diferencia de una `Snackbar`, el diálogo permanece en pantalla hasta que el usuario responde o lo cierra.
+
+El diálogo no aparece automáticamente al escribir `AlertDialog`: la aplicación controla su visibilidad mediante una variable de estado. En este ejemplo, `mostrarDialogo` empieza en `false`; al pulsar «Borrar» pasa a `true` y Compose dibuja el diálogo. Si vuelve a `false`, el diálogo desaparece. El uso de `remember` y `mutableStateOf` se explica con más detalle en el apartado 6.
 
 ```kotlin
-var mostrar by remember { mutableStateOf(false) }
+@Composable
+fun PantallaLibro() {
+    var mostrarDialogo by remember { mutableStateOf(false) }
 
-Button(onClick = { mostrar = true }) { Text("Borrar") }
+    Button(onClick = { mostrarDialogo = true }) {
+        Text("Borrar")
+    }
 
-if (mostrar) {
-    AlertDialog(
-        onDismissRequest = { mostrar = false },
-        title = { Text("Borrar libro") },
-        text = { Text("¿Seguro que quieres borrarlo?") },
-        confirmButton = { TextButton(onClick = { mostrar = false }) { Text("Borrar") } },
-        dismissButton = { TextButton(onClick = { mostrar = false }) { Text("Cancelar") } }
-    )
+    if (mostrarDialogo) {
+        AlertDialog(
+            onDismissRequest = { mostrarDialogo = false },
+            title = { Text("Borrar libro") },
+            text = { Text("¿Seguro que quieres borrar este libro?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    // Aquí se ejecuta el borrado del libro.
+                    mostrarDialogo = false
+                }) {
+                    Text("Borrar")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { mostrarDialogo = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
 }
 ```
+
+Las partes importantes son:
+
+- `title` y `text` contienen el título y el mensaje del diálogo.
+- `confirmButton` define la acción principal. Su `onClick` **no realiza ninguna acción por sí solo**: ahí debes escribir el código que confirma la operación. En el ejemplo, el comentario indica dónde borrar el libro; después se cambia el estado para cerrar el diálogo.
+- `dismissButton` define una alternativa para cancelar. En este ejemplo solo cierra el diálogo; no borra el libro.
+- `onDismissRequest` se ejecuta cuando el usuario intenta cerrar el diálogo sin pulsar esos botones, por ejemplo, tocando fuera o usando el botón Atrás. Hay que actualizar el estado para ocultarlo. Si la aplicación no debe permitir ese cierre, puede dejar el estado sin cambiar.
+
+Los botones tampoco cierran el diálogo automáticamente: cada `onClick` debe actualizar el estado (y, en el caso de confirmar, ejecutar la operación correspondiente). Así se evita que el diálogo realice cambios que no se hayan programado explícitamente.
 
 ### 2.4 ¿Cuál elegir?
 
