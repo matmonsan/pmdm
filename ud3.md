@@ -17,7 +17,7 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 8. [Fragmentos y navegación](#8-fragmentos-y-navegación)
 9. [Resumen conceptual](#9-resumen-conceptual)
 10. [Actividades](#10-actividades)
-    - [10.1 Trabajo con LazyColumns](#101-trabajo-con-lazycolumns)
+    - [10.1 Trabajo con LazyColumns](#101-actividad-1-trabajo-con-lazycolumns)
 
 ---
 
@@ -1089,7 +1089,7 @@ Para ir a otra pantalla se llama a `navController.navigate("ajustes")`, y para v
 
 ## 10. Actividades
 
-### 10.1 Trabajo con LazyColumns
+### 10.1 Actividad 1: Trabajo con LazyColumns
 
 Crea un proyecto nuevo de Compose (`Biblioteca`) y trabaja en una sola pantalla; de momento los datos estarán en el propio código.
 
