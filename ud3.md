@@ -8,7 +8,7 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 
 0. [Resumen de términos](#0-resumen-de-términos)
 1. [Objetivos](#1-objetivos)
-2. [De las vistas clásicas a Compose (comparación)](#2-de-las-vistas-clásicas-a-compose)
+2. [Tipos de mensajes al usuario](#2-tipos-de-mensajes-al-usuario)
 3. [Listas con LazyColumn](#3-listas-con-lazycolumn)
 4. [Imágenes remotas con Coil](#4-imágenes-remotas-con-coil)
 5. [Arquitectura MVVM y flujo de datos](#5-arquitectura-mvvm-y-flujo-de-datos)
@@ -16,6 +16,8 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 7. [La pantalla principal](#7-la-pantalla-principal)
 8. [Fragmentos y navegación](#8-fragmentos-y-navegación)
 9. [Resumen conceptual](#9-resumen-conceptual)
+10. [Actividades](#10-actividades)
+    - [10.1 Trabajo con LazyColumns](#101-trabajo-con-lazycolumns)
 
 ---
 
@@ -70,19 +72,105 @@ Esta unidad construye, paso a paso, una aplicación de **gestión de hospedajes*
 
 ---
 
-## 2. De las vistas clásicas a Compose
+## 2. Tipos de mensajes al usuario
 
-En el desarrollo Android clásico, la interfaz se escribía en archivos XML y se manipulaba con `Activity`, `Fragment`, `RecyclerView` o `DialogFragment`. En **Jetpack Compose** nada de eso es necesario: la interfaz es un conjunto de funciones `@Composable` que **reaccionan automáticamente a los cambios del estado**. En lugar de buscar una vista y modificarla (`findViewById`, `setText`), se cambia el dato y Compose redibuja.
+Una aplicación necesita avisar al usuario de lo que ocurre: "Libro borrado", "Guardado correctamente", "¿Seguro que quieres eliminarlo?". Android ofrece varias formas, según lo importante que sea el mensaje y si hace falta que el usuario responda.
 
-| Concepto clásico | Equivalente en Compose |
-|---|---|
-| `RecyclerView` + `LinearLayoutManager` | `LazyColumn` / `LazyRow` |
-| `RecyclerView.Adapter` + `ViewHolder` | Una función `@Composable` para cada ítem (`HotelCard`) dentro de `items()` |
-| Inflar `item_hotel.xml` | Componer directamente con `Card`, `Row` y `Column` |
-| Glide | Coil con `AsyncImage` |
-| `Controller` y patrón Singleton | `ViewModel` + `StateFlow` (MVVM) |
-| `Fragment` | Funciones composable (`Screen`) + Navigation Compose |
-| `DialogFragment` / `AlertDialog.Builder` | `AlertDialog` controlado por estado |
+| Tipo | Qué es | Interrumpe al usuario | Admite botones | Cuándo usarlo |
+|---|---|---|---|---|
+| `Toast` | Mensaje breve flotante, desaparece solo | No | No | Avisos sencillos y rápidos |
+| `Snackbar` | Mensaje breve en la parte inferior, desaparece solo | No | Una acción (ej. "Deshacer") | Confirmar una acción; es la opción recomendada en Material |
+| `AlertDialog` | Ventana emergente con título, texto y botones | Sí, bloquea la pantalla | Sí | Confirmaciones importantes (borrar) o formularios cortos |
+| Texto en pantalla | Un `Text` que aparece o desaparece según el estado | No | No | Errores junto a un campo, estados vacíos |
+
+### 2.1 Toast
+
+El `Toast` es el más sencillo: necesita el contexto de la aplicación, que se obtiene con `LocalContext.current`.
+
+```kotlin
+val context = LocalContext.current
+
+Button(onClick = {
+    Toast.makeText(context, "Libro guardado", Toast.LENGTH_SHORT).show()
+}) {
+    Text("Guardar")
+}
+```
+
+- `Toast.LENGTH_SHORT` dura unos 2 segundos y `Toast.LENGTH_LONG` unos 3,5.
+- No forma parte de la composición de Compose: no se puede personalizar ni lleva botones. Por eso Material recomienda `Snackbar`, pero sigue siendo útil por lo fácil que es.
+
+### 2.2 Snackbar
+
+El `Snackbar` sí está integrado en Compose. Necesita tres piezas:
+
+1. Un **`SnackbarHostState`**, que guarda los mensajes pendientes.
+2. Un **`Scaffold`** con `snackbarHost`, que indica dónde se dibuja el mensaje.
+3. Una **corrutina** (`rememberCoroutineScope`), porque `showSnackbar` es una función *suspend* (tarda un rato, mientras el mensaje está visible).
+
+```kotlin
+@Composable
+fun PantallaConSnackbar() {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
+        Button(
+            onClick = {
+                scope.launch {
+                    snackbarHostState.showSnackbar("Libro guardado")
+                }
+            },
+            modifier = Modifier.padding(padding)
+        ) {
+            Text("Guardar")
+        }
+    }
+}
+```
+
+Con una acción, por ejemplo "Deshacer":
+
+```kotlin
+scope.launch {
+    val resultado = snackbarHostState.showSnackbar(
+        message = "Libro borrado",
+        actionLabel = "Deshacer"
+    )
+    if (resultado == SnackbarResult.ActionPerformed) {
+        // el usuario ha pulsado "Deshacer"
+    }
+}
+```
+
+### 2.3 AlertDialog
+
+Cuando hace falta que el usuario **decida** algo, se usa un diálogo. En Compose se muestra o se oculta según una variable de estado (se verá en detalle en el apartado 6):
+
+```kotlin
+var mostrar by remember { mutableStateOf(false) }
+
+Button(onClick = { mostrar = true }) { Text("Borrar") }
+
+if (mostrar) {
+    AlertDialog(
+        onDismissRequest = { mostrar = false },
+        title = { Text("Borrar libro") },
+        text = { Text("¿Seguro que quieres borrarlo?") },
+        confirmButton = { TextButton(onClick = { mostrar = false }) { Text("Borrar") } },
+        dismissButton = { TextButton(onClick = { mostrar = false }) { Text("Cancelar") } }
+    )
+}
+```
+
+### 2.4 ¿Cuál elegir?
+
+- ¿Solo informas de algo que ya ha ocurrido? → `Snackbar` (o `Toast` si quieres algo rápido).
+- ¿Quieres permitir deshacer? → `Snackbar` con acción.
+- ¿Es una acción peligrosa o necesitas una respuesta? → `AlertDialog`.
+- ¿Es un error de un campo de texto? → un `Text` bajo el campo, no un mensaje temporal.
 
 ---
 
@@ -90,23 +178,79 @@ En el desarrollo Android clásico, la interfaz se escribía en archivos XML y se
 
 ### 3.1 Cómo funciona LazyColumn
 
-Una lista puede tener cientos de elementos, pero en pantalla solo caben unos pocos. Crear todos a la vez sería lento y gastaría memoria. `LazyColumn` (o `LazyRow` para listas horizontales) resuelve esto: **solo compone los elementos que están visibles**. Al hacer scroll, crea los que entran en pantalla y descarta los que salen.
+#### El problema que resuelve
 
-Así funciona igual que el antiguo `RecyclerView`, pero sin adaptador, sin `ViewHolder` y sin XML.
+Imagina una aplicación de contactos con 500 personas. En la pantalla del móvil solo caben unas 8 a la vez. Si la aplicación creara los 500 elementos de golpe, tardaría en arrancar y gastaría mucha memoria para dibujar cosas que el usuario no está viendo.
+
+`LazyColumn` (*lazy* significa "perezoso") resuelve esto: **solo compone los elementos que están visibles** (y unos pocos más cercanos). Al hacer scroll, crea los que entran en pantalla y descarta los que salen. Es como mirar por una ventana que se desplaza sobre una lista muy larga: solo ves lo que hay en la ventana.
+
+Funciona igual que el antiguo `RecyclerView`, pero sin adaptador, sin `ViewHolder` y sin XML.
+
+#### ¿Y si la lista es pequeña?
+
+Si solo tienes 3 o 4 elementos fijos, basta una `Column` normal. Una `Column` dibuja **todo** a la vez y, además, **no tiene scroll** salvo que se lo añadas (`Modifier.verticalScroll(...)`).
+
+| | `Column` | `LazyColumn` |
+|---|---|---|
+| Dibuja | Todos los elementos | Solo los visibles |
+| Scroll | Hay que añadirlo | Incluido |
+| Úsala para | Pocos elementos fijos | Listas largas o de tamaño variable |
+
+#### Tu primera lista
 
 ```kotlin
-LazyColumn {
-    items(listaDeNombres) { nombre ->
-        Text(nombre)
+@Composable
+fun ListaNombres() {
+    val nombres = listOf("Ana", "Luis", "Marta", "Pedro")
+
+    LazyColumn {
+        items(nombres) { nombre ->
+            Text(text = nombre)
+        }
     }
 }
 ```
 
-`items` recorre la lista y ejecuta el bloque de llaves una vez por cada elemento. Dentro se escribe cómo se ve **un** elemento.
+Cómo se lee:
+
+1. `nombres` es la **lista de datos**.
+2. `LazyColumn { ... }` crea el contenedor con scroll.
+3. `items(nombres)` recorre la lista y ejecuta el bloque de llaves **una vez por cada elemento**.
+4. `nombre ->` es el nombre que damos al elemento actual (como la variable de un `for`). Dentro se escribe cómo se ve **un** elemento.
+
+Resultado: cuatro textos, uno debajo de otro, con scroll si no caben.
+
+#### `LazyColumn` frente a `LazyRow`
+
+`LazyRow` es idéntico pero **horizontal**. Solo cambia el nombre:
+
+```kotlin
+LazyRow {
+    items(nombres) { nombre -> Text(text = nombre, modifier = Modifier.padding(8.dp)) }
+}
+```
+
+#### Otras formas de añadir elementos
+
+Dentro de `LazyColumn` puedes mezclar varios tipos de contenido:
+
+```kotlin
+LazyColumn {
+    item { Text("Cabecera", style = MaterialTheme.typography.titleLarge) }   // un elemento suelto
+    items(nombres) { nombre -> Text(nombre) }                                // uno por cada dato
+    item { Text("Fin de la lista") }                                         // otro elemento suelto
+}
+```
+
+- `item { }` añade **un** elemento fijo (cabecera, pie, botón...).
+- `items(lista) { }` añade **uno por cada dato**.
+- `itemsIndexed(lista) { indice, dato -> }` es igual que `items`, pero además te da la posición (0, 1, 2...).
+
+> **Importante.** Dentro de `LazyColumn { }` no se pueden escribir composables directamente (`Text("hola")` suelto da error). Siempre tienen que ir dentro de `item { }` o `items { }`. Esto es porque el bloque no es composable: describe *qué elementos hay*, y Compose decide cuándo dibujarlos.
 
 ### 3.2 El modelo de datos
 
-Cada elemento de la lista representa un dato. Un **modelo** es la clase que lo describe. En Kotlin se usa una `data class`, pensada para guardar datos: genera automáticamente `equals`, `toString` y `copy()`.
+Una lista casi nunca contiene solo textos: contiene **objetos** con varios datos (un hotel tiene nombre, ciudad, teléfono...). Un **modelo** es la clase que describe uno de esos objetos. En Kotlin se usa una `data class`, pensada para guardar datos: genera automáticamente `equals`, `toString` y `copy()`.
 
 ```kotlin
 data class Hotel(
@@ -122,9 +266,31 @@ data class Hotel(
 - Todas las propiedades son `val`: el objeto es **inmutable**. Para "cambiar" un hotel se crea una copia con `copy()` (apartado 5.4).
 - `id` se genera solo con `UUID`, que devuelve un texto único. Sirve para distinguir un hotel de otro aunque tengan el mismo nombre.
 
+Ejemplo de uso y de `copy()`:
+
+```kotlin
+val hotel = Hotel(name = "Sol", city = "Málaga", province = "Málaga", phone = "952000000", image = "")
+val renombrado = hotel.copy(name = "Sol y Mar")   // nuevo objeto; `hotel` no cambia
+```
+
+> **¿Por qué inmutable?** Compose detecta que hay que redibujar cuando recibe un objeto **distinto**. Si modificaras un objeto existente "por dentro", Compose no se enteraría. Con `copy()` siempre se crea uno nuevo y el cambio se nota.
+
 ### 3.3 El ítem de la lista
 
-En el sistema clásico, cada fila necesitaba un XML (`item_hotel.xml`) y una clase `ViewHolder`. En Compose basta una función composable que recibe el dato y **los eventos** que debe avisar (editar y borrar), siguiendo el patrón de la UD2: *el estado baja, los eventos suben*.
+En el sistema clásico, cada fila necesitaba un XML (`item_hotel.xml`) y una clase `ViewHolder`. En Compose basta una función composable que dibuja **un** elemento. La lista simplemente la llama una vez por cada dato.
+
+Recibe el dato y **los eventos** que debe avisar (editar y borrar), siguiendo el patrón de la UD2: *el estado baja, los eventos suben*. Piensa en un camarero: la tarjeta es quien recibe el pedido (`onEditClick`), pero no cocina; avisa a quien sabe hacerlo.
+
+La estructura visual que vamos a construir es:
+
+```text
+┌──────────────────────────────────────┐  ← ElevatedCard
+│ ┌────────┐  Nombre del hotel         │
+│ │ imagen │  Ciudad                   │  ← Row (imagen | Column con textos)
+│ │        │  Provincia                │
+│ └────────┘  Teléfono        [✎] [🗑] │
+└──────────────────────────────────────┘
+```
 
 ```kotlin
 @Composable
@@ -236,6 +402,76 @@ LazyColumn {
 ```
 
 Sin clave, Compose identifica los elementos por su posición. Si borras el primero, todos los demás cambian de posición y se redibujan. Con una clave estable, Compose sabe qué elemento ha desaparecido y solo actualiza lo necesario, además de conservar el estado interno de cada elemento. La clave debe ser única y **no cambiar nunca**: por eso se usa el `id`, no el nombre.
+
+**Ejemplo.** Lista `[A, B, C]` y borras `A`:
+
+- *Sin clave*: Compose ve que la posición 0 ahora contiene `B`, la 1 contiene `C` y la 2 ha desaparecido. Actualiza todo.
+- *Con clave*: Compose ve que `A` ya no está y que `B` y `C` siguen igual. Solo elimina `A`.
+
+Además, si cada elemento guarda estado propio (por ejemplo, un cuadro de texto a medio escribir), sin clave ese estado puede acabar "pegado" al elemento equivocado.
+
+### 3.5 Aspecto de la lista: espacios y separación
+
+`LazyColumn` acepta parámetros para mejorar el aspecto sin tocar cada ítem:
+
+```kotlin
+LazyColumn(
+    modifier = Modifier.fillMaxSize(),
+    contentPadding = PaddingValues(16.dp),            // margen alrededor de TODO el contenido
+    verticalArrangement = Arrangement.spacedBy(8.dp)  // hueco entre elementos
+) {
+    items(hoteles, key = { it.id }) { hotel -> HotelCard(hotel, {}, {}) }
+}
+```
+
+- `contentPadding`: espacio interior de la lista. A diferencia de `Modifier.padding`, el contenido **sigue haciendo scroll** por debajo del margen, sin quedar recortado. Útil para que el último elemento no quede tapado por un botón flotante.
+- `verticalArrangement = Arrangement.spacedBy(...)`: separación uniforme entre elementos (en `LazyRow` se usa `horizontalArrangement`).
+- `Modifier.fillMaxSize()` o `weight(1f)`: da a la lista un tamaño. Una `LazyColumn` necesita una altura limitada.
+
+> **Error típico.** No metas una `LazyColumn` dentro de una `Column` con `verticalScroll`: ambas intentan hacer scroll y la aplicación se cierra con un error de "altura infinita". Si hay más elementos en la pantalla, pon la `LazyColumn` con `Modifier.weight(1f)` dentro de la `Column`.
+
+### 3.6 Lista vacía
+
+Cuando no hay datos, una pantalla en blanco confunde. Lo habitual es comprobarlo y mostrar un mensaje:
+
+```kotlin
+if (hoteles.isEmpty()) {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Text("Todavía no hay hoteles. Pulsa + para añadir uno.")
+    }
+} else {
+    LazyColumn { items(hoteles, key = { it.id }) { HotelCard(it, {}, {}) } }
+}
+```
+
+### 3.7 Controlar el scroll
+
+Para saltar a una posición (por ejemplo, al final tras añadir un elemento) se usa `rememberLazyListState`:
+
+```kotlin
+val listState = rememberLazyListState()
+val scope = rememberCoroutineScope()
+
+LazyColumn(state = listState) { /* ... */ }
+
+Button(onClick = { scope.launch { listState.animateScrollToItem(0) } }) {
+    Text("Ir arriba")
+}
+```
+
+`listState` también informa de qué elemento se ve primero (`listState.firstVisibleItemIndex`). `scrollToItem` y `animateScrollToItem` son funciones *suspend*, por eso se lanzan dentro de una corrutina (`scope.launch`).
+
+### 3.8 Errores frecuentes
+
+| Síntoma | Causa | Solución |
+|---|---|---|
+| Error al escribir `Text()` dentro de `LazyColumn` | Falta `item { }` | Envuélvelo en `item { }` o `items { }` |
+| La app se cierra al abrir la pantalla | `LazyColumn` dentro de un contenedor con scroll vertical | Quita el otro scroll |
+| Al borrar, se redibuja todo o se mezcla el estado | No hay `key` | Añade `key = { it.id }` |
+| La lista no se actualiza al añadir | Se modifica una `MutableList` normal | Usa una lista inmutable en un estado (`StateFlow`, apartado 5) |
+| El último elemento queda tapado por el botón `+` | Sin espacio inferior | `contentPadding = PaddingValues(bottom = 80.dp)` |
+
+> **Resumen mental.** Datos (`List<Hotel>`) → `LazyColumn` → `items(key)` → un composable por dato (`HotelCard`). Cambias la lista, Compose actualiza la pantalla.
 
 ---
 
@@ -840,3 +1076,36 @@ Para ir a otra pantalla se llama a `navController.navigate("ajustes")`, y para v
 8. **Diálogos declarativos**: se muestran o se ocultan según una variable del estado (un booleano o un valor que puede ser `null`), sin `FragmentManager`.
 9. **`Scaffold`, `FloatingActionButton` y `Snackbar`**: estructura de la pantalla Material; el `Snackbar` se muestra desde un `LaunchedEffect`.
 10. **Fragmentos**: se sustituyen por composables y Navigation Compose.
+
+---
+
+## 10. Actividades
+
+### 10.1 Trabajo con LazyColumns
+
+Crea un proyecto nuevo de Compose (`Biblioteca`) y trabaja en una sola pantalla; de momento los datos estarán en el propio código.
+
+**Parte A. Lista básica**
+
+1. Crea la `data class Libro(id, titulo, autor, anio, leido: Boolean)` con `id` generado con `UUID`.
+2. Crea una lista de al menos 8 libros con `listOf(...)`.
+3. Muestra los títulos con una `LazyColumn` y `items`. Comprueba que hace scroll.
+
+**Parte B. Ítem personalizado**
+
+4. Crea `@Composable fun LibroCard(libro: Libro, onClick: () -> Unit)` con una `ElevatedCard` que muestre título (en negrita), autor y año.
+5. Si `leido` es `true`, muestra un icono `Icons.Default.Check` con su `contentDescription`.
+6. Sustituye en la lista los `Text` por `LibroCard`. Al pulsar una tarjeta (`Modifier.clickable`), muestra un `Toast` con el título.
+
+**Parte C. Calidad de la lista**
+
+7. Añade `key = { it.id }` a `items`.
+8. Usa `contentPadding` (16 dp) y `Arrangement.spacedBy(8.dp)`; elimina los márgenes del ítem si los duplican.
+9. Añade un `item { }` de cabecera con el texto "Mis libros" y otro de pie con "Total: N libros".
+10. Si la lista está vacía, muestra un mensaje centrado en lugar de la lista (prueba con `emptyList()`).
+
+**Parte D. Interacción con estado**
+
+11. Mantén la lista en un estado: `var libros by remember { mutableStateOf(listaInicial) }`.
+12. Añade un botón en cada tarjeta para **borrar** el libro: crea una nueva lista sin él (`libros = libros.filter { it.id != libro.id }`) y avisa con un `Snackbar` ("Libro borrado").
+13. Añade un botón o `Checkbox` en cada tarjeta para marcar el libro como leído: sustituye el libro por una copia con `copy(leido = !libro.leido)` (`libros = libros.map { if (it.id == libro.id) it.copy(leido = !it.leido) else it }`) y comprueba que la pantalla se actualiza.
