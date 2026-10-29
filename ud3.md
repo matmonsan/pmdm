@@ -479,24 +479,7 @@ if (hoteles.isEmpty()) {
 }
 ```
 
-### 3.7 Controlar el scroll
-
-Para saltar a una posición (por ejemplo, al final tras añadir un elemento) se usa `rememberLazyListState`:
-
-```kotlin
-val listState = rememberLazyListState()
-val scope = rememberCoroutineScope()
-
-LazyColumn(state = listState) { /* ... */ }
-
-Button(onClick = { scope.launch { listState.animateScrollToItem(0) } }) {
-    Text("Ir arriba")
-}
-```
-
-`listState` también informa de qué elemento se ve primero (`listState.firstVisibleItemIndex`). `scrollToItem` y `animateScrollToItem` son funciones *suspend*, por eso se lanzan dentro de una corrutina (`scope.launch`).
-
-### 3.8 Errores frecuentes
+### 3.7 Errores frecuentes
 
 | Síntoma | Causa | Solución |
 |---|---|---|
