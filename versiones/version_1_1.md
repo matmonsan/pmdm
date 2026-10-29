@@ -4,7 +4,7 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 ---
 [⌂ Volver al enunciado del proyecto](../enunciado_proyecto.md)
 
-# **FECHA DE ENTREGA:** 29/10/2026
+# **FECHA DE ENTREGA:** 01/11/2026
 
 # Versión 1.1 — Interfaz inicial en Jetpack Compose
 
