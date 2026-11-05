@@ -71,7 +71,7 @@ Al terminar esta unidad, podrás:
 8. Pasar de una lista al detalle de un elemento y editarlo o borrarlo desde allí.
 9. Entender qué ocupa el lugar de los `Fragment` en Compose.
 
-Esta unidad construye, paso a paso, una aplicación de **gestión de hospedajes**: una lista de hoteles en la que se puede añadir, consultar, editar y borrar. Es lo que se pide en la **Versión 1.2 del proyecto**.
+Esta unidad construye, paso a paso, una aplicación de gestión de hospedajes: una lista de hoteles en la que se puede añadir, consultar, editar y borrar. Es lo que se pide en la Versión 1.2 del proyecto.
 
 > **Antes de empezar.** Esta unidad usa lo visto en la UD2: estado (`remember`, elevar el estado), eventos (lambdas), layouts (`Row`, `Column`, `Card`) y varias pantallas con estado. Si algo no te suena, repasa los apartados 8, 14, 15.3 y 16 de la UD2.
 
@@ -115,9 +115,9 @@ Button(onClick = {
 
 El `Snackbar` sí está integrado en Compose. Necesita tres piezas:
 
-1. Un **`SnackbarHostState`**, que guarda los mensajes pendientes.
-2. Un **`Scaffold`** con `snackbarHost`, que indica dónde se dibuja el mensaje.
-3. Una **corrutina** (`rememberCoroutineScope`), porque `showSnackbar` es una función *suspend* (tarda un rato, mientras el mensaje está visible).
+1. Un `SnackbarHostState`, que guarda los mensajes pendientes.
+2. Un `Scaffold` con `snackbarHost`, que indica dónde se dibuja el mensaje.
+3. Una corrutina (`rememberCoroutineScope`), porque `showSnackbar` es una función *suspend* (tarda un rato, mientras el mensaje está visible).
 
 ```kotlin
 @Composable
@@ -199,7 +199,7 @@ fun PantallaLibro() {
 Las partes importantes son:
 
 - `title` y `text` contienen el título y el mensaje del diálogo.
-- `confirmButton` define la acción principal. Su `onClick` **no realiza ninguna acción por sí solo**: ahí debes escribir el código que confirma la operación. En el ejemplo, el comentario indica dónde borrar el libro; después se cambia el estado para cerrar el diálogo.
+- `confirmButton` define la acción principal. Su `onClick` no realiza ninguna acción por sí solo: ahí debes escribir el código que confirma la operación. En el ejemplo, el comentario indica dónde borrar el libro; después se cambia el estado para cerrar el diálogo.
 - `dismissButton` define una alternativa para cancelar. En este ejemplo solo cierra el diálogo; no borra el libro.
 - `onDismissRequest` se ejecuta cuando el usuario intenta cerrar el diálogo sin pulsar esos botones, por ejemplo, tocando fuera o usando el botón Atrás. Hay que actualizar el estado para ocultarlo. Si la aplicación no debe permitir ese cierre, puede dejar el estado sin cambiar.
 
@@ -224,12 +224,12 @@ Los botones tampoco cierran el diálogo automáticamente: cada `onClick` debe ac
 
 Imagina una aplicación de contactos con 500 personas. En la pantalla del móvil solo caben unas 8 a la vez. Si la aplicación creara los 500 elementos de golpe, tardaría en arrancar y gastaría mucha memoria para dibujar cosas que el usuario no está viendo.
 
-`LazyColumn` (*lazy* significa "perezoso") resuelve esto: **solo compone los elementos que están visibles** (y unos pocos más cercanos). Al hacer scroll, crea los que entran en pantalla y descarta los que salen.
+`LazyColumn` (*lazy* significa "perezoso") resuelve esto: solo compone los elementos que están visibles (y unos pocos más cercanos). Al hacer scroll, crea los que entran en pantalla y descarta los que salen.
 Funciona igual que el antiguo `RecyclerView`, pero sin adaptador, sin `ViewHolder` y sin XML.
 
 #### ¿Y si la lista es pequeña?
 
-Si solo tienes 3 o 4 elementos fijos, basta una `Column` normal. Una `Column` dibuja **todo** a la vez y, además, **no tiene scroll** salvo que se lo añadas (`Modifier.verticalScroll(...)`).
+Si solo tienes 3 o 4 elementos fijos, basta una `Column` normal. Una `Column` dibuja todo a la vez y, además, no tiene scroll salvo que se lo añadas (`Modifier.verticalScroll(...)`).
 
 | | `Column` | `LazyColumn` |
 |---|---|---|
@@ -254,16 +254,16 @@ fun ListaNombres() {
 
 Cómo se lee:
 
-1. `nombres` es la **lista de datos**.
+1. `nombres` es la lista de datos.
 2. `LazyColumn { ... }` crea el contenedor con scroll.
-3. `items(nombres)` recorre la lista y ejecuta el bloque de llaves **una vez por cada elemento**.
-4. `nombre ->` es el nombre que damos al elemento actual (como la variable de un `for`). Dentro se escribe cómo se ve **un** elemento.
+3. `items(nombres)` recorre la lista y ejecuta el bloque de llaves una vez por cada elemento.
+4. `nombre ->` es el nombre que damos al elemento actual (como la variable de un `for`). Dentro se escribe cómo se ve un elemento.
 
 Resultado: cuatro textos, uno debajo de otro, con scroll si no caben.
 
 #### `LazyColumn` frente a `LazyRow`
 
-`LazyRow` es idéntico pero **horizontal**. Solo cambia el nombre:
+`LazyRow` es idéntico pero horizontal. Solo cambia el nombre:
 
 ```kotlin
 LazyRow {
@@ -283,15 +283,15 @@ LazyColumn {
 }
 ```
 
-- `item { }` añade **un** elemento fijo (cabecera, pie, botón...).
-- `items(lista) { }` añade **uno por cada dato**.
+- `item { }` añade un elemento fijo (cabecera, pie, botón...).
+- `items(lista) { }` añade uno por cada dato.
 - `itemsIndexed(lista) { indice, dato -> }` es igual que `items`, pero además te da la posición (0, 1, 2...).
 
 > **Importante.** Dentro de `LazyColumn { }` no se pueden escribir composables directamente (`Text("hola")` suelto da error). Siempre tienen que ir dentro de `item { }` o `items { }`. Esto es porque el bloque no es composable: describe *qué elementos hay*, y Compose decide cuándo dibujarlos.
 
 ### 3.2 El modelo de datos
 
-Una lista casi nunca contiene solo textos: contiene **objetos** con varios datos (un hotel tiene nombre, ciudad, teléfono...). Un **modelo** es la clase que describe uno de esos objetos. En Kotlin se usa una `data class`, pensada para guardar datos: genera automáticamente `equals`, `toString` y `copy()`.
+Una lista casi nunca contiene solo textos: contiene objetos con varios datos (un hotel tiene nombre, ciudad, teléfono...). Un modelo es la clase que describe uno de esos objetos. En Kotlin se usa una `data class`, pensada para guardar datos: genera automáticamente `equals`, `toString` y `copy()`.
 
 ```kotlin
 data class Hotel(
@@ -304,7 +304,7 @@ data class Hotel(
 )
 ```
 
-- Todas las propiedades son `val`: el objeto es **inmutable**. Para "cambiar" un hotel se crea una copia con `copy()` (apartado 6.6).
+- Todas las propiedades son `val`: el objeto es inmutable. Para "cambiar" un hotel se crea una copia con `copy()` (apartado 6.6).
 - `id` se genera solo con `UUID`, que devuelve un texto único. Sirve para distinguir un hotel de otro aunque tengan el mismo nombre.
 
 Ejemplo de uso y de `copy()`:
@@ -314,13 +314,13 @@ val hotel = Hotel(name = "Sol", city = "Málaga", province = "Málaga", phone = 
 val renombrado = hotel.copy(name = "Sol y Mar")   // nuevo objeto; `hotel` no cambia
 ```
 
-> **¿Por qué inmutable?** Compose detecta que hay que redibujar cuando recibe un objeto **distinto**. Si modificaras un objeto existente "por dentro", Compose no se enteraría. Con `copy()` siempre se crea uno nuevo y el cambio se nota.
+> **¿Por qué inmutable?** Compose detecta que hay que redibujar cuando recibe un objeto distinto. Si modificaras un objeto existente "por dentro", Compose no se enteraría. Con `copy()` siempre se crea uno nuevo y el cambio se nota.
 
 ### 3.3 El ítem de la lista
 
-En el sistema clásico, cada fila necesitaba un XML (`item_hotel.xml`) y una clase `ViewHolder`. En Compose basta una función composable que dibuja **un** elemento. La lista simplemente la llama una vez por cada dato.
+En el sistema clásico, cada fila necesitaba un XML (`item_hotel.xml`) y una clase `ViewHolder`. En Compose basta una función composable que dibuja un elemento. La lista simplemente la llama una vez por cada dato.
 
-Recibe el dato y **los eventos** que debe avisar (editar y borrar), siguiendo el patrón de la UD2: *el estado baja, los eventos suben*. La tarjeta detecta la pulsación (`onEditClick`), pero no edita nada: llama a la lambda y es quien la recibe quien decide qué hacer.
+Recibe el dato y los eventos que debe avisar (editar y borrar), siguiendo el patrón de la UD2: *el estado baja, los eventos suben*. La tarjeta detecta la pulsación (`onEditClick`), pero no edita nada: llama a la lambda y es quien la recibe quien decide qué hacer.
 
 La estructura visual que vamos a construir es:
 
@@ -424,12 +424,12 @@ Cómo está construida:
 - **`Column(Modifier.weight(1f))`**: ocupa todo el ancho que sobra después de la imagen (apartado 7.4 de la UD2).
 - **`Spacer`**: deja un hueco entre la imagen y los textos.
 - **Colores del tema**: `primary`, `secondary` y `tertiary` vienen de `MaterialTheme.colorScheme`, no de valores fijos (apartado 13 de la UD2).
-- **`onEditClick` y `onDeleteClick`**: la tarjeta **no sabe** cómo se edita o se borra un hotel; solo avisa de que se ha pulsado el botón. Esa lógica pertenece al `ViewModel`.
+- **`onEditClick` y `onDeleteClick`**: la tarjeta no sabe cómo se edita o se borra un hotel; solo avisa de que se ha pulsado el botón. Esa lógica pertenece al `ViewModel`.
 - **`contentDescription`**: texto que leen los lectores de pantalla para describir imágenes e iconos.
 
 ### 3.4 Claves estables
 
-Al usar `items` se puede indicar una **clave** (`key`) que identifica de forma única cada elemento:
+Al usar `items` se puede indicar una clave (`key`) que identifica de forma única cada elemento:
 
 ```kotlin
 LazyColumn {
@@ -442,7 +442,7 @@ LazyColumn {
 }
 ```
 
-Sin clave, Compose identifica los elementos por su posición. Si borras el primero, todos los demás cambian de posición y se redibujan. Con una clave estable, Compose sabe qué elemento ha desaparecido y solo actualiza lo necesario, además de conservar el estado interno de cada elemento. La clave debe ser única y **no cambiar nunca**: por eso se usa el `id`, no el nombre.
+Sin clave, Compose identifica los elementos por su posición. Si borras el primero, todos los demás cambian de posición y se redibujan. Con una clave estable, Compose sabe qué elemento ha desaparecido y solo actualiza lo necesario, además de conservar el estado interno de cada elemento. La clave debe ser única y no cambiar nunca: por eso se usa el `id`, no el nombre.
 
 **Ejemplo.** Lista `[A, B, C]` y borras `A`:
 
@@ -465,7 +465,7 @@ LazyColumn(
 }
 ```
 
-- `contentPadding`: espacio interior de la lista. A diferencia de `Modifier.padding`, el contenido **sigue haciendo scroll** por debajo del margen, sin quedar recortado. Útil para que el último elemento no quede tapado por un botón flotante.
+- `contentPadding`: espacio interior de la lista. A diferencia de `Modifier.padding`, el contenido sigue haciendo scroll por debajo del margen, sin quedar recortado. Útil para que el último elemento no quede tapado por un botón flotante.
 - `verticalArrangement = Arrangement.spacedBy(...)`: separación uniforme entre elementos (en `LazyRow` se usa `horizontalArrangement`).
 - `Modifier.fillMaxSize()` o `weight(1f)`: da a la lista un tamaño. Una `LazyColumn` necesita una altura limitada.
 
@@ -501,7 +501,7 @@ if (hoteles.isEmpty()) {
 
 ## 4. Imágenes remotas con Coil
 
-Para mostrar una imagen que está en internet hay que descargarla sin bloquear la pantalla. **Coil** es la librería que se encarga de ello, y su composable `AsyncImage` descarga, guarda en caché y muestra la imagen:
+Para mostrar una imagen que está en internet hay que descargarla sin bloquear la pantalla. Coil es la librería que se encarga de ello, y su composable `AsyncImage` descarga, guarda en caché y muestra la imagen:
 
 ```kotlin
 AsyncImage(
@@ -521,17 +521,17 @@ AsyncImage(
 | `contentScale` | Cómo se ajusta la imagen al espacio: `Crop` la recorta para llenar todo el hueco, `Fit` la muestra entera. |
 | `modifier` | Tamaño (`size`) y forma (`clip`) de la imagen. |
 
-Sustituye a **Glide**, que se usaba con las vistas clásicas. Recuerda añadir el permiso de internet al manifiesto (apartado 1).
+Sustituye a Glide, que se usaba con las vistas clásicas. Recuerda añadir el permiso de internet al manifiesto (apartado 1).
 
 ---
 
 ## 5. Navegación entre pantallas con estado
 
-La mayoría de aplicaciones tienen más de una pantalla: una lista y, al pulsar un elemento, su detalle. En este apartado se hace **sin ninguna librería de navegación**, solo con una variable de estado. Es la forma de cambiar de pantalla que se usa en las Versiones 1.1 y 1.2 del proyecto. (La navegación con `NavHost` se estudiará en la UD4).
+La mayoría de aplicaciones tienen más de una pantalla: una lista y, al pulsar un elemento, su detalle. En este apartado se hace sin ninguna librería de navegación, solo con una variable de estado. Es la forma de cambiar de pantalla que se usa en las Versiones 1.1 y 1.2 del proyecto. (La navegación con `NavHost` se estudiará en la UD4).
 
 ### 5.1 La idea
 
-En Compose, una pantalla es una función `@Composable`. Cambiar de pantalla es **dibujar otra función**. Para decidir cuál se dibuja basta una variable y un `if`:
+En Compose, una pantalla es una función `@Composable`. Cambiar de pantalla es dibujar otra función. Para decidir cuál se dibuja basta una variable y un `if`:
 
 ```text
 idSeleccionado == null      →  se dibuja PantallaPrincipal (la lista)
@@ -541,11 +541,16 @@ idSeleccionado == "a1b2"    →  se dibuja PantallaDetalle (el hotel "a1b2")
 - Al pulsar un hotel de la lista, la variable pasa a valer su `id` → aparece el detalle.
 - Al pulsar «Volver», la variable vuelve a `null` → aparece la lista.
 
+![Navegación con estado: AppPantallas guarda idSeleccionado y, según su valor, dibuja PantallaPrincipal o PantallaDetalle; las pantallas avisan con eventos que cambian la variable](./assets/img/navegacion_estado.svg)
+
+- Las flechas azules indican qué pantalla dibuja `AppPantallas` según el valor de `idSeleccionado`.
+- Las flechas rojas son los eventos con los que avisan las pantallas. `AppPantallas` responde cambiando `idSeleccionado`, y Compose dibuja la otra pantalla.
+
 Todo ocurre dentro de la misma `MainActivity`: no hay que crear otra `Activity` ni tocar el `AndroidManifest.xml`.
 
 ### 5.2 Los archivos del ejemplo
 
-Cada pantalla va en **su propio archivo `.kt`**:
+Cada pantalla va en su propio archivo `.kt`:
 
 ```text
 app/src/main/java/com/ejemplo/hospedajes/
@@ -556,9 +561,9 @@ app/src/main/java/com/ejemplo/hospedajes/
 └── MainActivity.kt         ← arranca AppPantallas
 ```
 
-Para crear un archivo: clic derecho sobre el paquete → *New* → *Kotlin Class/File* → **File**, y se escribe el nombre (`PantallaPrincipal`). Se elige *File* porque dentro no hay una clase, sino una función `@Composable`.
+Para crear un archivo: clic derecho sobre el paquete → *New* → *Kotlin Class/File* → File, y se escribe el nombre (`PantallaPrincipal`). Se elige *File* porque dentro no hay una clase, sino una función `@Composable`.
 
-La regla más importante: **las pantallas no se conocen entre sí**. `PantallaPrincipal` no sabe que existe `PantallaDetalle`; solo avisa de que se ha pulsado un hotel. Quien decide qué se muestra es `AppPantallas`.
+La regla más importante: las pantallas no se conocen entre sí. `PantallaPrincipal` no sabe que existe `PantallaDetalle`; solo avisa de que se ha pulsado un hotel. Quien decide qué se muestra es `AppPantallas`.
 
 ### 5.3 Paso 1: `PantallaPrincipal.kt`
 
@@ -712,7 +717,7 @@ Línea a línea:
 
 - **`var idSeleccionado by rememberSaveable { mutableStateOf<String?>(null) }`**: la variable que decide la pantalla. Empieza en `null` (la lista). Se usa `rememberSaveable` en vez de `remember` para que, al girar el móvil, no se vuelva a la lista (apartado 14.1.3 de la UD2). `<String?>` indica que guardará un texto o `null`.
 - **`hotelesDeEjemplo.find { it.id == idSeleccionado }`**: busca el hotel con ese `id`. Si la variable es `null`, no encuentra ninguno y devuelve `null`.
-- **`BackHandler`**: sin él, pulsar Atrás en el detalle **cierra la aplicación**. Con él, cuando hay un hotel seleccionado (`enabled = true`), Atrás pone la variable a `null` y se vuelve a la lista.
+- **`BackHandler`**: sin él, pulsar Atrás en el detalle cierra la aplicación. Con él, cuando hay un hotel seleccionado (`enabled = true`), Atrás pone la variable a `null` y se vuelve a la lista.
 - **`Box(Modifier.safeDrawingPadding())`**: evita que el contenido quede debajo de la barra de estado del móvil.
 - **`if / else`**: es la navegación. Solo una de las dos pantallas existe en cada momento.
 - **`onHotelClick = { hotel -> idSeleccionado = hotel.id }`**: cuando la lista avisa, se guarda el `id` → Compose redibuja → aparece el detalle.
@@ -767,7 +772,7 @@ class MainActivity : ComponentActivity() {
 
 ## 6. Arquitectura MVVM y flujo de datos
 
-En el apartado 5, `AppPantallas` hacía todo: guardaba los datos, decidía qué pantalla se veía y respondía a los botones. Con dos pantallas y sin cambios en los datos funciona, pero en cuanto el usuario puede **borrar, añadir o editar**, aparecen problemas. En este apartado verás cuáles son y cómo se resuelven repartiendo el trabajo en tres piezas: **repositorio**, **ViewModel** y **pantallas**.
+En el apartado 5, `AppPantallas` hacía todo: guardaba los datos, decidía qué pantalla se veía y respondía a los botones. Con dos pantallas y sin cambios en los datos funciona, pero en cuanto el usuario puede borrar, añadir o editar, aparecen problemas. En este apartado verás cuáles son y cómo se resuelven repartiendo el trabajo en tres piezas: repositorio, ViewModel y pantallas.
 
 > **Vídeos introductorios.** Antes de empezar, puedes ver estos dos vídeos, en este orden:
 >
@@ -813,9 +818,9 @@ Funciona, pero tiene tres problemas:
 
 #### La solución: repartir el trabajo
 
-La arquitectura **MVVM** (*Model – View – ViewModel*) reparte el código en tres capas, cada una con una sola responsabilidad:
+La arquitectura MVVM (*Model – View – ViewModel*) reparte el código en tres capas, cada una con una sola responsabilidad:
 
-| Capa | Archivos del ejemplo | Qué hace | Qué **no** hace |
+| Capa | Archivos del ejemplo | Qué hace | Qué no hace |
 |---|---|---|---|
 | **Vista** | `PantallaPrincipal.kt`, `PantallaDetalle.kt`, `AppPantallas.kt` | Dibuja el estado y avisa de las acciones del usuario con lambdas | No modifica los datos ni decide qué hacer ante una acción |
 | **ViewModel** | `HospedajeViewModel.kt`, `HospedajeUiState.kt` | Guarda el estado de la pantalla y tiene una función por cada acción del usuario | No dibuja nada ni sabe cómo se guardan los datos |
@@ -823,9 +828,9 @@ La arquitectura **MVVM** (*Model – View – ViewModel*) reparte el código en 
 
 Cada capa resuelve uno de los problemas anteriores:
 
-- El **repositorio** guarda los datos fuera de las pantallas → resuelve el problema 3.
-- El **ViewModel** guarda el estado y **sobrevive al giro de pantalla** → resuelve el problema 1.
-- El **ViewModel** contiene la lógica, y las pantallas solo dibujan → resuelve el problema 2.
+- El repositorio guarda los datos fuera de las pantallas → resuelve el problema 3.
+- El ViewModel guarda el estado y sobrevive al giro de pantalla → resuelve el problema 1.
+- El ViewModel contiene la lógica, y las pantallas solo dibujan → resuelve el problema 2.
 
 #### El flujo de datos: el estado baja, los eventos suben
 
@@ -833,19 +838,19 @@ Las tres piezas se comunican siempre en el mismo sentido:
 
 ![Capas de MVVM: la vista envía eventos al ViewModel y recibe de él el estado; el ViewModel pide operaciones al repositorio y recibe los datos](./assets/img/mvvm_capas.svg)
 
-- De la **vista** al **ViewModel** solo viajan **eventos**: llamadas a sus funciones, como `viewModel.onDeleteHotel(hotel)`.
-- Del **ViewModel** a la **vista** solo viaja el **estado**: la pantalla lee `viewModel.uiState` y lo dibuja.
-- El **ViewModel** pide operaciones al **repositorio** (`deleteHotel`) y le pide los datos actualizados (`getHotels()`). La vista nunca habla con el repositorio.
+- De la vista al ViewModel solo viajan eventos: llamadas a sus funciones, como `viewModel.onDeleteHotel(hotel)`.
+- Del ViewModel a la vista solo viaja el estado: la pantalla lee `viewModel.uiState` y lo dibuja.
+- El ViewModel pide operaciones al repositorio (`deleteHotel`) y le pide los datos actualizados (`getHotels()`). La vista nunca habla con el repositorio.
 
-Esto se llama **flujo unidireccional de datos** (UDF, *Unidirectional Data Flow*). Es el mismo principio que usaste al elevar el estado en la UD2 (apartado 14.1.4) y en el apartado 5: las pantallas reciben datos y avisan con lambdas.
+Esto se llama flujo unidireccional de datos (UDF, *Unidirectional Data Flow*). Es el mismo principio que usaste al elevar el estado en la UD2 (apartado 14.1.4) y en el apartado 5: las pantallas reciben datos y avisan con lambdas.
 
-> **Regla de oro.** La vista **nunca cambia los datos directamente**: avisa al ViewModel. El ViewModel actualiza el estado y Compose redibuja la pantalla.
+> **Regla de oro.** La vista nunca cambia los datos directamente: avisa al ViewModel. El ViewModel actualiza el estado y Compose redibuja la pantalla.
 
 En los apartados siguientes se construye cada pieza, de abajo arriba: primero el repositorio (6.2), luego el estado (6.3), luego el ViewModel (6.4) y, por último, se conecta todo con las pantallas (6.5).
 
 ### 6.2 El repositorio
 
-El **repositorio** es la clase que guarda los datos de la aplicación y la única que sabe dónde están: en una lista en memoria, en una base de datos o en internet. El resto de la aplicación solo llama a sus funciones: obtener los hoteles, añadir uno, actualizarlo o borrarlo.
+El repositorio es la clase que guarda los datos de la aplicación y la única que sabe dónde están: en una lista en memoria, en una base de datos o en internet. El resto de la aplicación solo llama a sus funciones: obtener los hoteles, añadir uno, actualizarlo o borrarlo.
 
 De momento los datos están en una lista en memoria. Crea el archivo `HotelRepository.kt`:
 
@@ -903,13 +908,13 @@ object HotelRepository {
 }
 ```
 
-**`object`** en lugar de `class` crea **un único repositorio** para toda la aplicación (patrón *Singleton*). No hace falta crearlo con `HotelRepository()`: se usa directamente por su nombre, y todas las pantallas comparten los mismos datos.
+**`object`** en lugar de `class` crea un único repositorio para toda la aplicación (patrón *Singleton*). No hace falta crearlo con `HotelRepository()`: se usa directamente por su nombre, y todas las pantallas comparten los mismos datos.
 
 Cada función es una operación del CRUD:
 
 | Función | Qué hace | Ejemplo de uso |
 |---|---|---|
-| `getHotels()` | Devuelve **una copia** de todos los hoteles | `val lista = HotelRepository.getHotels()` |
+| `getHotels()` | Devuelve una copia de todos los hoteles | `val lista = HotelRepository.getHotels()` |
 | `getHotelById(id)` | Busca un hotel; devuelve `null` si no existe | `val hotel = HotelRepository.getHotelById("a1b2")` |
 | `addHotel(hotel)` | Añade un hotel | `HotelRepository.addHotel(nuevoHotel)` |
 | `updateHotel(hotel)` | Sustituye el hotel que tiene el mismo `id` | `HotelRepository.updateHotel(hotelEditado)` |
@@ -918,17 +923,17 @@ Cada función es una operación del CRUD:
 Detalles del código:
 
 - **`private val hotels`**: la lista es privada. Nadie de fuera puede tocarla; solo se puede usar a través de las funciones.
-- **`toList()`**: `getHotels()` no entrega la lista original, sino una copia. Cada llamada devuelve una lista **nueva**, y eso es lo que permite a Compose notar los cambios (apartado 3.2).
+- **`toList()`**: `getHotels()` no entrega la lista original, sino una copia. Cada llamada devuelve una lista nueva, y eso es lo que permite a Compose notar los cambios (apartado 3.2).
 - **`indexOfFirst { ... }`**: devuelve la posición del primer hotel que cumple la condición, o `-1` si no hay ninguno.
 - **`removeAll { ... }`**: borra todos los hoteles que cumplen la condición.
 
-> **¿Una `MutableList` no daba problemas?** La tabla del apartado 3.7 avisa de que modificar una `MutableList` no actualiza la pantalla. Aquí no ocurre porque la lista mutable es **privada** del repositorio: la pantalla nunca la ve. Después de cada operación, el ViewModel pide una copia nueva con `getHotels()` (apartado 6.4).
+> **¿Una `MutableList` no daba problemas?** La tabla del apartado 3.7 avisa de que modificar una `MutableList` no actualiza la pantalla. Aquí no ocurre porque la lista mutable es privada del repositorio: la pantalla nunca la ve. Después de cada operación, el ViewModel pide una copia nueva con `getHotels()` (apartado 6.4).
 >
-> Cuando en versiones posteriores los datos pasen a Room o a una API, **solo cambiará el interior del repositorio**. El ViewModel y las pantallas seguirán llamando a las mismas funciones.
+> Cuando en versiones posteriores los datos pasen a Room o a una API, solo cambiará el interior del repositorio. El ViewModel y las pantallas seguirán llamando a las mismas funciones.
 
 ### 6.3 El estado de la interfaz
 
-El **estado de la interfaz** (`UiState`) es una `data class` que reúne **todo lo que la pantalla necesita para dibujarse** en un momento dado. Conociendo el valor del `UiState` se sabe exactamente qué debe verse en pantalla.
+El estado de la interfaz (`UiState`) es una `data class` que reúne todo lo que la pantalla necesita para dibujarse en un momento dado. Conociendo el valor del `UiState` se sabe exactamente qué debe verse en pantalla.
 
 Para la lista y el detalle del apartado 5 bastan dos datos: los hoteles y cuál está seleccionado. Crea el archivo `HospedajeUiState.kt`:
 
@@ -951,19 +956,19 @@ Así cambia el valor del `UiState` mientras se usa la aplicación, y lo que se v
 2. **Al pulsar «Hotel Peñalta»**: `selectedHotelId` pasa a valer su `id`, así que se ve su detalle. La lista no ha cambiado.
 3. **Al pulsar «Borrar»**: la lista pasa a tener 3 hoteles y `selectedHotelId` vuelve a `null`, así que se ve la lista sin Hotel Peñalta.
 
-La pantalla no decide nada por su cuenta: **solo dibuja lo que dice el `UiState`**.
+La pantalla no decide nada por su cuenta: solo dibuja lo que dice el `UiState`.
 
-> **¿Por qué una sola `data class` y no varias variables sueltas?** Porque así todo el estado está en **un único sitio** (*fuente única de verdad*). Nunca puede pasar que una variable diga una cosa y otra variable diga lo contrario.
+> **¿Por qué una sola `data class` y no varias variables sueltas?** Porque así todo el estado está en un único sitio (*fuente única de verdad*). Nunca puede pasar que una variable diga una cosa y otra variable diga lo contrario.
 
 Más adelante, en los apartados 7 y 8, se añadirán al `UiState` más datos: qué diálogo está abierto o qué mensaje hay que mostrar. El estado completo de la unidad está en el apartado 6.6.
 
 ### 6.4 El ViewModel
 
-El **ViewModel** es la clase que guarda el estado de la pantalla y tiene una función por cada acción del usuario. Además, Android lo **conserva al girar el móvil**, que es lo que soluciona el problema 1.
+El ViewModel es la clase que guarda el estado de la pantalla y tiene una función por cada acción del usuario. Además, Android lo conserva al girar el móvil, que es lo que soluciona el problema 1.
 
 ![Al girar el móvil, Android destruye la Activity y crea otra: el estado guardado con remember se pierde, pero viewModel() devuelve el mismo ViewModel con el estado conservado](./assets/img/viewmodel_giro.svg)
 
-Al girar el móvil, Android destruye la `Activity` y crea una nueva. Todo lo guardado con `remember` dentro de los composables se pierde, y la lista vuelve a tener 4 hoteles. El ViewModel, en cambio, **no se destruye**: la nueva `Activity` llama a `viewModel()` y recibe el mismo objeto, con el estado que tenía.
+Al girar el móvil, Android destruye la `Activity` y crea una nueva. Todo lo guardado con `remember` dentro de los composables se pierde, y la lista vuelve a tener 4 hoteles. El ViewModel, en cambio, no se destruye: la nueva `Activity` llama a `viewModel()` y recibe el mismo objeto, con el estado que tenía.
 
 Se construye en cuatro pasos. Crea el archivo `HospedajeViewModel.kt`.
 
@@ -981,7 +986,7 @@ class HospedajeViewModel : ViewModel() {
 - **`: ViewModel()`**: la clase hereda de `ViewModel`. Eso es lo que hace que Android la conserve al girar la pantalla.
 - **`var uiState by mutableStateOf(HospedajeUiState())`**: es el mismo `mutableStateOf` que usas en los composables (apartado 14.1 de la UD2), pero ahora dentro del ViewModel. Guarda el estado actual y, cada vez que cambia, Compose redibuja las pantallas que lo leen. Empieza con el estado por defecto (lista vacía, nada seleccionado).
 - **Sin `remember`**: `remember` solo se usa dentro de funciones `@Composable`. Aquí no hace falta, porque es el propio ViewModel el que conserva el valor.
-- **`private set`**: la propiedad se puede **leer** desde fuera, pero solo se puede **cambiar** desde dentro del ViewModel.
+- **`private set`**: la propiedad se puede leer desde fuera, pero solo se puede cambiar desde dentro del ViewModel.
 
 | | Desde el ViewModel | Desde una pantalla |
 |---|---|---|
@@ -1006,7 +1011,7 @@ Antes:   HospedajeUiState(hotelList = [],           selectedHotelId = null)
 Después: HospedajeUiState(hotelList = [4 hoteles],  selectedHotelId = null)
 ```
 
-> **¿Por qué `copy` y no `uiState.hotelList = ...`?** Porque las propiedades del `UiState` son `val` y no se pueden cambiar. Además, Compose solo redibuja cuando se asigna un valor **nuevo** a `uiState`; si se pudiera modificar el objeto por dentro, Compose no se enteraría. Es la misma idea del apartado 3.2.
+> **¿Por qué `copy` y no `uiState.hotelList = ...`?** Porque las propiedades del `UiState` son `val` y no se pueden cambiar. Además, Compose solo redibuja cuando se asigna un valor nuevo a `uiState`; si se pudiera modificar el objeto por dentro, Compose no se enteraría. Es la misma idea del apartado 3.2.
 
 #### Paso 3. Eventos que solo cambian el estado: la navegación
 
@@ -1022,13 +1027,13 @@ Lo que en el apartado 5 hacían las lambdas de `AppPantallas` (`idSeleccionado =
     }
 ```
 
-Los nombres empiezan por `on` y describen **lo que ha hecho el usuario** («ha pulsado un hotel», «quiere volver»), igual que los eventos del apartado 14.2 de la UD2.
+Los nombres empiezan por `on` y describen lo que ha hecho el usuario («ha pulsado un hotel», «quiere volver»), igual que los eventos del apartado 14.2 de la UD2.
 
 #### Paso 4. Eventos que cambian los datos: borrar
 
-Cuando un evento cambia los datos, se sigue siempre el mismo patrón de **dos pasos**:
+Cuando un evento cambia los datos, se sigue siempre el mismo patrón de dos pasos:
 
-1. Pedir la operación al **repositorio**.
+1. Pedir la operación al repositorio.
 2. **Recargar** la lista del repositorio en el estado.
 
 ```kotlin
@@ -1041,7 +1046,7 @@ Cuando un evento cambia los datos, se sigue siempre el mismo patrón de **dos pa
     }
 ```
 
-Si te olvidas del paso 2, el hotel se borra del repositorio, pero **la pantalla no se entera** porque el estado no ha cambiado.
+Si te olvidas del paso 2, el hotel se borra del repositorio, pero la pantalla no se entera porque el estado no ha cambiado.
 
 #### El ViewModel completo de este ejemplo
 
@@ -1080,11 +1085,11 @@ class HospedajeViewModel : ViewModel() {
 }
 ```
 
-Fíjate en que el ViewModel **no tiene nada de Compose**: ni `@Composable`, ni `Text`, ni `Modifier`. No dibuja; solo guarda el estado y decide qué hacer.
+Fíjate en que el ViewModel no tiene nada de Compose: ni `@Composable`, ni `Text`, ni `Modifier`. No dibuja; solo guarda el estado y decide qué hacer.
 
 ### 6.5 Leer el estado desde la pantalla
 
-Falta la última pieza: que las pantallas **lean** el estado del ViewModel y se redibujen cuando cambie.
+Falta la última pieza: que las pantallas lean el estado del ViewModel y se redibujen cuando cambie.
 
 Como `uiState` se creó con `mutableStateOf`, ya es estado de Compose. Basta con leerlo:
 
@@ -1139,7 +1144,7 @@ fun AppPantallas(
 
 `PantallaDetalle` recibe un evento nuevo, `onBorrar: () -> Unit`, que llama desde un botón «Borrar». `PantallaPrincipal` no cambia nada.
 
-- **`viewModel()`** (de la dependencia `lifecycle-viewmodel-compose`, apartado 1): obtiene el ViewModel. La primera vez lo crea; después, incluso tras girar el móvil, **devuelve el mismo**. Por eso no se escribe `HospedajeViewModel()`, que crearía uno nuevo cada vez.
+- **`viewModel()`** (de la dependencia `lifecycle-viewmodel-compose`, apartado 1): obtiene el ViewModel. La primera vez lo crea; después, incluso tras girar el móvil, devuelve el mismo. Por eso no se escribe `HospedajeViewModel()`, que crearía uno nuevo cada vez.
 - **Las pantallas no reciben el ViewModel**: siguen recibiendo datos y lambdas, como en el apartado 5. Solo `AppPantallas` habla con el ViewModel.
 
 Compara las dos versiones:
@@ -1162,13 +1167,13 @@ Los mismos pasos, en detalle:
 | Paso | Capa | Qué ocurre |
 |---|---|---|
 | 1 | Vista | El usuario pulsa «Borrar» en `PantallaDetalle`, que llama a `onBorrar()`. |
-| 2 | Vista → ViewModel | `AppPantallas` ejecuta `viewModel.onDeleteHotel(hotel)`. **Sube un evento.** |
+| 2 | Vista → ViewModel | `AppPantallas` ejecuta `viewModel.onDeleteHotel(hotel)`. Sube un evento. |
 | 3 | ViewModel → Repositorio | `HotelRepository.deleteHotel(hotel.id)`: el repositorio borra el hotel. |
 | 4 | ViewModel | `uiState = uiState.copy(...)`: nuevo estado con 3 hoteles y `selectedHotelId = null`. |
-| 5 | ViewModel → Vista | Como `uiState` es un `mutableStateOf`, Compose detecta el cambio. **Baja el estado.** |
+| 5 | ViewModel → Vista | Como `uiState` es un `mutableStateOf`, Compose detecta el cambio. Baja el estado. |
 | 6 | Vista | Compose redibuja `AppPantallas`: como no hay hotel seleccionado, muestra `PantallaPrincipal` con 3 hoteles. |
 
-En ningún momento la pantalla ha borrado nada: **el evento sube, el estado cambia y la pantalla se redibuja con el nuevo estado**.
+En ningún momento la pantalla ha borrado nada: el evento sube, el estado cambia y la pantalla se redibuja con el nuevo estado.
 
 ### 6.6 El ViewModel completo de la unidad
 
@@ -1194,7 +1199,7 @@ data class HospedajeUiState(
 | `isAddDialogOpen` | `true` mientras el diálogo de alta está abierto | 7.2 |
 | `userMessage` | Mensaje pendiente de mostrar en el `Snackbar`; `null` si no hay ninguno | 8.2 |
 
-Fíjate en que los diálogos también se controlan con el estado: **abrir un diálogo es cambiar un dato del `UiState`**.
+Fíjate en que los diálogos también se controlan con el estado: abrir un diálogo es cambiar un dato del `UiState`.
 
 ```kotlin
 private const val DEFAULT_IMAGE = "https://picsum.photos/id/1043/300/300"
@@ -1300,14 +1305,14 @@ class HospedajeViewModel : ViewModel() {
 }
 ```
 
-Todas las funciones siguen los dos patrones del apartado 6.4: o **solo cambian el estado** (abrir y cerrar diálogos, navegar) o **piden algo al repositorio y recargan la lista** (insertar, actualizar, borrar). Novedades respecto al apartado 6.4:
+Todas las funciones siguen los dos patrones del apartado 6.4: o solo cambian el estado (abrir y cerrar diálogos, navegar) o piden algo al repositorio y recargan la lista (insertar, actualizar, borrar). Novedades respecto al apartado 6.4:
 
 - **El borrado ahora tiene dos pasos**: `onDeleteHotelClicked` solo apunta qué hotel se quiere borrar (y así se abre el diálogo de confirmación), y `onConfirmDeleteHotel` lo borra de verdad. Sustituyen a `onDeleteHotel` del apartado 6.4.
-- **Editar**: `existingHotel.copy(...)` crea un hotel nuevo con el **mismo `id`** y los datos modificados; `updateHotel` sustituye al antiguo. Si la URL de la imagen se deja vacía, se usa la imagen por defecto, igual que al insertar.
+- **Editar**: `existingHotel.copy(...)` crea un hotel nuevo con el mismo `id` y los datos modificados; `updateHotel` sustituye al antiguo. Si la URL de la imagen se deja vacía, se usa la imagen por defecto, igual que al insertar.
 - **`?: return`**: si lo de la izquierda es `null` (el hotel no existe o no hay ninguno pendiente de borrar), la función termina sin hacer nada.
 - **`uiState.hotelToDelete`**: dentro del ViewModel se puede leer el estado directamente; aquí, para saber qué hotel hay que borrar.
 
-> **Resumen mental.** El **repositorio** guarda los datos. El **ViewModel** guarda el estado (`UiState`) y tiene una función por cada evento. Las **pantallas** dibujan el estado y avisan con lambdas. El evento sube → el ViewModel actualiza el estado (y el repositorio si hace falta) → el estado baja → Compose redibuja.
+> **Resumen mental.** El repositorio guarda los datos. El ViewModel guarda el estado (`UiState`) y tiene una función por cada evento. Las pantallas dibujan el estado y avisan con lambdas. El evento sube → el ViewModel actualiza el estado (y el repositorio si hace falta) → el estado baja → Compose redibuja.
 
 ---
 
@@ -1315,7 +1320,7 @@ Todas las funciones siguen los dos patrones del apartado 6.4: o **solo cambian e
 
 ### 7.1 Cómo se muestra un diálogo
 
-En el sistema clásico había que crear un `DialogFragment` y mostrarlo con el `FragmentManager`. En Compose un diálogo es **una función composable más**, y se muestra **solo si el estado lo indica**:
+En el sistema clásico había que crear un `DialogFragment` y mostrarlo con el `FragmentManager`. En Compose un diálogo es una función composable más, y se muestra solo si el estado lo indica:
 
 ```kotlin
 if (uiState.isAddDialogOpen) {
@@ -1330,8 +1335,8 @@ En esta unidad hay tres casos:
 | Diálogo | Se muestra cuando… |
 |---|---|
 | Alta de hotel | `isAddDialogOpen` es `true` |
-| Edición de hotel | `hotelToEdit` **no es** `null` |
-| Confirmar borrado | `hotelToDelete` **no es** `null` |
+| Edición de hotel | `hotelToEdit` no es `null` |
+| Confirmar borrado | `hotelToDelete` no es `null` |
 
 ### 7.2 Diálogo de alta y edición
 
@@ -1525,7 +1530,7 @@ Scaffold(
 
 El bloque final recibe `paddingValues`: el espacio que ocupan las barras. Hay que aplicarlo (`Modifier.padding(paddingValues)`) para que el contenido no quede tapado por ellas.
 
-El **`FloatingActionButton`** (botón flotante) se reserva para la acción principal de la pantalla; aquí, añadir un hospedaje.
+El `FloatingActionButton` (botón flotante) se reserva para la acción principal de la pantalla; aquí, añadir un hospedaje.
 
 ### 8.2 Mensajes con Snackbar
 
@@ -1543,7 +1548,7 @@ LaunchedEffect(uiState.userMessage) {
 ```
 
 - **`SnackbarHostState`** controla qué mensaje se muestra. Se guarda con `remember` y se pasa al `SnackbarHost` del `Scaffold`.
-- **`LaunchedEffect(clave)`** ejecuta su bloque **al aparecer el composable y cada vez que cambia la clave** (aquí, `uiState.userMessage`). Es el sitio adecuado para acciones que no dependen de pulsar nada, como mostrar un mensaje (el `Snackbar` básico se ve en el apartado 16.2.3 de la UD2).
+- **`LaunchedEffect(clave)`** ejecuta su bloque al aparecer el composable y cada vez que cambia la clave (aquí, `uiState.userMessage`). Es el sitio adecuado para acciones que no dependen de pulsar nada, como mostrar un mensaje (el `Snackbar` básico se ve en el apartado 16.2.3 de la UD2).
 - **`showSnackbar`** es una función que espera a que el mensaje desaparezca, por eso necesita ejecutarse dentro de un efecto.
 - **`onUserMessageShown()`** vuelve a poner el mensaje a `null` una vez mostrado. Sin este paso, el mensaje se volvería a mostrar al recomponer.
 
@@ -1655,11 +1660,11 @@ Qué hace cada parte:
 - **Lista vacía**: si no hay hoteles, se muestra un texto centrado en lugar de una lista vacía.
 - **`LazyColumn` con `key`**: dibuja una `HotelCard` por cada hotel (apartados 3.3 y 3.4).
 - **Eventos de la tarjeta**: `onEditClick` y `onDeleteClick` llaman al ViewModel pasándole el hotel pulsado.
-- **`uiState.hotelToEdit?.let { hotel -> ... }`**: ejecuta el bloque **solo si el valor no es `null`** y, dentro, `hotel` ya es un valor seguro. Es la forma habitual de mostrar un diálogo que depende de un objeto opcional.
+- **`uiState.hotelToEdit?.let { hotel -> ... }`**: ejecuta el bloque solo si el valor no es `null` y, dentro, `hotel` ya es un valor seguro. Es la forma habitual de mostrar un diálogo que depende de un objeto opcional.
 
 ### 8.4 Recorrido de un evento
 
-Para entender el flujo unidireccional, sigue qué ocurre al **borrar un hotel**:
+Para entender el flujo unidireccional, sigue qué ocurre al borrar un hotel:
 
 1. El usuario pulsa el icono de papelera de una `HotelCard`.
 2. La tarjeta ejecuta `onDeleteClick`, que llama a `viewModel.onDeleteHotelClicked(hotel)`.
@@ -1669,18 +1674,18 @@ Para entender el flujo unidireccional, sigue qué ocurre al **borrar un hotel**:
 6. El ViewModel pide al repositorio que borre el hotel (`deleteHotel`), recarga la lista con `getHotels()`, pone `hotelToDelete = null` y establece `userMessage`.
 7. Compose recompone: el diálogo desaparece, la lista se actualiza y el `LaunchedEffect` muestra el `Snackbar`.
 
-En ningún momento la interfaz ha modificado un dato directamente: **el evento sube, el estado cambia y la interfaz baja con el nuevo estado**.
+En ningún momento la interfaz ha modificado un dato directamente: el evento sube, el estado cambia y la interfaz baja con el nuevo estado.
 
 ### 8.5 Lista y detalle: editar y borrar desde el detalle
 
-Hasta ahora todo ocurría en una sola pantalla (`HospedajeScreen`), con los botones de editar y borrar en cada tarjeta. En muchas aplicaciones (y en el proyecto) la tarjeta solo abre una **pantalla de detalle**, y es en el detalle donde están las acciones de editar y eliminar.
+Hasta ahora todo ocurría en una sola pantalla (`HospedajeScreen`), con los botones de editar y borrar en cada tarjeta. En muchas aplicaciones (y en el proyecto) la tarjeta solo abre una pantalla de detalle, y es en el detalle donde están las acciones de editar y eliminar.
 
 Para ello se juntan dos cosas que ya conoces:
 
 - **La navegación con estado del apartado 5**: los mismos archivos (`PantallaPrincipal.kt`, `PantallaDetalle.kt`, `AppPantallas.kt`) y la misma idea: una variable con el `id` seleccionado y un `if`.
 - **El ViewModel completo del apartado 6.6**: los datos, la navegación, los diálogos y los mensajes.
 
-Es la misma estructura del apartado 6.5, ampliada con los diálogos y el `Snackbar`. Respecto al apartado 5, la diferencia es **dónde se guarda el `id` seleccionado**: ya no en un `rememberSaveable`, sino en el `UiState` del ViewModel, que también sobrevive al giro de pantalla.
+Es la misma estructura del apartado 6.5, ampliada con los diálogos y el `Snackbar`. Respecto al apartado 5, la diferencia es dónde se guarda el `id` seleccionado: ya no en un `rememberSaveable`, sino en el `UiState` del ViewModel, que también sobrevive al giro de pantalla.
 
 | | Apartado 5 | Este apartado |
 |---|---|---|
@@ -1717,11 +1722,11 @@ Usa el `HospedajeUiState` y el `HospedajeViewModel` completos del apartado 6.6. 
 | `onBackToList()` | Se llama con la flecha de volver o con el botón Atrás |
 | `onConfirmDeleteHotel()` | Además de borrar, pone `selectedHotelId = null` para volver a la lista |
 
-> **¿Por qué el `id` y no el `Hotel`?** Al editar un hotel, el repositorio guarda un objeto **nuevo** (apartado 3.2). Si el estado guardara el `Hotel`, seguiría apuntando al antiguo y el detalle mostraría los datos de antes de editar. Con el `id`, `AppPantallas` busca el hotel en la lista actual y el detalle siempre está al día.
+> **¿Por qué el `id` y no el `Hotel`?** Al editar un hotel, el repositorio guarda un objeto nuevo (apartado 3.2). Si el estado guardara el `Hotel`, seguiría apuntando al antiguo y el detalle mostraría los datos de antes de editar. Con el `id`, `AppPantallas` busca el hotel en la lista actual y el detalle siempre está al día.
 
 #### Paso 2. `PantallaPrincipal.kt`
 
-La lista de hoteles con su barra superior y el botón «+». Como en el apartado 5, **no sabe que existe el detalle**: solo avisa con `onHotelClick` y `onAddClick`.
+La lista de hoteles con su barra superior y el botón «+». Como en el apartado 5, no sabe que existe el detalle: solo avisa con `onHotelClick` y `onAddClick`.
 
 ```kotlin
 @OptIn(ExperimentalMaterial3Api::class)
@@ -1788,7 +1793,7 @@ fun HotelCard(
 
 #### Paso 3. `PantallaDetalle.kt`
 
-Muestra todos los datos del hotel, una flecha para volver y dos botones. Igual que en el apartado 5, **no edita ni borra nada**: solo avisa con eventos.
+Muestra todos los datos del hotel, una flecha para volver y dos botones. Igual que en el apartado 5, no edita ni borra nada: solo avisa con eventos.
 
 ```kotlin
 @OptIn(ExperimentalMaterial3Api::class)
@@ -1961,17 +1966,17 @@ fun AppPantallas(
 | Confirma el borrado | Repositorio sin el hotel, `selectedHotelId = null` | La lista actualizada y el `Snackbar` |
 | Cancela cualquier diálogo | El campo del diálogo vuelve a `null`/`false` | La misma pantalla, sin cambios |
 
-> Este ejemplo sirve de referencia para la **Versión 1.2 del proyecto**. En esa versión es obligatorio el repositorio para el CRUD; el ViewModel es opcional. Si no lo usas, el estado (la lista y el elemento seleccionado) se guarda en `AppPantallas`, como en el apartado 5. Cuando en la UD4 se use `NavHost`, solo cambiará `AppPantallas.kt`: las pantallas y el ViewModel seguirán igual (apartado 9).
+> Este ejemplo sirve de referencia para la Versión 1.2 del proyecto. En esa versión es obligatorio el repositorio para el CRUD; el ViewModel es opcional. Si no lo usas, el estado (la lista y el elemento seleccionado) se guarda en `AppPantallas`, como en el apartado 5. Cuando en la UD4 se use `NavHost`, solo cambiará `AppPantallas.kt`: las pantallas y el ViewModel seguirán igual (apartado 9).
 
 ---
 
 ## 9. Fragmentos y navegación
 
-En el sistema clásico, una pantalla podía dividirse en **`Fragment`**: partes reutilizables con su propio ciclo de vida, que se mostraban o cambiaban con el `FragmentManager`. Con Compose ya no hacen falta, porque:
+En el sistema clásico, una pantalla podía dividirse en `Fragment`: partes reutilizables con su propio ciclo de vida, que se mostraban o cambiaban con el `FragmentManager`. Con Compose ya no hacen falta, porque:
 
-- Una **pieza reutilizable** de pantalla es simplemente una función composable (`HotelCard`, `AddEditHotelDialog`).
-- Una **pantalla completa** es una función composable más grande, en su propio archivo (`PantallaPrincipal.kt`, `PantallaDetalle.kt`).
-- El **cambio entre pantallas** lo decide un composable que elige qué pantalla mostrar. En esta unidad es `AppPantallas`, con una variable de estado y un `if` (apartados 5 y 8.5). En aplicaciones grandes se usa **Navigation Compose**, que decide qué composable se muestra según una ruta.
+- Una pieza reutilizable de pantalla es simplemente una función composable (`HotelCard`, `AddEditHotelDialog`).
+- Una pantalla completa es una función composable más grande, en su propio archivo (`PantallaPrincipal.kt`, `PantallaDetalle.kt`).
+- El cambio entre pantallas lo decide un composable que elige qué pantalla mostrar. En esta unidad es `AppPantallas`, con una variable de estado y un `if` (apartados 5 y 8.5). En aplicaciones grandes se usa Navigation Compose, que decide qué composable se muestra según una ruta.
 
 Para que veas la relación, este sería el equivalente de `AppPantallas` con Navigation Compose:
 
@@ -1988,7 +1993,7 @@ NavHost(navController = navController, startDestination = "lista") {
 }
 ```
 
-Fíjate en que `PantallaPrincipal` y `PantallaDetalle` **no cambian**: siguen recibiendo datos y avisando con eventos. Solo cambia quién decide qué pantalla se ve: antes un `if` y una variable, ahora el `NavHost` y sus rutas.
+Fíjate en que `PantallaPrincipal` y `PantallaDetalle` no cambian: siguen recibiendo datos y avisando con eventos. Solo cambia quién decide qué pantalla se ve: antes un `if` y una variable, ahora el `NavHost` y sus rutas.
 
 > **En esta unidad todavía no se usa `NavHost`.** El código anterior es solo para que sepas qué sustituye a los `Fragment`. Por ahora, el cambio entre lista y detalle se hace con estado (apartados 5 y 8.5). Navigation Compose se estudiará en la UD4 y se incorpora al proyecto en la Versión 1.4.
 
@@ -2022,13 +2027,13 @@ Crea un proyecto nuevo de Compose (`Biblioteca`). Las partes A a D se hacen en u
 **Parte D. Interacción con estado**
 
 11. Mantén la lista en un estado: `var libros by remember { mutableStateOf(listaInicial) }`.
-12. Añade un botón en cada tarjeta para **borrar** el libro: crea una nueva lista sin él (`libros = libros.filter { it.id != libro.id }`) y avisa con un `Snackbar` ("Libro borrado").
+12. Añade un botón en cada tarjeta para borrar el libro: crea una nueva lista sin él (`libros = libros.filter { it.id != libro.id }`) y avisa con un `Snackbar` ("Libro borrado").
 13. Añade un botón o Checkbox en cada tarjeta para marcar el libro como leído.
 14. Añade una imagen de internet a cada tarjeta con `AsyncImage`.
 
 **Parte E. Pantalla de detalle (apartado 5)**
 
-15. Mueve la lista inicial de libros **fuera de cualquier función**, en un `val librosDeEjemplo = listOf(...)`, para que los `id` no cambien en cada recomposición.
+15. Mueve la lista inicial de libros fuera de cualquier función, en un `val librosDeEjemplo = listOf(...)`, para que los `id` no cambien en cada recomposición.
 16. Crea `PantallaPrincipal.kt` y mueve allí la lista de las partes A a D. La función recibe los libros y los eventos: `fun PantallaPrincipal(libros: List<Libro>, onLibroClick: (Libro) -> Unit, onBorrar: (Libro) -> Unit, onMarcarLeido: (Libro) -> Unit)`. Al pulsar una tarjeta, en lugar del `Toast`, llama a `onLibroClick(libro)`.
 17. Crea `PantallaDetalle.kt` con `fun PantallaDetalle(libro: Libro, onVolver: () -> Unit)`. Debe mostrar todos los datos del libro (imagen, título, autor, año y si está leído) y un botón «Volver».
 18. Crea `AppPantallas.kt` con:
@@ -2066,7 +2071,7 @@ app/src/main/java/com/ejemplo/peliculas/
 **Parte A. Modelo y repositorio (apartados 3.2 y 6.2)**
 
 1. Crea `Pelicula.kt` con `data class Pelicula(id, titulo, director, anio: Int, genero, imagen, vista: Boolean = false)`, con un `id` generado con `UUID`.
-2. Crea `PeliculaRepository.kt` con un `object PeliculaRepository` que guarde una lista **privada** de al menos 6 películas. Para la imagen puedes usar `https://picsum.photos/id/N/300/300`.
+2. Crea `PeliculaRepository.kt` con un `object PeliculaRepository` que guarde una lista privada de al menos 6 películas. Para la imagen puedes usar `https://picsum.photos/id/N/300/300`.
 3. Añade al repositorio las funciones `getPeliculas()`, `getPeliculaById(id)`, `updatePelicula(pelicula)` y `deletePelicula(id)`. `getPeliculas()` debe devolver una copia (`toList()`).
 
 **Parte B. Estado y ViewModel (apartados 6.3, 6.4 y 6.5)**
@@ -2091,7 +2096,7 @@ app/src/main/java/com/ejemplo/peliculas/
 8. Crea `PantallaDetalle.kt` con `fun PantallaDetalle(pelicula: Pelicula, onVolver: () -> Unit, onMarcarVista: () -> Unit, onBorrar: () -> Unit)`:
     - debe mostrar todos los datos de la película;
     - tendrá tres botones: «Volver», «Marcar como vista» (o «Marcar como no vista», según el estado) y «Borrar».
-9. Comprueba que **ninguna de las dos pantallas recibe el ViewModel**: solo datos y lambdas.
+9. Comprueba que ninguna de las dos pantallas recibe el ViewModel: solo datos y lambdas.
 
 **Parte D. Conectar las piezas (apartados 5.5 y 6.5)**
 
@@ -2113,4 +2118,4 @@ app/src/main/java/com/ejemplo/peliculas/
 
 16. Añade al `UiState` un campo `soloPendientes: Boolean = false` y al ViewModel la función `onFiltroCambiado(valor: Boolean)`.
 17. En `PantallaPrincipal`, añade un `Switch` con el texto «Solo pendientes», que reciba el valor y avise con un evento.
-18. En `AppPantallas`, pasa a `PantallaPrincipal` la lista filtrada (`peliculas.filter { !it.vista }`) cuando `soloPendientes` sea `true`. Piensa por qué el filtro **no** debe borrar películas del repositorio.
+18. En `AppPantallas`, pasa a `PantallaPrincipal` la lista filtrada (`peliculas.filter { !it.vista }`) cuando `soloPendientes` sea `true`. Piensa por qué el filtro no debe borrar películas del repositorio.
