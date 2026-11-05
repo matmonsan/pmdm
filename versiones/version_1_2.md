@@ -42,7 +42,7 @@ Estructura orientativa del proyecto (adaptad los nombres a vuestra temática):
 └── MainActivity.kt          ← setContent { AppPantallas() }
 ```
 
-El uso de un `ViewModel` con `UiState` y `StateFlow` (UD3, apartado 6) es recomendable, pero no obligatorio en esta versión: se exigirá en la Versión 1.6.
+El uso de un `ViewModel` con `UiState` (UD3, apartado 6) es recomendable, pero no obligatorio en esta versión: se exigirá en la Versión 1.6.
 
 ## Requisitos
 

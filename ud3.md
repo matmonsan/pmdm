@@ -42,8 +42,8 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 | [Repositorio](#62-el-repositorio) | Clase que ofrece los datos a la aplicación, sin importar de dónde vienen. |
 | [`UiState`](#63-el-estado-de-la-interfaz) | Un único objeto que contiene todo lo que la pantalla necesita mostrar. |
 | [`ViewModel`](#64-el-viewmodel) | Guarda el estado y la lógica de una pantalla y sobrevive a los giros. |
-| [`StateFlow`](#65-stateflow-y-collectasstate) | Flujo que siempre tiene un valor actual y avisa cuando cambia. |
-| [`collectAsState`](#65-stateflow-y-collectasstate) | Convierte un `StateFlow` en estado de Compose. |
+| [`mutableStateOf` en el ViewModel](#64-el-viewmodel) | Guarda el `UiState`; al asignarle un valor nuevo, Compose redibuja las pantallas que lo leen. |
+| [`private set`](#64-el-viewmodel) | Permite leer una propiedad desde fuera de la clase, pero solo cambiarla desde dentro. |
 | [`copy()`](#64-el-viewmodel) | Crea una copia de una `data class` cambiando solo algunos campos. |
 | [`AlertDialog`](#7-diálogos-declarativos) | Ventana emergente con título, texto y botones. |
 | [Lambda de evento](#72-diálogo-de-alta-y-edición) | Función que se pasa como parámetro y se ejecuta al ocurrir algo (`onConfirm`). |
@@ -492,7 +492,7 @@ if (hoteles.isEmpty()) {
 | Error al escribir `Text()` dentro de `LazyColumn` | Falta `item { }` | Envuélvelo en `item { }` o `items { }` |
 | La app se cierra al abrir la pantalla | `LazyColumn` dentro de un contenedor con scroll vertical | Quita el otro scroll |
 | Al borrar, se redibuja todo o se mezcla el estado | No hay `key` | Añade `key = { it.id }` |
-| La lista no se actualiza al añadir | Se modifica una `MutableList` normal | Usa una lista inmutable en un estado (`StateFlow`, apartado 6) |
+| La lista no se actualiza al añadir | Se modifica una `MutableList` normal | Usa una lista inmutable guardada en un estado (`mutableStateOf`) y asígnale una lista nueva (apartado 6) |
 | El último elemento queda tapado por el botón `+` | Sin espacio inferior | `contentPadding = PaddingValues(bottom = 80.dp)` |
 
 > **Resumen mental.** Datos (`List<Hotel>`) → `LazyColumn` → `items(key)` → un composable por dato (`HotelCard`). Cambias la lista, Compose actualiza la pantalla.
@@ -769,6 +769,11 @@ class MainActivity : ComponentActivity() {
 
 En el apartado 5, `AppPantallas` hacía todo: guardaba los datos, decidía qué pantalla se veía y respondía a los botones. Con dos pantallas y sin cambios en los datos funciona, pero en cuanto el usuario puede **borrar, añadir o editar**, aparecen problemas. En este apartado verás cuáles son y cómo se resuelven repartiendo el trabajo en tres piezas: **repositorio**, **ViewModel** y **pantallas**.
 
+> **Vídeos introductorios.** Antes de empezar, puedes ver estos dos vídeos, en este orden:
+>
+> 1. [Android MVVM y ViewModel explicado](https://www.youtube.com/watch?v=KQDeY7oIxp4): qué es MVVM, cómo se estructura y qué es un ViewModel.
+> 2. [ViewModel y State básico con Jetpack Compose](https://www.youtube.com/watch?v=X4gFllRa1_0): un ViewModel que guarda el estado y una pantalla de Compose que lo muestra.
+
 ### 6.1 Por qué separar la interfaz de la lógica
 
 #### El problema
@@ -976,41 +981,41 @@ Se construye en cuatro pasos. Crea el archivo `HospedajeViewModel.kt`.
 ```kotlin
 class HospedajeViewModel : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HospedajeUiState())
-    val uiState: StateFlow<HospedajeUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf(HospedajeUiState())
+        private set
 
 }
 ```
 
 - **`: ViewModel()`**: la clase hereda de `ViewModel`. Eso es lo que hace que Android la conserve al girar la pantalla.
-- **`MutableStateFlow(HospedajeUiState())`**: un objeto que guarda el estado actual y avisa a quien lo observa cada vez que cambia. Empieza con el estado por defecto (lista vacía, nada seleccionado).
-- **Dos variables, `_uiState` y `uiState`**: las dos apuntan al mismo estado, pero con permisos distintos.
+- **`var uiState by mutableStateOf(HospedajeUiState())`**: es el mismo `mutableStateOf` que usas en los composables (apartado 14.1 de la UD2), pero ahora dentro del ViewModel. Guarda el estado actual y, cada vez que cambia, Compose redibuja las pantallas que lo leen. Empieza con el estado por defecto (lista vacía, nada seleccionado).
+- **Sin `remember`**: `remember` solo se usa dentro de funciones `@Composable`. Aquí no hace falta, porque es el propio ViewModel el que conserva el valor.
+- **`private set`**: la propiedad se puede **leer** desde fuera, pero solo se puede **cambiar** desde dentro del ViewModel.
 
-| | `_uiState` | `uiState` |
+| | Desde el ViewModel | Desde una pantalla |
 |---|---|---|
-| Visibilidad | `private`: solo el ViewModel | Pública: la usan las pantallas |
-| Tipo | `MutableStateFlow`: se puede cambiar | `StateFlow`: solo se puede leer |
-| Para qué | El ViewModel cambia el estado | Las pantallas leen el estado |
+| Leer `uiState` | Sí | Sí |
+| Cambiar `uiState` | Sí | No: el código no compila |
 
-`asStateFlow()` convierte el `MutableStateFlow` en un `StateFlow` de solo lectura. Así, si una pantalla intenta cambiar el estado, el código no compila: solo el ViewModel puede hacerlo. El guion bajo de `_uiState` es una convención de Kotlin para indicar «versión privada y modificable».
+Así se cumple la regla del apartado 6.1: las pantallas no pueden modificar el estado; tienen que llamar a una función del ViewModel.
 
 #### Paso 2. Cargar los datos al empezar
 
 ```kotlin
     init {
-        _uiState.update { it.copy(hotelList = HotelRepository.getHotels()) }
+        uiState = uiState.copy(hotelList = HotelRepository.getHotels())
     }
 ```
 
 - **`init { ... }`**: se ejecuta una sola vez, al crear el ViewModel.
-- **`_uiState.update { it.copy(...) }`** es la forma de cambiar el estado. Léelo así: *«toma el estado actual (`it`), haz una copia cambiando solo `hotelList`, y esa copia es el nuevo estado»*.
+- **`uiState = uiState.copy(...)`** es la forma de cambiar el estado. Léelo así: *«toma el estado actual, haz una copia cambiando solo `hotelList`, y guarda esa copia como nuevo estado»*.
 
 ```text
 Antes:   HospedajeUiState(hotelList = [],           selectedHotelId = null)
 Después: HospedajeUiState(hotelList = [4 hoteles],  selectedHotelId = null)
 ```
 
-> **¿Por qué `copy` y no `it.hotelList = ...`?** Porque las propiedades son `val` y no se pueden cambiar. Al crear un objeto nuevo, Compose detecta que el estado es distinto y redibuja. Es la misma idea del apartado 3.2.
+> **¿Por qué `copy` y no `uiState.hotelList = ...`?** Porque las propiedades del `UiState` son `val` y no se pueden cambiar. Además, Compose solo redibuja cuando se asigna un valor **nuevo** a `uiState`; si se pudiera modificar el objeto por dentro, Compose no se enteraría. Es la misma idea del apartado 3.2.
 
 #### Paso 3. Eventos que solo cambian el estado: la navegación
 
@@ -1018,11 +1023,11 @@ Lo que en el apartado 5 hacían las lambdas de `AppPantallas` (`idSeleccionado =
 
 ```kotlin
     fun onHotelClicked(hotel: Hotel) {
-        _uiState.update { it.copy(selectedHotelId = hotel.id) }
+        uiState = uiState.copy(selectedHotelId = hotel.id)
     }
 
     fun onBackToList() {
-        _uiState.update { it.copy(selectedHotelId = null) }
+        uiState = uiState.copy(selectedHotelId = null)
     }
 ```
 
@@ -1037,13 +1042,11 @@ Cuando un evento cambia los datos, se sigue siempre el mismo patrón de **dos pa
 
 ```kotlin
     fun onDeleteHotel(hotel: Hotel) {
-        HotelRepository.deleteHotel(hotel.id)            // 1. el repositorio borra
-        _uiState.update {
-            it.copy(
-                hotelList = HotelRepository.getHotels(), // 2. el estado se actualiza
-                selectedHotelId = null                   //    y se vuelve a la lista
-            )
-        }
+        HotelRepository.deleteHotel(hotel.id)        // 1. el repositorio borra
+        uiState = uiState.copy(                      // 2. el estado se actualiza
+            hotelList = HotelRepository.getHotels(),
+            selectedHotelId = null                   //    y se vuelve a la lista
+        )
     }
 ```
 
@@ -1054,54 +1057,51 @@ Si te olvidas del paso 2, el hotel se borra del repositorio, pero **la pantalla 
 ```kotlin
 package com.ejemplo.hospedajes
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 class HospedajeViewModel : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HospedajeUiState())
-    val uiState: StateFlow<HospedajeUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf(HospedajeUiState())
+        private set
 
     init {
-        _uiState.update { it.copy(hotelList = HotelRepository.getHotels()) }
+        uiState = uiState.copy(hotelList = HotelRepository.getHotels())
     }
 
     fun onHotelClicked(hotel: Hotel) {
-        _uiState.update { it.copy(selectedHotelId = hotel.id) }
+        uiState = uiState.copy(selectedHotelId = hotel.id)
     }
 
     fun onBackToList() {
-        _uiState.update { it.copy(selectedHotelId = null) }
+        uiState = uiState.copy(selectedHotelId = null)
     }
 
     fun onDeleteHotel(hotel: Hotel) {
         HotelRepository.deleteHotel(hotel.id)
-        _uiState.update {
-            it.copy(
-                hotelList = HotelRepository.getHotels(),
-                selectedHotelId = null
-            )
-        }
+        uiState = uiState.copy(
+            hotelList = HotelRepository.getHotels(),
+            selectedHotelId = null
+        )
     }
 }
 ```
 
 Fíjate en que el ViewModel **no tiene nada de Compose**: ni `@Composable`, ni `Text`, ni `Modifier`. No dibuja; solo guarda el estado y decide qué hacer.
 
-### 6.5 StateFlow y collectAsState
+### 6.5 Leer el estado desde la pantalla
 
 Falta la última pieza: que las pantallas **lean** el estado del ViewModel y se redibujen cuando cambie.
 
-Un **`StateFlow`** (el tipo de `uiState`) es un flujo de datos que siempre tiene un valor actual y avisa cada vez que cambia. Compose no lo entiende directamente, así que se convierte en estado de Compose con **`collectAsState()`**:
+Como `uiState` se creó con `mutableStateOf`, ya es estado de Compose. Basta con leerlo:
 
 ```kotlin
-val uiState by viewModel.uiState.collectAsState()
+val uiState = viewModel.uiState
 ```
 
-Desde esta línea, `uiState` se comporta como cualquier estado de Compose (apartado 14.1 de la UD2): cada vez que el ViewModel hace un `update`, Compose redibuja lo que lee `uiState`.
+Cada vez que el ViewModel asigna un nuevo valor a `uiState` (`uiState = uiState.copy(...)`), Compose redibuja los composables que lo han leído, igual que ocurre con cualquier `mutableStateOf` (apartado 14.1 de la UD2).
 
 #### `AppPantallas` con ViewModel
 
@@ -1114,8 +1114,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -1123,7 +1121,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun AppPantallas(
     viewModel: HospedajeViewModel = viewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState
 
     val hotelSeleccionado = uiState.hotelList.find { it.id == uiState.selectedHotelId }
 
@@ -1171,8 +1169,8 @@ Sigue el viaje de un evento por las tres capas:
 | 1 | Vista | El usuario pulsa «Borrar» en `PantallaDetalle`, que llama a `onBorrar()`. |
 | 2 | Vista → ViewModel | `AppPantallas` ejecuta `viewModel.onDeleteHotel(hotel)`. **Sube un evento.** |
 | 3 | ViewModel → Repositorio | `HotelRepository.deleteHotel(hotel.id)`: el repositorio borra el hotel. |
-| 4 | ViewModel | `_uiState.update { ... }`: nuevo estado con 3 hoteles y `selectedHotelId = null`. |
-| 5 | ViewModel → Vista | `collectAsState()` recibe el nuevo estado. **Baja el estado.** |
+| 4 | ViewModel | `uiState = uiState.copy(...)`: nuevo estado con 3 hoteles y `selectedHotelId = null`. |
+| 5 | ViewModel → Vista | Como `uiState` es un `mutableStateOf`, Compose detecta el cambio. **Baja el estado.** |
 | 6 | Vista | Compose redibuja `AppPantallas`: como no hay hotel seleccionado, muestra `PantallaPrincipal` con 3 hoteles. |
 
 En ningún momento la pantalla ha borrado nada: **el evento sube, el estado cambia y la pantalla se redibuja con el nuevo estado**.
@@ -1208,31 +1206,31 @@ private const val DEFAULT_IMAGE = "https://picsum.photos/id/1043/300/300"
 
 class HospedajeViewModel : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HospedajeUiState())
-    val uiState: StateFlow<HospedajeUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf(HospedajeUiState())
+        private set
 
     init {
-        _uiState.update { it.copy(hotelList = HotelRepository.getHotels()) }
+        uiState = uiState.copy(hotelList = HotelRepository.getHotels())
     }
 
     // ---------- Navegación (6.4) ----------
 
     fun onHotelClicked(hotel: Hotel) {
-        _uiState.update { it.copy(selectedHotelId = hotel.id) }
+        uiState = uiState.copy(selectedHotelId = hotel.id)
     }
 
     fun onBackToList() {
-        _uiState.update { it.copy(selectedHotelId = null) }
+        uiState = uiState.copy(selectedHotelId = null)
     }
 
     // ---------- Alta (7.2) ----------
 
     fun onAddHotelClicked() {
-        _uiState.update { it.copy(isAddDialogOpen = true) }
+        uiState = uiState.copy(isAddDialogOpen = true)
     }
 
     fun onDismissAddDialog() {
-        _uiState.update { it.copy(isAddDialogOpen = false) }
+        uiState = uiState.copy(isAddDialogOpen = false)
     }
 
     fun onInsertHotel(name: String, city: String, province: String, phone: String, image: String) {
@@ -1244,23 +1242,21 @@ class HospedajeViewModel : ViewModel() {
             image = image.ifBlank { DEFAULT_IMAGE }
         )
         HotelRepository.addHotel(newHotel)
-        _uiState.update {
-            it.copy(
-                hotelList = HotelRepository.getHotels(),
-                isAddDialogOpen = false,
-                userMessage = "Hospedaje '${newHotel.name}' añadido correctamente"
-            )
-        }
+        uiState = uiState.copy(
+            hotelList = HotelRepository.getHotels(),
+            isAddDialogOpen = false,
+            userMessage = "Hospedaje '${newHotel.name}' añadido correctamente"
+        )
     }
 
     // ---------- Edición (7.2) ----------
 
     fun onEditHotelClicked(hotel: Hotel) {
-        _uiState.update { it.copy(hotelToEdit = hotel) }
+        uiState = uiState.copy(hotelToEdit = hotel)
     }
 
     fun onDismissEditDialog() {
-        _uiState.update { it.copy(hotelToEdit = null) }
+        uiState = uiState.copy(hotelToEdit = null)
     }
 
     fun onUpdateHotel(id: String, name: String, city: String, province: String, phone: String, image: String) {
@@ -1273,42 +1269,38 @@ class HospedajeViewModel : ViewModel() {
             image = image.ifBlank { DEFAULT_IMAGE }
         )
         HotelRepository.updateHotel(updatedHotel)
-        _uiState.update {
-            it.copy(
-                hotelList = HotelRepository.getHotels(),
-                hotelToEdit = null,
-                userMessage = "Hospedaje actualizado"
-            )
-        }
+        uiState = uiState.copy(
+            hotelList = HotelRepository.getHotels(),
+            hotelToEdit = null,
+            userMessage = "Hospedaje actualizado"
+        )
     }
 
     // ---------- Borrado con confirmación (7.3) ----------
 
     fun onDeleteHotelClicked(hotel: Hotel) {
-        _uiState.update { it.copy(hotelToDelete = hotel) }
+        uiState = uiState.copy(hotelToDelete = hotel)
     }
 
     fun onDismissDeleteDialog() {
-        _uiState.update { it.copy(hotelToDelete = null) }
+        uiState = uiState.copy(hotelToDelete = null)
     }
 
     fun onConfirmDeleteHotel() {
-        val target = _uiState.value.hotelToDelete ?: return
+        val target = uiState.hotelToDelete ?: return
         HotelRepository.deleteHotel(target.id)
-        _uiState.update {
-            it.copy(
-                hotelList = HotelRepository.getHotels(),
-                hotelToDelete = null,
-                selectedHotelId = null,
-                userMessage = "Hospedaje '${target.name}' borrado"
-            )
-        }
+        uiState = uiState.copy(
+            hotelList = HotelRepository.getHotels(),
+            hotelToDelete = null,
+            selectedHotelId = null,
+            userMessage = "Hospedaje '${target.name}' borrado"
+        )
     }
 
     // ---------- Mensajes (8.2) ----------
 
     fun onUserMessageShown() {
-        _uiState.update { it.copy(userMessage = null) }
+        uiState = uiState.copy(userMessage = null)
     }
 }
 ```
@@ -1318,18 +1310,7 @@ Todas las funciones siguen los dos patrones del apartado 6.4: o **solo cambian e
 - **El borrado ahora tiene dos pasos**: `onDeleteHotelClicked` solo apunta qué hotel se quiere borrar (y así se abre el diálogo de confirmación), y `onConfirmDeleteHotel` lo borra de verdad. Sustituyen a `onDeleteHotel` del apartado 6.4.
 - **Editar**: `existingHotel.copy(...)` crea un hotel nuevo con el **mismo `id`** y los datos modificados; `updateHotel` sustituye al antiguo. Si la URL de la imagen se deja vacía, se usa la imagen por defecto, igual que al insertar.
 - **`?: return`**: si lo de la izquierda es `null` (el hotel no existe o no hay ninguno pendiente de borrar), la función termina sin hacer nada.
-- **`_uiState.value`**: lee el estado actual sin cambiarlo; aquí, para saber qué hotel hay que borrar.
-
-### 6.7 Errores frecuentes
-
-| Síntoma | Causa | Solución |
-|---|---|---|
-| Borro un elemento, pero la lista no cambia | Se llama al repositorio pero no se recarga el estado | Después de la operación, `update { it.copy(hotelList = HotelRepository.getHotels()) }` |
-| Al girar el móvil se pierde todo | El ViewModel se crea con `HospedajeViewModel()` | Usa `viewModel()` |
-| `Unresolved reference: viewModel` | Falta la dependencia | Añade `lifecycle-viewmodel-compose` (apartado 1) |
-| No puedo cambiar el estado desde la pantalla | Es lo correcto: `uiState` es de solo lectura | Llama a una función del ViewModel |
-| `Val cannot be reassigned` al hacer `it.hotelList = ...` | Las propiedades del `UiState` son `val` | Usa `it.copy(hotelList = ...)` |
-| Las pantallas se vuelven difíciles de reutilizar | Se les ha pasado el ViewModel como parámetro | Pásales solo datos y lambdas; solo `AppPantallas` usa el ViewModel |
+- **`uiState.hotelToDelete`**: dentro del ViewModel se puede leer el estado directamente; aquí, para saber qué hotel hay que borrar.
 
 > **Resumen mental.** El **repositorio** guarda los datos. El **ViewModel** guarda el estado (`UiState`) y tiene una función por cada evento. Las **pantallas** dibujan el estado y avisan con lambdas. El evento sube → el ViewModel actualiza el estado (y el repositorio si hace falta) → el estado baja → Compose redibuja.
 
@@ -1581,7 +1562,7 @@ Aquí se juntan todas las piezas: `Scaffold`, `LazyColumn`, tarjetas, botón flo
 fun HospedajeScreen(
     viewModel: HospedajeViewModel = viewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.userMessage) {
@@ -1675,7 +1656,7 @@ fun HospedajeScreen(
 Qué hace cada parte:
 
 - **`viewModel()`**: obtiene el `ViewModel` de la pantalla. Se crea una sola vez y se conserva al girar el dispositivo.
-- **`collectAsState()`**: convierte el estado del ViewModel en estado de Compose.
+- **`viewModel.uiState`**: lee el estado del ViewModel. Como se guarda con `mutableStateOf`, la pantalla se redibuja cada vez que cambia.
 - **Lista vacía**: si no hay hoteles, se muestra un texto centrado en lugar de una lista vacía.
 - **`LazyColumn` con `key`**: dibuja una `HotelCard` por cada hotel (apartados 3.3 y 3.4).
 - **Eventos de la tarjeta**: `onEditClick` y `onDeleteClick` llaman al ViewModel pasándole el hotel pulsado.
@@ -1902,7 +1883,7 @@ Es el mismo archivo del apartado 5, pero ahora los datos y el `id` seleccionado 
 fun AppPantallas(
     viewModel: HospedajeViewModel = viewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState = viewModel.uiState
     val snackbarHostState = remember { SnackbarHostState() }
 
     // Se busca en la lista actual: si el hotel se edita, aquí llegan los datos nuevos.
@@ -2069,7 +2050,7 @@ Crea un proyecto nuevo de Compose (`Biblioteca`). Las partes A a D se hacen en u
 
 ### 10.2 Actividad 2: Navegación y arquitectura MVVM
 
-Crea un proyecto nuevo de Compose (`Peliculas`): un catálogo de películas con una lista y una pantalla de detalle. La actividad practica los apartados 5 y 6: navegación con estado, repositorio, `UiState`, `ViewModel` y `StateFlow`. No se usan diálogos ni `Snackbar` (apartados 7 y 8).
+Crea un proyecto nuevo de Compose (`Peliculas`): un catálogo de películas con una lista y una pantalla de detalle. La actividad practica los apartados 5 y 6: navegación con estado, repositorio, `UiState` y `ViewModel` con `mutableStateOf`. No se usan diálogos ni `Snackbar` (apartados 7 y 8).
 
 Añade al `build.gradle` del módulo `app` las dependencias `lifecycle-viewmodel-compose` y `coil-compose` (apartado 1).
 
@@ -2096,8 +2077,8 @@ app/src/main/java/com/ejemplo/peliculas/
 **Parte B. Estado y ViewModel (apartados 6.3, 6.4 y 6.5)**
 
 4. Crea `PeliculasUiState.kt` con `data class PeliculasUiState(val peliculas: List<Pelicula> = emptyList(), val idSeleccionado: String? = null)`.
-5. Crea `PeliculasViewModel.kt` con un `_uiState` privado (`MutableStateFlow`) y un `uiState` público (`StateFlow`). En el bloque `init`, carga las películas del repositorio.
-6. Añade estas funciones de evento al ViewModel. Recuerda el patrón: primero se pide la operación al repositorio y después se recarga la lista en el estado con `update { it.copy(...) }`.
+5. Crea `PeliculasViewModel.kt` con `var uiState by mutableStateOf(PeliculasUiState())` y `private set`, para que las pantallas puedan leer el estado pero no cambiarlo. En el bloque `init`, carga las películas del repositorio.
+6. Añade estas funciones de evento al ViewModel. Recuerda el patrón: primero se pide la operación al repositorio y después se recarga la lista en el estado con `uiState = uiState.copy(...)`.
 
     | Función | Qué hace |
     |---|---|
@@ -2120,7 +2101,7 @@ app/src/main/java/com/ejemplo/peliculas/
 **Parte D. Conectar las piezas (apartados 5.5 y 6.5)**
 
 10. Crea `AppPantallas.kt` con `fun AppPantallas(viewModel: PeliculasViewModel = viewModel())`. Dentro:
-    - obtén el estado con `collectAsState()`;
+    - lee el estado con `val uiState = viewModel.uiState`;
     - busca la película seleccionada en `uiState.peliculas` a partir de `uiState.idSeleccionado`;
     - muestra `PantallaPrincipal` o `PantallaDetalle` con un `if`, y conecta cada evento con su función del ViewModel;
     - añade un `BackHandler` que, en el detalle, llame a `viewModel.onVolver()`.
