@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474F"/>
+    </marker>
+  </defs>
+  <rect width="900" height="420" fill="#FFFFFF"/>
+
+  <text x="220" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#263238">Antes de girar el móvil</text>
+  <text x="680" y="30" text-anchor="middle" font-size="16" font-weight="bold" fill="#263238">Después de girar el móvil</text>
+
+  <!-- Activity antes -->
+  <rect x="40" y="50" width="360" height="160" rx="12" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <text x="220" y="78" text-anchor="middle" font-size="15" font-weight="bold" fill="#0D47A1">MainActivity (la original)</text>
+  <rect x="65" y="95" width="310" height="95" rx="8" fill="#FFFFFF" stroke="#90A4AE"/>
+  <text x="220" y="120" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#263238">var hoteles by remember {...}</text>
+  <text x="220" y="148" text-anchor="middle" font-size="14" fill="#263238">3 hoteles</text>
+  <text x="220" y="172" text-anchor="middle" font-size="12" fill="#546E7A">(el usuario ha borrado uno)</text>
+
+  <!-- flecha giro -->
+  <line x1="405" y1="130" x2="490" y2="130" stroke="#37474F" stroke-width="2.5" marker-end="url(#flecha)"/>
+  <text x="448" y="110" text-anchor="middle" font-size="12" fill="#37474F">Android destruye</text>
+  <text x="448" y="155" text-anchor="middle" font-size="12" fill="#37474F">y crea otra</text>
+  <text x="448" y="171" text-anchor="middle" font-size="12" fill="#37474F">Activity</text>
+
+  <!-- Activity después -->
+  <rect x="500" y="50" width="360" height="160" rx="12" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <text x="680" y="78" text-anchor="middle" font-size="15" font-weight="bold" fill="#0D47A1">MainActivity (una nueva)</text>
+  <rect x="525" y="95" width="310" height="95" rx="8" fill="#FFEBEE" stroke="#C62828"/>
+  <text x="680" y="120" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#263238">var hoteles by remember {...}</text>
+  <text x="680" y="148" text-anchor="middle" font-size="14" font-weight="bold" fill="#C62828">4 hoteles</text>
+  <text x="680" y="172" text-anchor="middle" font-size="12" fill="#C62828">(se ha perdido el borrado)</text>
+
+  <!-- conexiones al ViewModel -->
+  <line x1="220" y1="212" x2="220" y2="286" stroke="#2E7D32" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#flecha)"/>
+  <line x1="680" y1="212" x2="680" y2="286" stroke="#2E7D32" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#flecha)"/>
+  <text x="230" y="252" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1B5E20">viewModel()</text>
+  <text x="690" y="245" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1B5E20">viewModel()</text>
+  <text x="690" y="262" font-size="12" fill="#1B5E20">devuelve el mismo ViewModel</text>
+
+  <!-- ViewModel -->
+  <rect x="40" y="290" width="820" height="100" rx="12" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/>
+  <text x="450" y="320" text-anchor="middle" font-size="16" font-weight="bold" fill="#1B5E20">HospedajeViewModel — el mismo objeto antes y después del giro</text>
+  <text x="450" y="348" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#263238">uiState.hotelList = 3 hoteles</text>
+  <text x="450" y="372" text-anchor="middle" font-size="13" fill="#2E7D32">El estado se conserva: el hotel sigue borrado</text>
+</svg>

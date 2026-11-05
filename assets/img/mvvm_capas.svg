@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="520" viewBox="0 0 820 520" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474F"/>
+    </marker>
+  </defs>
+  <rect width="820" height="520" fill="#FFFFFF"/>
+
+  <!-- VISTA -->
+  <rect x="210" y="30" width="400" height="110" rx="12" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <text x="410" y="62" text-anchor="middle" font-size="20" font-weight="bold" fill="#0D47A1">VISTA</text>
+  <text x="410" y="88" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#0D47A1">PantallaPrincipal.kt · PantallaDetalle.kt</text>
+  <text x="410" y="106" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#0D47A1">AppPantallas.kt</text>
+  <text x="410" y="128" text-anchor="middle" font-size="13" fill="#263238">Dibuja el estado y avisa de lo que pulsa el usuario</text>
+
+  <!-- VIEWMODEL -->
+  <rect x="210" y="205" width="400" height="110" rx="12" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/>
+  <text x="410" y="237" text-anchor="middle" font-size="20" font-weight="bold" fill="#1B5E20">VIEWMODEL</text>
+  <text x="410" y="263" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#1B5E20">HospedajeViewModel.kt · HospedajeUiState.kt</text>
+  <text x="410" y="285" text-anchor="middle" font-size="13" fill="#263238">Guarda el estado (uiState) y tiene</text>
+  <text x="410" y="303" text-anchor="middle" font-size="13" fill="#263238">una función por cada acción del usuario</text>
+
+  <!-- REPOSITORIO -->
+  <rect x="210" y="380" width="400" height="110" rx="12" fill="#FFF3E0" stroke="#E65100" stroke-width="2"/>
+  <text x="410" y="412" text-anchor="middle" font-size="20" font-weight="bold" fill="#BF360C">REPOSITORIO</text>
+  <text x="410" y="438" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#BF360C">HotelRepository.kt</text>
+  <text x="410" y="460" text-anchor="middle" font-size="13" fill="#263238">Guarda los datos: getHotels(), addHotel(),</text>
+  <text x="410" y="478" text-anchor="middle" font-size="13" fill="#263238">updateHotel(), deleteHotel()</text>
+
+  <!-- Vista -> ViewModel : eventos -->
+  <line x1="300" y1="142" x2="300" y2="201" stroke="#37474F" stroke-width="2.5" marker-end="url(#flecha)"/>
+  <text x="285" y="165" text-anchor="end" font-size="14" font-weight="bold" fill="#C62828">EVENTOS (suben)</text>
+  <text x="285" y="185" text-anchor="end" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">viewModel.onDeleteHotel(hotel)</text>
+
+  <!-- ViewModel -> Vista : estado -->
+  <line x1="520" y1="203" x2="520" y2="144" stroke="#37474F" stroke-width="2.5" marker-end="url(#flecha)"/>
+  <text x="535" y="165" font-size="14" font-weight="bold" fill="#1565C0">ESTADO (baja)</text>
+  <text x="535" y="185" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">viewModel.uiState</text>
+
+  <!-- ViewModel -> Repositorio -->
+  <line x1="300" y1="317" x2="300" y2="376" stroke="#37474F" stroke-width="2.5" marker-end="url(#flecha)"/>
+  <text x="285" y="340" text-anchor="end" font-size="14" font-weight="bold" fill="#37474F">Pide operaciones</text>
+  <text x="285" y="360" text-anchor="end" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">deleteHotel(hotel.id)</text>
+
+  <!-- Repositorio -> ViewModel -->
+  <line x1="520" y1="378" x2="520" y2="319" stroke="#37474F" stroke-width="2.5" marker-end="url(#flecha)"/>
+  <text x="535" y="340" font-size="14" font-weight="bold" fill="#37474F">Devuelve los datos</text>
+  <text x="535" y="360" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">getHotels()</text>
+</svg>

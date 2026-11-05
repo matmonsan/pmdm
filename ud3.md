@@ -831,23 +831,11 @@ Cada capa resuelve uno de los problemas anteriores:
 
 Las tres piezas se comunican siempre en el mismo sentido:
 
-```text
-┌──────────────────────────────────┐
-│ VISTA (PantallaPrincipal, ...)   │  Dibuja lo que le dan y avisa de lo que pulsa el usuario
-└──────────────────────────────────┘
-      │  EVENTO                ▲  ESTADO
-      │  "han pulsado          │  "esto es lo que
-      │   Borrar"              │   tienes que mostrar"
-      ▼                        │
-┌──────────────────────────────────┐
-│ VIEWMODEL                        │  Decide qué hacer y guarda el estado de la pantalla
-└──────────────────────────────────┘
-      │  pide una operación    ▲  devuelve los datos
-      ▼                        │
-┌──────────────────────────────────┐
-│ REPOSITORIO                      │  Guarda los datos
-└──────────────────────────────────┘
-```
+![Capas de MVVM: la vista envía eventos al ViewModel y recibe de él el estado; el ViewModel pide operaciones al repositorio y recibe los datos](./assets/img/mvvm_capas.svg)
+
+- De la **vista** al **ViewModel** solo viajan **eventos**: llamadas a sus funciones, como `viewModel.onDeleteHotel(hotel)`.
+- Del **ViewModel** a la **vista** solo viaja el **estado**: la pantalla lee `viewModel.uiState` y lo dibuja.
+- El **ViewModel** pide operaciones al **repositorio** (`deleteHotel`) y le pide los datos actualizados (`getHotels()`). La vista nunca habla con el repositorio.
 
 Esto se llama **flujo unidireccional de datos** (UDF, *Unidirectional Data Flow*). Es el mismo principio que usaste al elevar el estado en la UD2 (apartado 14.1.4) y en el apartado 5: las pantallas reciben datos y avisan con lambdas.
 
@@ -955,16 +943,15 @@ data class HospedajeUiState(
 - **`selectedHotelId`**: el `id` del hotel cuyo detalle se ve, o `null` si se ve la lista. Es la misma variable `idSeleccionado` del apartado 5, que ahora vive aquí.
 - **Valores por defecto** (`= emptyList()`, `= null`): permiten crear el estado inicial con solo escribir `HospedajeUiState()`.
 
-Así cambia el valor del `UiState` mientras se usa la aplicación:
+Así cambia el valor del `UiState` mientras se usa la aplicación, y lo que se ve en cada momento. En rojo, los datos que cambian en cada paso:
 
-```text
-Al abrir la app           →  HospedajeUiState(hotelList = [4 hoteles], selectedHotelId = null)
-                             Se ve la lista.
-Pulsa «Hotel Peñalta»     →  HospedajeUiState(hotelList = [4 hoteles], selectedHotelId = "a1b2")
-                             Se ve el detalle de Hotel Peñalta.
-Pulsa «Borrar»            →  HospedajeUiState(hotelList = [3 hoteles], selectedHotelId = null)
-                             Se ve la lista, ya sin Hotel Peñalta.
-```
+![Tres valores sucesivos del UiState y la pantalla que se ve con cada uno: lista con 4 hoteles, detalle de Hotel Peñalta y lista con 3 hoteles](./assets/img/uistate_pantallas.svg)
+
+1. **Al abrir la app**: `selectedHotelId` es `null`, así que se ve la lista con los 4 hoteles.
+2. **Al pulsar «Hotel Peñalta»**: `selectedHotelId` pasa a valer su `id`, así que se ve su detalle. La lista no ha cambiado.
+3. **Al pulsar «Borrar»**: la lista pasa a tener 3 hoteles y `selectedHotelId` vuelve a `null`, así que se ve la lista sin Hotel Peñalta.
+
+La pantalla no decide nada por su cuenta: **solo dibuja lo que dice el `UiState`**.
 
 > **¿Por qué una sola `data class` y no varias variables sueltas?** Porque así todo el estado está en **un único sitio** (*fuente única de verdad*). Nunca puede pasar que una variable diga una cosa y otra variable diga lo contrario.
 
@@ -973,6 +960,10 @@ Más adelante, en los apartados 7 y 8, se añadirán al `UiState` más datos: qu
 ### 6.4 El ViewModel
 
 El **ViewModel** es la clase que guarda el estado de la pantalla y tiene una función por cada acción del usuario. Además, Android lo **conserva al girar el móvil**, que es lo que soluciona el problema 1.
+
+![Al girar el móvil, Android destruye la Activity y crea otra: el estado guardado con remember se pierde, pero viewModel() devuelve el mismo ViewModel con el estado conservado](./assets/img/viewmodel_giro.svg)
+
+Al girar el móvil, Android destruye la `Activity` y crea una nueva. Todo lo guardado con `remember` dentro de los composables se pierde, y la lista vuelve a tener 4 hoteles. El ViewModel, en cambio, **no se destruye**: la nueva `Activity` llama a `viewModel()` y recibe el mismo objeto, con el estado que tenía.
 
 Se construye en cuatro pasos. Crea el archivo `HospedajeViewModel.kt`.
 
@@ -1163,6 +1154,10 @@ Compara las dos versiones:
 #### Recorrido completo: borrar un hotel
 
 Sigue el viaje de un evento por las tres capas:
+
+![Diagrama de secuencia al borrar un hotel: la vista envía el evento al ViewModel, el ViewModel pide el borrado al repositorio, recarga la lista, actualiza uiState y la vista se redibuja](./assets/img/recorrido_borrar.svg)
+
+Los mismos pasos, en detalle:
 
 | Paso | Capa | Qué ocurre |
 |---|---|---|
@@ -1966,7 +1961,7 @@ fun AppPantallas(
 | Confirma el borrado | Repositorio sin el hotel, `selectedHotelId = null` | La lista actualizada y el `Snackbar` |
 | Cancela cualquier diálogo | El campo del diálogo vuelve a `null`/`false` | La misma pantalla, sin cambios |
 
-> Esta es la estructura que se pide en la **Versión 1.2 del proyecto**, adaptada a vuestra temática. Cuando en la UD4 se use `NavHost`, solo cambiará `AppPantallas.kt`: las pantallas y el ViewModel seguirán igual (apartado 9).
+> Este ejemplo sirve de referencia para la **Versión 1.2 del proyecto**. En esa versión es obligatorio el repositorio para el CRUD; el ViewModel es opcional. Si no lo usas, el estado (la lista y el elemento seleccionado) se guarda en `AppPantallas`, como en el apartado 5. Cuando en la UD4 se use `NavHost`, solo cambiará `AppPantallas.kt`: las pantallas y el ViewModel seguirán igual (apartado 9).
 
 ---
 

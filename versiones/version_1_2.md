@@ -28,7 +28,7 @@ No se pide ninguna pantalla nueva: se mantienen la lista y el detalle de la Vers
 Material de referencia en la UD3:
 
 - [Apartado 5](../ud3.md#5-navegación-entre-pantallas-con-estado): navegación entre pantallas con estado, con un archivo por pantalla.
-- [Apartado 8.5](../ud3.md#85-lista-y-detalle-editar-y-borrar-desde-el-detalle): ejemplo completo de lista y detalle con repositorio, ViewModel, diálogos de alta, edición y borrado, y `Snackbar`. Es la estructura que se pide en esta versión.
+- [Apartado 8.5](../ud3.md#85-lista-y-detalle-editar-y-borrar-desde-el-detalle): ejemplo completo de lista y detalle con repositorio, ViewModel, diálogos de alta, edición y borrado, y `Snackbar`. Sirve de referencia para esta versión; el uso del ViewModel es opcional (ver más abajo).
 
 Estructura orientativa del proyecto (adaptad los nombres a vuestra temática):
 
