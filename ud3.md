@@ -14,11 +14,12 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 5. [Navegación entre pantallas con estado](#5-navegación-entre-pantallas-con-estado)
 6. [Arquitectura MVVM y flujo de datos](#6-arquitectura-mvvm-y-flujo-de-datos)
 7. [Diálogos declarativos](#7-diálogos-declarativos)
-8. [La pantalla principal](#8-la-pantalla-principal)
+8. [Scaffold y Snackbar](#8-scaffold-y-snackbar)
 9. [Fragmentos y navegación](#9-fragmentos-y-navegación)
 10. [Actividades](#10-actividades)
     - [10.1 Trabajo con LazyColumns](#101-actividad-1-trabajo-con-lazycolumns)
     - [10.2 Navegación y arquitectura MVVM](#102-actividad-2-navegación-y-arquitectura-mvvm)
+    - [10.3 Diálogos, Scaffold y Snackbar](#103-actividad-3-diálogos-scaffold-y-snackbar)
 
 ---
 
@@ -46,14 +47,14 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 | [`private set`](#64-el-viewmodel) | Permite leer una propiedad desde fuera de la clase, pero solo cambiarla desde dentro. |
 | [`copy()`](#64-el-viewmodel) | Crea una copia de una `data class` cambiando solo algunos campos. |
 | [`AlertDialog`](#7-diálogos-declarativos) | Ventana emergente con título, texto y botones. |
-| [Lambda de evento](#72-diálogo-de-alta-y-edición) | Función que se pasa como parámetro y se ejecuta al ocurrir algo (`onConfirm`). |
-| [`isError` / `supportingText`](#72-diálogo-de-alta-y-edición) | Parámetros de un campo de texto para marcarlo como erróneo y mostrar un mensaje debajo. |
+| [Lambda de evento](#73-diálogo-de-alta-y-edición) | Función que se pasa como parámetro y se ejecuta al ocurrir algo (`onConfirm`). |
+| [`isError` / `supportingText`](#74-validar-el-formulario) | Parámetros de un campo de texto para marcarlo como erróneo y mostrar un mensaje debajo. |
 | [`Scaffold`](#81-estructura-con-scaffold) | Estructura de pantalla con barra superior, botón flotante y mensajes. |
 | [`FloatingActionButton`](#81-estructura-con-scaffold) | Botón circular flotante para la acción principal (añadir). |
 | [`Snackbar`](#82-mensajes-con-snackbar) | Mensaje breve en la parte inferior. |
 | [`LaunchedEffect`](#82-mensajes-con-snackbar) | Ejecuta una acción cuando cambia un valor, sin bloquear la pantalla. |
-| [Fragment](#9-fragmentos-y-navegación) | Pieza de pantalla del sistema clásico; en Compose se sustituye por composables. |
-| [Navigation Compose](#9-fragmentos-y-navegación) | Librería para cambiar entre pantallas. |
+| [Fragment](#91-qué-era-un-fragment) | Pieza de pantalla del sistema clásico; en Compose se sustituye por composables. |
+| [Navigation Compose](#93-navigation-compose) | Librería para cambiar entre pantallas. |
 
 ---
 
@@ -723,7 +724,7 @@ Línea a línea:
 - **`onHotelClick = { hotel -> idSeleccionado = hotel.id }`**: cuando la lista avisa, se guarda el `id` → Compose redibuja → aparece el detalle.
 - **`onVolver = { idSeleccionado = null }`**: cuando el detalle avisa, se borra el `id` → aparece la lista.
 
-> **¿Por qué se guarda el `id` y no el `Hotel`?** `rememberSaveable` solo sabe guardar tipos sencillos (`String`, `Int`, `Boolean`...). Además, en el apartado 8.5 los hoteles se podrán editar: guardando el `id` y buscando el hotel cada vez, el detalle siempre muestra los datos actualizados.
+> **¿Por qué se guarda el `id` y no el `Hotel`?** `rememberSaveable` solo sabe guardar tipos sencillos (`String`, `Int`, `Boolean`...). Además, en el apartado 7.3 los hoteles se podrán editar: guardando el `id` y buscando el hotel cada vez, el detalle siempre muestra los datos actualizados.
 >
 > **¿Por qué `hotelesDeEjemplo` está fuera de la función?** Cada `Hotel` genera un `id` nuevo al crearse (apartado 3.2). Si la lista se creara dentro de `AppPantallas`, los `id` cambiarían en cada recomposición y nunca coincidirían con el guardado. Fuera de la función se crea una sola vez. Más adelante esta lista la proporcionará el repositorio (apartado 6.2).
 
@@ -1183,9 +1184,9 @@ En los apartados 7 y 8 se añaden diálogos para crear, editar y confirmar el bo
 data class HospedajeUiState(
     val hotelList: List<Hotel> = emptyList(),
     val selectedHotelId: String? = null,
-    val hotelToEdit: Hotel? = null,        // 7.2: hotel en edición
-    val hotelToDelete: Hotel? = null,      // 7.3: hotel pendiente de confirmar borrado
-    val isAddDialogOpen: Boolean = false,  // 7.2: diálogo de alta abierto
+    val hotelToEdit: Hotel? = null,        // 7.3: hotel en edición
+    val hotelToDelete: Hotel? = null,      // 7.2: hotel pendiente de confirmar borrado
+    val isAddDialogOpen: Boolean = false,  // 7.3: diálogo de alta abierto
     val userMessage: String? = null        // 8.2: mensaje para el Snackbar
 )
 ```
@@ -1194,9 +1195,9 @@ data class HospedajeUiState(
 |---|---|---|
 | `hotelList` | Hoteles que se muestran | 6.3 |
 | `selectedHotelId` | Hotel cuyo detalle se ve; `null` = se ve la lista | 6.3 |
-| `hotelToEdit` | Hotel que se está editando; `null` si no hay ninguna edición en curso | 7.2 |
-| `hotelToDelete` | Hotel pendiente de confirmar su borrado; `null` si no hay ninguno | 7.3 |
-| `isAddDialogOpen` | `true` mientras el diálogo de alta está abierto | 7.2 |
+| `hotelToEdit` | Hotel que se está editando; `null` si no hay ninguna edición en curso | 7.3 |
+| `hotelToDelete` | Hotel pendiente de confirmar su borrado; `null` si no hay ninguno | 7.2 |
+| `isAddDialogOpen` | `true` mientras el diálogo de alta está abierto | 7.3 |
 | `userMessage` | Mensaje pendiente de mostrar en el `Snackbar`; `null` si no hay ninguno | 8.2 |
 
 Fíjate en que los diálogos también se controlan con el estado: abrir un diálogo es cambiar un dato del `UiState`.
@@ -1223,7 +1224,7 @@ class HospedajeViewModel : ViewModel() {
         uiState = uiState.copy(selectedHotelId = null)
     }
 
-    // ---------- Alta (7.2) ----------
+    // ---------- Alta (7.3) ----------
 
     fun onAddHotelClicked() {
         uiState = uiState.copy(isAddDialogOpen = true)
@@ -1249,7 +1250,7 @@ class HospedajeViewModel : ViewModel() {
         )
     }
 
-    // ---------- Edición (7.2) ----------
+    // ---------- Edición (7.3) ----------
 
     fun onEditHotelClicked(hotel: Hotel) {
         uiState = uiState.copy(hotelToEdit = hotel)
@@ -1276,7 +1277,7 @@ class HospedajeViewModel : ViewModel() {
         )
     }
 
-    // ---------- Borrado con confirmación (7.3) ----------
+    // ---------- Borrado con confirmación (7.2) ----------
 
     fun onDeleteHotelClicked(hotel: Hotel) {
         uiState = uiState.copy(hotelToDelete = hotel)
@@ -1318,31 +1319,410 @@ Todas las funciones siguen los dos patrones del apartado 6.4: o solo cambian el 
 
 ## 7. Diálogos declarativos
 
+Al final del apartado 6, la aplicación ya tiene lista, detalle y borrado, pero le faltan dos cosas:
+
+1. Al pulsar «Borrar», el hotel desaparece al instante. Un toque por error borra datos sin posibilidad de arrepentirse.
+2. No se pueden añadir ni editar hoteles: no hay ningún formulario.
+
+Las dos se resuelven con diálogos: una ventana de confirmación antes de borrar (7.2) y una ventana con un formulario para añadir y editar (7.3 y 7.4).
+
 ### 7.1 Cómo se muestra un diálogo
 
-En el sistema clásico había que crear un `DialogFragment` y mostrarlo con el `FragmentManager`. En Compose un diálogo es una función composable más, y se muestra solo si el estado lo indica:
+En el apartado 2.3 viste que un `AlertDialog` no aparece por escribirlo: se dibuja solo si una variable de estado lo indica.
 
 ```kotlin
-if (uiState.isAddDialogOpen) {
-    AddEditHotelDialog(/* ... */)
+var mostrarDialogo by remember { mutableStateOf(false) }
+
+if (mostrarDialogo) {
+    AlertDialog(/* ... */)
 }
 ```
 
-Si la condición es verdadera, el diálogo está en la composición; si pasa a falsa, desaparece. No hay que "cerrarlo" a mano: se cambia el estado.
+Si la condición es verdadera, el diálogo se dibuja; si pasa a falsa, desaparece. No hay que "cerrarlo" a mano: se cambia el estado.
 
-En esta unidad hay tres casos:
+Con la arquitectura MVVM, esa variable deja de estar en la pantalla y pasa al `UiState` del ViewModel, como el resto del estado. Para el diálogo de confirmación de borrado, el dato es `hotelToDelete`:
 
-| Diálogo | Se muestra cuando… |
-|---|---|
-| Alta de hotel | `isAddDialogOpen` es `true` |
-| Edición de hotel | `hotelToEdit` no es `null` |
-| Confirmar borrado | `hotelToDelete` no es `null` |
+![Con hotelToDelete a null no se dibuja el diálogo; al pulsar Borrar, el ViewModel guarda el hotel en hotelToDelete y se dibuja ConfirmDeleteDialog encima del detalle; al cancelar vuelve a null](./assets/img/dialogo_estado.svg)
 
-### 7.2 Diálogo de alta y edición
+- Mientras `hotelToDelete` vale `null`, no hay diálogo.
+- Al pulsar «Borrar», el ViewModel guarda en `hotelToDelete` el hotel que se quiere borrar, y el diálogo aparece encima del detalle.
+- Al cancelar, `hotelToDelete` vuelve a `null` y el diálogo desaparece sin borrar nada.
 
-Se reutiliza el mismo diálogo para añadir y editar. Si recibe un hotel (`hotelToEdit`), rellena los campos con sus datos; si no, aparecen vacíos.
+Fíjate en que `hotelToDelete` no es un `Boolean`, sino un `Hotel?`. Así sirve para dos cosas a la vez: indica si el diálogo está abierto (no es `null`) y qué hotel se va a borrar.
 
-Primero, un pequeño composable para los campos del formulario. Muestra el mensaje de error debajo del campo y lo marca en rojo cuando `error` no es `null`:
+En esta unidad hay tres diálogos, y cada uno depende de un dato del `UiState`:
+
+| Diálogo | Dato del `UiState` | Se dibuja cuando… | Apartado |
+|---|---|---|---|
+| Confirmar borrado | `hotelToDelete: Hotel?` | no es `null` | 7.2 |
+| Alta de hotel | `isAddDialogOpen: Boolean` | es `true` | 7.3 |
+| Edición de hotel | `hotelToEdit: Hotel?` | no es `null` | 7.3 |
+
+### 7.2 Diálogo de confirmación de borrado
+
+Se construye en cuatro pasos, partiendo del código del apartado 6.5.
+
+#### Paso 1. Añadir el dato al `UiState`
+
+```kotlin
+data class HospedajeUiState(
+    val hotelList: List<Hotel> = emptyList(),
+    val selectedHotelId: String? = null,
+    val hotelToDelete: Hotel? = null      // NUEVO: hotel pendiente de confirmar
+)
+```
+
+#### Paso 2. Cambiar el borrado en el ViewModel
+
+La función `onDeleteHotel` del apartado 6.4 borraba directamente. Ahora el borrado se divide en tres funciones:
+
+```kotlin
+// El usuario pulsa «Borrar»: solo se apunta qué hotel se quiere borrar
+fun onDeleteHotelClicked(hotel: Hotel) {
+    uiState = uiState.copy(hotelToDelete = hotel)
+}
+
+// El usuario pulsa «Cancelar» o toca fuera del diálogo
+fun onDismissDeleteDialog() {
+    uiState = uiState.copy(hotelToDelete = null)
+}
+
+// El usuario pulsa «Eliminar»: ahora sí se borra
+fun onConfirmDeleteHotel() {
+    val target = uiState.hotelToDelete ?: return
+    HotelRepository.deleteHotel(target.id)
+    uiState = uiState.copy(
+        hotelList = HotelRepository.getHotels(),
+        hotelToDelete = null,
+        selectedHotelId = null
+    )
+}
+```
+
+- `onDeleteHotelClicked` no toca el repositorio: solo abre el diálogo.
+- `onConfirmDeleteHotel` sigue el patrón del apartado 6.4: borra en el repositorio y recarga la lista. Además, cierra el diálogo (`hotelToDelete = null`) y vuelve a la lista (`selectedHotelId = null`).
+- `?: return`: si no hay ningún hotel pendiente de borrar, la función termina sin hacer nada.
+
+#### Paso 3. Crear el diálogo
+
+Crea el archivo `Dialogos.kt`, donde irán todos los diálogos de la aplicación:
+
+```kotlin
+@Composable
+fun ConfirmDeleteDialog(
+    hotel: Hotel,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Eliminar hotel") },
+        text = { Text("¿Seguro que quieres eliminar ${hotel.name}?") },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirm,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Text("Eliminar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
+```
+
+- El diálogo sigue la misma regla que las pantallas: recibe datos (`hotel`) y avisa con eventos (`onConfirm`, `onDismiss`). No borra nada por su cuenta.
+- `onDismissRequest` se ejecuta cuando el usuario toca fuera del diálogo o pulsa Atrás. Aquí hace lo mismo que «Cancelar».
+- El botón «Eliminar» usa el color `error` del tema para indicar que la acción no se puede deshacer.
+
+#### Paso 4. Conectarlo en `AppPantallas`
+
+En `AppPantallas` cambian dos cosas: el evento `onBorrar` del detalle ya no borra, sino que abre el diálogo, y se añade el diálogo después del `if/else` de las pantallas:
+
+```kotlin
+    Box(modifier = Modifier.safeDrawingPadding()) {
+        if (hotelSeleccionado == null) {
+            PantallaPrincipal(/* igual que en 6.5 */)
+        } else {
+            PantallaDetalle(
+                hotel = hotelSeleccionado,
+                onVolver = { viewModel.onBackToList() },
+                onBorrar = { viewModel.onDeleteHotelClicked(hotelSeleccionado) }   // CAMBIA
+            )
+        }
+    }
+
+    // NUEVO: el diálogo se dibuja encima de la pantalla que esté visible
+    uiState.hotelToDelete?.let { hotel ->
+        ConfirmDeleteDialog(
+            hotel = hotel,
+            onDismiss = { viewModel.onDismissDeleteDialog() },
+            onConfirm = { viewModel.onConfirmDeleteHotel() }
+        )
+    }
+```
+
+- `uiState.hotelToDelete?.let { hotel -> ... }` ejecuta el bloque solo si `hotelToDelete` no es `null`, y dentro `hotel` ya es un `Hotel` (no un `Hotel?`). Es la forma habitual de mostrar un diálogo que depende de un dato opcional.
+- El diálogo se coloca en `AppPantallas` y no dentro de `PantallaDetalle` porque es `AppPantallas` quien habla con el ViewModel. `PantallaDetalle` sigue sin saber nada de diálogos: solo avisa de que se ha pulsado «Borrar».
+
+#### Recorrido: borrar un hotel con confirmación
+
+| Paso | Qué ocurre | Estado después |
+|---|---|---|
+| 1 | En el detalle, el usuario pulsa «Borrar». `AppPantallas` llama a `viewModel.onDeleteHotelClicked(hotel)`. | `hotelToDelete = hotel` |
+| 2 | Compose redibuja: como `hotelToDelete` no es `null`, aparece `ConfirmDeleteDialog`. Todavía no se ha borrado nada. | — |
+| 3a | Si pulsa «Cancelar»: `onDismissDeleteDialog()`. El diálogo desaparece y el hotel sigue ahí. | `hotelToDelete = null` |
+| 3b | Si pulsa «Eliminar»: `onConfirmDeleteHotel()`. El repositorio borra el hotel y se recarga la lista. | `hotelToDelete = null`, `selectedHotelId = null` |
+| 4 | Compose redibuja: el diálogo desaparece y se ve la lista sin el hotel borrado. | — |
+
+### 7.3 Diálogo de alta y edición
+
+Para añadir y editar se usa un único diálogo con un formulario. La diferencia entre ambas operaciones es que, al editar, los campos aparecen rellenos con los datos del hotel. En este apartado se construye el formulario sin validar; la validación se añade en el 7.4.
+
+#### Paso 1. Añadir los datos al `UiState`
+
+```kotlin
+data class HospedajeUiState(
+    val hotelList: List<Hotel> = emptyList(),
+    val selectedHotelId: String? = null,
+    val hotelToDelete: Hotel? = null,
+    val isAddDialogOpen: Boolean = false,  // NUEVO: diálogo de alta abierto
+    val hotelToEdit: Hotel? = null         // NUEVO: hotel que se está editando
+)
+```
+
+- Para el alta basta un `Boolean`: el diálogo empieza vacío y no necesita saber nada más.
+- Para la edición se usa un `Hotel?`, igual que en el borrado: indica si el diálogo está abierto y qué hotel se edita, para rellenar los campos con sus datos.
+
+#### Paso 2. Añadir las funciones al ViewModel
+
+```kotlin
+private const val DEFAULT_IMAGE = "https://picsum.photos/id/1043/300/300"
+
+// ---------- Alta ----------
+
+fun onAddHotelClicked() {
+    uiState = uiState.copy(isAddDialogOpen = true)
+}
+
+fun onDismissAddDialog() {
+    uiState = uiState.copy(isAddDialogOpen = false)
+}
+
+fun onInsertHotel(name: String, city: String, province: String, phone: String, image: String) {
+    val newHotel = Hotel(
+        name = name,
+        city = city,
+        province = province,
+        phone = phone,
+        image = image.ifBlank { DEFAULT_IMAGE }
+    )
+    HotelRepository.addHotel(newHotel)
+    uiState = uiState.copy(
+        hotelList = HotelRepository.getHotels(),
+        isAddDialogOpen = false
+    )
+}
+
+// ---------- Edición ----------
+
+fun onEditHotelClicked(hotel: Hotel) {
+    uiState = uiState.copy(hotelToEdit = hotel)
+}
+
+fun onDismissEditDialog() {
+    uiState = uiState.copy(hotelToEdit = null)
+}
+
+fun onUpdateHotel(id: String, name: String, city: String, province: String, phone: String, image: String) {
+    val existingHotel = HotelRepository.getHotelById(id) ?: return
+    val updatedHotel = existingHotel.copy(
+        name = name,
+        city = city,
+        province = province,
+        phone = phone,
+        image = image.ifBlank { DEFAULT_IMAGE }
+    )
+    HotelRepository.updateHotel(updatedHotel)
+    uiState = uiState.copy(
+        hotelList = HotelRepository.getHotels(),
+        hotelToEdit = null
+    )
+}
+```
+
+Son los dos patrones del apartado 6.4:
+
+| Función | Patrón | Qué hace |
+|---|---|---|
+| `onAddHotelClicked`, `onEditHotelClicked` | Solo cambia el estado | Abre el diálogo |
+| `onDismissAddDialog`, `onDismissEditDialog` | Solo cambia el estado | Cierra el diálogo sin guardar |
+| `onInsertHotel`, `onUpdateHotel` | Repositorio + recargar | Guarda los datos, recarga la lista y cierra el diálogo |
+
+- `image.ifBlank { DEFAULT_IMAGE }`: si la URL de la imagen se deja vacía, se usa una imagen por defecto.
+- Al editar, `existingHotel.copy(...)` crea un hotel con el mismo `id` y los datos nuevos, y `updateHotel` sustituye al antiguo. Como el detalle busca el hotel por su `id` (apartado 6.3), muestra los datos nuevos en cuanto se guarda.
+
+#### Paso 3. Crear el diálogo con el formulario
+
+En `Dialogos.kt`:
+
+```kotlin
+@Composable
+fun AddEditHotelDialog(
+    hotelToEdit: Hotel? = null,
+    onDismiss: () -> Unit,
+    onConfirm: (name: String, city: String, province: String, phone: String, image: String) -> Unit
+) {
+    // Estado local del formulario: un valor por campo
+    var name by remember { mutableStateOf(hotelToEdit?.name ?: "") }
+    var city by remember { mutableStateOf(hotelToEdit?.city ?: "") }
+    var province by remember { mutableStateOf(hotelToEdit?.province ?: "") }
+    var phone by remember { mutableStateOf(hotelToEdit?.phone ?: "") }
+    var image by remember { mutableStateOf(hotelToEdit?.image ?: "") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(if (hotelToEdit == null) "Nuevo hospedaje" else "Editar hospedaje")
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                OutlinedTextField(value = name, onValueChange = { name = it }, label = { Text("Nombre") }, singleLine = true)
+                OutlinedTextField(value = city, onValueChange = { city = it }, label = { Text("Ciudad") }, singleLine = true)
+                OutlinedTextField(value = province, onValueChange = { province = it }, label = { Text("Provincia") }, singleLine = true)
+                OutlinedTextField(value = phone, onValueChange = { phone = it }, label = { Text("Teléfono") }, singleLine = true)
+                OutlinedTextField(value = image, onValueChange = { image = it }, label = { Text("URL de la imagen") }, singleLine = true)
+            }
+        },
+        confirmButton = {
+            Button(onClick = { onConfirm(name, city, province, phone, image) }) {
+                Text(if (hotelToEdit == null) "Guardar" else "Actualizar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
+```
+
+- Un solo diálogo para las dos operaciones: si `hotelToEdit` es `null`, es un alta (título «Nuevo hospedaje», campos vacíos); si recibe un hotel, es una edición (título «Editar hospedaje», campos rellenos).
+- `hotelToEdit?.name ?: ""` significa: el nombre del hotel si existe; si `hotelToEdit` es `null`, un texto vacío. El operador `?:` (*elvis*) da un valor por defecto.
+- El estado del formulario se guarda con `remember` dentro del diálogo, no en el ViewModel. Es un estado temporal: lo que el usuario va escribiendo solo importa mientras el diálogo está abierto. El ViewModel no recibe nada hasta que se pulsa «Guardar».
+- Al pulsar «Guardar», el diálogo no guarda el hotel: llama a `onConfirm(...)` con los textos escritos, y es `AppPantallas` quien decide qué hacer con ellos.
+- Al pulsar «Cancelar», el diálogo se cierra y lo escrito se pierde, porque el estado local desaparece con el diálogo. No se aplica ningún cambio.
+
+#### Paso 4. Conectarlo en `AppPantallas` y en las pantallas
+
+Las pantallas necesitan un botón para cada operación. Añade un evento nuevo a cada una:
+
+| Pantalla | Evento nuevo | Botón |
+|---|---|---|
+| `PantallaPrincipal` | `onAddClick: () -> Unit` | «Añadir hotel», debajo del título |
+| `PantallaDetalle` | `onEditar: () -> Unit` | «Editar», junto a «Borrar» |
+
+El botón «Añadir hotel» es provisional: en el apartado 8.1 se sustituye por un botón flotante.
+
+En `AppPantallas` se conectan los eventos y se añaden los dos usos del diálogo, junto al de borrado:
+
+```kotlin
+        if (hotelSeleccionado == null) {
+            PantallaPrincipal(
+                hoteles = uiState.hotelList,
+                onHotelClick = { hotel -> viewModel.onHotelClicked(hotel) },
+                onAddClick = { viewModel.onAddHotelClicked() }                    // NUEVO
+            )
+        } else {
+            PantallaDetalle(
+                hotel = hotelSeleccionado,
+                onVolver = { viewModel.onBackToList() },
+                onEditar = { viewModel.onEditHotelClicked(hotelSeleccionado) },   // NUEVO
+                onBorrar = { viewModel.onDeleteHotelClicked(hotelSeleccionado) }
+            )
+        }
+
+    // ... (diálogo de borrado del apartado 7.2)
+
+    // NUEVO: diálogo de alta
+    if (uiState.isAddDialogOpen) {
+        AddEditHotelDialog(
+            onDismiss = { viewModel.onDismissAddDialog() },
+            onConfirm = { name, city, province, phone, image ->
+                viewModel.onInsertHotel(name, city, province, phone, image)
+            }
+        )
+    }
+
+    // NUEVO: diálogo de edición (el mismo composable, con el hotel a editar)
+    uiState.hotelToEdit?.let { hotel ->
+        AddEditHotelDialog(
+            hotelToEdit = hotel,
+            onDismiss = { viewModel.onDismissEditDialog() },
+            onConfirm = { name, city, province, phone, image ->
+                viewModel.onUpdateHotel(hotel.id, name, city, province, phone, image)
+            }
+        )
+    }
+```
+
+`onConfirm` recibe cinco parámetros. La lambda `{ name, city, province, phone, image -> ... }` les da nombre y los pasa al ViewModel. En la edición se añade además `hotel.id`, para que el ViewModel sepa qué hotel sustituir.
+
+### 7.4 Validar el formulario
+
+Con el diálogo del apartado 7.3 se puede guardar un hotel sin nombre, o con un teléfono como «abc». Hay que comprobar los datos antes de guardar y, si algo está mal, explicar qué falla junto al campo correspondiente (apartado 2.4).
+
+Las reglas del ejemplo son:
+
+| Campo | Regla | Mensaje si no se cumple |
+|---|---|---|
+| Nombre | Obligatorio | «El nombre es obligatorio» |
+| Ciudad | Obligatoria | «La ciudad es obligatoria» |
+| Provincia | Obligatoria | «La provincia es obligatoria» |
+| Teléfono | Opcional; si se escribe, solo números y espacios, y 9 cifras | «Solo se admiten números y espacios» o «El teléfono debe tener 9 cifras» |
+| URL de la imagen | Opcional | — |
+
+#### Paso 1. Calcular el error de cada campo
+
+Dentro de `AddEditHotelDialog`, después de los `remember` de los campos:
+
+```kotlin
+    val nameError = if (name.isBlank()) "El nombre es obligatorio" else null
+    val cityError = if (city.isBlank()) "La ciudad es obligatoria" else null
+    val provinceError = if (province.isBlank()) "La provincia es obligatoria" else null
+    val phoneError = when {
+        phone.isBlank() -> null // el teléfono es opcional
+        phone.any { !it.isDigit() && it != ' ' } -> "Solo se admiten números y espacios"
+        phone.count { it.isDigit() } != 9 -> "El teléfono debe tener 9 cifras"
+        else -> null
+    }
+
+    val isFormValid = nameError == null && cityError == null &&
+        provinceError == null && phoneError == null
+```
+
+- Cada variable `...Error` contiene el mensaje de error del campo, o `null` si el dato es correcto.
+- `isBlank()` es `true` si el texto está vacío o solo tiene espacios.
+- `when` comprueba las condiciones en orden y se queda con la primera que se cumple.
+- `isFormValid` es `true` solo si ningún campo tiene error.
+
+Como estas variables se calculan con los valores actuales de los campos, se recalculan solas cada vez que el usuario escribe.
+
+#### Paso 2. Mostrar el error debajo del campo
+
+`OutlinedTextField` tiene dos parámetros para esto:
+
+- `isError`: si es `true`, el campo se dibuja con el color `error` del tema.
+- `supportingText`: un texto que aparece debajo del campo; aquí, el mensaje de error.
+
+Para no repetirlos en cada campo, se crea un composable `FormField` en `Dialogos.kt`:
 
 ```kotlin
 @Composable
@@ -1368,10 +1748,42 @@ fun FormField(
 }
 ```
 
-- **`isError`**: si es `true`, el campo se dibuja con el color `error` del tema.
-- **`supportingText`**: texto de ayuda que aparece debajo del campo. Aquí se usa para el mensaje de error; si no hay error se pasa `null` y no ocupa espacio.
+Si `error` es `null`, el campo se ve normal y `supportingText` no ocupa espacio. Si contiene un mensaje, el campo se pinta en rojo y el mensaje aparece debajo.
 
-Y el diálogo:
+#### Paso 3. Decidir cuándo mostrar los errores
+
+Si los errores se mostraran desde el principio, el diálogo de alta se abriría con todos los campos en rojo antes de que el usuario escriba nada. Por eso se añade una variable más:
+
+```kotlin
+    var showErrors by remember { mutableStateOf(false) }
+```
+
+- Al abrir el diálogo vale `false`: no se muestra ningún error.
+- Al pulsar «Guardar» con algún error, pasa a `true` y cada campo incorrecto muestra su mensaje.
+- A partir de ahí, los mensajes se actualizan mientras el usuario escribe y desaparecen cuando el dato es correcto.
+
+El botón «Guardar» queda así:
+
+```kotlin
+            Button(
+                onClick = {
+                    if (isFormValid) {
+                        onConfirm(name.trim(), city.trim(), province.trim(), phone.trim(), image.trim())
+                    } else {
+                        showErrors = true
+                    }
+                }
+            ) {
+                Text(if (hotelToEdit == null) "Guardar" else "Actualizar")
+            }
+```
+
+- Si el formulario es válido, se llama a `onConfirm`. `trim()` quita los espacios del principio y del final de cada texto.
+- Si no lo es, no se guarda nada y se activan los mensajes de error.
+
+Otra opción sería desactivar el botón (`enabled = isFormValid`) mientras haya errores, pero un botón desactivado no explica al usuario qué le falta.
+
+#### El diálogo completo
 
 ```kotlin
 @Composable
@@ -1386,14 +1798,13 @@ fun AddEditHotelDialog(
     var phone by remember { mutableStateOf(hotelToEdit?.phone ?: "") }
     var image by remember { mutableStateOf(hotelToEdit?.image ?: "") }
 
-    // Los errores se muestran a partir del primer intento de guardar
     var showErrors by remember { mutableStateOf(false) }
 
     val nameError = if (name.isBlank()) "El nombre es obligatorio" else null
     val cityError = if (city.isBlank()) "La ciudad es obligatoria" else null
     val provinceError = if (province.isBlank()) "La provincia es obligatoria" else null
     val phoneError = when {
-        phone.isBlank() -> null // el teléfono es opcional
+        phone.isBlank() -> null
         phone.any { !it.isDigit() && it != ' ' } -> "Solo se admiten números y espacios"
         phone.count { it.isDigit() } != 9 -> "El teléfono debe tener 9 cifras"
         else -> null
@@ -1405,7 +1816,7 @@ fun AddEditHotelDialog(
     AlertDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(if (hotelToEdit == null) "Nuevo Hospedaje" else "Editar Hospedaje")
+            Text(if (hotelToEdit == null) "Nuevo hospedaje" else "Editar hospedaje")
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -1462,107 +1873,115 @@ fun AddEditHotelDialog(
 }
 ```
 
-Cómo funciona:
-
-- **Estado local del formulario**: cada campo tiene su propio estado con `remember` (apartado 14.1 de la UD2). Es un estado temporal que solo importa mientras el diálogo está abierto, por eso no se guarda en el ViewModel. Hasta pulsar «Guardar» el ViewModel no sabe nada de lo escrito.
-- **Valor inicial**: `hotelToEdit?.name ?: ""` significa «el nombre del hotel si existe; si es `null`, un texto vacío». El operador `?:` (*elvis*) da un valor por defecto.
-- **Validación**: cada campo tiene su propio mensaje de error (`nameError`, `phoneError`...), que vale `null` cuando el dato es correcto. `isFormValid` es `true` solo si ninguno tiene error. Los campos marcados con `*` son obligatorios; el teléfono es opcional, pero si se escribe debe tener 9 cifras.
-- **¿Por qué no desactivar el botón?** Un botón desactivado no explica qué falta. Al pulsar «Guardar» con errores, `showErrors` pasa a `true` y cada campo incorrecto muestra su mensaje. A partir de ahí, los mensajes se actualizan mientras el usuario escribe. Así el formulario no aparece lleno de errores nada más abrirlo.
-- **`trim()`**: elimina los espacios del principio y del final antes de guardar.
-- **Partes del `AlertDialog`**: `title` (título), `text` (contenido), `confirmButton` (acción principal) y `dismissButton` (cancelar).
-- **`onDismissRequest`**: se ejecuta cuando el usuario toca fuera del diálogo o pulsa atrás.
-- **Eventos hacia fuera**: el diálogo no guarda el hotel. Al pulsar el botón llama a `onConfirm(...)` con los datos y es quien lo usa (la pantalla) quien decide qué hacer con ellos.
-- **Cancelar**: «Cancelar» y `onDismissRequest` solo llaman a `onDismiss`. Lo escrito se descarta, porque el estado local desaparece al cerrarse el diálogo, y el usuario sigue en la pantalla desde la que lo abrió.
-
-### 7.3 Diálogo de confirmación de borrado
-
-Borrar es una acción destructiva: se pide confirmación antes de ejecutarla.
-
-```kotlin
-@Composable
-fun ConfirmDeleteDialog(
-    hotel: Hotel,
-    onDismiss: () -> Unit,
-    onConfirm: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Eliminar Registro") },
-        text = { Text("¿Está seguro de que desea eliminar el hospedaje '${hotel.name}'?") },
-        confirmButton = {
-            TextButton(
-                onClick = onConfirm,
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.error
-                )
-            ) {
-                Text("Eliminar")
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cancelar")
-            }
-        }
-    )
-}
-```
-
-El botón de eliminar usa el color `error` del tema para avisar visualmente de que la acción es peligrosa. Este diálogo no tiene estado propio: recibe el hotel y dos eventos.
+Los campos obligatorios llevan un `*` en la etiqueta para que el usuario sepa cuáles debe rellenar. La validación ocurre entera dentro del diálogo: el ViewModel solo recibe datos que ya son correctos.
 
 ---
 
-## 8. La pantalla principal
+## 8. Scaffold y Snackbar
+
+La aplicación ya hace el CRUD completo, pero las pantallas todavía son muy básicas:
+
+- No tienen barra superior con el título.
+- El botón «Añadir hotel» del apartado 7.3 es provisional.
+- Para volver desde el detalle solo hay un botón «Volver» dentro del contenido.
+- Después de guardar o borrar, el usuario no recibe ninguna confirmación.
+
+Este apartado lo resuelve con `Scaffold` (8.1) y `Snackbar` (8.2), y termina con el código completo de la aplicación (8.3).
 
 ### 8.1 Estructura con Scaffold
 
-`Scaffold` es la plantilla de una pantalla Material: ofrece huecos para la barra superior (`topBar`), el botón flotante (`floatingActionButton`), los mensajes (`snackbarHost`) y el contenido principal. Se encarga de colocar cada cosa sin que se solapen.
+`Scaffold` es el composable que organiza una pantalla de Material Design. Tiene un hueco para cada elemento habitual y se encarga de colocarlos sin que se solapen:
+
+| Parámetro | Qué se coloca | En el ejemplo |
+|---|---|---|
+| `topBar` | Barra superior | `TopAppBar` con el título de la pantalla |
+| `floatingActionButton` | Botón flotante, abajo a la derecha | Botón «+» para añadir un hotel |
+| `snackbarHost` | Zona donde aparecen los mensajes | Se usa en el apartado 8.2 |
+| Bloque final `{ paddingValues -> ... }` | El contenido de la pantalla | La lista o el detalle |
 
 ```kotlin
 Scaffold(
-    topBar = { TopAppBar(title = { Text("Gestión de Hospedajes") }) },
-    floatingActionButton = { FloatingActionButton(onClick = { }) { /* icono */ } },
-    snackbarHost = { SnackbarHost(snackbarHostState) }
+    topBar = { TopAppBar(title = { Text("Mis hospedajes") }) },
+    floatingActionButton = {
+        FloatingActionButton(onClick = onAddClick) {
+            Icon(Icons.Default.Add, contentDescription = "Agregar hospedaje")
+        }
+    }
 ) { paddingValues ->
-    // contenido de la pantalla
+    // contenido de la pantalla, con Modifier.padding(paddingValues)
 }
 ```
 
-El bloque final recibe `paddingValues`: el espacio que ocupan las barras. Hay que aplicarlo (`Modifier.padding(paddingValues)`) para que el contenido no quede tapado por ellas.
+- `paddingValues` es el espacio que ocupan la barra superior y las barras del sistema. Hay que aplicarlo al contenido con `Modifier.padding(paddingValues)`; si no, la barra superior tapa la parte de arriba de la lista.
+- Como `Scaffold` ya respeta las barras del sistema, el `Box(Modifier.safeDrawingPadding())` que había en `AppPantallas` (apartado 5.5) deja de ser necesario.
+- `TopAppBar` es un componente experimental de Material 3. La función que lo usa debe llevar `@OptIn(ExperimentalMaterial3Api::class)`; si falta, Android Studio lo marca en rojo y lo añade con *Alt + Enter*.
+- El `FloatingActionButton` se reserva para la acción principal de la pantalla. En la lista es «Añadir», así que sustituye al botón provisional del apartado 7.3.
 
-El `FloatingActionButton` (botón flotante) se reserva para la acción principal de la pantalla; aquí, añadir un hospedaje.
+Cada pantalla tiene su propio `Scaffold`, con la barra que le corresponde:
+
+| Pantalla | `topBar` | `floatingActionButton` |
+|---|---|---|
+| `PantallaPrincipal` | Título «Mis hospedajes» | «+» para añadir |
+| `PantallaDetalle` | Nombre del hotel y flecha para volver | No tiene |
+
+En la barra del detalle, la flecha de volver va en el parámetro `navigationIcon` de `TopAppBar`, que es el hueco para el icono de la izquierda:
+
+```kotlin
+TopAppBar(
+    title = { Text(hotel.name) },
+    navigationIcon = {
+        IconButton(onClick = onVolver) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Volver a la lista"
+            )
+        }
+    }
+)
+```
+
+`Icons.AutoMirrored.Filled.ArrowBack` es la flecha hacia la izquierda. *AutoMirrored* significa que se invierte automáticamente en idiomas que se escriben de derecha a izquierda. Con esta flecha, el botón «Volver» del contenido deja de ser necesario.
+
+El código completo de las dos pantallas está en el apartado 8.3.
 
 ### 8.2 Mensajes con Snackbar
 
-Cuando el usuario termina una acción conviene confirmárselo con un mensaje breve (`Snackbar`). Para mostrarlo hace falta un `SnackbarHostState` y un `LaunchedEffect`:
+Después de guardar o borrar, conviene confirmar al usuario que la acción se ha hecho, con un mensaje breve como «Hospedaje borrado». Para eso se usa un `Snackbar` (apartado 2.2).
+
+El mensaje es estado de la pantalla, así que lo decide el ViewModel. Se añade en cuatro pasos.
+
+#### Paso 1. Añadir el mensaje al `UiState`
 
 ```kotlin
-val snackbarHostState = remember { SnackbarHostState() }
+    val userMessage: String? = null   // NUEVO: mensaje pendiente de mostrar
+```
 
-LaunchedEffect(uiState.userMessage) {
-    uiState.userMessage?.let { message ->
-        snackbarHostState.showSnackbar(message)
-        viewModel.onUserMessageShown()
-    }
+Vale `null` mientras no hay ningún mensaje que mostrar.
+
+#### Paso 2. Escribir el mensaje desde el ViewModel
+
+Las funciones que guardan o borran añaden un mensaje al estado. Por ejemplo, en `onConfirmDeleteHotel`:
+
+```kotlin
+    uiState = uiState.copy(
+        hotelList = HotelRepository.getHotels(),
+        hotelToDelete = null,
+        selectedHotelId = null,
+        userMessage = "Hospedaje '${target.name}' borrado"   // NUEVO
+    )
+```
+
+Lo mismo en `onInsertHotel` («Hospedaje añadido correctamente») y en `onUpdateHotel` («Hospedaje actualizado»). Además, se añade una función para borrar el mensaje una vez mostrado:
+
+```kotlin
+fun onUserMessageShown() {
+    uiState = uiState.copy(userMessage = null)
 }
 ```
 
-- **`SnackbarHostState`** controla qué mensaje se muestra. Se guarda con `remember` y se pasa al `SnackbarHost` del `Scaffold`.
-- **`LaunchedEffect(clave)`** ejecuta su bloque al aparecer el composable y cada vez que cambia la clave (aquí, `uiState.userMessage`). Es el sitio adecuado para acciones que no dependen de pulsar nada, como mostrar un mensaje (el `Snackbar` básico se ve en el apartado 16.2.3 de la UD2).
-- **`showSnackbar`** es una función que espera a que el mensaje desaparezca, por eso necesita ejecutarse dentro de un efecto.
-- **`onUserMessageShown()`** vuelve a poner el mensaje a `null` una vez mostrado. Sin este paso, el mensaje se volvería a mostrar al recomponer.
-
-### 8.3 Código completo de la pantalla
-
-Aquí se juntan todas las piezas: `Scaffold`, `LazyColumn`, tarjetas, botón flotante, `Snackbar` y diálogos.
+#### Paso 3. Mostrar el mensaje desde `AppPantallas`
 
 ```kotlin
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HospedajeScreen(
-    viewModel: HospedajeViewModel = viewModel()
-) {
-    val uiState = viewModel.uiState
     val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.userMessage) {
@@ -1571,130 +1990,50 @@ fun HospedajeScreen(
             viewModel.onUserMessageShown()
         }
     }
+```
 
+- `SnackbarHostState` es el objeto que controla qué mensaje se está mostrando. Se guarda con `remember`.
+- `showSnackbar(message)` muestra el mensaje y espera a que desaparezca. Es una función *suspend* (tarda un tiempo en terminar), por eso no se puede llamar directamente desde el código de un composable: necesita un efecto.
+- `LaunchedEffect(uiState.userMessage)` ejecuta su bloque al aparecer y cada vez que cambia el valor indicado entre paréntesis. Cuando el ViewModel escribe un mensaje nuevo, el bloque se ejecuta y lo muestra.
+- `onUserMessageShown()` devuelve el mensaje a `null`. Sin este paso, el mismo mensaje volvería a mostrarse, por ejemplo, al girar el móvil.
+
+El `SnackbarHostState` se crea en `AppPantallas` y no en cada pantalla porque el mensaje debe verse aunque cambie la pantalla. Al borrar un hotel desde el detalle, el mensaje «Hospedaje borrado» aparece cuando ya se está viendo la lista.
+
+#### Paso 4. Pasar el `SnackbarHostState` a las pantallas
+
+Cada pantalla recibe un parámetro más y lo coloca en su `Scaffold`:
+
+```kotlin
+@Composable
+fun PantallaPrincipal(
+    hoteles: List<Hotel>,
+    snackbarHostState: SnackbarHostState,   // NUEVO
+    onHotelClick: (Hotel) -> Unit,
+    onAddClick: () -> Unit
+) {
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Gestión de Hospedajes") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
-                )
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = { viewModel.onAddHotelClicked() },
-                containerColor = MaterialTheme.colorScheme.primary
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Agregar Hospedaje"
-                )
-            }
-        },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        // topBar y floatingActionButton como en 8.1
+        snackbarHost = { SnackbarHost(snackbarHostState) }   // NUEVO
     ) { paddingValues ->
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            if (uiState.hotelList.isEmpty()) {
-                Text(
-                    text = "No hay hospedajes registrados",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            } else {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    items(
-                        items = uiState.hotelList,
-                        key = { hotel -> hotel.id }
-                    ) { hotel ->
-                        HotelCard(
-                            hotel = hotel,
-                            onEditClick = { viewModel.onEditHotelClicked(hotel) },
-                            onDeleteClick = { viewModel.onDeleteHotelClicked(hotel) }
-                        )
-                    }
-                }
-            }
-        }
-
-        if (uiState.isAddDialogOpen) {
-            AddEditHotelDialog(
-                onDismiss = { viewModel.onDismissAddDialog() },
-                onConfirm = { name, city, province, phone, image ->
-                    viewModel.onInsertHotel(name, city, province, phone, image)
-                }
-            )
-        }
-
-        uiState.hotelToEdit?.let { hotel ->
-            AddEditHotelDialog(
-                hotelToEdit = hotel,
-                onDismiss = { viewModel.onDismissEditDialog() },
-                onConfirm = { name, city, province, phone, image ->
-                    viewModel.onUpdateHotel(hotel.id, name, city, province, phone, image)
-                }
-            )
-        }
-
-        uiState.hotelToDelete?.let { hotel ->
-            ConfirmDeleteDialog(
-                hotel = hotel,
-                onDismiss = { viewModel.onDismissDeleteDialog() },
-                onConfirm = { viewModel.onConfirmDeleteHotel() }
-            )
-        }
+        // ...
     }
 }
 ```
 
-Qué hace cada parte:
+`SnackbarHost` es el hueco del `Scaffold` donde se dibuja el mensaje, en la parte inferior de la pantalla. `PantallaDetalle` cambia de la misma forma.
 
-- **`viewModel()`**: obtiene el `ViewModel` de la pantalla. Se crea una sola vez y se conserva al girar el dispositivo.
-- **`viewModel.uiState`**: lee el estado del ViewModel. Como se guarda con `mutableStateOf`, la pantalla se redibuja cada vez que cambia.
-- **Lista vacía**: si no hay hoteles, se muestra un texto centrado en lugar de una lista vacía.
-- **`LazyColumn` con `key`**: dibuja una `HotelCard` por cada hotel (apartados 3.3 y 3.4).
-- **Eventos de la tarjeta**: `onEditClick` y `onDeleteClick` llaman al ViewModel pasándole el hotel pulsado.
-- **`uiState.hotelToEdit?.let { hotel -> ... }`**: ejecuta el bloque solo si el valor no es `null` y, dentro, `hotel` ya es un valor seguro. Es la forma habitual de mostrar un diálogo que depende de un objeto opcional.
+#### Recorrido: el mensaje tras borrar un hotel
 
-### 8.4 Recorrido de un evento
+| Paso | Qué ocurre |
+|---|---|
+| 1 | El usuario confirma el borrado. `onConfirmDeleteHotel()` borra el hotel y pone `userMessage = "Hospedaje 'Hotel Peñalta' borrado"`. |
+| 2 | Compose redibuja `AppPantallas`: se ve la lista, y como `userMessage` ha cambiado, se ejecuta el `LaunchedEffect`. |
+| 3 | `showSnackbar(...)` muestra el mensaje en la parte inferior de `PantallaPrincipal`. |
+| 4 | Cuando el mensaje desaparece, se llama a `onUserMessageShown()` y `userMessage` vuelve a `null`. |
 
-Para entender el flujo unidireccional, sigue qué ocurre al borrar un hotel:
+### 8.3 El código completo: lista y detalle con CRUD
 
-1. El usuario pulsa el icono de papelera de una `HotelCard`.
-2. La tarjeta ejecuta `onDeleteClick`, que llama a `viewModel.onDeleteHotelClicked(hotel)`.
-3. El ViewModel actualiza el estado: `hotelToDelete = hotel`.
-4. Compose detecta el cambio y recompone: como `hotelToDelete` ya no es `null`, aparece `ConfirmDeleteDialog`.
-5. El usuario pulsa «Eliminar»; el diálogo ejecuta `onConfirm`, que llama a `viewModel.onConfirmDeleteHotel()`.
-6. El ViewModel pide al repositorio que borre el hotel (`deleteHotel`), recarga la lista con `getHotels()`, pone `hotelToDelete = null` y establece `userMessage`.
-7. Compose recompone: el diálogo desaparece, la lista se actualiza y el `LaunchedEffect` muestra el `Snackbar`.
-
-En ningún momento la interfaz ha modificado un dato directamente: el evento sube, el estado cambia y la interfaz baja con el nuevo estado.
-
-### 8.5 Lista y detalle: editar y borrar desde el detalle
-
-Hasta ahora todo ocurría en una sola pantalla (`HospedajeScreen`), con los botones de editar y borrar en cada tarjeta. En muchas aplicaciones (y en el proyecto) la tarjeta solo abre una pantalla de detalle, y es en el detalle donde están las acciones de editar y eliminar.
-
-Para ello se juntan dos cosas que ya conoces:
-
-- **La navegación con estado del apartado 5**: los mismos archivos (`PantallaPrincipal.kt`, `PantallaDetalle.kt`, `AppPantallas.kt`) y la misma idea: una variable con el `id` seleccionado y un `if`.
-- **El ViewModel completo del apartado 6.6**: los datos, la navegación, los diálogos y los mensajes.
-
-Es la misma estructura del apartado 6.5, ampliada con los diálogos y el `Snackbar`. Respecto al apartado 5, la diferencia es dónde se guarda el `id` seleccionado: ya no en un `rememberSaveable`, sino en el `UiState` del ViewModel, que también sobrevive al giro de pantalla.
-
-| | Apartado 5 | Este apartado |
-|---|---|---|
-| Datos | `hotelesDeEjemplo` (fijos) | `uiState.hotelList` (del repositorio) |
-| Hotel seleccionado | `rememberSaveable` en `AppPantallas` | `selectedHotelId` en el `UiState` |
-| Elegir pantalla | `if` en `AppPantallas` | `if` en `AppPantallas` (igual) |
-| Volver | `idSeleccionado = null` | `viewModel.onBackToList()` |
-
-Los archivos del proyecto quedan así:
+Este es el resultado de juntar los apartados 5 a 8. Es la referencia para la Versión 1.2 del proyecto.
 
 ```text
 app/src/main/java/com/ejemplo/hospedajes/
@@ -1702,31 +2041,16 @@ app/src/main/java/com/ejemplo/hospedajes/
 ├── HotelRepository.kt        ← repositorio (6.2)
 ├── HospedajeUiState.kt       ← estado completo (6.6)
 ├── HospedajeViewModel.kt     ← ViewModel completo (6.6)
-├── Dialogos.kt               ← FormField, AddEditHotelDialog y ConfirmDeleteDialog (7.2 y 7.3)
-├── PantallaPrincipal.kt      ← lista con HotelCard y botón +
-├── PantallaDetalle.kt        ← datos del hotel y botones Editar / Eliminar
-├── AppPantallas.kt           ← elige pantalla, muestra diálogos y Snackbar
-└── MainActivity.kt           ← setContent { AppPantallas() }
+├── Dialogos.kt               ← ConfirmDeleteDialog (7.2), FormField y AddEditHotelDialog (7.4)
+├── PantallaPrincipal.kt      ← lista, barra superior y botón + (este apartado)
+├── PantallaDetalle.kt        ← datos del hotel, flecha de volver, Editar y Eliminar (este apartado)
+├── AppPantallas.kt           ← elige la pantalla, muestra los diálogos y el Snackbar (este apartado)
+└── MainActivity.kt           ← setContent { AppPantallas() } (5.6)
 ```
 
-`PantallaPrincipal` y `PantallaDetalle` sustituyen a `HospedajeScreen` del apartado 8.3.
+El `UiState` y el ViewModel son los del apartado 6.6, que ya incluyen todo lo añadido en los apartados 7 y 8.
 
-#### Paso 1. El estado y el ViewModel
-
-Usa el `HospedajeUiState` y el `HospedajeViewModel` completos del apartado 6.6. Ya incluyen todo lo necesario para el detalle:
-
-| Pieza | Para qué sirve aquí |
-|---|---|
-| `selectedHotelId` | `null` → se ve `PantallaPrincipal`; un `id` → se ve `PantallaDetalle` |
-| `onHotelClicked(hotel)` | Se llama al pulsar una tarjeta |
-| `onBackToList()` | Se llama con la flecha de volver o con el botón Atrás |
-| `onConfirmDeleteHotel()` | Además de borrar, pone `selectedHotelId = null` para volver a la lista |
-
-> **¿Por qué el `id` y no el `Hotel`?** Al editar un hotel, el repositorio guarda un objeto nuevo (apartado 3.2). Si el estado guardara el `Hotel`, seguiría apuntando al antiguo y el detalle mostraría los datos de antes de editar. Con el `id`, `AppPantallas` busca el hotel en la lista actual y el detalle siempre está al día.
-
-#### Paso 2. `PantallaPrincipal.kt`
-
-La lista de hoteles con su barra superior y el botón «+». Como en el apartado 5, no sabe que existe el detalle: solo avisa con `onHotelClick` y `onAddClick`.
+#### `PantallaPrincipal.kt`
 
 ```kotlin
 @OptIn(ExperimentalMaterial3Api::class)
@@ -1788,12 +2112,10 @@ fun HotelCard(
 }
 ```
 
-- La tarjeta ya no tiene botones de editar y borrar: ahora están en el detalle. `ElevatedCard` admite directamente un parámetro `onClick`.
-- `snackbarHostState` llega desde `AppPantallas`, que es quien sabe qué mensaje mostrar (Paso 4).
+- La tarjeta del apartado 3.3 tenía botones de editar y borrar. Aquí ya no los necesita, porque esas acciones están en el detalle: solo avisa de que se ha pulsado, con `onClick`. `ElevatedCard` admite directamente ese parámetro.
+- `contentPadding = PaddingValues(bottom = 80.dp)` deja espacio al final de la lista para que el botón «+» no tape el último hotel (apartado 3.5).
 
-#### Paso 3. `PantallaDetalle.kt`
-
-Muestra todos los datos del hotel, una flecha para volver y dos botones. Igual que en el apartado 5, no edita ni borra nada: solo avisa con eventos.
+#### `PantallaDetalle.kt`
 
 ```kotlin
 @OptIn(ExperimentalMaterial3Api::class)
@@ -1802,8 +2124,8 @@ fun PantallaDetalle(
     hotel: Hotel,
     snackbarHostState: SnackbarHostState,
     onVolver: () -> Unit,
-    onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onEditar: () -> Unit,
+    onBorrar: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -1849,13 +2171,13 @@ fun PantallaDetalle(
                     .padding(top = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
             ) {
-                OutlinedButton(onClick = onEditClick) {
+                OutlinedButton(onClick = onEditar) {
                     Icon(Icons.Default.Edit, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
                     Text("Editar")
                 }
                 Button(
-                    onClick = onDeleteClick,
+                    onClick = onBorrar,
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.error,
                         contentColor = MaterialTheme.colorScheme.onError
@@ -1871,12 +2193,10 @@ fun PantallaDetalle(
 }
 ```
 
-- **`navigationIcon`**: hueco de la `TopAppBar` para el icono de la izquierda; aquí, la flecha de volver. `Icons.AutoMirrored.Filled.ArrowBack` se invierte automáticamente en idiomas que se escriben de derecha a izquierda.
+- `verticalScroll(rememberScrollState())` permite desplazar el detalle si no cabe en la pantalla.
 - Los iconos de los botones llevan `contentDescription = null` porque el texto del botón ya describe la acción; así el lector de pantalla no la lee dos veces.
 
-#### Paso 4. `AppPantallas.kt`
-
-Es el mismo archivo del apartado 5, pero ahora los datos y el `id` seleccionado vienen del ViewModel. Además, aquí se colocan el `Snackbar` y los diálogos, porque deben funcionar sobre cualquiera de las dos pantallas.
+#### `AppPantallas.kt`
 
 ```kotlin
 @Composable
@@ -1903,7 +2223,7 @@ fun AppPantallas(
         }
     }
 
-    // Navegación: la misma idea que en el apartado 5
+    // Navegación (apartado 5)
     if (hotelSeleccionado == null) {
         PantallaPrincipal(
             hoteles = uiState.hotelList,
@@ -1916,12 +2236,20 @@ fun AppPantallas(
             hotel = hotelSeleccionado,
             snackbarHostState = snackbarHostState,
             onVolver = { viewModel.onBackToList() },
-            onEditClick = { viewModel.onEditHotelClicked(hotelSeleccionado) },
-            onDeleteClick = { viewModel.onDeleteHotelClicked(hotelSeleccionado) }
+            onEditar = { viewModel.onEditHotelClicked(hotelSeleccionado) },
+            onBorrar = { viewModel.onDeleteHotelClicked(hotelSeleccionado) }
         )
     }
 
-    // Diálogos: los mismos que en el apartado 8.3. Aparecen encima de la pantalla visible.
+    // Diálogos (apartado 7): se dibujan encima de la pantalla visible
+    uiState.hotelToDelete?.let { hotel ->
+        ConfirmDeleteDialog(
+            hotel = hotel,
+            onDismiss = { viewModel.onDismissDeleteDialog() },
+            onConfirm = { viewModel.onConfirmDeleteHotel() }
+        )
+    }
+
     if (uiState.isAddDialogOpen) {
         AddEditHotelDialog(
             onDismiss = { viewModel.onDismissAddDialog() },
@@ -1940,18 +2268,10 @@ fun AppPantallas(
             }
         )
     }
-
-    uiState.hotelToDelete?.let { hotel ->
-        ConfirmDeleteDialog(
-            hotel = hotel,
-            onDismiss = { viewModel.onDismissDeleteDialog() },
-            onConfirm = { viewModel.onConfirmDeleteHotel() }
-        )
-    }
 }
 ```
 
-`MainActivity.kt` es igual que en el apartado 5.6: `setContent` llama a `AppPantallas()`. Ya no necesita la lista de hoteles, porque los datos los proporciona el ViewModel.
+`AppPantallas` queda organizado en bloques, cada uno con el apartado donde se explica: botón Atrás (5.5), mensajes (8.2), navegación (5) y diálogos (7).
 
 #### Cómo queda cada operación
 
@@ -1960,23 +2280,56 @@ fun AppPantallas(
 | Pulsa una tarjeta | `selectedHotelId = hotel.id` | `PantallaDetalle` de ese hotel |
 | Pulsa la flecha o Atrás | `selectedHotelId = null` | `PantallaPrincipal` |
 | Pulsa «+» en la lista | `isAddDialogOpen = true` | Diálogo de alta sobre la lista |
+| Guarda el alta | Repositorio con el hotel nuevo, `isAddDialogOpen = false`, `userMessage` | La lista con el hotel nuevo y el `Snackbar` |
 | Pulsa «Editar» en el detalle | `hotelToEdit = hotel` | Diálogo de edición sobre el detalle |
-| Guarda la edición | Repositorio actualizado y `hotelToEdit = null` | El detalle, ya con los datos nuevos |
+| Guarda la edición | Repositorio actualizado, `hotelToEdit = null`, `userMessage` | El detalle con los datos nuevos y el `Snackbar` |
 | Pulsa «Eliminar» en el detalle | `hotelToDelete = hotel` | Diálogo de confirmación |
-| Confirma el borrado | Repositorio sin el hotel, `selectedHotelId = null` | La lista actualizada y el `Snackbar` |
-| Cancela cualquier diálogo | El campo del diálogo vuelve a `null`/`false` | La misma pantalla, sin cambios |
+| Confirma el borrado | Repositorio sin el hotel, `selectedHotelId = null`, `userMessage` | La lista sin el hotel y el `Snackbar` |
+| Cancela cualquier diálogo | El dato del diálogo vuelve a `null` o `false` | La misma pantalla, sin cambios |
 
-> Este ejemplo sirve de referencia para la Versión 1.2 del proyecto. En esa versión es obligatorio el repositorio para el CRUD; el ViewModel es opcional. Si no lo usas, el estado (la lista y el elemento seleccionado) se guarda en `AppPantallas`, como en el apartado 5. Cuando en la UD4 se use `NavHost`, solo cambiará `AppPantallas.kt`: las pantallas y el ViewModel seguirán igual (apartado 9).
+> Este ejemplo sirve de referencia para la Versión 1.2 del proyecto. En esa versión es obligatorio el repositorio para el CRUD; el ViewModel es opcional. Si no lo usas, el estado (la lista, el elemento seleccionado y los diálogos abiertos) se guarda en `AppPantallas` con `remember`, como en el apartado 5. Cuando en la UD4 se use `NavHost`, solo cambiará `AppPantallas.kt`: las pantallas y el ViewModel seguirán igual (apartado 9.3).
 
 ---
 
 ## 9. Fragmentos y navegación
 
-En el sistema clásico, una pantalla podía dividirse en `Fragment`: partes reutilizables con su propio ciclo de vida, que se mostraban o cambiaban con el `FragmentManager`. Con Compose ya no hacen falta, porque:
+Si consultas documentación, tutoriales o proyectos antiguos de Android, encontrarás `Fragment`, `DialogFragment` y `FragmentManager`. Este apartado explica qué eran y qué los sustituye en Compose, usando lo que ya has hecho en esta unidad.
 
-- Una pieza reutilizable de pantalla es simplemente una función composable (`HotelCard`, `AddEditHotelDialog`).
-- Una pantalla completa es una función composable más grande, en su propio archivo (`PantallaPrincipal.kt`, `PantallaDetalle.kt`).
-- El cambio entre pantallas lo decide un composable que elige qué pantalla mostrar. En esta unidad es `AppPantallas`, con una variable de estado y un `if` (apartados 5 y 8.5). En aplicaciones grandes se usa Navigation Compose, que decide qué composable se muestra según una ruta.
+### 9.1 Qué era un Fragment
+
+En el sistema clásico de Android, con las pantallas diseñadas en XML, una `Activity` podía dividirse en `Fragment`: piezas de interfaz con su propio diseño XML, su propia clase Kotlin y su propio ciclo de vida. Se usaban para:
+
+- Reutilizar una parte de pantalla en varias `Activity`.
+- Cambiar de pantalla dentro de una misma `Activity`, sustituyendo un `Fragment` por otro.
+- Mostrar diálogos, con una clase especial llamada `DialogFragment`.
+
+Para cambiar de `Fragment` se usaba el `FragmentManager`, con una "transacción":
+
+```kotlin
+supportFragmentManager.beginTransaction()
+    .replace(R.id.contenedor, DetalleFragment())   // sustituye el Fragment visible
+    .addToBackStack(null)                          // permite volver con Atrás
+    .commit()
+```
+
+Cada pantalla necesitaba un archivo XML, una clase que heredaba de `Fragment` y código para pasarle los datos. Con Compose nada de esto hace falta.
+
+### 9.2 Qué lo sustituye en Compose
+
+| Sistema clásico | En Compose | Dónde lo has visto |
+|---|---|---|
+| `Fragment` con una pantalla completa | Una función `@Composable` en su propio archivo | `PantallaPrincipal`, `PantallaDetalle` (5.2) |
+| `Fragment` con una parte de pantalla | Una función `@Composable` pequeña | `HotelCard` (3.3), `FormField` (7.4) |
+| `FragmentManager` y transacciones | Una variable de estado y un `if` | `AppPantallas` (5.5) |
+| `addToBackStack` (volver con Atrás) | `BackHandler` | `AppPantallas` (5.5) |
+| `DialogFragment` | Un `AlertDialog` que se dibuja según el estado | `ConfirmDeleteDialog`, `AddEditHotelDialog` (7) |
+| Datos que sobreviven al giro de pantalla | `ViewModel` | `HospedajeViewModel` (6.4) |
+
+Una aplicación en Compose suele tener una sola `Activity` (`MainActivity`) y una función `@Composable` por pantalla.
+
+### 9.3 Navigation Compose
+
+En esta unidad, el cambio entre pantallas lo decide `AppPantallas` con una variable de estado y un `if` (apartado 5). Es suficiente para dos o tres pantallas. En aplicaciones con muchas pantallas, menú lateral o barra inferior se usa la librería Navigation Compose, que decide qué composable se muestra según una ruta.
 
 Para que veas la relación, este sería el equivalente de `AppPantallas` con Navigation Compose:
 
@@ -1993,9 +2346,15 @@ NavHost(navController = navController, startDestination = "lista") {
 }
 ```
 
-Fíjate en que `PantallaPrincipal` y `PantallaDetalle` no cambian: siguen recibiendo datos y avisando con eventos. Solo cambia quién decide qué pantalla se ve: antes un `if` y una variable, ahora el `NavHost` y sus rutas.
+| | Con estado (esta unidad) | Con Navigation Compose (UD4) |
+|---|---|---|
+| Qué pantalla se ve | `if (hotelSeleccionado == null)` | La ruta actual: `"lista"` o `"detalle/{id}"` |
+| Ir al detalle | `viewModel.onHotelClicked(hotel)` | `navController.navigate("detalle/${hotel.id}")` |
+| Volver | `viewModel.onBackToList()` y `BackHandler` | `navController.popBackStack()`; Atrás funciona solo |
 
-> **En esta unidad todavía no se usa `NavHost`.** El código anterior es solo para que sepas qué sustituye a los `Fragment`. Por ahora, el cambio entre lista y detalle se hace con estado (apartados 5 y 8.5). Navigation Compose se estudiará en la UD4 y se incorpora al proyecto en la Versión 1.4.
+`PantallaPrincipal` y `PantallaDetalle` no cambian: siguen recibiendo datos y avisando con eventos. Solo cambia quién decide qué pantalla se ve.
+
+> En esta unidad todavía no se usa `NavHost`. El código anterior es solo para que veas la relación. Navigation Compose se estudiará en la UD4 y se incorpora al proyecto en la Versión 1.4.
 
 ---
 
@@ -2119,3 +2478,106 @@ app/src/main/java/com/ejemplo/peliculas/
 16. Añade al `UiState` un campo `soloPendientes: Boolean = false` y al ViewModel la función `onFiltroCambiado(valor: Boolean)`.
 17. En `PantallaPrincipal`, añade un `Switch` con el texto «Solo pendientes», que reciba el valor y avise con un evento.
 18. En `AppPantallas`, pasa a `PantallaPrincipal` la lista filtrada (`peliculas.filter { !it.vista }`) cuando `soloPendientes` sea `true`. Piensa por qué el filtro no debe borrar películas del repositorio.
+
+### 10.3 Actividad 3: Diálogos, Scaffold y Snackbar
+
+Continúa el proyecto `Peliculas` de la actividad 10.2. Al terminar, el catálogo tendrá el CRUD completo: añadir, consultar, editar y borrar películas, con confirmación, validación y mensajes. La actividad practica los apartados 7 y 8.
+
+Estructura final del proyecto. Las flechas indican lo que es nuevo o cambia respecto a la actividad 10.2:
+
+```text
+app/src/main/java/com/ejemplo/peliculas/
+├── Pelicula.kt
+├── PeliculaRepository.kt     ← añade addPelicula
+├── PeliculasUiState.kt       ← nuevos campos para diálogos y mensajes
+├── PeliculasViewModel.kt     ← nuevas funciones de evento
+├── Dialogos.kt               ← NUEVO: confirmación de borrado y formulario
+├── PantallaPrincipal.kt      ← Scaffold con barra superior y botón +
+├── PantallaDetalle.kt        ← Scaffold con flecha de volver, Editar y Borrar
+├── AppPantallas.kt           ← muestra los diálogos y el Snackbar
+└── MainActivity.kt
+```
+
+**Parte A. Confirmar el borrado (apartado 7.2)**
+
+1. Añade a `PeliculasUiState` el campo `peliculaABorrar: Pelicula? = null`.
+2. En el ViewModel, sustituye `onBorrar(pelicula)` de la actividad 10.2 por tres funciones:
+
+    | Función | Qué hace |
+    |---|---|
+    | `onBorrarClick(pelicula)` | Guarda la película en `peliculaABorrar`; no toca el repositorio |
+    | `onCancelarBorrado()` | Pone `peliculaABorrar = null` |
+    | `onConfirmarBorrado()` | Borra `peliculaABorrar` del repositorio, recarga la lista y pone `peliculaABorrar = null` e `idSeleccionado = null` |
+
+3. Crea `Dialogos.kt` con `fun ConfirmarBorradoDialog(pelicula: Pelicula, onCancelar: () -> Unit, onConfirmar: () -> Unit)`. El texto debe incluir el título de la película, y el botón «Borrar» debe usar el color `error` del tema.
+4. En `AppPantallas`, haz que el botón «Borrar» del detalle llame a `onBorrarClick` y muestra el diálogo con `uiState.peliculaABorrar?.let { ... }`.
+
+**Parte B. Formulario de alta y edición (apartado 7.3)**
+
+5. Añade al repositorio la función `addPelicula(pelicula)`.
+6. Añade a `PeliculasUiState` los campos `mostrarDialogoAlta: Boolean = false` y `peliculaAEditar: Pelicula? = null`.
+7. Añade al ViewModel estas funciones:
+
+    | Función | Qué hace |
+    |---|---|
+    | `onAnadirClick()` / `onCerrarDialogoAlta()` | Abre o cierra el diálogo de alta |
+    | `onGuardarNueva(titulo, director, anio, genero, imagen)` | Crea la película, la añade al repositorio, recarga la lista y cierra el diálogo |
+    | `onEditarClick(pelicula)` / `onCerrarDialogoEdicion()` | Abre o cierra el diálogo de edición |
+    | `onGuardarEdicion(id, titulo, director, anio, genero, imagen)` | Actualiza la película en el repositorio con `copy(...)`, recarga la lista y cierra el diálogo |
+
+    Si la URL de la imagen llega vacía, usa una imagen por defecto con `ifBlank { ... }`.
+8. Crea en `Dialogos.kt` el composable `PeliculaDialog(peliculaAEditar: Pelicula? = null, onCancelar: () -> Unit, onGuardar: (titulo: String, director: String, anio: Int, genero: String, imagen: String) -> Unit)`:
+    - un campo de texto por cada dato, con su estado local (`remember`) y su valor inicial tomado de `peliculaAEditar` con `?:`;
+    - el título del diálogo y el texto del botón cambian según sea un alta o una edición;
+    - el año se escribe como texto. Antes de llamar a `onGuardar`, conviértelo a número con `anio.toInt()`. Hasta la parte C, escribe siempre un número en ese campo: si escribes letras, `toInt()` cierra la aplicación con un error.
+9. Añade a `PantallaPrincipal` un botón provisional «Añadir película» que llame a un nuevo evento `onAnadirClick`, y a `PantallaDetalle` un botón «Editar» que llame a `onEditar`.
+10. En `AppPantallas`, conecta los eventos y muestra el diálogo dos veces: para el alta cuando `mostrarDialogoAlta` es `true`, y para la edición cuando `peliculaAEditar` no es `null`.
+
+**Parte C. Validación del formulario (apartado 7.4)**
+
+11. Copia en `Dialogos.kt` el composable `FormField` del apartado 7.4 y úsalo en lugar de `OutlinedTextField` en `PeliculaDialog`.
+12. Calcula un mensaje de error para cada campo con estas reglas:
+
+    | Campo | Regla |
+    |---|---|
+    | Título | Obligatorio |
+    | Director | Obligatorio |
+    | Año | Obligatorio; debe ser un número (`toIntOrNull()` devuelve `null` si no lo es) entre 1888 y el año actual |
+    | Género | Obligatorio |
+    | Imagen | Opcional |
+
+13. Añade la variable `showErrors` para que los errores solo aparezcan después del primer intento de guardar. Si el formulario no es válido, el botón «Guardar» no llama a `onGuardar`.
+14. Marca los campos obligatorios con `*` en la etiqueta.
+
+**Parte D. Barra superior y botón flotante (apartado 8.1)**
+
+15. En `PantallaPrincipal`, envuelve el contenido en un `Scaffold` con:
+    - una `TopAppBar` con el título «Mis películas»;
+    - un `FloatingActionButton` con el icono `Icons.Default.Add`, que sustituye al botón provisional de la parte B.
+16. En `PantallaDetalle`, envuelve el contenido en un `Scaffold` con una `TopAppBar` que muestre el título de la película y una flecha de volver en `navigationIcon`. Quita el botón «Volver» del contenido.
+17. Aplica `paddingValues` al contenido de las dos pantallas y quita el `Box(Modifier.safeDrawingPadding())` de `AppPantallas`.
+18. Añade `contentPadding = PaddingValues(bottom = 80.dp)` a la `LazyColumn` para que el botón flotante no tape la última película.
+
+**Parte E. Mensajes con Snackbar (apartado 8.2)**
+
+19. Añade a `PeliculasUiState` el campo `mensaje: String? = null` y al ViewModel la función `onMensajeMostrado()`, que lo vuelve a poner a `null`.
+20. Haz que `onGuardarNueva`, `onGuardarEdicion` y `onConfirmarBorrado` escriban un mensaje: «Película añadida», «Película actualizada» y «Película 'Título' borrada», con el título de la película borrada.
+21. En `AppPantallas`, crea un `SnackbarHostState` con `remember` y un `LaunchedEffect(uiState.mensaje)` que muestre el mensaje y después llame a `onMensajeMostrado()`.
+22. Pasa el `SnackbarHostState` a las dos pantallas y colócalo en el parámetro `snackbarHost` de su `Scaffold`.
+
+**Parte F. Comprobaciones**
+
+23. Pulsa «Borrar» en el detalle y después «Cancelar»: la película no debe borrarse. Repite tocando fuera del diálogo.
+24. Abre el diálogo de alta y pulsa «Guardar» sin escribir nada: deben aparecer los mensajes de error. Escribe en un campo obligatorio: su mensaje debe desaparecer mientras escribes.
+25. Escribe «abc» y después «1500» en el año: deben aparecer mensajes de error distintos.
+26. Edita una película desde el detalle: al guardar, el detalle debe mostrar los datos nuevos y debe aparecer el `Snackbar`.
+27. Borra una película desde el detalle: debes volver a la lista, la película no debe aparecer y el `Snackbar` debe verse sobre la lista.
+28. Abre el diálogo de edición, cambia el título sin guardar y gira el móvil. Observa qué ocurre con el diálogo y con el texto que habías escrito. Explica por qué el diálogo sigue abierto (pista: ¿dónde está guardado `peliculaAEditar`?) y por qué el texto escrito se pierde (pista: ¿dónde está guardado el estado de los campos?).
+
+**Parte G. Ampliación (opcional)**
+
+29. Al borrar una película, muestra el `Snackbar` con una acción «Deshacer» (apartado 2.2). Para ello:
+    - guarda en el ViewModel la última película borrada;
+    - en el `LaunchedEffect`, usa `showSnackbar(message = ..., actionLabel = "Deshacer")` y comprueba si el resultado es `SnackbarResult.ActionPerformed`;
+    - si lo es, llama a una nueva función `onDeshacerBorrado()` que vuelva a añadir la película al repositorio y recargue la lista.
+30. En la parte F, paso 28, el texto escrito se pierde al girar. Cambia `remember` por `rememberSaveable` en los campos de `PeliculaDialog` y comprueba la diferencia.

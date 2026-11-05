@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="470" viewBox="0 0 900 470" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <style>text { white-space: pre; }</style>
+  <defs>
+    <marker id="flechaRoja" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#C62828"/>
+    </marker>
+    <marker id="flechaGris" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474F"/>
+    </marker>
+  </defs>
+  <rect width="900" height="470" fill="#FFFFFF"/>
+
+  <!-- Estado izquierda -->
+  <rect x="50" y="20" width="240" height="50" rx="8" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+  <text x="170" y="40" text-anchor="middle" font-size="12" font-weight="bold" fill="#1B5E20">uiState</text>
+  <text x="170" y="59" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#263238">hotelToDelete = null</text>
+
+  <!-- Móvil izquierda: detalle sin diálogo -->
+  <rect x="60" y="90" width="220" height="310" rx="20" fill="#263238"/>
+  <rect x="70" y="105" width="200" height="280" rx="6" fill="#FAFAFA"/>
+  <text x="82" y="135" font-size="15" font-weight="bold" fill="#263238">Hotel Peñalta</text>
+  <text x="82" y="163" font-size="12" fill="#263238">Ciudad: Bogarra</text>
+  <text x="82" y="183" font-size="12" fill="#263238">Provincia: Albacete</text>
+  <text x="82" y="203" font-size="12" fill="#263238">Teléfono: 967 98 89 98</text>
+  <rect x="82" y="335" width="80" height="30" rx="15" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="122" y="355" text-anchor="middle" font-size="12" fill="#1565C0">Editar</text>
+  <rect x="176" y="335" width="80" height="30" rx="15" fill="#C62828"/>
+  <text x="216" y="355" text-anchor="middle" font-size="12" font-weight="bold" fill="#FFFFFF">Borrar</text>
+  <text x="170" y="428" text-anchor="middle" font-size="13" font-weight="bold" fill="#263238">No se dibuja el diálogo</text>
+  <text x="170" y="447" text-anchor="middle" font-size="12" fill="#546E7A">(no hay hotel pendiente de borrar)</text>
+
+  <!-- Estado derecha -->
+  <rect x="610" y="20" width="240" height="50" rx="8" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+  <text x="730" y="40" text-anchor="middle" font-size="12" font-weight="bold" fill="#1B5E20">uiState</text>
+  <text x="730" y="59" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#C62828">hotelToDelete = Hotel Peñalta</text>
+
+  <!-- Móvil derecha: detalle con diálogo -->
+  <rect x="620" y="90" width="220" height="310" rx="20" fill="#263238"/>
+  <rect x="630" y="105" width="200" height="280" rx="6" fill="#FAFAFA"/>
+  <text x="642" y="135" font-size="15" font-weight="bold" fill="#263238">Hotel Peñalta</text>
+  <text x="642" y="163" font-size="12" fill="#263238">Ciudad: Bogarra</text>
+  <text x="642" y="183" font-size="12" fill="#263238">Provincia: Albacete</text>
+  <text x="642" y="203" font-size="12" fill="#263238">Teléfono: 967 98 89 98</text>
+  <rect x="642" y="335" width="80" height="30" rx="15" fill="#FFFFFF" stroke="#1565C0"/>
+  <text x="682" y="355" text-anchor="middle" font-size="12" fill="#1565C0">Editar</text>
+  <rect x="736" y="335" width="80" height="30" rx="15" fill="#C62828"/>
+  <text x="776" y="355" text-anchor="middle" font-size="12" font-weight="bold" fill="#FFFFFF">Borrar</text>
+  <!-- capa oscura -->
+  <rect x="630" y="105" width="200" height="280" rx="6" fill="#000000" fill-opacity="0.4"/>
+  <!-- diálogo -->
+  <rect x="642" y="180" width="176" height="130" rx="14" fill="#FFFFFF" stroke="#90A4AE"/>
+  <text x="656" y="206" font-size="13" font-weight="bold" fill="#263238">Eliminar hotel</text>
+  <text x="656" y="230" font-size="11" fill="#263238">¿Seguro que quieres</text>
+  <text x="656" y="246" font-size="11" fill="#263238">eliminar Hotel Peñalta?</text>
+  <text x="688" y="292" text-anchor="middle" font-size="12" fill="#1565C0">Cancelar</text>
+  <text x="780" y="292" text-anchor="middle" font-size="12" font-weight="bold" fill="#C62828">Eliminar</text>
+  <text x="730" y="428" text-anchor="middle" font-size="13" font-weight="bold" fill="#263238">Se dibuja ConfirmDeleteDialog</text>
+  <text x="730" y="447" text-anchor="middle" font-size="12" fill="#546E7A">(encima de la pantalla de detalle)</text>
+
+  <!-- Flecha abrir -->
+  <line x1="290" y1="200" x2="606" y2="200" stroke="#C62828" stroke-width="2.5" marker-end="url(#flechaRoja)"/>
+  <text x="448" y="168" text-anchor="middle" font-size="13" font-weight="bold" fill="#C62828">Pulsa «Borrar»</text>
+  <text x="448" y="188" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#263238">viewModel.onDeleteHotelClicked(hotel)</text>
+
+  <!-- Flecha cerrar -->
+  <line x1="606" y1="290" x2="294" y2="290" stroke="#37474F" stroke-width="2.5" stroke-dasharray="7,4" marker-end="url(#flechaGris)"/>
+  <text x="448" y="278" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#263238">viewModel.onDismissDeleteDialog()</text>
+  <text x="448" y="312" text-anchor="middle" font-size="13" font-weight="bold" fill="#37474F">Pulsa «Cancelar» o fuera del diálogo</text>
+  <text x="448" y="331" text-anchor="middle" font-size="12" fill="#546E7A">hotelToDelete vuelve a null: el hotel no se borra</text>
+</svg>

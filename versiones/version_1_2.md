@@ -28,7 +28,7 @@ No se pide ninguna pantalla nueva: se mantienen la lista y el detalle de la Vers
 Material de referencia en la UD3:
 
 - [Apartado 5](../ud3.md#5-navegación-entre-pantallas-con-estado): navegación entre pantallas con estado, con un archivo por pantalla.
-- [Apartado 8.5](../ud3.md#85-lista-y-detalle-editar-y-borrar-desde-el-detalle): ejemplo completo de lista y detalle con repositorio, ViewModel, diálogos de alta, edición y borrado, y `Snackbar`. Sirve de referencia para esta versión; el uso del ViewModel es opcional (ver más abajo).
+- [Apartado 8.3](../ud3.md#83-el-código-completo-lista-y-detalle-con-crud): ejemplo completo de lista y detalle con repositorio, ViewModel, diálogos de alta, edición y borrado, y `Snackbar`. Sirve de referencia para esta versión; el uso del ViewModel es opcional (ver más abajo).
 
 Estructura orientativa del proyecto (adaptad los nombres a vuestra temática):
 
@@ -50,7 +50,7 @@ El uso de un `ViewModel` con `UiState` (UD3, apartado 6) es recomendable, pero n
 - Implementad un repositorio en memoria que proporcione los elementos y permita añadirlos, actualizarlos y eliminarlos.
 - Mostrad los elementos del repositorio en la pantalla «Mis elementos» y reflejad inmediatamente en la lista los cambios realizados durante la ejecución.
 - Permitid abrir el detalle de cada elemento desde la lista y volver a ella. El detalle debe ofrecer acciones para editar y eliminar ese elemento.
-- Gestionad el cambio entre la lista y el detalle con estado de Compose, sin `NavHost`: una variable de estado (por ejemplo, el `id` del elemento seleccionado) decide qué pantalla se muestra. Las pantallas deben recibir los datos que necesitan y avisar con eventos (`onItemClick`, `onVolver`, `onEditClick`, `onDeleteClick`...) en lugar de cambiar ellas mismas esa variable.
+- Gestionad el cambio entre la lista y el detalle con estado de Compose, sin `NavHost`: una variable de estado (por ejemplo, el `id` del elemento seleccionado) decide qué pantalla se muestra. Las pantallas deben recibir los datos que necesitan y avisar con eventos (`onItemClick`, `onVolver`, `onEditar`, `onBorrar`...) en lugar de cambiar ellas mismas esa variable.
 - Organizad cada pantalla en su propio archivo `.kt` (`PantallaPrincipal.kt` y `PantallaDetalle.kt`) y la elección de la pantalla visible en otro archivo (`AppPantallas.kt`), al que llama `MainActivity`. Las pantallas no deben conocerse entre sí: solo `AppPantallas` decide cuál se muestra.
 - Desde el detalle se debe poder volver a la lista tanto con una acción visible en la pantalla como con el botón o gesto Atrás del sistema (`BackHandler`), sin que se cierre la aplicación.
 - Añadid un diálogo de creación accesible desde la lista y un diálogo de edición accesible desde el detalle. El formulario debe permitir introducir o modificar los datos principales definidos en el modelo.
