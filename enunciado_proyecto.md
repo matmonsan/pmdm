@@ -126,7 +126,7 @@ Las siguientes versiones del proyecto se utilizarán como evidencias prácticas 
 | Unidad didáctica | Tareas o versiones del proyecto que cuentan para la evaluación |
 |---|---|
 | **UD2: Layout de usuario** | Versión 1.0, con el prototipo de pantallas, y Versión 1.1, con la primera interfaz funcional en Jetpack Compose, sus layouts y modificadores. |
-| **UD3: Fragmentos, diálogos y listado de elementos** | Versión 1.2, con el CRUD en memoria, los formularios y el listado de elementos. |
+| **UD3: Listas, diálogos y arquitectura MVVM** | Versión 1.2, con el CRUD en memoria, los formularios y el listado de elementos. |
 | **UD4: Navegación y menús** | Versión 1.3, con las pantallas de registro, inicio de sesión y recuperación de contraseña; Versión 1.4, con la navegación entre pantallas, el `Navigation Drawer` y la `NavigationBar`; y Versión 1.5, con las dos listas principales. |
 | **UD5: Patrones de diseño** | Versión 1.6, con la organización del proyecto mediante MVVM, repositorios, `UiState`, `StateFlow` e inyección de dependencias con Hilt. |
 | **UD6: Almacenamiento local con Room** | Versión 2.0, con la sustitución de los datos en memoria por una base de datos local Room; y Versión 3.2, con la navegación a la pantalla de detalle y la visualización de la ubicación. |

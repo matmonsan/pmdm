@@ -15,11 +15,10 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 6. [Arquitectura MVVM y flujo de datos](#6-arquitectura-mvvm-y-flujo-de-datos)
 7. [Diálogos declarativos](#7-diálogos-declarativos)
 8. [Scaffold y Snackbar](#8-scaffold-y-snackbar)
-9. [Fragmentos y navegación](#9-fragmentos-y-navegación)
-10. [Actividades](#10-actividades)
-    - [10.1 Trabajo con LazyColumns](#101-actividad-1-trabajo-con-lazycolumns)
-    - [10.2 Navegación y arquitectura MVVM](#102-actividad-2-navegación-y-arquitectura-mvvm)
-    - [10.3 Diálogos, Scaffold y Snackbar](#103-actividad-3-diálogos-scaffold-y-snackbar)
+9. [Actividades](#9-actividades)
+    - [9.1 Trabajo con LazyColumns](#91-actividad-1-trabajo-con-lazycolumns)
+    - [9.2 Navegación y arquitectura MVVM](#92-actividad-2-navegación-y-arquitectura-mvvm)
+    - [9.3 Diálogos, Scaffold y Snackbar](#93-actividad-3-diálogos-scaffold-y-snackbar)
 
 ---
 
@@ -53,8 +52,7 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 | [`FloatingActionButton`](#81-estructura-con-scaffold) | Botón circular flotante para la acción principal (añadir). |
 | [`Snackbar`](#82-mensajes-con-snackbar) | Mensaje breve en la parte inferior. |
 | [`LaunchedEffect`](#82-mensajes-con-snackbar) | Ejecuta una acción cuando cambia un valor, sin bloquear la pantalla. |
-| [Fragment](#91-qué-era-un-fragment) | Pieza de pantalla del sistema clásico; en Compose se sustituye por composables. |
-| [Navigation Compose](#93-navigation-compose) | Librería para cambiar entre pantallas. |
+| [Navigation Compose](#5-navegación-entre-pantallas-con-estado) | Librería para cambiar entre pantallas con rutas (`NavHost`); se estudia en la UD4. |
 
 ---
 
@@ -70,7 +68,6 @@ Al terminar esta unidad, podrás:
 6. Mostrar diálogos para añadir, editar y confirmar el borrado de un elemento, validando los datos del formulario.
 7. Avisar al usuario con un `Snackbar` después de una acción.
 8. Pasar de una lista al detalle de un elemento y editarlo o borrarlo desde allí.
-9. Entender qué ocupa el lugar de los `Fragment` en Compose.
 
 Esta unidad construye, paso a paso, una aplicación de gestión de hospedajes: una lista de hoteles en la que se puede añadir, consultar, editar y borrar. Es lo que se pide en la Versión 1.2 del proyecto.
 
@@ -2287,80 +2284,13 @@ fun AppPantallas(
 | Confirma el borrado | Repositorio sin el hotel, `selectedHotelId = null`, `userMessage` | La lista sin el hotel y el `Snackbar` |
 | Cancela cualquier diálogo | El dato del diálogo vuelve a `null` o `false` | La misma pantalla, sin cambios |
 
-> Este ejemplo sirve de referencia para la Versión 1.2 del proyecto. En esa versión es obligatorio el repositorio para el CRUD; el ViewModel es opcional. Si no lo usas, el estado (la lista, el elemento seleccionado y los diálogos abiertos) se guarda en `AppPantallas` con `remember`, como en el apartado 5. Cuando en la UD4 se use `NavHost`, solo cambiará `AppPantallas.kt`: las pantallas y el ViewModel seguirán igual (apartado 9.3).
+> Este ejemplo sirve de referencia para la Versión 1.2 del proyecto. En esa versión es obligatorio el repositorio para el CRUD; el ViewModel es opcional. Si no lo usas, el estado (la lista, el elemento seleccionado y los diálogos abiertos) se guarda en `AppPantallas` con `remember`, como en el apartado 5. Cuando en la UD4 se use `NavHost`, solo cambiará `AppPantallas.kt`: las pantallas y el ViewModel seguirán igual.
 
 ---
 
-## 9. Fragmentos y navegación
+## 9. Actividades
 
-Si consultas documentación, tutoriales o proyectos antiguos de Android, encontrarás `Fragment`, `DialogFragment` y `FragmentManager`. Este apartado explica qué eran y qué los sustituye en Compose, usando lo que ya has hecho en esta unidad.
-
-### 9.1 Qué era un Fragment
-
-En el sistema clásico de Android, con las pantallas diseñadas en XML, una `Activity` podía dividirse en `Fragment`: piezas de interfaz con su propio diseño XML, su propia clase Kotlin y su propio ciclo de vida. Se usaban para:
-
-- Reutilizar una parte de pantalla en varias `Activity`.
-- Cambiar de pantalla dentro de una misma `Activity`, sustituyendo un `Fragment` por otro.
-- Mostrar diálogos, con una clase especial llamada `DialogFragment`.
-
-Para cambiar de `Fragment` se usaba el `FragmentManager`, con una "transacción":
-
-```kotlin
-supportFragmentManager.beginTransaction()
-    .replace(R.id.contenedor, DetalleFragment())   // sustituye el Fragment visible
-    .addToBackStack(null)                          // permite volver con Atrás
-    .commit()
-```
-
-Cada pantalla necesitaba un archivo XML, una clase que heredaba de `Fragment` y código para pasarle los datos. Con Compose nada de esto hace falta.
-
-### 9.2 Qué lo sustituye en Compose
-
-| Sistema clásico | En Compose | Dónde lo has visto |
-|---|---|---|
-| `Fragment` con una pantalla completa | Una función `@Composable` en su propio archivo | `PantallaPrincipal`, `PantallaDetalle` (5.2) |
-| `Fragment` con una parte de pantalla | Una función `@Composable` pequeña | `HotelCard` (3.3), `FormField` (7.4) |
-| `FragmentManager` y transacciones | Una variable de estado y un `if` | `AppPantallas` (5.5) |
-| `addToBackStack` (volver con Atrás) | `BackHandler` | `AppPantallas` (5.5) |
-| `DialogFragment` | Un `AlertDialog` que se dibuja según el estado | `ConfirmDeleteDialog`, `AddEditHotelDialog` (7) |
-| Datos que sobreviven al giro de pantalla | `ViewModel` | `HospedajeViewModel` (6.4) |
-
-Una aplicación en Compose suele tener una sola `Activity` (`MainActivity`) y una función `@Composable` por pantalla.
-
-### 9.3 Navigation Compose
-
-En esta unidad, el cambio entre pantallas lo decide `AppPantallas` con una variable de estado y un `if` (apartado 5). Es suficiente para dos o tres pantallas. En aplicaciones con muchas pantallas, menú lateral o barra inferior se usa la librería Navigation Compose, que decide qué composable se muestra según una ruta.
-
-Para que veas la relación, este sería el equivalente de `AppPantallas` con Navigation Compose:
-
-```kotlin
-val navController = rememberNavController()
-
-NavHost(navController = navController, startDestination = "lista") {
-    composable("lista") {
-        PantallaPrincipal(/* ... */ onHotelClick = { hotel -> navController.navigate("detalle/${hotel.id}") })
-    }
-    composable("detalle/{id}") {
-        PantallaDetalle(/* ... */ onVolver = { navController.popBackStack() })
-    }
-}
-```
-
-| | Con estado (esta unidad) | Con Navigation Compose (UD4) |
-|---|---|---|
-| Qué pantalla se ve | `if (hotelSeleccionado == null)` | La ruta actual: `"lista"` o `"detalle/{id}"` |
-| Ir al detalle | `viewModel.onHotelClicked(hotel)` | `navController.navigate("detalle/${hotel.id}")` |
-| Volver | `viewModel.onBackToList()` y `BackHandler` | `navController.popBackStack()`; Atrás funciona solo |
-
-`PantallaPrincipal` y `PantallaDetalle` no cambian: siguen recibiendo datos y avisando con eventos. Solo cambia quién decide qué pantalla se ve.
-
-> En esta unidad todavía no se usa `NavHost`. El código anterior es solo para que veas la relación. Navigation Compose se estudiará en la UD4 y se incorpora al proyecto en la Versión 1.4.
-
----
-
-## 10. Actividades
-
-### 10.1 Actividad 1: Trabajo con LazyColumns
+### 9.1 Actividad 1: Trabajo con LazyColumns
 
 Crea un proyecto nuevo de Compose (`Biblioteca`). Las partes A a D se hacen en una sola pantalla; en la parte E añadirás una pantalla de detalle. De momento los datos estarán en el propio código.
 
@@ -2407,7 +2337,7 @@ Crea un proyecto nuevo de Compose (`Biblioteca`). Las partes A a D se hacen en u
 
     ¿Qué pasa con los libros borrados al girar? Vuelven a aparecer, porque `remember` pierde la lista. Esto se resuelve guardando los datos en un `ViewModel` (apartado 6).
 
-### 10.2 Actividad 2: Navegación y arquitectura MVVM
+### 9.2 Actividad 2: Navegación y arquitectura MVVM
 
 Crea un proyecto nuevo de Compose (`Peliculas`): un catálogo de películas con una lista y una pantalla de detalle. La actividad practica los apartados 5 y 6: navegación con estado, repositorio, `UiState` y `ViewModel` con `mutableStateOf`. No se usan diálogos ni `Snackbar` (apartados 7 y 8).
 
@@ -2469,7 +2399,7 @@ app/src/main/java/com/ejemplo/peliculas/
 **Parte E. Comprobaciones**
 
 12. Marca una película como vista desde el detalle y vuelve a la lista: el icono y el contador «Vistas: X de N» deben haberse actualizado.
-13. Gira el móvil en el detalle: debes seguir en el mismo detalle. Gira también en la lista después de borrar una película: no debe reaparecer. Compara este comportamiento con el de la parte E de la actividad 10.1 y explica por qué ahora sí funciona.
+13. Gira el móvil en el detalle: debes seguir en el mismo detalle. Gira también en la lista después de borrar una película: no debe reaparecer. Compara este comportamiento con el de la parte E de la actividad 9.1 y explica por qué ahora sí funciona.
 14. Borra una película desde el detalle: debes volver a la lista y la película ya no debe aparecer.
 15. Escribe, como comentario al principio de `AppPantallas.kt`, el recorrido del evento «Marcar como vista» paso a paso, desde que el usuario pulsa el botón hasta que la lista se redibuja. Indica en cada paso qué capa actúa (vista, ViewModel o repositorio) y si lo que viaja es un evento o el estado. Sigue el modelo de la tabla «Recorrido completo: borrar un hotel» del apartado 6.5.
 
@@ -2479,11 +2409,11 @@ app/src/main/java/com/ejemplo/peliculas/
 17. En `PantallaPrincipal`, añade un `Switch` con el texto «Solo pendientes», que reciba el valor y avise con un evento.
 18. En `AppPantallas`, pasa a `PantallaPrincipal` la lista filtrada (`peliculas.filter { !it.vista }`) cuando `soloPendientes` sea `true`. Piensa por qué el filtro no debe borrar películas del repositorio.
 
-### 10.3 Actividad 3: Diálogos, Scaffold y Snackbar
+### 9.3 Actividad 3: Diálogos, Scaffold y Snackbar
 
-Continúa el proyecto `Peliculas` de la actividad 10.2. Al terminar, el catálogo tendrá el CRUD completo: añadir, consultar, editar y borrar películas, con confirmación, validación y mensajes. La actividad practica los apartados 7 y 8.
+Continúa el proyecto `Peliculas` de la actividad 9.2. Al terminar, el catálogo tendrá el CRUD completo: añadir, consultar, editar y borrar películas, con confirmación, validación y mensajes. La actividad practica los apartados 7 y 8.
 
-Estructura final del proyecto. Las flechas indican lo que es nuevo o cambia respecto a la actividad 10.2:
+Estructura final del proyecto. Las flechas indican lo que es nuevo o cambia respecto a la actividad 9.2:
 
 ```text
 app/src/main/java/com/ejemplo/peliculas/
@@ -2501,7 +2431,7 @@ app/src/main/java/com/ejemplo/peliculas/
 **Parte A. Confirmar el borrado (apartado 7.2)**
 
 1. Añade a `PeliculasUiState` el campo `peliculaABorrar: Pelicula? = null`.
-2. En el ViewModel, sustituye `onBorrar(pelicula)` de la actividad 10.2 por tres funciones:
+2. En el ViewModel, sustituye `onBorrar(pelicula)` de la actividad 9.2 por tres funciones:
 
     | Función | Qué hace |
     |---|---|
