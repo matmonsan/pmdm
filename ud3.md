@@ -4,6 +4,8 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 ---
 [⌂ Volver al inicio](index.md)
 
+> **Código de la unidad.** La aplicación de gestión de hospedajes que se construye en esta unidad está completa en el repositorio [github.com/matmonsan/hoteles-pmdm](https://github.com/matmonsan/hoteles-pmdm). Puedes descargarla y abrirla en Android Studio para ver todas las piezas funcionando juntas.
+
 ## Índice
 
 0. [Resumen de términos](#0-resumen-de-términos)
