@@ -77,7 +77,7 @@
             <div class="p-4 border-b border-slate-800 bg-slate-900 shrink-0">
                 <label class="block text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2 flex items-center justify-between">
                     <span><i class="fa-solid fa-cubes text-indigo-400 mr-1.5"></i>Elemento Composable</span>
-                    <span class="text-[10px] text-slate-400 font-normal">22 elementos · UD2 y UD3</span>
+                    <span class="text-[10px] text-slate-400 font-normal">22 elementos</span>
                 </label>
                 <div class="relative">
                     <select x-model="selectedElement" class="w-full bg-slate-950 text-slate-100 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-semibold focus:ring-2 focus:ring-indigo-500 outline-none cursor-pointer">
@@ -102,19 +102,19 @@
                         <optgroup label="Multimedia y Gráficos">
                             <option value="Image">Image (Imagen / Vector)</option>
                         </optgroup>
-                        <optgroup label="UD3 · Mensajes y diálogos">
+                        <optgroup label="Mensajes y diálogos">
                             <option value="Toast">Toast (Mensaje breve)</option>
                             <option value="Snackbar">Snackbar (Mensaje con acción)</option>
                             <option value="AlertDialog">AlertDialog (Confirmación)</option>
                             <option value="CampoValidado">Campo con validación (isError)</option>
                         </optgroup>
-                        <optgroup label="UD3 · Listas con datos">
-                            <option value="TarjetaHotel">Tarjeta de hotel (ElevatedCard + AsyncImage)</option>
-                            <option value="ListaHoteles">Lista de hoteles (data class + key)</option>
+                        <optgroup label="Listas con datos">
+                            <option value="TarjetaImagen">Tarjeta con imagen (ElevatedCard + AsyncImage)</option>
+                            <option value="ListaDatos">Lista de datos (data class + key)</option>
                         </optgroup>
-                        <optgroup label="UD3 · Pantallas y arquitectura">
+                        <optgroup label="Pantallas y arquitectura">
                             <option value="Scaffold">Scaffold (Barra superior + FAB)</option>
-                            <option value="Navegacion">Navegación con estado (Lista y detalle)</option>
+                            <option value="Navegacion">Navegación lista-detalle (estado)</option>
                             <option value="ViewModel">ViewModel + UiState (MVVM)</option>
                         </optgroup>
                     </select>
@@ -365,7 +365,7 @@
                     </div>
                 </template>
 
-                <!-- ===================== UD3 ===================== -->
+                <!-- ===================== MENSAJES, LISTAS Y PANTALLAS ===================== -->
 
                 <!-- TOAST -->
                 <template x-if="selectedElement === 'Toast'">
@@ -393,7 +393,7 @@
                             <label class="block text-slate-300 font-medium mb-1">Texto de la acción (actionLabel, opcional):</label>
                             <input type="text" x-model="snackComp.accion" placeholder="Dejar en blanco para un Snackbar sin acción" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
                         </div>
-                        <p class="text-slate-400 text-[11px]">Pulsa «Borrar hotel» en la vista previa para ver el mensaje.</p>
+                        <p class="text-slate-400 text-[11px]">Pulsa «Borrar elemento» en la vista previa para ver el mensaje.</p>
                     </div>
                 </template>
 
@@ -434,30 +434,24 @@
                     </div>
                 </template>
 
-                <!-- TARJETA HOTEL -->
-                <template x-if="selectedElement === 'TarjetaHotel'">
+                <!-- TARJETA CON IMAGEN -->
+                <template x-if="selectedElement === 'TarjetaImagen'">
                     <div class="space-y-3 text-xs">
                         <div>
-                            <label class="block text-slate-300 font-medium mb-1">Nombre del hotel:</label>
-                            <input type="text" x-model="hotelComp.nombre" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
-                        </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="block text-slate-300 font-medium mb-1">Ciudad:</label>
-                                <input type="text" x-model="hotelComp.ciudad" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
-                            </div>
-                            <div>
-                                <label class="block text-slate-300 font-medium mb-1">Provincia:</label>
-                                <input type="text" x-model="hotelComp.provincia" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
-                            </div>
+                            <label class="block text-slate-300 font-medium mb-1">Título:</label>
+                            <input type="text" x-model="tarjetaComp.titulo" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
                         </div>
                         <div>
-                            <label class="block text-slate-300 font-medium mb-1">Teléfono:</label>
-                            <input type="text" x-model="hotelComp.telefono" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                            <label class="block text-slate-300 font-medium mb-1">Subtítulo:</label>
+                            <input type="text" x-model="tarjetaComp.subtitulo" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-slate-300 font-medium mb-1">Texto de detalle:</label>
+                            <input type="text" x-model="tarjetaComp.detalle" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
                         </div>
                         <div>
                             <label class="block text-slate-300 font-medium mb-1">Imagen de internet (AsyncImage):</label>
-                            <select x-model="hotelComp.imagen" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
+                            <select x-model="tarjetaComp.imagen" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-slate-100 outline-none">
                                 <option value="1040">picsum.photos/id/1040</option>
                                 <option value="1011">picsum.photos/id/1011</option>
                                 <option value="1025">picsum.photos/id/1025</option>
@@ -468,11 +462,11 @@
                     </div>
                 </template>
 
-                <!-- LISTA HOTELES -->
-                <template x-if="selectedElement === 'ListaHoteles'">
+                <!-- LISTA DE DATOS -->
+                <template x-if="selectedElement === 'ListaDatos'">
                     <div class="space-y-3 text-xs">
                         <div>
-                            <label class="block text-slate-300 font-medium mb-1">Número de hoteles: <span x-text="listaComp.cantidad" class="text-indigo-400 font-mono font-bold"></span></label>
+                            <label class="block text-slate-300 font-medium mb-1">Número de elementos: <span x-text="listaComp.cantidad" class="text-indigo-400 font-mono font-bold"></span></label>
                             <input type="range" min="1" max="8" x-model="listaComp.cantidad" class="w-full accent-indigo-500">
                         </div>
                         <div>
@@ -505,11 +499,11 @@
                     </div>
                 </template>
 
-                <!-- NAVEGACIÓN -->
+                <!-- NAVEGACIÓN LISTA-DETALLE -->
                 <template x-if="selectedElement === 'Navegacion'">
                     <div class="space-y-3 text-xs">
                         <p class="text-slate-400 leading-relaxed bg-slate-950 p-3 rounded-lg border border-slate-800">
-                            <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i> Pulsa un hotel en la vista previa para abrir su detalle y «Volver» para regresar. Arriba se muestra el valor de <code class="text-indigo-300 font-mono">idSeleccionado</code> en cada momento.
+                            <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i> Pulsa un elemento en la vista previa para abrir su detalle y «Volver» para regresar. Arriba se muestra el valor de <code class="text-indigo-300 font-mono">idSeleccionado</code> en cada momento.
                         </p>
                         <label class="flex items-center justify-between p-3 bg-slate-950 rounded-lg border border-slate-800 cursor-pointer">
                             <span class="text-slate-200 font-medium">Conservar la pantalla al girar (rememberSaveable)</span>
@@ -522,7 +516,7 @@
                 <template x-if="selectedElement === 'ViewModel'">
                     <div class="space-y-3 text-xs">
                         <p class="text-slate-400 leading-relaxed bg-slate-950 p-3 rounded-lg border border-slate-800">
-                            <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i> Pulsa la papelera de un hotel en la vista previa: la pantalla llama a <code class="text-indigo-300 font-mono">viewModel.onDeleteHotel(hotel)</code>, el ViewModel borra el hotel en el repositorio y asigna un nuevo <code class="text-indigo-300 font-mono">uiState</code>.
+                            <i class="fa-solid fa-circle-info text-indigo-400 mr-1"></i> Pulsa la papelera de un elemento en la vista previa: la pantalla llama a <code class="text-indigo-300 font-mono">viewModel.onBorrar(elemento)</code>, el ViewModel lo borra en el repositorio y asigna un nuevo <code class="text-indigo-300 font-mono">uiState</code>.
                         </p>
                         <button @click="reiniciarViewModel()" class="w-full bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 px-3 py-2 rounded-lg transition flex items-center justify-center gap-1.5">
                             <i class="fa-solid fa-rotate-left"></i> Reiniciar los datos de la vista previa
@@ -821,7 +815,7 @@
                                 </div>
                             </template>
 
-                            <!-- ===================== UD3 ===================== -->
+                            <!-- ===================== MENSAJES, LISTAS Y PANTALLAS ===================== -->
 
                             <!-- TOAST -->
                             <template x-if="selectedElement === 'Toast'">
@@ -835,7 +829,7 @@
                             <!-- SNACKBAR -->
                             <template x-if="selectedElement === 'Snackbar'">
                                 <div class="p-2 flex flex-col items-center gap-3">
-                                    <button @click="mostrarSnackbar()" class="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-medium text-xs py-2.5 px-5 rounded-full shadow-md transition">Borrar hotel</button>
+                                    <button @click="mostrarSnackbar()" class="bg-purple-600 hover:bg-purple-700 active:scale-95 text-white font-medium text-xs py-2.5 px-5 rounded-full shadow-md transition">Borrar elemento</button>
                                     <p x-show="snackResultado" class="text-xs text-purple-800 font-medium text-center" x-text="snackResultado"></p>
                                     <div x-show="snackVisible" x-transition class="absolute bottom-3 left-3 right-3 bg-slate-800 text-white text-xs px-4 py-3 rounded-lg shadow-lg flex items-center justify-between gap-3">
                                         <span x-text="snackComp.mensaje"></span>
@@ -879,32 +873,31 @@
                                 </div>
                             </template>
 
-                            <!-- TARJETA HOTEL -->
-                            <template x-if="selectedElement === 'TarjetaHotel'">
+                            <!-- TARJETA CON IMAGEN -->
+                            <template x-if="selectedElement === 'TarjetaImagen'">
                                 <div class="p-1">
                                     <div class="bg-white rounded-[20px] p-3 flex items-center gap-4" style="box-shadow: 0 6px 12px rgba(103, 80, 164, 0.25);">
-                                        <img :src="`https://picsum.photos/id/${hotelComp.imagen}/300/300`" alt="" class="w-[90px] h-[90px] object-cover rounded-2xl shrink-0 bg-purple-100">
+                                        <img :src="`https://picsum.photos/id/${tarjetaComp.imagen}/300/300`" alt="" class="w-[90px] h-[90px] object-cover rounded-2xl shrink-0 bg-purple-100">
                                         <div class="min-w-0">
-                                            <p class="font-bold text-base text-slate-900 leading-tight" x-text="hotelComp.nombre"></p>
-                                            <p class="text-xs text-purple-700" x-text="hotelComp.ciudad"></p>
-                                            <p class="text-[11px] text-slate-500" x-text="hotelComp.provincia"></p>
-                                            <p class="text-xs font-medium text-pink-700 mt-1" x-text="hotelComp.telefono"></p>
+                                            <p class="font-bold text-base text-slate-900 leading-tight" x-text="tarjetaComp.titulo"></p>
+                                            <p class="text-xs text-purple-700" x-text="tarjetaComp.subtitulo"></p>
+                                            <p class="text-[11px] text-slate-500 mt-1" x-text="tarjetaComp.detalle"></p>
                                         </div>
                                     </div>
                                 </div>
                             </template>
 
-                            <!-- LISTA HOTELES -->
-                            <template x-if="selectedElement === 'ListaHoteles'">
+                            <!-- LISTA DE DATOS -->
+                            <template x-if="selectedElement === 'ListaDatos'">
                                 <div class="h-full">
                                     <div x-show="listaComp.vacia" class="h-full flex items-center justify-center text-center text-xs text-slate-500 px-4">
-                                        Todavía no hay hoteles. Pulsa + para añadir uno.
+                                        Todavía no hay elementos. Pulsa + para añadir uno.
                                     </div>
                                     <div x-show="!listaComp.vacia" class="flex flex-col" :style="`gap: ${listaComp.espacio}px;`">
-                                        <template x-for="hotel in hotelesMuestra.slice(0, parseInt(listaComp.cantidad))" :key="hotel.nombre">
+                                        <template x-for="elemento in elementosMuestra.slice(0, parseInt(listaComp.cantidad))" :key="elemento.id">
                                             <div class="bg-white rounded-xl p-3 shadow-md">
-                                                <p class="text-sm font-semibold text-slate-900" x-text="hotel.nombre"></p>
-                                                <p class="text-xs text-slate-600" x-text="hotel.ciudad"></p>
+                                                <p class="text-sm font-semibold text-slate-900" x-text="elemento.titulo"></p>
+                                                <p class="text-xs text-slate-600" x-text="elemento.descripcion"></p>
                                             </div>
                                         </template>
                                     </div>
@@ -928,29 +921,28 @@
                                 </div>
                             </template>
 
-                            <!-- NAVEGACIÓN -->
+                            <!-- NAVEGACIÓN LISTA-DETALLE -->
                             <template x-if="selectedElement === 'Navegacion'">
                                 <div class="h-full flex flex-col">
                                     <div class="bg-emerald-50 border-b border-emerald-200 px-3 py-1.5 text-[10px] font-mono text-emerald-800 shrink-0">
-                                        idSeleccionado = <span x-text="navSel === null ? 'null' : '&quot;' + hotelesMuestra[navSel].id + '&quot;'"></span>
+                                        idSeleccionado = <span x-text="navSel === null ? 'null' : '&quot;' + elementosMuestra[navSel].id + '&quot;'"></span>
                                     </div>
                                     <div x-show="navSel === null" class="p-4 space-y-3">
-                                        <p class="text-lg font-semibold text-slate-900">Mis hoteles</p>
-                                        <template x-for="(hotel, i) in hotelesMuestra.slice(0, 3)" :key="hotel.id">
+                                        <p class="text-lg font-semibold text-slate-900">Lista</p>
+                                        <template x-for="(elemento, i) in elementosMuestra.slice(0, 3)" :key="elemento.id">
                                             <div @click="navSel = i" class="bg-white rounded-xl p-3 shadow-sm border border-slate-200 cursor-pointer hover:border-purple-400">
-                                                <p class="text-sm font-semibold text-slate-900" x-text="hotel.nombre"></p>
-                                                <p class="text-xs text-slate-600" x-text="hotel.ciudad"></p>
+                                                <p class="text-sm font-semibold text-slate-900" x-text="elemento.titulo"></p>
+                                                <p class="text-xs text-slate-600" x-text="elemento.descripcion"></p>
                                             </div>
                                         </template>
                                         <p class="text-[10px] text-slate-400 pt-1">Se ve PantallaPrincipal</p>
                                     </div>
-                                    <div x-show="navSel !== null" class="p-4 space-y-2">
+                                    <div x-show="navSel !== null" class="p-4">
                                         <template x-if="navSel !== null">
                                             <div class="space-y-2">
-                                                <p class="text-lg font-semibold text-slate-900" x-text="hotelesMuestra[navSel].nombre"></p>
-                                                <p class="text-xs text-slate-800" x-text="'Ciudad: ' + hotelesMuestra[navSel].ciudad"></p>
-                                                <p class="text-xs text-slate-800" x-text="'Provincia: ' + hotelesMuestra[navSel].provincia"></p>
-                                                <p class="text-xs text-slate-800" x-text="'Teléfono: ' + hotelesMuestra[navSel].telefono"></p>
+                                                <p class="text-lg font-semibold text-slate-900" x-text="elementosMuestra[navSel].titulo"></p>
+                                                <p class="text-xs text-slate-800" x-text="elementosMuestra[navSel].descripcion"></p>
+                                                <p class="text-xs text-slate-500 font-mono" x-text="'id: ' + elementosMuestra[navSel].id"></p>
                                                 <button @click="navSel = null" class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-medium py-2 px-5 rounded-full shadow-md mt-2">Volver</button>
                                                 <p class="text-[10px] text-slate-400 pt-1">Se ve PantallaDetalle</p>
                                             </div>
@@ -963,19 +955,19 @@
                             <template x-if="selectedElement === 'ViewModel'">
                                 <div class="h-full flex flex-col">
                                     <div class="bg-emerald-50 border-b border-emerald-200 px-3 py-1.5 text-[10px] font-mono text-emerald-800 shrink-0">
-                                        uiState.hotelList.size = <span x-text="vmHoteles.length"></span>
+                                        uiState.elementos.size = <span x-text="vmElementos.length"></span>
                                     </div>
                                     <div class="p-4 space-y-2">
-                                        <p class="text-lg font-semibold text-slate-900" x-text="'Hoteles: ' + vmHoteles.length"></p>
-                                        <template x-for="hotel in vmHoteles" :key="hotel.id">
+                                        <p class="text-lg font-semibold text-slate-900" x-text="'Elementos: ' + vmElementos.length"></p>
+                                        <template x-for="elemento in vmElementos" :key="elemento.id">
                                             <div class="bg-white rounded-xl pl-3 pr-1 py-1 shadow-sm border border-slate-200 flex items-center justify-between">
-                                                <span class="text-sm text-slate-900" x-text="hotel.nombre"></span>
-                                                <button @click="borrarHotelViewModel(hotel.id)" class="w-9 h-9 rounded-full hover:bg-red-50 text-slate-600 hover:text-red-600 flex items-center justify-center" title="Borrar">
+                                                <span class="text-sm text-slate-900" x-text="elemento.titulo"></span>
+                                                <button @click="borrarElementoViewModel(elemento.id)" class="w-9 h-9 rounded-full hover:bg-red-50 text-slate-600 hover:text-red-600 flex items-center justify-center" title="Borrar">
                                                     <i class="fa-solid fa-trash text-xs"></i>
                                                 </button>
                                             </div>
                                         </template>
-                                        <p x-show="vmHoteles.length === 0" class="text-xs text-slate-500 text-center pt-6">No quedan hoteles. Usa «Reiniciar los datos» en el panel izquierdo.</p>
+                                        <p x-show="vmElementos.length === 0" class="text-xs text-slate-500 text-center pt-6">No quedan elementos. Usa «Reiniciar los datos» en el panel izquierdo.</p>
                                     </div>
                                 </div>
                             </template>
@@ -1071,7 +1063,8 @@
                 copied: false,
 
                 guideInfo() {
-                    const c = (t) => `<code class="text-amber-300 font-mono">${t}</code>`;
+                    // Escapa < y > para que tipos como List<Elemento> se vean en lugar de interpretarse como HTML
+                    const c = (t) => `<code class="text-amber-300 font-mono">${t.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`;
                     const info = {
                         FichaAlumno: {
                             title: 'Formulario completo de alumno',
@@ -1225,9 +1218,9 @@
                             mods: [`Cambiar la forma: ${c('RoundedCornerShape')}, ${c('CircleShape')}.`, `Añadir ${c('border')}.`, `Cargar imágenes de internet con una librería como Coil (${c('AsyncImage')}).`, `Usar un ${c('Icon')} si es un vector sencillo.`]
                         },
 
-                        // ===================== UD3 =====================
+                        // ===================== MENSAJES, LISTAS Y PANTALLAS =====================
                         Toast: {
-                            title: 'Toast: mensaje breve flotante (UD3, apartado 2.1)',
+                            title: 'Toast: mensaje breve flotante',
                             what: `Mensaje corto que aparece en la parte inferior y desaparece solo. No tiene botones ni forma parte de la composición de Compose.`,
                             build: [
                                 `Se obtiene el contexto de la aplicación con ${c('val context = LocalContext.current')}.`,
@@ -1237,7 +1230,7 @@
                             mods: [`Cambiar la duración a ${c('Toast.LENGTH_LONG')}.`, `Sustituirlo por un ${c('Snackbar')}, que es la opción recomendada en Material y admite una acción.`]
                         },
                         Snackbar: {
-                            title: 'Snackbar: mensaje con acción opcional (UD3, apartados 2.2 y 8.2)',
+                            title: 'Snackbar: mensaje con acción opcional',
                             what: `Mensaje breve en la parte inferior de la pantalla, integrado en Compose. Puede incluir un botón de acción, como «Deshacer».`,
                             build: [
                                 `Se crea el estado que guarda los mensajes: ${c('val snackbarHostState = remember { SnackbarHostState() }')}.`,
@@ -1245,10 +1238,10 @@
                                 `Como ${c('showSnackbar')} es una función <em>suspend</em>, se llama dentro de una corrutina: ${c('scope.launch { ... }')}, con ${c('val scope = rememberCoroutineScope()')}.`,
                                 `Si tiene ${c('actionLabel')}, el resultado ${c('SnackbarResult.ActionPerformed')} indica que el usuario pulsó la acción.`
                             ],
-                            mods: [`Quitar la acción dejando solo ${c('showSnackbar(message)')}.`, `Mostrarlo desde un ${c('LaunchedEffect')} cuando el ViewModel escribe un mensaje en el ${c('UiState')} (apartado 8.2).`, `Usar la acción para deshacer un borrado.`]
+                            mods: [`Quitar la acción dejando solo ${c('showSnackbar(message)')}.`, `Mostrarlo desde un ${c('LaunchedEffect')} cuando un ViewModel escribe un mensaje en el estado.`, `Usar la acción para deshacer un borrado.`]
                         },
                         AlertDialog: {
-                            title: 'AlertDialog: confirmar una acción (UD3, apartados 2.3 y 7.2)',
+                            title: 'AlertDialog: confirmar una acción',
                             what: `Ventana emergente que bloquea la pantalla hasta que el usuario responde. Se usa para confirmar acciones que no se pueden deshacer, como borrar.`,
                             build: [
                                 `Se guarda en un estado si el diálogo está abierto: ${c('var mostrarDialogo by remember { mutableStateOf(false) }')}.`,
@@ -1256,43 +1249,43 @@
                                 `Se rellenan ${c('title')}, ${c('text')}, ${c('confirmButton')} y ${c('dismissButton')}.`,
                                 `Cada botón debe cambiar el estado para cerrar el diálogo; ${c('onDismissRequest')} se ejecuta al tocar fuera o pulsar Atrás.`
                             ],
-                            mods: [`Usar el color ${c('MaterialTheme.colorScheme.error')} en el botón de confirmar.`, `Guardar en el ${c('UiState')} el elemento que se quiere borrar (${c('hotelToDelete: Hotel?')}) en lugar de un ${c('Boolean')} (apartado 7.1).`, `Extraer el diálogo a una función ${c('@Composable')} que reciba datos y eventos.`]
+                            mods: [`Usar el color ${c('MaterialTheme.colorScheme.error')} en el botón de confirmar.`, `Guardar en el estado el elemento que se quiere borrar (${c('elementoABorrar: Elemento?')}) en lugar de un ${c('Boolean')}: así el estado indica si el diálogo está abierto y qué se va a borrar.`, `Extraer el diálogo a una función ${c('@Composable')} que reciba datos y eventos.`]
                         },
                         CampoValidado: {
-                            title: 'Campo con validación: isError y supportingText (UD3, apartado 7.4)',
+                            title: 'Campo con validación: isError y supportingText',
                             what: `Campo de texto que muestra un mensaje de error debajo cuando el dato no es correcto, en lugar de desactivar el botón de guardar.`,
                             build: [
-                                `Se calcula el error a partir del valor actual: ${c('val nombreError = if (nombre.isBlank()) "..." else null')}.`,
+                                `Se calcula el error a partir del valor actual: ${c('val valorError = if (valor.isBlank()) "..." else null')}.`,
                                 `Se crea un composable ${c('FormField')} que usa ${c('isError = error != null')} y ${c('supportingText')} para mostrar el mensaje.`,
                                 `Se añade ${c('var showErrors by remember { mutableStateOf(false) }')} para no mostrar errores antes del primer intento de guardar.`,
                                 `Al pulsar «Guardar»: si no hay error se guarda; si lo hay, ${c('showErrors = true')}.`
                             ],
-                            mods: [`Añadir más campos, cada uno con su variable ${c('...Error')}.`, `Validar formatos con ${c('when')}, por ejemplo un teléfono de 9 cifras.`, `Marcar con ${c('*')} los campos obligatorios en la etiqueta.`]
+                            mods: [`Añadir más campos, cada uno con su variable ${c('...Error')}.`, `Validar formatos con ${c('when')}, por ejemplo que un teléfono tenga 9 cifras.`, `Marcar con ${c('*')} los campos obligatorios en la etiqueta.`]
                         },
-                        TarjetaHotel: {
-                            title: 'Tarjeta de hotel: ElevatedCard con imagen de internet (UD3, apartados 3.3 y 4)',
-                            what: `Composable que dibuja un elemento de la lista: una ${c('ElevatedCard')} con una imagen descargada con Coil y los datos del hotel.`,
+                        TarjetaImagen: {
+                            title: 'Tarjeta con imagen: ElevatedCard y AsyncImage',
+                            what: `Composable que dibuja un elemento de una lista: una ${c('ElevatedCard')} con una imagen descargada de internet con Coil y los datos del elemento.`,
                             build: [
-                                `Se define el modelo con una ${c('data class Hotel')} (apartado 3.2).`,
-                                `Se crea ${c('HotelCard(hotel: Hotel, onClick: () -> Unit)')}: recibe el dato y avisa del evento.`,
+                                `Se define el modelo con una ${c('data class Elemento(...)')}.`,
+                                `Se crea ${c('ElementoCard(elemento: Elemento, onClick: () -> Unit)')}: recibe el dato y avisa del evento.`,
                                 `Dentro, una ${c('Row')} coloca la imagen a la izquierda y una ${c('Column')} con ${c('Modifier.weight(1f)')} con los textos.`,
-                                `La imagen se carga con ${c('AsyncImage(model = hotel.image, ...)')}. Requiere la dependencia ${c('io.coil-kt:coil-compose')} y el permiso ${c('INTERNET')} en el manifiesto.`
+                                `La imagen se carga con ${c('AsyncImage(model = elemento.imagen, ...)')}. Requiere la dependencia ${c('io.coil-kt:coil-compose')} y el permiso ${c('INTERNET')} en el manifiesto.`
                             ],
                             mods: [`Cambiar el recorte de la imagen con ${c('Modifier.clip(...)')}.`, `Usar los colores del tema (${c('primary')}, ${c('secondary')}, ${c('tertiary')}) en los textos.`, `Añadir botones de editar y borrar que avisen con eventos (${c('onEditClick')}, ${c('onDeleteClick')}).`]
                         },
-                        ListaHoteles: {
-                            title: 'Lista de hoteles: data class, items y key (UD3, apartado 3)',
-                            what: `Lista de objetos (no de textos) dibujada con ${c('LazyColumn')}, con clave estable y un mensaje cuando la lista está vacía.`,
+                        ListaDatos: {
+                            title: 'Lista de datos: data class, items y key',
+                            what: `Lista de objetos (no de textos) dibujada con ${c('LazyColumn')}, con una clave estable por elemento y un mensaje cuando la lista está vacía.`,
                             build: [
-                                `Se define ${c('data class Hotel(val id: String = UUID.randomUUID().toString(), ...)')}.`,
-                                `Se recorre la lista con ${c('items(items = hoteles, key = { hotel -> hotel.id })')}.`,
-                                `Se da aspecto a la lista con ${c('contentPadding')} y ${c('verticalArrangement = Arrangement.spacedBy(...)')} (apartado 3.5).`,
-                                `Si ${c('hoteles.isEmpty()')}, se muestra un ${c('Text')} centrado en lugar de la lista (apartado 3.6).`
+                                `Se define ${c('data class Elemento(val id: String = UUID.randomUUID().toString(), ...)')}.`,
+                                `Se recorre la lista con ${c('items(items = elementos, key = { elemento -> elemento.id })')}.`,
+                                `Se da aspecto a la lista con ${c('contentPadding')} y ${c('verticalArrangement = Arrangement.spacedBy(...)')}.`,
+                                `Si ${c('elementos.isEmpty()')}, se muestra un ${c('Text')} centrado en lugar de la lista.`
                             ],
-                            mods: [`Sustituir la tarjeta por la ${c('HotelCard')} con imagen.`, `Añadir un ${c('item { }')} de cabecera o de pie.`, `Guardar la lista en un estado o en un ViewModel para poder borrar elementos.`]
+                            mods: [`Sustituir la tarjeta por una ${c('ElementoCard')} con imagen.`, `Añadir un ${c('item { }')} de cabecera o de pie.`, `Guardar la lista en un estado o en un ViewModel para poder borrar elementos.`]
                         },
                         Scaffold: {
-                            title: 'Scaffold: estructura de una pantalla Material (UD3, apartado 8.1)',
+                            title: 'Scaffold: estructura de una pantalla Material',
                             what: `Composable que organiza una pantalla: barra superior, botón flotante, zona de mensajes y contenido, sin que se solapen.`,
                             build: [
                                 `Se escribe ${c('Scaffold(topBar = {...}, floatingActionButton = {...}) { paddingValues -> ... }')}.`,
@@ -1303,26 +1296,26 @@
                             mods: [`Añadir ${c('snackbarHost = { SnackbarHost(snackbarHostState) }')} para mostrar mensajes.`, `Cambiar el icono del botón flotante.`, `Mostrar la flecha de volver solo en la pantalla de detalle.`]
                         },
                         Navegacion: {
-                            title: 'Navegación con estado: lista y detalle (UD3, apartado 5)',
-                            what: `Cambio entre dos pantallas sin ${c('NavHost')}: una variable de estado indica qué pantalla se dibuja.`,
+                            title: 'Navegación lista-detalle con estado',
+                            what: `Cambio entre una pantalla de lista y una de detalle sin ${c('NavHost')}: una variable de estado indica qué pantalla se dibuja.`,
                             build: [
-                                `Cada pantalla es una función ${c('@Composable')} en su propio archivo: ${c('PantallaPrincipal')} y ${c('PantallaDetalle')}.`,
+                                `Cada pantalla es una función ${c('@Composable')} en su propio archivo: ${c('PantallaPrincipal')} (la lista) y ${c('PantallaDetalle')}.`,
                                 `${c('AppPantallas')} guarda ${c('var idSeleccionado by rememberSaveable { mutableStateOf<String?>(null) }')}.`,
-                                `Un ${c('if')} elige la pantalla: si no hay hotel seleccionado, la lista; si lo hay, el detalle.`,
-                                `Las pantallas avisan con eventos (${c('onHotelClick')}, ${c('onVolver')}) y ${c('AppPantallas')} cambia la variable. ${c('BackHandler')} hace que el botón Atrás vuelva a la lista.`
+                                `Un ${c('if')} elige la pantalla: si no hay elemento seleccionado, la lista; si lo hay, el detalle.`,
+                                `Las pantallas avisan con eventos (${c('onElementoClick')}, ${c('onVolver')}) y ${c('AppPantallas')} cambia la variable. ${c('BackHandler')} hace que el botón Atrás vuelva a la lista.`
                             ],
-                            mods: [`Cambiar ${c('rememberSaveable')} por ${c('remember')} y comprobar qué ocurre al girar el móvil.`, `Mover ${c('idSeleccionado')} al ${c('UiState')} de un ViewModel (apartado 8.3).`, `Añadir una tercera pantalla guardando su nombre en la variable y eligiendo con ${c('when')}.`]
+                            mods: [`Cambiar ${c('rememberSaveable')} por ${c('remember')} y comprobar qué ocurre al girar el móvil.`, `Mover ${c('idSeleccionado')} al estado de un ViewModel.`, `Añadir una tercera pantalla guardando su nombre en la variable y eligiendo con ${c('when')}.`]
                         },
                         ViewModel: {
-                            title: 'ViewModel + UiState: arquitectura MVVM (UD3, apartado 6)',
+                            title: 'ViewModel + UiState: arquitectura MVVM',
                             what: `Separación en tres capas: el repositorio guarda los datos, el ViewModel guarda el estado y tiene una función por evento, y las pantallas dibujan el estado.`,
                             build: [
-                                `Se agrupa el estado en ${c('data class HospedajeUiState(val hotelList: List<Hotel> = emptyList())')}.`,
-                                `El ViewModel guarda ${c('var uiState by mutableStateOf(HospedajeUiState())')} con ${c('private set')}: las pantallas pueden leerlo, pero no cambiarlo.`,
+                                `Se agrupa el estado en ${c('data class ElementosUiState(val elementos: List<Elemento> = emptyList())')}.`,
+                                `El ViewModel guarda ${c('var uiState by mutableStateOf(ElementosUiState())')} con ${c('private set')}: las pantallas pueden leerlo, pero no cambiarlo.`,
                                 `Cada evento sigue el patrón: pedir la operación al repositorio y recargar la lista con ${c('uiState = uiState.copy(...)')}.`,
                                 `${c('AppPantallas')} obtiene el ViewModel con ${c('viewModel()')} (dependencia ${c('lifecycle-viewmodel-compose')}) y pasa datos y lambdas a la pantalla.`
                             ],
-                            mods: [`Añadir al ${c('UiState')} el hotel seleccionado y navegar al detalle.`, `Añadir funciones para insertar y editar hoteles.`, `Añadir un ${c('userMessage')} al ${c('UiState')} y mostrarlo con un ${c('Snackbar')}.`]
+                            mods: [`Añadir al estado el elemento seleccionado y navegar al detalle.`, `Añadir funciones para insertar y editar elementos.`, `Añadir un mensaje al estado y mostrarlo con un ${c('Snackbar')}.`]
                         }
                     };
                     return info[this.selectedElement] || info.Text;
@@ -1352,26 +1345,21 @@
                 checkComp: { text: 'Acepto la normativa de la asignatura', checked: true },
                 imageComp: { shape: 'CircleShape', size: 90 },
 
-                // ===================== UD3 =====================
-                toastComp: { mensaje: 'Hotel guardado', larga: false },
-                snackComp: { mensaje: 'Hotel borrado', accion: 'Deshacer' },
-                dialogComp: { titulo: 'Eliminar hotel', texto: '¿Seguro que quieres eliminar este hotel?', confirmar: 'Eliminar', colorError: true },
+                // ===================== MENSAJES, LISTAS Y PANTALLAS =====================
+                toastComp: { mensaje: 'Elemento guardado', larga: false },
+                snackComp: { mensaje: 'Elemento borrado', accion: 'Deshacer' },
+                dialogComp: { titulo: 'Eliminar elemento', texto: '¿Seguro que quieres eliminar este elemento?', confirmar: 'Eliminar', colorError: true },
                 formComp: { etiqueta: 'Nombre', error: 'El nombre es obligatorio', valor: '', mostrarErrores: false, resultado: '' },
-                hotelComp: { nombre: 'Hotel Peñalta', ciudad: 'Bogarra', provincia: 'Albacete', telefono: '967 98 89 98', imagen: '1040' },
+                tarjetaComp: { titulo: 'Título de la tarjeta', subtitulo: 'Subtítulo', detalle: 'Texto de detalle', imagen: '1040' },
                 listaComp: { cantidad: 4, espacio: 8, vacia: false },
-                scaffoldComp: { titulo: 'Mis hospedajes', flecha: false, fab: true },
+                scaffoldComp: { titulo: 'Mi aplicación', flecha: false, fab: true },
                 navComp: { saveable: true },
 
-                hotelesMuestra: [
-                    { id: 'a1b2', nombre: 'Antiguo Palacio de Atienza', ciudad: 'Atienza', provincia: 'Guadalajara', telefono: '975 45 54 45' },
-                    { id: 'c3d4', nombre: 'La Casa del Vaquero', ciudad: 'Abiada', provincia: 'Cantabria', telefono: '978 65 56 65' },
-                    { id: 'e5f6', nombre: 'Hotel Peñalta', ciudad: 'Bogarra', provincia: 'Albacete', telefono: '967 98 89 98' },
-                    { id: 'g7h8', nombre: 'Hotel Felipe II', ciudad: 'Ayna', provincia: 'Albacete', telefono: '967 22 33 44' },
-                    { id: 'i9j0', nombre: 'Parador de Cuenca', ciudad: 'Cuenca', provincia: 'Cuenca', telefono: '969 23 23 20' },
-                    { id: 'k1l2', nombre: 'Hostal del Sol', ciudad: 'Nerja', provincia: 'Málaga', telefono: '952 52 00 00' },
-                    { id: 'm3n4', nombre: 'Posada del Río', ciudad: 'Cangas de Onís', provincia: 'Asturias', telefono: '985 84 00 00' },
-                    { id: 'o5p6', nombre: 'Hotel Mirador', ciudad: 'Ronda', provincia: 'Málaga', telefono: '952 87 00 00' }
-                ],
+                elementosMuestra: ['a1b2', 'c3d4', 'e5f6', 'g7h8', 'i9j0', 'k1l2', 'm3n4', 'o5p6'].map((id, i) => ({
+                    id,
+                    titulo: `Elemento ${i + 1}`,
+                    descripcion: `Descripción del elemento ${i + 1}`
+                })),
 
                 // Estado de las vistas previas interactivas
                 toastVisible: false,
@@ -1380,7 +1368,7 @@
                 dialogAbierto: false,
                 dialogResultado: '',
                 navSel: null,
-                vmHoteles: [],
+                vmElementos: [],
 
                 init() {
                     this.reiniciarViewModel();
@@ -1423,22 +1411,18 @@
                 },
 
                 reiniciarViewModel() {
-                    this.vmHoteles = this.hotelesMuestra.slice(0, 4).map(h => ({ ...h }));
+                    this.vmElementos = this.elementosMuestra.slice(0, 4).map(e => ({ ...e }));
                 },
 
-                borrarHotelViewModel(id) {
-                    this.vmHoteles = this.vmHoteles.filter(h => h.id !== id);
+                borrarElementoViewModel(id) {
+                    this.vmElementos = this.vmElementos.filter(e => e.id !== id);
                 },
 
-                // Lista de hoteles en Kotlin para el código generado
-                kotlinHoteles(cantidad, campos) {
-                    return this.hotelesMuestra.slice(0, cantidad).map(h => {
-                        const partes = [`name = "${h.nombre}"`, `city = "${h.ciudad}"`];
-                        if (campos === 'completo') {
-                            partes.push(`province = "${h.provincia}"`, `phone = "${h.telefono}"`);
-                        }
-                        return `    Hotel(${partes.join(', ')})`;
-                    }).join(',\n');
+                // Lista de elementos en Kotlin para el código generado
+                kotlinElementos(cantidad, sangria = '    ') {
+                    return this.elementosMuestra.slice(0, cantidad)
+                        .map(e => `${sangria}Elemento(titulo = "${e.titulo}", descripcion = "${e.descripcion}")`)
+                        .join(',\n');
                 },
 
                 guardarFicha() {
@@ -2287,7 +2271,7 @@ fun EjemploImagePreview() {
 }`;
                     }
 
-                    // ===================== UD3 =====================
+                    // ===================== MENSAJES, LISTAS Y PANTALLAS =====================
                     const paquete = 'package com.example.miprimerainterfaz // <- deja el package de tu proyecto';
                     // Escapa comillas, barras y $ de los textos escritos por el usuario
                     const k = (s) => String(s).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$');
@@ -2399,7 +2383,7 @@ fun EjemploSnackbar() {
                     }
                 }
             ) {
-                Text("Borrar hotel")
+                Text("Borrar elemento")
             }
             if (mensajeAccion.isNotEmpty()) {
                 Text(mensajeAccion)
@@ -2568,8 +2552,8 @@ fun EjemploFormulario() {
 ${preview('EjemploFormulario')}`;
                     }
 
-                    if (this.selectedElement === 'TarjetaHotel') {
-                        const h = this.hotelComp;
+                    if (this.selectedElement === 'TarjetaImagen') {
+                        const t = this.tarjetaComp;
                         return `${paquete}
 
 // Necesita en build.gradle.kts (módulo app): implementation("io.coil-kt:coil-compose:2.7.0")
@@ -2589,24 +2573,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import java.util.UUID
 
-${actividad('EjemploTarjetaHotel')}
+${actividad('EjemploTarjetaImagen')}
 
-data class Hotel(
+data class Elemento(
     val id: String = UUID.randomUUID().toString(),
-    val name: String,
-    val city: String,
-    val province: String,
-    val phone: String,
-    val image: String
+    val titulo: String,
+    val subtitulo: String,
+    val detalle: String,
+    val imagen: String
 )
 
 @Composable
-fun HotelCard(
-    hotel: Hotel,
+fun ElementoCard(
+    elemento: Elemento,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -2623,8 +2605,8 @@ fun HotelCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
-                model = hotel.image,
-                contentDescription = "Fotografía de \${hotel.name}",
+                model = elemento.imagen,
+                contentDescription = "Imagen de \${elemento.titulo}",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(110.dp)
@@ -2635,26 +2617,19 @@ fun HotelCard(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = hotel.name,
+                    text = elemento.titulo,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 18.sp
+                    fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = hotel.city,
+                    text = elemento.subtitulo,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = hotel.province,
+                    text = elemento.detalle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.secondary
-                )
-                Text(
-                    text = hotel.phone,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Medium,
-                    color = MaterialTheme.colorScheme.tertiary,
+                    color = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.padding(top = 4.dp)
                 )
             }
@@ -2663,30 +2638,29 @@ fun HotelCard(
 }
 
 @Composable
-fun EjemploTarjetaHotel() {
-    val hotel = Hotel(
-        name = "${k(h.nombre)}",
-        city = "${k(h.ciudad)}",
-        province = "${k(h.provincia)}",
-        phone = "${k(h.telefono)}",
-        image = "https://picsum.photos/id/${h.imagen}/300/300"
+fun EjemploTarjetaImagen() {
+    val elemento = Elemento(
+        titulo = "${k(t.titulo)}",
+        subtitulo = "${k(t.subtitulo)}",
+        detalle = "${k(t.detalle)}",
+        imagen = "https://picsum.photos/id/${t.imagen}/300/300"
     )
 
-    HotelCard(
-        hotel = hotel,
+    ElementoCard(
+        elemento = elemento,
         onClick = { /* Aquí se abriría el detalle */ },
         modifier = Modifier.padding(${pad})
     )
 }
 
-${preview('EjemploTarjetaHotel')}`;
+${preview('EjemploTarjetaImagen')}`;
                     }
 
-                    if (this.selectedElement === 'ListaHoteles') {
+                    if (this.selectedElement === 'ListaDatos') {
                         const lista = this.listaComp.vacia
-                            ? `val hotelesDeEjemplo = emptyList<Hotel>()   // lista vacía para probar el mensaje`
-                            : `val hotelesDeEjemplo = listOf(
-${this.kotlinHoteles(parseInt(this.listaComp.cantidad))}
+                            ? `val elementosDeEjemplo = emptyList<Elemento>()   // lista vacía para probar el mensaje`
+                            : `val elementosDeEjemplo = listOf(
+${this.kotlinElementos(parseInt(this.listaComp.cantidad))}
 )`;
                         return `${paquete}
 
@@ -2704,24 +2678,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import java.util.UUID
 
-${actividad('EjemploListaHoteles')}
+${actividad('EjemploListaDatos')}
 
-data class Hotel(
+data class Elemento(
     val id: String = UUID.randomUUID().toString(),
-    val name: String,
-    val city: String
+    val titulo: String,
+    val descripcion: String
 )
 
 // Fuera de la función: se crea una sola vez y los id no cambian
 ${lista}
 
 @Composable
-fun EjemploListaHoteles() {
-    val hoteles = hotelesDeEjemplo
+fun EjemploListaDatos() {
+    val elementos = elementosDeEjemplo
 
-    if (hoteles.isEmpty()) {
+    if (elementos.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Todavía no hay hoteles. Pulsa + para añadir uno.")
+            Text("Todavía no hay elementos. Pulsa + para añadir uno.")
         }
     } else {
         LazyColumn(
@@ -2729,11 +2703,11 @@ fun EjemploListaHoteles() {
             contentPadding = PaddingValues(${pad}),
             verticalArrangement = Arrangement.spacedBy(${this.listaComp.espacio}.dp)
         ) {
-            items(items = hoteles, key = { hotel -> hotel.id }) { hotel ->
+            items(items = elementos, key = { elemento -> elemento.id }) { elemento ->
                 ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(hotel.name, style = MaterialTheme.typography.titleMedium)
-                        Text(hotel.city, style = MaterialTheme.typography.bodyMedium)
+                        Text(elemento.titulo, style = MaterialTheme.typography.titleMedium)
+                        Text(elemento.descripcion, style = MaterialTheme.typography.bodyMedium)
                     }
                 }
             }
@@ -2741,7 +2715,7 @@ fun EjemploListaHoteles() {
     }
 }
 
-${preview('EjemploListaHoteles')}`;
+${preview('EjemploListaDatos')}`;
                     }
 
                     if (this.selectedElement === 'Scaffold') {
@@ -2827,56 +2801,54 @@ import androidx.compose.ui.unit.dp
 import java.util.UUID
 
 // En un proyecto real, cada pantalla va en su propio archivo:
-// PantallaPrincipal.kt, PantallaDetalle.kt y AppPantallas.kt (UD3, apartado 5)
+// PantallaPrincipal.kt, PantallaDetalle.kt y AppPantallas.kt
 
 ${actividad('AppPantallas')}
 
-data class Hotel(
+data class Elemento(
     val id: String = UUID.randomUUID().toString(),
-    val name: String,
-    val city: String,
-    val province: String,
-    val phone: String
+    val titulo: String,
+    val descripcion: String
 )
 
 // Fuera de la función: se crea una sola vez y los id no cambian
-val hotelesDeEjemplo = listOf(
-${this.kotlinHoteles(3, 'completo')}
+val elementosDeEjemplo = listOf(
+${this.kotlinElementos(3)}
 )
 
 // ---------- AppPantallas.kt: decide qué pantalla se ve ----------
 @Composable
 fun AppPantallas() {
-    // null -> se ve la lista; un id -> se ve el detalle de ese hotel
+    // null -> se ve la lista; un id -> se ve el detalle de ese elemento
     var idSeleccionado by ${recordar} { mutableStateOf<String?>(null) }
 
-    val hotelSeleccionado = hotelesDeEjemplo.find { it.id == idSeleccionado }
+    val elementoSeleccionado = elementosDeEjemplo.find { it.id == idSeleccionado }
 
     // Botón Atrás del móvil: desde el detalle, vuelve a la lista
-    BackHandler(enabled = hotelSeleccionado != null) {
+    BackHandler(enabled = elementoSeleccionado != null) {
         idSeleccionado = null
     }
 
     Box(modifier = Modifier.safeDrawingPadding()) {
-        if (hotelSeleccionado == null) {
+        if (elementoSeleccionado == null) {
             PantallaPrincipal(
-                hoteles = hotelesDeEjemplo,
-                onHotelClick = { hotel -> idSeleccionado = hotel.id }
+                elementos = elementosDeEjemplo,
+                onElementoClick = { elemento -> idSeleccionado = elemento.id }
             )
         } else {
             PantallaDetalle(
-                hotel = hotelSeleccionado,
+                elemento = elementoSeleccionado,
                 onVolver = { idSeleccionado = null }
             )
         }
     }
 }
 
-// ---------- PantallaPrincipal.kt ----------
+// ---------- PantallaPrincipal.kt: la lista ----------
 @Composable
 fun PantallaPrincipal(
-    hoteles: List<Hotel>,
-    onHotelClick: (Hotel) -> Unit
+    elementos: List<Elemento>,
+    onElementoClick: (Elemento) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -2884,18 +2856,18 @@ fun PantallaPrincipal(
             .padding(${pad}),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text("Mis hoteles", style = MaterialTheme.typography.headlineMedium)
+        Text("Lista", style = MaterialTheme.typography.headlineMedium)
 
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(hoteles, key = { it.id }) { hotel ->
+            items(elementos, key = { it.id }) { elemento ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onHotelClick(hotel) }
+                        .clickable { onElementoClick(elemento) }
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text(hotel.name, style = MaterialTheme.typography.titleMedium)
-                        Text(hotel.city)
+                        Text(elemento.titulo, style = MaterialTheme.typography.titleMedium)
+                        Text(elemento.descripcion)
                     }
                 }
             }
@@ -2903,10 +2875,10 @@ fun PantallaPrincipal(
     }
 }
 
-// ---------- PantallaDetalle.kt ----------
+// ---------- PantallaDetalle.kt: los datos de un elemento ----------
 @Composable
 fun PantallaDetalle(
-    hotel: Hotel,
+    elemento: Elemento,
     onVolver: () -> Unit
 ) {
     Column(
@@ -2915,10 +2887,9 @@ fun PantallaDetalle(
             .padding(${pad}),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(hotel.name, style = MaterialTheme.typography.headlineMedium)
-        Text("Ciudad: \${hotel.city}")
-        Text("Provincia: \${hotel.province}")
-        Text("Teléfono: \${hotel.phone}")
+        Text(elemento.titulo, style = MaterialTheme.typography.headlineMedium)
+        Text(elemento.descripcion)
+        Text("id: \${elemento.id}", style = MaterialTheme.typography.bodySmall)
 
         Button(onClick = onVolver) {
             Text("Volver")
@@ -2953,70 +2924,70 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import java.util.UUID
 
-// En un proyecto real, cada clase va en su propio archivo (UD3, apartado 6)
+// En un proyecto real, cada clase va en su propio archivo
 
 ${actividad('AppPantallas')}
 
-// ---------- Hotel.kt: modelo ----------
-data class Hotel(
+// ---------- Elemento.kt: modelo ----------
+data class Elemento(
     val id: String = UUID.randomUUID().toString(),
-    val name: String,
-    val city: String
+    val titulo: String,
+    val descripcion: String
 )
 
-// ---------- HotelRepository.kt: guarda los datos ----------
-object HotelRepository {
-    private val hotels = mutableListOf(
-    ${this.kotlinHoteles(4).replace(/\n/g, '\n    ')}
+// ---------- ElementoRepository.kt: guarda los datos ----------
+object ElementoRepository {
+    private val elementos = mutableListOf(
+${this.kotlinElementos(4, '        ')}
     )
 
-    fun getHotels(): List<Hotel> = hotels.toList()
+    fun getElementos(): List<Elemento> = elementos.toList()
 
-    fun deleteHotel(id: String) {
-        hotels.removeAll { it.id == id }
+    fun deleteElemento(id: String) {
+        elementos.removeAll { it.id == id }
     }
 }
 
-// ---------- HospedajeUiState.kt: todo lo que la pantalla necesita ----------
-data class HospedajeUiState(
-    val hotelList: List<Hotel> = emptyList()
+// ---------- ElementosUiState.kt: todo lo que la pantalla necesita ----------
+data class ElementosUiState(
+    val elementos: List<Elemento> = emptyList()
 )
 
-// ---------- HospedajeViewModel.kt: estado y una función por evento ----------
-class HospedajeViewModel : ViewModel() {
+// ---------- ElementosViewModel.kt: estado y una función por evento ----------
+class ElementosViewModel : ViewModel() {
 
     // Las pantallas pueden leer uiState, pero solo el ViewModel puede cambiarlo
-    var uiState by mutableStateOf(HospedajeUiState())
+    var uiState by mutableStateOf(ElementosUiState())
         private set
 
     init {
-        uiState = uiState.copy(hotelList = HotelRepository.getHotels())
+        uiState = uiState.copy(elementos = ElementoRepository.getElementos())
     }
 
-    fun onDeleteHotel(hotel: Hotel) {
-        HotelRepository.deleteHotel(hotel.id)                         // 1. el repositorio borra
-        uiState = uiState.copy(hotelList = HotelRepository.getHotels()) // 2. se recarga el estado
+    fun onBorrar(elemento: Elemento) {
+        ElementoRepository.deleteElemento(elemento.id)                       // 1. el repositorio borra
+        uiState = uiState.copy(elementos = ElementoRepository.getElementos()) // 2. se recarga el estado
     }
 }
 
 // ---------- AppPantallas.kt: el único que habla con el ViewModel ----------
 @Composable
 fun AppPantallas(
-    viewModel: HospedajeViewModel = viewModel()
+    viewModel: ElementosViewModel = viewModel()
 ) {
     val uiState = viewModel.uiState
 
     PantallaPrincipal(
-        hoteles = uiState.hotelList,
-        onBorrar = { hotel -> viewModel.onDeleteHotel(hotel) }
+        elementos = uiState.elementos,
+        onBorrar = { elemento -> viewModel.onBorrar(elemento) }
     )
 }
 
 // ---------- PantallaPrincipal.kt: dibuja el estado y avisa con eventos ----------
 @Composable
 fun PantallaPrincipal(
-    hoteles: List<Hotel>,
-    onBorrar: (Hotel) -> Unit
+    elementos: List<Elemento>,
+    onBorrar: (Elemento) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -3026,9 +2997,9 @@ fun PantallaPrincipal(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-            Text("Hoteles: \${hoteles.size}", style = MaterialTheme.typography.headlineMedium)
+            Text("Elementos: \${elementos.size}", style = MaterialTheme.typography.headlineMedium)
         }
-        items(items = hoteles, key = { it.id }) { hotel ->
+        items(items = elementos, key = { it.id }) { elemento ->
             ElevatedCard(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier
@@ -3037,9 +3008,9 @@ fun PantallaPrincipal(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(hotel.name)
-                    IconButton(onClick = { onBorrar(hotel) }) {
-                        Icon(Icons.Default.Delete, contentDescription = "Borrar \${hotel.name}")
+                    Text(elemento.titulo)
+                    IconButton(onClick = { onBorrar(elemento) }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Borrar \${elemento.titulo}")
                     }
                 }
             }
@@ -3049,7 +3020,7 @@ fun PantallaPrincipal(
 
 // La vista previa usa la pantalla con datos fijos, sin ViewModel
 ${preview('PantallaPrincipal', `PantallaPrincipal(
-            hoteles = listOf(Hotel(name = "Hotel de prueba", city = "Sevilla")),
+            elementos = listOf(Elemento(titulo = "Elemento de prueba", descripcion = "Descripción")),
             onBorrar = {}
         )`)}`;
                     }
