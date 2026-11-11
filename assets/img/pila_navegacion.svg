@@ -19,18 +19,18 @@
 
   <line x1="204" y1="195" x2="222" y2="195" stroke="#37474F" stroke-width="2" marker-end="url(#flechaGris)"/>
 
-  <!-- Columna 2: navigate(B) -->
+  <!-- Columna 2: navigate(Rutas.B) -->
   <rect x="225" y="80" width="170" height="230" rx="10" fill="#F5F5F5" stroke="#B0BEC5"/>
   <rect x="240" y="252" width="140" height="44" rx="6" fill="#FFF59D" stroke="#9E9E9E"/>
   <text x="310" y="279" text-anchor="middle" font-size="15" fill="#263238">Inicio</text>
   <rect x="240" y="202" width="140" height="44" rx="6" fill="#90CAF9" stroke="#263238" stroke-width="3"/>
   <text x="310" y="229" text-anchor="middle" font-size="15" font-weight="bold" fill="#0D47A1">B</text>
   <text x="310" y="334" text-anchor="middle" font-size="13" font-weight="bold" fill="#263238">2. Ir a B</text>
-  <text x="310" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">navigate(B(...))</text>
+  <text x="310" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">navigate(Rutas.B)</text>
 
   <line x1="399" y1="195" x2="417" y2="195" stroke="#37474F" stroke-width="2" marker-end="url(#flechaGris)"/>
 
-  <!-- Columna 3: navigate(C) -->
+  <!-- Columna 3: navigate(Rutas.C) -->
   <rect x="420" y="80" width="170" height="230" rx="10" fill="#F5F5F5" stroke="#B0BEC5"/>
   <rect x="435" y="252" width="140" height="44" rx="6" fill="#FFF59D" stroke="#9E9E9E"/>
   <text x="505" y="279" text-anchor="middle" font-size="15" fill="#263238">Inicio</text>
@@ -39,7 +39,7 @@
   <rect x="435" y="152" width="140" height="44" rx="6" fill="#EF9A9A" stroke="#263238" stroke-width="3"/>
   <text x="505" y="179" text-anchor="middle" font-size="15" font-weight="bold" fill="#B71C1C">C</text>
   <text x="505" y="334" text-anchor="middle" font-size="13" font-weight="bold" fill="#263238">3. Ir a C</text>
-  <text x="505" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">navigate(C)</text>
+  <text x="505" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">navigate(Rutas.C)</text>
 
   <line x1="594" y1="195" x2="612" y2="195" stroke="#37474F" stroke-width="2" marker-end="url(#flechaGris)"/>
 
@@ -63,6 +63,6 @@
   <rect x="825" y="202" width="140" height="44" rx="6" fill="none" stroke="#0D47A1" stroke-dasharray="6 4"/>
   <text x="895" y="229" text-anchor="middle" font-size="14" fill="#0D47A1">B (sale)</text>
   <text x="895" y="334" text-anchor="middle" font-size="13" font-weight="bold" fill="#263238">5. Volver al inicio</text>
-  <text x="895" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">popBackStack(Inicio,</text>
+  <text x="895" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">popBackStack(Rutas.INICIO,</text>
   <text x="895" y="370" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">  inclusive = false)</text>
 </svg>
