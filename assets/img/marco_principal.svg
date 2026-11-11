@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="1000" height="560" viewBox="0 0 1000 560" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <style>text { white-space: pre; }</style>
+  <defs>
+    <marker id="flechaGris" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474F"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="560" fill="#FFFFFF"/>
+
+  <!-- ===== Árbol de composables (izquierda) ===== -->
+  <text x="30" y="34" font-size="17" font-weight="bold" fill="#263238">Estructura de MarcoPrincipal</text>
+
+  <rect x="30" y="52" width="500" height="480" rx="12" fill="#F3E5F5" stroke="#6A1B9A" stroke-width="2"/>
+  <text x="48" y="78" font-size="14" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#4A148C">ModalNavigationDrawer</text>
+  <text x="290" y="78" font-size="12" fill="#6A1B9A">← DrawerLayout</text>
+
+  <rect x="50" y="92" width="460" height="92" rx="8" fill="#FFFFFF" stroke="#CE93D8"/>
+  <text x="64" y="114" font-size="13" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#4A148C">drawerContent = ModalDrawerSheet</text>
+  <text x="80" y="138" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">CabeceraDrawer (foto, nombre, correo)</text>
+  <text x="80" y="158" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">NavigationDrawerItem × n</text>
+  <text x="80" y="176" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">«Cerrar sesión»</text>
+  <text x="330" y="138" font-size="12" fill="#6A1B9A">← NavigationView</text>
+
+  <rect x="50" y="196" width="460" height="320" rx="8" fill="#E3F2FD" stroke="#1565C0" stroke-width="1.5"/>
+  <text x="64" y="220" font-size="14" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#0D47A1">Scaffold</text>
+  <text x="290" y="220" font-size="12" fill="#1565C0">← CoordinatorLayout</text>
+
+  <rect x="70" y="234" width="420" height="40" rx="6" fill="#FFFFFF" stroke="#90CAF9"/>
+  <text x="84" y="259" font-size="12" font-family="Consolas, Menlo, monospace" fill="#263238">topBar = BarraSuperior (≡ o ←, título, ⋮)</text>
+
+  <rect x="70" y="284" width="420" height="96" rx="6" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+  <text x="84" y="308" font-size="12" font-weight="bold" font-family="Consolas, Menlo, monospace" fill="#1B5E20">contenido = NavHost</text>
+  <text x="84" y="330" font-size="12" font-family="Consolas, Menlo, monospace" fill="#2E7D32">Inicio · MisHoteles · Explorar</text>
+  <text x="84" y="350" font-size="12" font-family="Consolas, Menlo, monospace" fill="#2E7D32">AcercaDe · Detalle(hotelId)</text>
+  <text x="84" y="370" font-size="12" fill="#2E7D32">solo esta parte cambia al navegar</text>
+
+  <rect x="70" y="390" width="420" height="40" rx="6" fill="#FFFFFF" stroke="#90CAF9"/>
+  <text x="84" y="415" font-size="12" font-family="Consolas, Menlo, monospace" fill="#263238">bottomBar = BarraInferior (NavigationBar)</text>
+
+  <rect x="70" y="440" width="420" height="30" rx="6" fill="#FFFFFF" stroke="#90CAF9"/>
+  <text x="84" y="460" font-size="12" font-family="Consolas, Menlo, monospace" fill="#263238">floatingActionButton = «+» (solo en Mis hoteles)</text>
+
+  <rect x="70" y="478" width="420" height="30" rx="6" fill="#FFFFFF" stroke="#90CAF9"/>
+  <text x="84" y="498" font-size="12" font-family="Consolas, Menlo, monospace" fill="#263238">snackbarHost = SnackbarHost(...)</text>
+
+  <line x1="535" y1="300" x2="600" y2="300" stroke="#37474F" stroke-width="2" marker-end="url(#flechaGris)"/>
+
+  <!-- ===== Móvil (derecha) ===== -->
+  <rect x="610" y="20" width="270" height="520" rx="28" fill="#263238"/>
+  <rect x="624" y="44" width="242" height="472" rx="6" fill="#FAFAFA"/>
+
+  <!-- top bar -->
+  <rect x="624" y="44" width="242" height="48" fill="#BBDEFB"/>
+  <text x="680" y="74" font-size="15" font-weight="bold" fill="#0D47A1">Mis hoteles</text>
+  <text x="850" y="74" text-anchor="middle" font-size="18" font-weight="bold" fill="#0D47A1">⋮</text>
+
+  <!-- contenido -->
+  <rect x="640" y="104" width="210" height="44" rx="6" fill="#FFFFFF" stroke="#B0BEC5"/>
+  <rect x="640" y="156" width="210" height="44" rx="6" fill="#FFFFFF" stroke="#B0BEC5"/>
+  <rect x="640" y="208" width="210" height="44" rx="6" fill="#FFFFFF" stroke="#B0BEC5"/>
+  <rect x="640" y="260" width="210" height="44" rx="6" fill="#FFFFFF" stroke="#B0BEC5"/>
+  <text x="745" y="345" text-anchor="middle" font-size="12" fill="#2E7D32">NavHost</text>
+
+  <!-- FAB -->
+  <circle cx="830" cy="420" r="22" fill="#1565C0"/>
+  <text x="830" y="428" text-anchor="middle" font-size="24" fill="#FFFFFF">+</text>
+
+  <!-- bottom bar -->
+  <rect x="624" y="456" width="242" height="60" fill="#E3F2FD"/>
+  <text x="664" y="484" text-anchor="middle" font-size="16" fill="#546E7A">⌂</text>
+  <text x="664" y="504" text-anchor="middle" font-size="10" fill="#546E7A">Inicio</text>
+  <text x="745" y="484" text-anchor="middle" font-size="16" fill="#546E7A">◎</text>
+  <text x="745" y="504" text-anchor="middle" font-size="10" fill="#546E7A">Explorar</text>
+  <rect x="800" y="468" width="52" height="24" rx="12" fill="#90CAF9"/>
+  <text x="826" y="485" text-anchor="middle" font-size="14" fill="#0D47A1">♥</text>
+  <text x="826" y="504" text-anchor="middle" font-size="10" font-weight="bold" fill="#0D47A1">Mis hoteles</text>
+
+  <!-- drawer abierto (encima) -->
+  <rect x="624" y="44" width="242" height="472" fill="#000000" opacity="0.32"/>
+  <rect x="624" y="44" width="170" height="472" fill="#FFFFFF"/>
+  <rect x="624" y="44" width="170" height="104" fill="#7E57C2"/>
+  <circle cx="660" cy="86" r="22" fill="#FFB74D" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="634" y="128" font-size="12" font-weight="bold" fill="#FFFFFF">Ana López</text>
+  <text x="634" y="142" font-size="10" fill="#EDE7F6">ana@ejemplo.com</text>
+  <rect x="632" y="160" width="154" height="30" rx="15" fill="#EDE7F6"/>
+  <text x="648" y="180" font-size="12" font-weight="bold" fill="#4A148C">⌂  Inicio</text>
+  <text x="648" y="214" font-size="12" fill="#37474F">♥  Mis hoteles</text>
+  <text x="648" y="244" font-size="12" fill="#37474F">◎  Explorar</text>
+  <text x="648" y="274" font-size="12" fill="#37474F">ⓘ  Acerca de</text>
+  <line x1="636" y1="292" x2="782" y2="292" stroke="#CFD8DC"/>
+  <text x="648" y="318" font-size="12" fill="#C62828">⇥  Cerrar sesión</text>
+</svg>

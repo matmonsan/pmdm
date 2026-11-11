@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="1000" height="400" viewBox="0 0 1000 400" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <style>text { white-space: pre; }</style>
+  <defs>
+    <marker id="flechaGris" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474F"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="400" fill="#FFFFFF"/>
+
+  <text x="500" y="28" text-anchor="middle" font-size="17" font-weight="bold" fill="#263238">La pila de navegación (back stack)</text>
+  <text x="500" y="50" text-anchor="middle" font-size="13" fill="#546E7A">Cada columna muestra la pila después de la acción indicada debajo. La pantalla de arriba es la que se ve.</text>
+
+  <!-- Columna 1: arranque -->
+  <rect x="30" y="80" width="170" height="230" rx="10" fill="#F5F5F5" stroke="#B0BEC5"/>
+  <rect x="45" y="252" width="140" height="44" rx="6" fill="#FFF59D" stroke="#263238" stroke-width="3"/>
+  <text x="115" y="279" text-anchor="middle" font-size="15" font-weight="bold" fill="#263238">Inicio</text>
+  <text x="115" y="334" text-anchor="middle" font-size="13" font-weight="bold" fill="#263238">1. Arranque</text>
+  <text x="115" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">startDestination</text>
+
+  <line x1="204" y1="195" x2="222" y2="195" stroke="#37474F" stroke-width="2" marker-end="url(#flechaGris)"/>
+
+  <!-- Columna 2: navigate(B) -->
+  <rect x="225" y="80" width="170" height="230" rx="10" fill="#F5F5F5" stroke="#B0BEC5"/>
+  <rect x="240" y="252" width="140" height="44" rx="6" fill="#FFF59D" stroke="#9E9E9E"/>
+  <text x="310" y="279" text-anchor="middle" font-size="15" fill="#263238">Inicio</text>
+  <rect x="240" y="202" width="140" height="44" rx="6" fill="#90CAF9" stroke="#263238" stroke-width="3"/>
+  <text x="310" y="229" text-anchor="middle" font-size="15" font-weight="bold" fill="#0D47A1">B</text>
+  <text x="310" y="334" text-anchor="middle" font-size="13" font-weight="bold" fill="#263238">2. Ir a B</text>
+  <text x="310" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">navigate(B(...))</text>
+
+  <line x1="399" y1="195" x2="417" y2="195" stroke="#37474F" stroke-width="2" marker-end="url(#flechaGris)"/>
+
+  <!-- Columna 3: navigate(C) -->
+  <rect x="420" y="80" width="170" height="230" rx="10" fill="#F5F5F5" stroke="#B0BEC5"/>
+  <rect x="435" y="252" width="140" height="44" rx="6" fill="#FFF59D" stroke="#9E9E9E"/>
+  <text x="505" y="279" text-anchor="middle" font-size="15" fill="#263238">Inicio</text>
+  <rect x="435" y="202" width="140" height="44" rx="6" fill="#90CAF9" stroke="#9E9E9E"/>
+  <text x="505" y="229" text-anchor="middle" font-size="15" fill="#0D47A1">B</text>
+  <rect x="435" y="152" width="140" height="44" rx="6" fill="#EF9A9A" stroke="#263238" stroke-width="3"/>
+  <text x="505" y="179" text-anchor="middle" font-size="15" font-weight="bold" fill="#B71C1C">C</text>
+  <text x="505" y="334" text-anchor="middle" font-size="13" font-weight="bold" fill="#263238">3. Ir a C</text>
+  <text x="505" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">navigate(C)</text>
+
+  <line x1="594" y1="195" x2="612" y2="195" stroke="#37474F" stroke-width="2" marker-end="url(#flechaGris)"/>
+
+  <!-- Columna 4: atrás -->
+  <rect x="615" y="80" width="170" height="230" rx="10" fill="#F5F5F5" stroke="#B0BEC5"/>
+  <rect x="630" y="252" width="140" height="44" rx="6" fill="#FFF59D" stroke="#9E9E9E"/>
+  <text x="700" y="279" text-anchor="middle" font-size="15" fill="#263238">Inicio</text>
+  <rect x="630" y="202" width="140" height="44" rx="6" fill="#90CAF9" stroke="#263238" stroke-width="3"/>
+  <text x="700" y="229" text-anchor="middle" font-size="15" font-weight="bold" fill="#0D47A1">B</text>
+  <rect x="630" y="152" width="140" height="44" rx="6" fill="none" stroke="#B71C1C" stroke-dasharray="6 4"/>
+  <text x="700" y="179" text-anchor="middle" font-size="14" fill="#B71C1C">C (sale)</text>
+  <text x="700" y="334" text-anchor="middle" font-size="13" font-weight="bold" fill="#263238">4. Atrás</text>
+  <text x="700" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">popBackStack()</text>
+
+  <line x1="789" y1="195" x2="807" y2="195" stroke="#37474F" stroke-width="2" marker-end="url(#flechaGris)"/>
+
+  <!-- Columna 5: volver al inicio -->
+  <rect x="810" y="80" width="170" height="230" rx="10" fill="#F5F5F5" stroke="#B0BEC5"/>
+  <rect x="825" y="252" width="140" height="44" rx="6" fill="#FFF59D" stroke="#263238" stroke-width="3"/>
+  <text x="895" y="279" text-anchor="middle" font-size="15" font-weight="bold" fill="#263238">Inicio</text>
+  <rect x="825" y="202" width="140" height="44" rx="6" fill="none" stroke="#0D47A1" stroke-dasharray="6 4"/>
+  <text x="895" y="229" text-anchor="middle" font-size="14" fill="#0D47A1">B (sale)</text>
+  <text x="895" y="334" text-anchor="middle" font-size="13" font-weight="bold" fill="#263238">5. Volver al inicio</text>
+  <text x="895" y="354" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">popBackStack(Inicio,</text>
+  <text x="895" y="370" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#37474F">  inclusive = false)</text>
+</svg>
