@@ -4,7 +4,7 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 ---
 [⌂ Volver al enunciado del proyecto](../enunciado_proyecto.md)
 
-# **FECHA DE ENTREGA:** 15/11/2026
+# **FECHA DE ENTREGA:** 22/11/2026
 
 # Versión 1.2 — CRUD en memoria y repositorios
 
