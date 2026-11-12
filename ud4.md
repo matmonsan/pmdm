@@ -435,7 +435,7 @@ class MainActivity : ComponentActivity() {
 
 ### 3.6 La pila de navegación
 
-> **Vídeo.** Este vídeo recorre la pila de navegación de este apartado y las opciones `popUpTo` y `launchSingleTop` del apartado 3.7 (a partir del minuto 2:05).
+> **Vídeo.** Este vídeo recorre la pila de navegación de este apartado y las opciones `popUpTo` y `launchSingleTop` del apartado 3.7 (a partir del minuto 2:26). No tiene sonido: cada paso se explica con texto en pantalla, y se puede pausar para leerlo con calma.
 
 <video controls preload="metadata" style="width: 100%; height: auto;" src="./assets/video/pila_navegacion.mp4"></video>
 
@@ -445,7 +445,7 @@ El `NavController` guarda las pantallas visitadas en una pila (*back stack*). Fu
 - Solo se ve el plato de arriba: esa es la pantalla que dibuja el `NavHost`.
 - Las pantallas de debajo no se ven, pero siguen guardadas. Por eso al volver atrás aparecen como estaban.
 
-<img src="./assets/img/pila_navegacion.svg" alt="Evolución de la pila de navegación: arranque con Inicio; navigate a B apila B; navigate a C apila C; Atrás quita C; volver al inicio quita B" style="width: 100%; height: auto;">
+<img class="diagrama" src="./assets/img/pila_navegacion.svg" alt="Evolución de la pila de navegación: arranque con Inicio; navigate a B apila B; navigate a C apila C; Atrás quita C; volver al inicio quita B" style="width: 100%; height: auto;">
 
 Este es el recorrido completo por el ejemplo. La pila se escribe de abajo a arriba: el último elemento es el que se ve.
 
@@ -465,7 +465,7 @@ Este es el recorrido completo por el ejemplo. La pila se escribe de abajo a arri
 
 ### 3.7 Opciones al navegar: popUpTo y launchSingleTop
 
-> **Vídeo.** Este apartado se explica en la segunda parte del [vídeo del apartado 3.6](./assets/video/pila_navegacion.mp4#t=125), a partir del minuto 2:05.
+> **Vídeo.** Este apartado se explica en la segunda parte del [vídeo del apartado 3.6](./assets/video/pila_navegacion.mp4#t=146), a partir del minuto 2:26.
 
 **El problema.** ¿Qué pasaría si el botón «Inicio» de C hiciera `navigate(Rutas.INICIO)`? `navigate` siempre pone una pantalla encima, así que la pila quedaría `[Inicio, B, C, Inicio]`. Se vería Inicio, pero al pulsar Atrás aparecería C otra vez, y después B, y después otra vez Inicio. Es un error muy habitual.
 
@@ -1096,7 +1096,7 @@ El menú lateral (*navigation drawer*) es un panel que se abre desde la izquierd
 
 ### 7.1 Las piezas del menú lateral
 
-<img src="./assets/img/marco_principal.svg" alt="Estructura del marco principal: ModalNavigationDrawer contiene el panel lateral (cabecera y elementos) y un Scaffold con barra superior, NavHost, barra inferior, botón flotante y Snackbar; a la derecha, un móvil con el menú lateral abierto sobre la lista" style="width: 100%; height: auto;">
+<img class="diagrama" src="./assets/img/marco_principal.svg" alt="Estructura del marco principal: ModalNavigationDrawer contiene el panel lateral (cabecera y elementos) y un Scaffold con barra superior, NavHost, barra inferior, botón flotante y Snackbar; a la derecha, un móvil con el menú lateral abierto sobre la lista" style="width: 100%; height: auto;">
 
 | Pieza de Compose | Qué hace | Equivalente clásico |
 |---|---|---|

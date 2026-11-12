@@ -10,7 +10,7 @@ El proyecto será evolutivo. No tendréis que construirlo todo desde el primer d
 
 La interfaz se construirá siempre con funciones `@Composable` y componentes de Jetpack Compose. Se utilizarán layouts como `Column`, `Row` y `Box`, modificadores, temas y componentes de Material como `Card`, `ElevatedCard` u `OutlinedCard`. No se utilizarán diseños XML para construir las pantallas.
 
-En clase se explicarán las tecnologías necesarias y se proporcionará código de apoyo. Ese código deberá adaptarse a la temática y a las decisiones de cada proyecto.
+En clase se explicarán las tecnologías necesarias y se proporcionará código de apoyo. Ese código deberá adaptarse a la temática y a las decisiones de cada proyecto. La excepción son las versiones marcadas como <span class="etiqueta-investigacion">Investigación</span>: en ellas, cada estudiante investiga por su cuenta la tecnología a partir de la documentación oficial.
 
 > Importante: las funcionalidades se incorporarán de forma gradual. En cada versión solo será necesario implementar los objetivos indicados para ese momento; las funcionalidades más avanzadas se añadirán en las versiones posteriores.
 
@@ -95,10 +95,12 @@ Cada versión añade una pieza al proyecto. No se trata de hacer once aplicacion
 
 El orden recomendado es el siguiente:
 
+> <span class="etiqueta-investigacion">Investigación</span> Las versiones con esta etiqueta no se explican en clase. Cada estudiante debe buscar, leer y aplicar la documentación oficial de la tecnología, y explicar en el PDF de la entrega qué ha investigado y cómo lo ha resuelto. En clase se resolverán dudas concretas, pero no se dará el código.
+
 * [**Versión 1.0 (Diseño y Prototipado UX/UI)**](versiones/version_1_0.md): Definir la idea, las pantallas y el funcionamiento general antes de programar. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 29/10/2026</span>
 * [**Versión 1.1 (Lista y detalle en Compose)**](versiones/version_1_1.md): Crear una pantalla de lista con elementos temporales y una pantalla de detalle para visualizar cada elemento seleccionado; la navegación formal con `NavHost` se incorporará en la Versión 1.4. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 01/11/2026</span>
 * [**Versión 1.2 (CRUD en memoria y repositorios)**](versiones/version_1_2.md): Añadir el alta, la consulta, la edición y el borrado de elementos usando datos en memoria. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 15/11/2026</span>
-* [**Versión 1.3 (Autenticación con Firebase)**](versiones/version_1_3.md): Incorporar registro, inicio de sesión y recuperación de contraseña con Firebase Auth. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 29/11/2026</span>
+* [**Versión 1.3 (Autenticación con Firebase)**](versiones/version_1_3.md) <span class="etiqueta-investigacion">Investigación</span>: Incorporar registro, inicio de sesión y recuperación de contraseña con Firebase Auth. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 29/11/2026</span>
 * [**Versión 1.4 (Estructura de navegación)**](versiones/version_1_4.md): Conectar las pantallas mediante `ModalNavigationDrawer`, `NavigationBar` y `NavHost`. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 08/12/2026</span>
 * [**Versión 1.5 (Lista global y datos compartidos)**](versiones/version_1_5.md): Añadir una segunda lista con elementos comunes para todos los usuarios. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 13/12/2026</span>
 * [**Versión 1.6 (Arquitectura MVVM + Hilt)**](versiones/version_1_6.md): Organizar el código con MVVM, `StateFlow`, `UiState` y Hilt.
@@ -127,7 +129,7 @@ Las siguientes versiones del proyecto se utilizarán como evidencias prácticas 
 |---|---|
 | **UD2: Layout de usuario** | Versión 1.0, con el prototipo de pantallas, y Versión 1.1, con la primera interfaz funcional en Jetpack Compose, sus layouts y modificadores. |
 | **UD3: Listas, diálogos y arquitectura MVVM** | Versión 1.2, con el CRUD en memoria, los formularios y el listado de elementos. |
-| **UD4: Navegación y menús** | Versión 1.3, con las pantallas de registro, inicio de sesión y recuperación de contraseña; Versión 1.4, con la navegación entre pantallas, el `Navigation Drawer` y la `NavigationBar`; y Versión 1.5, con las dos listas principales. |
+| **UD4: Navegación y menús** | Versión 1.3 (de investigación), con las pantallas de registro, inicio de sesión y recuperación de contraseña; Versión 1.4, con la navegación entre pantallas, el `Navigation Drawer` y la `NavigationBar`; y Versión 1.5, con las dos listas principales. |
 | **UD5: Patrones de diseño** | Versión 1.6, con la organización del proyecto mediante MVVM, repositorios, `UiState`, `StateFlow` e inyección de dependencias con Hilt. |
 | **UD6: Almacenamiento local con Room** | Versión 2.0, con la sustitución de los datos en memoria por una base de datos local Room; y Versión 3.2, con la navegación a la pantalla de detalle y la visualización de la ubicación. |
 | **UD7: Servicios y conexión API REST mediante Retrofit** | Versión 4.1, con la conexión de la aplicación Android a la API REST, autenticación mediante JWT y sincronización de datos e imágenes. |

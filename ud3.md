@@ -541,7 +541,7 @@ idSeleccionado == "a1b2"    →  se dibuja PantallaDetalle (el hotel "a1b2")
 - Al pulsar un hotel de la lista, la variable pasa a valer su `id` → aparece el detalle.
 - Al pulsar «Volver», la variable vuelve a `null` → aparece la lista.
 
-<img src="./assets/img/navegacion_estado.svg" alt="Navegación con estado: AppPantallas guarda idSeleccionado y, según su valor, dibuja PantallaPrincipal o PantallaDetalle; las pantallas avisan con eventos que cambian la variable" style="width: 100%; height: auto;">
+<img class="diagrama" src="./assets/img/navegacion_estado.svg" alt="Navegación con estado: AppPantallas guarda idSeleccionado y, según su valor, dibuja PantallaPrincipal o PantallaDetalle; las pantallas avisan con eventos que cambian la variable" style="width: 100%; height: auto;">
 
 - Las flechas azules indican qué pantalla dibuja `AppPantallas` según el valor de `idSeleccionado`.
 - Las flechas rojas son los eventos con los que avisan las pantallas. `AppPantallas` responde cambiando `idSeleccionado`, y Compose dibuja la otra pantalla.
@@ -836,7 +836,7 @@ Cada capa resuelve uno de los problemas anteriores:
 
 Las tres piezas se comunican siempre en el mismo sentido:
 
-<img src="./assets/img/mvvm_capas.svg" alt="Capas de MVVM: la vista envía eventos al ViewModel y recibe de él el estado; el ViewModel pide operaciones al repositorio y recibe los datos" style="width: 100%; height: auto;">
+<img class="diagrama" src="./assets/img/mvvm_capas.svg" alt="Capas de MVVM: la vista envía eventos al ViewModel y recibe de él el estado; el ViewModel pide operaciones al repositorio y recibe los datos" style="width: 100%; height: auto;">
 
 - De la vista al ViewModel solo viajan eventos: llamadas a sus funciones, como `viewModel.onDeleteHotel(hotel)`.
 - Del ViewModel a la vista solo viaja el estado: la pantalla lee `viewModel.uiState` y lo dibuja.
@@ -950,7 +950,7 @@ data class HospedajeUiState(
 
 Así cambia el valor del `UiState` mientras se usa la aplicación, y lo que se ve en cada momento. En rojo, los datos que cambian en cada paso:
 
-<img src="./assets/img/uistate_pantallas.svg" alt="Tres valores sucesivos del UiState y la pantalla que se ve con cada uno: lista con 4 hoteles, detalle de Hotel Peñalta y lista con 3 hoteles" style="width: 100%; height: auto;">
+<img class="diagrama" src="./assets/img/uistate_pantallas.svg" alt="Tres valores sucesivos del UiState y la pantalla que se ve con cada uno: lista con 4 hoteles, detalle de Hotel Peñalta y lista con 3 hoteles" style="width: 100%; height: auto;">
 
 1. **Al abrir la app**: `selectedHotelId` es `null`, así que se ve la lista con los 4 hoteles.
 2. **Al pulsar «Hotel Peñalta»**: `selectedHotelId` pasa a valer su `id`, así que se ve su detalle. La lista no ha cambiado.
@@ -966,7 +966,7 @@ Más adelante, en los apartados 7 y 8, se añadirán al `UiState` más datos: qu
 
 El ViewModel es la clase que guarda el estado de la pantalla y tiene una función por cada acción del usuario. Además, Android lo conserva al girar el móvil, que es lo que soluciona el problema 1.
 
-<img src="./assets/img/viewmodel_giro.svg" alt="Al girar el móvil, Android destruye la Activity y crea otra: el estado guardado con remember se pierde, pero viewModel() devuelve el mismo ViewModel con el estado conservado" style="width: 100%; height: auto;">
+<img class="diagrama" src="./assets/img/viewmodel_giro.svg" alt="Al girar el móvil, Android destruye la Activity y crea otra: el estado guardado con remember se pierde, pero viewModel() devuelve el mismo ViewModel con el estado conservado" style="width: 100%; height: auto;">
 
 Al girar el móvil, Android destruye la `Activity` y crea una nueva. Todo lo guardado con `remember` dentro de los composables se pierde, y la lista vuelve a tener 4 hoteles. El ViewModel, en cambio, no se destruye: la nueva `Activity` llama a `viewModel()` y recibe el mismo objeto, con el estado que tenía.
 
@@ -1160,7 +1160,7 @@ Compara las dos versiones:
 
 Sigue el viaje de un evento por las tres capas:
 
-<img src="./assets/img/recorrido_borrar.svg" alt="Diagrama de secuencia al borrar un hotel: la vista envía el evento al ViewModel, el ViewModel pide el borrado al repositorio, recarga la lista, actualiza uiState y la vista se redibuja" style="width: 100%; height: auto;">
+<img class="diagrama" src="./assets/img/recorrido_borrar.svg" alt="Diagrama de secuencia al borrar un hotel: la vista envía el evento al ViewModel, el ViewModel pide el borrado al repositorio, recarga la lista, actualiza uiState y la vista se redibuja" style="width: 100%; height: auto;">
 
 Los mismos pasos, en detalle:
 
@@ -1341,7 +1341,7 @@ Si la condición es verdadera, el diálogo se dibuja; si pasa a falsa, desaparec
 
 Con la arquitectura MVVM, esa variable deja de estar en la pantalla y pasa al `UiState` del ViewModel, como el resto del estado. Para el diálogo de confirmación de borrado, el dato es `hotelToDelete`:
 
-<img src="./assets/img/dialogo_estado.svg" alt="Con hotelToDelete a null no se dibuja el diálogo; al pulsar Borrar, el ViewModel guarda el hotel en hotelToDelete y se dibuja ConfirmDeleteDialog encima del detalle; al cancelar vuelve a null" style="width: 100%; height: auto;">
+<img class="diagrama" src="./assets/img/dialogo_estado.svg" alt="Con hotelToDelete a null no se dibuja el diálogo; al pulsar Borrar, el ViewModel guarda el hotel en hotelToDelete y se dibuja ConfirmDeleteDialog encima del detalle; al cancelar vuelve a null" style="width: 100%; height: auto;">
 
 - Mientras `hotelToDelete` vale `null`, no hay diálogo.
 - Al pulsar «Borrar», el ViewModel guarda en `hotelToDelete` el hotel que se quiere borrar, y el diálogo aparece encima del detalle.
