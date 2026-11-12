@@ -112,7 +112,7 @@ Navigation Compose se basa en tres piezas:
 
 | Pieza | Qué es | En el código |
 |---|---|---|
-| **Rutas** | Un nombre (un texto) para cada pantalla. Juntas forman el **grafo de navegación**: qué destinos existen y cuál es el primero. | `const val INICIO = "inicio"` |
+| **Rutas** | Un nombre (un texto) para cada pantalla. Juntas forman el grafo de navegación: qué destinos existen y cuál es el primero. | `const val INICIO = "inicio"` |
 | **`NavHost`** | El contenedor. Ocupa un hueco de la pantalla y dibuja en él el destino actual. | `NavHost(navController, startDestination = Rutas.INICIO) { ... }` |
 | **`NavController`** | El que manda. Recuerda la pila de pantallas visitadas y cambia de una a otra. | `navController.navigate(Rutas.B)` |
 
@@ -152,7 +152,7 @@ Esta tabla relaciona cada pieza de la navegación con *Fragments* y XML con la q
 
 ### 2.4 Dependencias
 
-Navigation Compose no viene incluido en un proyecto nuevo: hay que añadir la librería **`navigation-compose`**. Una **librería** es código ya hecho que tu app usa: trae `NavHost`, `NavController`, `navigate`... Sin ella, Android Studio no conoce esos nombres.
+Navigation Compose no viene incluido en un proyecto nuevo: hay que añadir la librería `navigation-compose`. Una librería es código ya hecho que tu app usa: trae `NavHost`, `NavController`, `navigate`... Sin ella, Android Studio no conoce esos nombres.
 
 Las dependencias se configuran con Gradle (UD1), pero esta la puede añadir Android Studio por ti.
 
@@ -162,7 +162,7 @@ Las dependencias se configuran con Gradle (UD1), pero esta la puede añadir Andr
 2. En la columna de la izquierda, elige **Dependencies**, y en **Modules**, elige **app**.
 3. Pulsa el **+** de la lista de dependencias → **Library Dependency**.
 4. En el buscador escribe `navigation-compose` y pulsa **Search**.
-5. Elige la fila cuyo grupo es **`androidx.navigation`** y, en **Version**, la versión estable más reciente. Evita las que terminan en `-alpha`, `-beta` o `-rc`: son versiones de prueba.
+5. Elige la fila cuyo grupo es `androidx.navigation` y, en **Version**, la versión estable más reciente. Evita las que terminan en `-alpha`, `-beta` o `-rc`: son versiones de prueba.
 6. Pulsa **OK** y otra vez **OK** para cerrar la ventana.
 
 Android Studio escribe las líneas necesarias en los archivos de Gradle y sincroniza el proyecto. Si quieres ver qué ha hecho, abre `build.gradle.kts (Module :app)`: en el bloque `dependencies` habrá una línea nueva parecida a `implementation(libs.androidx.navigation.compose)`.
@@ -219,7 +219,7 @@ Cada archivo tiene una única tarea. Es la misma separación que en la UD3 (apar
 
 ### 3.2 Las rutas
 
-Una **ruta** es el nombre de una pantalla. Sirve para decir "quiero ir a esta pantalla" sin tener que referirse a la función `@Composable` que la dibuja. Cada pantalla necesita una ruta, y la ruta es un **texto**, como una dirección web: `"inicio"`, `"a"`, `"b"`...
+Una ruta es el nombre de una pantalla. Sirve para decir "quiero ir a esta pantalla" sin tener que referirse a la función `@Composable` que la dibuja. Cada pantalla necesita una ruta, y la ruta es un texto, como una dirección web: `"inicio"`, `"a"`, `"b"`...
 
 **`Rutas.kt`:**
 
@@ -247,7 +247,7 @@ Qué significa cada parte:
 
 ### 3.3 Las pantallas
 
-Las pantallas son funciones `@Composable` como las de la UD2 y la UD3. **No saben nada de la navegación**: cada botón recibe una lambda (`onIrA`, `onAtras`...) y la llama al pulsarse. Qué ocurre después lo decide quien llama a la pantalla. Es lo mismo que hacía `PantallaPrincipal` en la UD3 con `onHotelClick`.
+Las pantallas son funciones `@Composable` como las de la UD2 y la UD3. No saben nada de la navegación: cada botón recibe una lambda (`onIrA`, `onAtras`...) y la llama al pulsarse. Qué ocurre después lo decide quien llama a la pantalla. Es lo mismo que hacía `PantallaPrincipal` en la UD3 con `onHotelClick`.
 
 **`Pantallas.kt`:**
 
@@ -397,7 +397,7 @@ Paso a paso:
 | `val navController = rememberNavController()` | Crea el `NavController`. Lleva `remember` en el nombre por lo mismo que `rememberSaveable` (UD2): se conserva entre recomposiciones y al girar el móvil. Si no se recordara, cada recomposición crearía uno nuevo y la app volvería siempre a Inicio. |
 | `NavHost(navController = ..., startDestination = Rutas.INICIO, ...)` | Crea el contenedor y le pasa su `NavController`. `startDestination` es la ruta de la pantalla que se ve al abrir la app. |
 | `modifier = Modifier.safeDrawingPadding()` | Evita que las pantallas queden debajo de la barra de estado, como en la UD3 (apartado 5.5). |
-| Las llaves `{ ... }` del `NavHost` | Aquí **no se dibuja nada**: solo se hace la lista de destinos posibles. Esa lista es el **grafo de navegación**. |
+| Las llaves `{ ... }` del `NavHost` | Aquí no se dibuja nada: solo se hace la lista de destinos posibles. Esa lista es el grafo de navegación. |
 | `composable(Rutas.INICIO) { ... }` | Declara un destino. Se lee: "cuando la ruta de arriba sea `Rutas.INICIO`, dibuja lo que hay entre llaves". Hace falta un `composable` por cada ruta; si navegas a una ruta que no tiene, la app se cierra con un error. |
 | `PantallaInicio(onIrA = { ... }, ...)` | Aquí se decide qué hace cada botón de la pantalla. |
 | `navController.navigate(Rutas.A)` | Va a la pantalla A: la pone encima de las demás. El `NavHost` se redibuja solo y muestra A. |
@@ -435,9 +435,13 @@ class MainActivity : ComponentActivity() {
 
 ### 3.6 La pila de navegación
 
-El `NavController` guarda las pantallas visitadas en una **pila** (*back stack*). Funciona como una pila de platos:
+> **Vídeo.** Este vídeo recorre la pila de navegación de este apartado y las opciones `popUpTo` y `launchSingleTop` del apartado 3.7 (a partir del minuto 2:05).
 
-- Solo se puede **poner** un plato encima (`navigate`) o **quitar** el de arriba (`popBackStack` o el botón Atrás).
+<video controls preload="metadata" style="width: 100%; height: auto;" src="./assets/video/pila_navegacion.mp4"></video>
+
+El `NavController` guarda las pantallas visitadas en una pila (*back stack*). Funciona como una pila de platos:
+
+- Solo se puede poner un plato encima (`navigate`) o quitar el de arriba (`popBackStack` o el botón Atrás).
 - Solo se ve el plato de arriba: esa es la pantalla que dibuja el `NavHost`.
 - Las pantallas de debajo no se ven, pero siguen guardadas. Por eso al volver atrás aparecen como estaban.
 
@@ -461,7 +465,9 @@ Este es el recorrido completo por el ejemplo. La pila se escribe de abajo a arri
 
 ### 3.7 Opciones al navegar: popUpTo y launchSingleTop
 
-**El problema.** ¿Qué pasaría si el botón «Inicio» de C hiciera `navigate(Rutas.INICIO)`? `navigate` siempre **pone** una pantalla encima, así que la pila quedaría `[Inicio, B, C, Inicio]`. Se vería Inicio, pero al pulsar Atrás aparecería C otra vez, y después B, y después otra vez Inicio. Es un error muy habitual.
+> **Vídeo.** Este apartado se explica en la segunda parte del [vídeo del apartado 3.6](./assets/video/pila_navegacion.mp4#t=125), a partir del minuto 2:05.
+
+**El problema.** ¿Qué pasaría si el botón «Inicio» de C hiciera `navigate(Rutas.INICIO)`? `navigate` siempre pone una pantalla encima, así que la pila quedaría `[Inicio, B, C, Inicio]`. Se vería Inicio, pero al pulsar Atrás aparecería C otra vez, y después B, y después otra vez Inicio. Es un error muy habitual.
 
 **La solución.** `navigate` admite, después de la ruta, un bloque entre llaves con opciones que indican qué hacer con la pila al navegar:
 
@@ -522,8 +528,8 @@ NavHost(
 ```
 
 - Cada parámetro recibe una lambda que devuelve la animación que se quiere usar.
-- **`slideIntoContainer`** hace entrar la pantalla deslizándola; **`slideOutOfContainer`** la hace salir.
-- **`SlideDirection.Start`** desliza hacia la izquierda (se usa al avanzar). **`SlideDirection.End`** desliza hacia la derecha (se usa al volver).
+- **`slideIntoContainer`** hace entrar la pantalla deslizándola; `slideOutOfContainer` la hace salir.
+- **`SlideDirection.Start`** desliza hacia la izquierda (se usa al avanzar). `SlideDirection.End` desliza hacia la derecha (se usa al volver).
 - **`tween(300)`** indica que la animación dura 300 milisegundos. Es una animación de duración fija; si no se indica, Compose usa una predeterminada.
 - Estos parámetros también se pueden poner en un destino concreto, `composable(Rutas.C, enterTransition = { ... }) { ... }`, para que solo afecten a esa pantalla.
 
@@ -542,7 +548,7 @@ val bundle = Bundle().apply { putString("nombre", "Santiago") }
 val nombre = arguments?.getString("nombre")
 ```
 
-En Navigation Compose, como la ruta es un texto, **el dato viaja dentro del propio texto de la ruta**, igual que en una dirección web (`tienda.com/producto/25`):
+En Navigation Compose, como la ruta es un texto, el dato viaja dentro del propio texto de la ruta, igual que en una dirección web (`tienda.com/producto/25`):
 
 ```text
 "b/Santiago"     ← ruta de la pantalla B con el nombre "Santiago"
@@ -571,8 +577,8 @@ object Rutas {
 }
 ```
 
-- **`{nombre}`** es un **hueco**: indica que en esa parte de la ruta irá un dato que se llama `nombre`. Lo que hay entre llaves es el nombre del argumento.
-- **`Rutas.B`** (`"b/{nombre}"`) es el **patrón**: se usa en el `composable` para decir "esta pantalla recibe un nombre".
+- **`{nombre}`** es un hueco: indica que en esa parte de la ruta irá un dato que se llama `nombre`. Lo que hay entre llaves es el nombre del argumento.
+- **`Rutas.B`** (`"b/{nombre}"`) es el patrón: se usa en el `composable` para decir "esta pantalla recibe un nombre".
 - **`Rutas.b("Santiago")`** devuelve `"b/Santiago"`: es la ruta ya rellenada, la que se pasa a `navigate`. Se escribe como función para no tener que montar el texto a mano en cada botón.
 - Si una pantalla recibe varios datos, se ponen varios huecos separados por `/`: `"c/{nombre}/{edad}"`.
 
@@ -615,7 +621,7 @@ composable(
 | Código | Qué hace |
 |---|---|
 | `route = Rutas.B` | El patrón con el hueco: `"b/{nombre}"`. |
-| `navArgument("nombre") { type = NavType.StringType }` | Declara el argumento `nombre` y su tipo. El nombre debe ser **exactamente** el que hay entre llaves en la ruta. |
+| `navArgument("nombre") { type = NavType.StringType }` | Declara el argumento `nombre` y su tipo. El nombre debe ser exactamente el que hay entre llaves en la ruta. |
 | `backStackEntry` | La entrada de la pila de esta pantalla. Guarda la ruta con la que se llegó. |
 | `backStackEntry.arguments?.getString("nombre")` | Lee el valor del argumento. Puede ser `null` (por eso el `?.`). |
 | `?: ""` | Si el valor es `null`, usa un texto vacío. |
@@ -681,7 +687,7 @@ Respecto a la `PantallaB` del apartado 3.3, solo cambian el parámetro `nombre` 
 
 ### 4.4 La palabra by: delegación en Kotlin
 
-En la navegación clásica, los argumentos se leían con `val args: FragmentBArgs by navArgs()`. Esa palabra `by` es la **delegación** de Kotlin, y en Compose la usas continuamente: `var texto by remember { mutableStateOf("") }`. Conviene entender qué hace.
+En la navegación clásica, los argumentos se leían con `val args: FragmentBArgs by navArgs()`. Esa palabra `by` es la delegación de Kotlin, y en Compose la usas continuamente: `var texto by remember { mutableStateOf("") }`. Conviene entender qué hace.
 
 **Delegar** es encargar un trabajo a otro objeto. Kotlin tiene dos tipos.
 
@@ -758,7 +764,7 @@ const val DETALLE = "detalle/{nombre}/{ciudad}/{precio}/{foto}/..."
 
 ### 4.6 Lista y detalle de hoteles con NavHost
 
-Ya se puede cambiar la navegación con estado de la aplicación de hospedajes (UD3, apartado 8.3) por un `NavHost`. Como anunciaba la UD3, **solo cambia `AppPantallas.kt`** (y se quitan del ViewModel los datos de navegación). Las pantallas siguen igual.
+Ya se puede cambiar la navegación con estado de la aplicación de hospedajes (UD3, apartado 8.3) por un `NavHost`. Como anunciaba la UD3, solo cambia `AppPantallas.kt` (y se quitan del ViewModel los datos de navegación). Las pantallas siguen igual.
 
 **Rutas** (archivo nuevo `Rutas.kt`):
 
@@ -850,7 +856,7 @@ Qué ha cambiado respecto a la UD3:
 
 ## 5. Barra superior con menú de opciones
 
-La barra superior (`TopAppBar`, UD3 apartado 8.1) muestra el título y, a la derecha, **acciones**: iconos que se pulsan directamente y un icono ⋮ que despliega un **menú de opciones** con el resto. En la navegación clásica se definían en `menu/toolbar_menu.xml` y se gestionaban en `onOptionsItemSelected`. En Compose son composables dentro del parámetro `actions`.
+La barra superior (`TopAppBar`, UD3 apartado 8.1) muestra el título y, a la derecha, acciones: iconos que se pulsan directamente y un icono ⋮ que despliega un menú de opciones con el resto. En la navegación clásica se definían en `menu/toolbar_menu.xml` y se gestionaban en `onOptionsItemSelected`. En Compose son composables dentro del parámetro `actions`.
 
 ### 5.1 Acciones de la barra
 
@@ -872,7 +878,7 @@ fun BarraConAcciones(onInicio: () -> Unit, onBuscar: () -> Unit) {
 }
 ```
 
-- `actions` recibe un composable que se dibuja en una `Row` a la derecha del título. Se pueden poner tantos `IconButton` como se quiera, pero Material recomienda **no más de tres**; el resto va al menú ⋮.
+- `actions` recibe un composable que se dibuja en una `Row` a la derecha del título. Se pueden poner tantos `IconButton` como se quiera, pero Material recomienda no más de tres; el resto va al menú ⋮.
 - Cada icono necesita `contentDescription`: es lo que lee el lector de pantalla y lo que aparece al mantenerlo pulsado.
 - Equivalencia: un `<item app:showAsAction="always">` del XML es un `IconButton` en `actions`.
 
@@ -926,8 +932,8 @@ fun BarraConMenu(onInicio: () -> Unit, onAcercaDe: () -> Unit, onCerrarSesion: (
 ```
 
 - **`Box`** alrededor del botón y del menú: el `DropdownMenu` se abre pegado a su contenedor. Sin el `Box`, aparecería en una esquina de la barra.
-- **`expanded`**: si es `true`, el menú se ve. **`onDismissRequest`**: se llama al tocar fuera o pulsar Atrás; ahí se cierra.
-- Cada `DropdownMenuItem` cierra el menú **antes** de ejecutar su acción. Si no, al volver a la pantalla el menú seguiría abierto.
+- **`expanded`**: si es `true`, el menú se ve. `onDismissRequest`: se llama al tocar fuera o pulsar Atrás; ahí se cierra.
+- Cada `DropdownMenuItem` cierra el menú antes de ejecutar su acción. Si no, al volver a la pantalla el menú seguiría abierto.
 - Equivalencia: un `<item app:showAsAction="never">` del XML es un `DropdownMenuItem`, y el `when (item.itemId)` de `onOptionsItemSelected` desaparece: cada opción tiene su propio `onClick`.
 
 ### 5.3 Colores de la barra
@@ -966,8 +972,8 @@ TopAppBar(
 
 En una aplicación con menú lateral, el icono de la izquierda de la barra superior cambia según la pantalla:
 
-- En las **secciones principales** (Inicio, Mis hoteles, Explorar...) muestra **≡** y abre el menú lateral.
-- En las **pantallas de nivel inferior** (el detalle de un hotel) muestra **←** y vuelve atrás.
+- En las secciones principales (Inicio, Mis hoteles, Explorar...) muestra **≡** y abre el menú lateral.
+- En las pantallas de nivel inferior (el detalle de un hotel) muestra **←** y vuelve atrás.
 
 En la navegación clásica esto lo hacía `AppBarConfiguration`: se le pasaba el conjunto de destinos de nivel superior (`setOf(R.id.homeFragment, ...)`) y cambiaba el icono solo. En Compose se hace con dos líneas de lógica: saber en qué pantalla estamos y comprobar si es de nivel superior.
 
@@ -978,15 +984,15 @@ val entrada by navController.currentBackStackEntryAsState()
 val destino = entrada?.destination
 ```
 
-- **`currentBackStackEntryAsState()`** devuelve la entrada de arriba de la pila como **estado**: cada vez que se navega, cambia y Compose redibuja lo que la lee (la barra, el menú, la barra inferior). Por eso se usa `by` (apartado 4.4).
+- **`currentBackStackEntryAsState()`** devuelve la entrada de arriba de la pila como estado: cada vez que se navega, cambia y Compose redibuja lo que la lee (la barra, el menú, la barra inferior). Por eso se usa `by` (apartado 4.4).
 - **`entrada?.destination`** es el destino actual. Puede ser `null` un instante al arrancar, por eso el `?.`.
-- Para preguntar si el destino es una ruta concreta se compara su **`route`** con la constante:
+- Para preguntar si el destino es una ruta concreta se compara su `route` con la constante:
 
 ```kotlin
 val enDetalle = destino?.route == Rutas.DETALLE
 ```
 
-> `destino.route` es el **patrón** de la ruta (`"detalle/{hotelId}"`), no la ruta rellenada (`"detalle/h3"`). Por eso se compara con `Rutas.DETALLE` y no con `Rutas.detalle(...)`.
+> `destino.route` es el patrón de la ruta (`"detalle/{hotelId}"`), no la ruta rellenada (`"detalle/h3"`). Por eso se compara con `Rutas.DETALLE` y no con `Rutas.detalle(...)`.
 
 ### 6.2 Nivel superior frente a nivel inferior
 
@@ -1118,7 +1124,7 @@ ModalNavigationDrawer(
 }
 ```
 
-El menú lateral **envuelve** al `Scaffold`: así se abre por encima de todo, incluida la barra superior.
+El menú lateral envuelve al `Scaffold`: así se abre por encima de todo, incluida la barra superior.
 
 ### 7.2 Abrir y cerrar el menú
 
@@ -1176,11 +1182,11 @@ fun NavDestination?.esNivelSuperior(): Boolean =
     seccionesMenu.any { this.esSeccion(it) }
 ```
 
-Son **funciones de extensión** (UD1): se llaman como si fueran del propio destino, `destino.esSeccion(seccion)` o `destino.esNivelSuperior()`. El `?` de `NavDestination?` permite llamarlas aunque `destino` sea `null`.
+Son funciones de extensión (UD1): se llaman como si fueran del propio destino, `destino.esSeccion(seccion)` o `destino.esNivelSuperior()`. El `?` de `NavDestination?` permite llamarlas aunque `destino` sea `null`.
 
 ### 7.4 Navegar a una sección sin apilar pantallas
 
-Las secciones del menú lateral y de la barra inferior no son "pantallas siguientes": son **lugares** de la aplicación. Si cada pulsación hiciera un `navigate` normal, la pila crecería sin fin (`[Inicio, MisHoteles, Explorar, MisHoteles, Inicio, ...]`) y Atrás recorrería todo el historial.
+Las secciones del menú lateral y de la barra inferior no son "pantallas siguientes": son lugares de la aplicación. Si cada pulsación hiciera un `navigate` normal, la pila crecería sin fin (`[Inicio, MisHoteles, Explorar, MisHoteles, Inicio, ...]`) y Atrás recorrería todo el historial.
 
 Lo correcto es que, al cambiar de sección, la pila quede como `[Inicio, sección]`:
 
@@ -1320,7 +1326,7 @@ onSeccionClick = { seccion ->
 
 ### 8.1 Cómo funciona
 
-La barra inferior muestra entre **tres y cinco** secciones principales, siempre visibles, para cambiar entre ellas con un toque. Es la forma más rápida de navegar entre las áreas que más se usan; el menú lateral queda para el resto (acerca de, ajustes, cerrar sesión).
+La barra inferior muestra entre tres y cinco secciones principales, siempre visibles, para cambiar entre ellas con un toque. Es la forma más rápida de navegar entre las áreas que más se usan; el menú lateral queda para el resto (acerca de, ajustes, cerrar sesión).
 
 | Pieza de Compose | Qué hace | Equivalente clásico |
 |---|---|---|
@@ -1420,12 +1426,12 @@ En la aplicación del proyecto conviven los dos. Para que no se contradigan:
 
 El proyecto necesita pantallas de acceso: inicio de sesión, registro y recuperación de contraseña. Tras entrar, el usuario llega al área principal (con menú lateral y barra inferior). Al cerrar sesión, vuelve al login. Dos reglas:
 
-1. Una vez dentro, **Atrás no puede volver al login**.
-2. Tras cerrar sesión, **Atrás no puede volver al área principal**.
+1. Una vez dentro, Atrás no puede volver al login.
+2. Tras cerrar sesión, Atrás no puede volver al área principal.
 
 ### 9.1 Grafos anidados
 
-Las pantallas se agrupan en dos **grafos anidados**: uno para el acceso y otro para el área principal. Cada grupo tiene su propia ruta y su pantalla de inicio:
+Las pantallas se agrupan en dos grafos anidados: uno para el acceso y otro para el área principal. Cada grupo tiene su propia ruta y su pantalla de inicio:
 
 ```kotlin
 object Rutas {
@@ -1469,7 +1475,7 @@ NavHost(navController = navController, startDestination = Rutas.AUTH) {
 ```
 
 - **`navigation(route = Rutas.AUTH, startDestination = Rutas.LOGIN)`** crea un grupo de destinos. `route` es la ruta del grupo y `startDestination`, su primera pantalla. Navegar a `Rutas.AUTH` es ir a `Rutas.LOGIN`.
-- Agrupar permite tratar varias pantallas de una vez: **quitar de la pila todo el acceso** (`popUpTo(Rutas.AUTH)`) o **saber si se está en el área principal**:
+- Agrupar permite tratar varias pantallas de una vez: quitar de la pila todo el acceso (`popUpTo(Rutas.AUTH)`) o saber si se está en el área principal:
 
 ```kotlin
 import androidx.navigation.NavDestination.Companion.hierarchy
@@ -1592,7 +1598,7 @@ En `PantallaRecuperarClave`, tras pulsar «Enviar enlace» se muestra un texto d
 
 ### 9.4 Entrar sin poder volver al login
 
-Al entrar, se navega al grafo principal y **se quita de la pila todo el grafo de acceso**:
+Al entrar, se navega al grafo principal y se quita de la pila todo el grafo de acceso:
 
 ```kotlin
 composable(Rutas.LOGIN) {
@@ -1622,7 +1628,7 @@ composable(Rutas.LOGIN) {
 
 ### 9.5 Cerrar sesión
 
-Cerrar sesión es lo contrario: se cierra la sesión, se navega al acceso y **se quita de la pila todo el grafo principal**:
+Cerrar sesión es lo contrario: se cierra la sesión, se navega al acceso y se quita de la pila todo el grafo principal:
 
 ```kotlin
 fun cerrarSesion() {
@@ -1657,7 +1663,7 @@ NavHost(navController = navController, startDestination = destinoInicial) { ... 
 
 ## 10. Navegación manual sin Navigation Compose
 
-El menú lateral y la barra inferior **no dependen de Navigation Compose**: son composables que avisan con un `onClick`. Si la aplicación es muy sencilla (tres secciones, sin detalle ni login), se pueden usar con la navegación con estado de la UD3: una variable dice qué sección se ve.
+El menú lateral y la barra inferior no dependen de Navigation Compose: son composables que avisan con un `onClick`. Si la aplicación es muy sencilla (tres secciones, sin detalle ni login), se pueden usar con la navegación con estado de la UD3: una variable dice qué sección se ve.
 
 ```kotlin
 enum class SeccionManual(val titulo: String, val icono: ImageVector) {
