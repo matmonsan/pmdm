@@ -43,10 +43,10 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 | [`navigateUp()`](#62-nivel-superior-frente-a-nivel-inferior) | Sube un nivel; lo usa la flecha ← de la barra superior. |
 | [`popUpTo` / `inclusive`](#37-opciones-al-navegar-popupto-y-launchsingletop) | Al navegar, quita de la pila las pantallas que hay por encima de una dada (y también esa, si `inclusive = true`). |
 | [`launchSingleTop`](#37-opciones-al-navegar-popupto-y-launchsingletop) | Evita apilar dos veces la misma pantalla seguida. |
-| [Argumento](#42-una-ruta-con-datos) | Dato que viaja dentro del texto de la ruta: `"detalle/{hotelId}"` se rellena como `"detalle/h3"`. |
-| [`navArgument`](#43-enviar-y-recibir-el-argumento) | Declara en el destino el nombre y el tipo de cada argumento. |
-| [`arguments?.getString(...)`](#43-enviar-y-recibir-el-argumento) | Recupera en el destino el valor de un argumento. |
-| [Delegación (`by`)](#44-la-palabra-by-delegación-en-kotlin) | Mecanismo de Kotlin para encargar a otro objeto el trabajo de una clase o de una propiedad. |
+| [Argumento](#41-pasar-un-dato-a-una-pantalla) | Dato que viaja dentro del texto de la ruta: `"detalle/{hotelId}"` se rellena como `"detalle/h3"`. |
+| [`navArgument`](#41-pasar-un-dato-a-una-pantalla) | Declara en el destino el nombre y el tipo de cada argumento. |
+| [`arguments?.getString(...)`](#41-pasar-un-dato-a-una-pantalla) | Recupera en el destino el valor de un argumento. |
+| [`savedStateHandle`](#44-devolver-un-dato-a-la-pantalla-anterior) | Almacén de datos de cada entrada de la pila. Sirve para devolver un dato a la pantalla anterior al volver atrás. |
 | [`TopAppBar` / `actions`](#51-acciones-de-la-barra) | Barra superior y los iconos de acción de su parte derecha. |
 | [`DropdownMenu`](#52-el-menú-desplegable) | Menú desplegable; con el icono ⋮ forma el menú de opciones. |
 | [`currentBackStackEntryAsState()`](#61-saber-en-qué-pantalla-estamos) | Devuelve, como estado, la pantalla que se está viendo. |
@@ -537,117 +537,68 @@ NavHost(
 
 ## 4. Paso de argumentos
 
-### 4.1 Cómo viajan los datos
-
-Muchas veces una pantalla necesita un dato de la anterior: el detalle necesita saber qué hotel mostrar. En la navegación clásica el dato viajaba en un `Bundle`, una especie de mapa de claves y valores:
-
-```kotlin
-// Origen
-val bundle = Bundle().apply { putString("nombre", "Santiago") }
-// Destino
-val nombre = arguments?.getString("nombre")
-```
-
-En Navigation Compose, como la ruta es un texto, el dato viaja dentro del propio texto de la ruta, igual que en una dirección web (`tienda.com/producto/25`):
+Muchas veces una pantalla necesita un dato de la anterior: el detalle necesita saber qué hotel mostrar. En Navigation Compose la ruta es un texto, así que el dato viaja dentro de ese texto, igual que en una dirección web (`tienda.com/producto/25`):
 
 ```text
 "b/Santiago"     ← ruta de la pantalla B con el nombre "Santiago"
 "detalle/h3"     ← ruta del detalle del hotel con id "h3"
 ```
 
-Para que funcione hay que hacer tres cosas:
+Este apartado amplía el ejemplo de las cuatro pantallas de colores (apartado 3). En 4.1 la pantalla B recibe un nombre fijo; en 4.2 ese nombre lo escribe el usuario; en 4.3 la pantalla C recibe dos datos, uno de ellos un número. En 4.4 el dato viaja al revés: la pantalla A devuelve un mensaje a Inicio al volver atrás.
 
-1. **En la ruta**, dejar un hueco con nombre para el dato: `"b/{nombre}"`.
-2. **Al navegar**, rellenar el hueco: `"b/Santiago"`.
-3. **En el destino**, declarar el argumento y leer su valor.
+### 4.1 Pasar un dato a una pantalla
 
-### 4.2 Una ruta con datos
+La pantalla B va a recibir un nombre y a mostrarlo en un `Toast`. Cambian los mismos tres archivos del apartado 3.
 
-Para que la pantalla B reciba un nombre, se cambia su ruta en `Rutas.kt`:
+**`Rutas.kt`:**
 
 ```kotlin
 object Rutas {
     const val INICIO = "inicio"
     const val A = "a"
-    const val B = "b/{nombre}"     // antes era "b"
+    const val B = "b/{nombre}"     // patrón con un hueco: B recibe un nombre
     const val C = "c"
 
-    // Construye la ruta de B con un nombre concreto
+    // Rellena el hueco: b("Santiago") devuelve "b/Santiago". Es la que se usa en navigate
     fun b(nombre: String) = "b/$nombre"
 }
 ```
 
-- **`{nombre}`** es un hueco: indica que en esa parte de la ruta irá un dato que se llama `nombre`. Lo que hay entre llaves es el nombre del argumento.
-- **`Rutas.B`** (`"b/{nombre}"`) es el patrón: se usa en el `composable` para decir "esta pantalla recibe un nombre".
-- **`Rutas.b("Santiago")`** devuelve `"b/Santiago"`: es la ruta ya rellenada, la que se pasa a `navigate`. Se escribe como función para no tener que montar el texto a mano en cada botón.
-- Si una pantalla recibe varios datos, se ponen varios huecos separados por `/`: `"c/{nombre}/{edad}"`.
-
-**Argumentos opcionales.** Si un dato puede faltar, se pone después de un `?`, como en las direcciones web: `"c/{nombre}?edad={edad}"`. Al navegar se puede escribir `"c/Ana"` (la edad toma su valor por defecto) o `"c/Ana?edad=20"`. El valor por defecto se indica en el destino con `defaultValue` (apartado 4.3).
-
-### 4.3 Enviar y recibir el argumento
-
-**Enviar.** Al navegar se usa la función que rellena la ruta:
+**`AppNavegacion.kt`** (solo cambian los destinos de Inicio y B):
 
 ```kotlin
 composable(Rutas.INICIO) {
     PantallaInicio(
         onIrA = { navController.navigate(Rutas.A) },
-        onIrB = { navController.navigate(Rutas.b(nombre = "Santiago")) }
+        // Se navega con la ruta ya rellenada, no con Rutas.B
+        onIrB = { navController.navigate(Rutas.b("Santiago")) }
     )
 }
-```
-
-**Recibir.** En el destino, el `composable` recibe además una lista `arguments` que dice cómo se llama y de qué tipo es cada argumento. Dentro de la lambda, la entrada de la pila (`backStackEntry`) trae los valores:
-
-```kotlin
-import androidx.navigation.NavType
-import androidx.navigation.navArgument
-
 composable(
-    route = Rutas.B,
+    route = Rutas.B,                     // el patrón con el hueco
     arguments = listOf(
+        // El mismo nombre que hay entre llaves en la ruta, y su tipo
         navArgument("nombre") { type = NavType.StringType }
     )
 ) { backStackEntry ->
+    // Lee el valor que ocupa el hueco; si no llega, usa un texto vacío
     val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
     PantallaB(
-        nombre = nombre,
+        nombre = nombre,                 // la pantalla recibe el dato ya leído
         onAtras = { navController.popBackStack() },
         onSiguiente = { navController.navigate(Rutas.C) }
     )
 }
 ```
 
-| Código | Qué hace |
-|---|---|
-| `route = Rutas.B` | El patrón con el hueco: `"b/{nombre}"`. |
-| `navArgument("nombre") { type = NavType.StringType }` | Declara el argumento `nombre` y su tipo. El nombre debe ser exactamente el que hay entre llaves en la ruta. |
-| `backStackEntry` | La entrada de la pila de esta pantalla. Guarda la ruta con la que se llegó. |
-| `backStackEntry.arguments?.getString("nombre")` | Lee el valor del argumento. Puede ser `null` (por eso el `?.`). |
-| `?: ""` | Si el valor es `null`, usa un texto vacío. |
-
-Tipos que se pueden usar:
-
-| Tipo de Kotlin | En `navArgument` | Para leerlo |
-|---|---|---|
-| `String` | `NavType.StringType` | `getString("clave")` |
-| `Int` | `NavType.IntType` | `getInt("clave")` |
-| `Long` | `NavType.LongType` | `getLong("clave")` |
-| `Float` | `NavType.FloatType` | `getFloat("clave")` |
-| `Boolean` | `NavType.BoolType` | `getBoolean("clave")` |
-
-Para un argumento opcional se añade su valor por defecto: `navArgument("edad") { type = NavType.IntType; defaultValue = 18 }`.
-
-> **Cuidado con los nombres.** El compilador no comprueba que `"nombre"` esté bien escrito en los tres sitios (la ruta, `navArgument` y `getString`). Si en uno pones `"nonbre"`, el código compila, pero el valor llega como `null`. Si el tipo no coincide (declaras `IntType` y lees con `getString`), también llega `null`. Copia el nombre del argumento de la ruta para no equivocarte.
-
-> **Textos con símbolos.** Si el dato puede llevar `/`, `?` o espacios (por ejemplo, un nombre escrito por el usuario), codifícalo al montar la ruta: `fun b(nombre: String) = "b/${Uri.encode(nombre)}"`. En el destino, `getString` ya lo devuelve decodificado. Los `id` de los hoteles no lo necesitan.
-
-Y la pantalla lo recibe como un parámetro más:
+**`Pantallas.kt`** (solo cambia `PantallaB`):
 
 ```kotlin
+// Recibe el nombre como un parámetro más: no sabe nada de la ruta
 @Composable
 fun PantallaB(nombre: String, onAtras: () -> Unit, onSiguiente: () -> Unit) {
     val context = LocalContext.current
+    // Se ejecuta una sola vez, al aparecer la pantalla
     LaunchedEffect(Unit) {
         Toast.makeText(context, "Mi nombre es $nombre", Toast.LENGTH_LONG).show()
     }
@@ -671,84 +622,377 @@ fun PantallaB(nombre: String, onAtras: () -> Unit, onSiguiente: () -> Unit) {
 }
 ```
 
-Respecto a la `PantallaB` del apartado 3.3, solo cambian el parámetro `nombre` y las líneas del `Toast`. El resto es igual.
-
-- `LaunchedEffect(Unit)` ejecuta el `Toast` una sola vez, al aparecer la pantalla, y no en cada recomposición (UD3, apartado 8.2).
-- La pantalla recibe un `String`, no la ruta ni el `backStackEntry`: así sigue sin depender de la navegación.
-
-| Navegación clásica (*Safe Args*) | Navigation Compose |
-|---|---|
-| `<argument android:name="name" app:argType="string" />` en el XML | `navArgument("nombre") { type = NavType.StringType }` y el hueco `{nombre}` en la ruta |
-| `FragmentStartDirections.actionFragmentStartToFragmentB(name = "Santiago")` | `Rutas.b(nombre = "Santiago")` |
-| `val args: FragmentBArgs by navArgs()` | `backStackEntry.arguments` |
-| `args.name` | `arguments?.getString("nombre")` |
-
-> **En un ViewModel.** Si la pantalla tiene su propio ViewModel, puede leer el argumento sin pasar por la pantalla: `savedStateHandle.get<String>("hotelId")`. `SavedStateHandle` se recibe en el constructor del ViewModel. En esta unidad se usa un ViewModel compartido y el argumento se lee en el `NavHost`, que es más sencillo.
-
-### 4.4 La palabra by: delegación en Kotlin
-
-En la navegación clásica, los argumentos se leían con `val args: FragmentBArgs by navArgs()`. Esa palabra `by` es la delegación de Kotlin, y en Compose la usas continuamente: `var texto by remember { mutableStateOf("") }`. Conviene entender qué hace.
-
-**Delegar** es encargar un trabajo a otro objeto. Kotlin tiene dos tipos.
-
-**1. Delegación de clases.** Una clase implementa una interfaz pasando todo el trabajo a otro objeto. Sin `by`, hay que escribir cada función a mano:
+`NavType` y `navArgument` necesitan estos dos `import`:
 
 ```kotlin
-interface Acciones {
-    fun jugar()
-    fun atacar()
-    fun morir()
-}
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
+```
 
-class Jugador : Acciones {
-    override fun jugar() = println("Está jugando el jugador")
-    override fun atacar() = println("Está atacando el jugador")
-    override fun morir() = println("Está muriendo el jugador")
-}
+Qué significa cada parte:
 
-// Sin delegación: cada función reenvía la llamada a mano
-class EnemigoSinBy(private val jugador: Jugador) : Acciones {
-    override fun jugar() = jugador.jugar()
-    override fun atacar() = jugador.atacar()
-    override fun morir() = jugador.morir()
-}
+| Código | Qué hace |
+|---|---|
+| `"b/{nombre}"` | La ruta de B con un hueco. `{nombre}` indica que en esa parte de la ruta irá un dato que se llama `nombre`. |
+| `Rutas.B` | El patrón, con el hueco sin rellenar. Se usa en el `composable` para declarar que la pantalla B recibe un nombre. |
+| `Rutas.b("Santiago")` | Devuelve `"b/Santiago"`, la ruta con el dato ya puesto. Es la que se pasa a `navigate`. |
+| `navArgument("nombre") { type = NavType.StringType }` | Declara el argumento `nombre` y su tipo. El nombre debe ser exactamente el que hay entre llaves en la ruta; si no coincide, el código compila pero el valor llega como `null`. |
+| `backStackEntry` | La entrada de la pila de esta pantalla. Guarda la ruta con la que se llegó y sus argumentos. |
+| `backStackEntry.arguments?.getString("nombre")` | Lee el valor del argumento. Puede ser `null` (por eso el `?.`). |
+| `?: ""` | Si el valor es `null`, usa un texto vacío. |
+| `PantallaB(nombre: String, ...)` | La pantalla recibe el nombre ya leído, como un parámetro más. No lee la ruta ni conoce el `backStackEntry`, así que sigue sin depender de la navegación y se puede ver con `@Preview`. |
+| `LaunchedEffect(Unit) { ... }` | Muestra el `Toast` una sola vez, al aparecer la pantalla, y no en cada recomposición (UD3, apartado 8.2). |
 
-// Con delegación: Kotlin escribe ese código por ti
-class EnemigoConBy(private val jugador: Jugador) : Acciones by jugador
+Al pulsar «Ir a la pantalla B» se navega a `"b/Santiago"`. El `NavHost` compara esa ruta con los patrones de sus destinos y la hace coincidir con `"b/{nombre}"`: lo que ocupa el lugar del hueco, `Santiago`, es el valor del argumento `nombre`. Dentro del `composable`, `getString("nombre")` devuelve `"Santiago"` y se pasa a `PantallaB`, que muestra «Mi nombre es Santiago».
 
-fun main() {
-    val jugador = Jugador()
-    EnemigoSinBy(jugador).atacar()   // Está atacando el jugador
-    EnemigoConBy(jugador).atacar()   // Está atacando el jugador
+#### Para qué sirve la función `b`
+
+La constante `Rutas.B` no sirve para navegar. Con `navController.navigate(Rutas.B)` se navega a `"b/{nombre}"` tal cual, y la pantalla B recibe como nombre el texto `{nombre}`. Para navegar hay que poner el dato real en el lugar del hueco, y eso es lo que hace la función: recibe el dato y devuelve la ruta rellenada.
+
+| Para qué | Qué se usa | Valor |
+|---|---|---|
+| Declarar el destino en el `NavHost` | `Rutas.B` | `"b/{nombre}"` |
+| Navegar a la pantalla | `Rutas.b("Santiago")` | `"b/Santiago"` |
+
+Con la función, el formato de la ruta está escrito una sola vez, en `Rutas.kt`, junto al patrón. Si la ruta cambia, se cambia allí y todos los botones siguen funcionando. Por convenio, la constante va en mayúsculas (`B`) y la función en minúsculas (`b`); Kotlin distingue mayúsculas de minúsculas, así que son dos nombres distintos.
+
+### 4.2 Un dato que viene de la pantalla
+
+En 4.1 el nombre está escrito en `AppNavegacion` (`"Santiago"`). En una aplicación real, el dato sale de la pantalla: lo escribe el usuario o es el elemento que ha pulsado. Ahora `PantallaInicio` tiene un campo de texto y pasa a B el nombre escrito.
+
+**`Pantallas.kt`** (cambia `PantallaInicio`):
+
+```kotlin
+// onIrB recibe un String: así la pantalla entrega el nombre escrito
+@Composable
+fun PantallaInicio(onIrA: () -> Unit, onIrB: (String) -> Unit) {
+    var nombre by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFFEB3B))   // amarillo
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = { nombre = it },
+            label = { Text("Tu nombre") },
+            singleLine = true
+        )
+        Button(onClick = onIrA) { Text("Ir a la pantalla A") }
+        Button(
+            onClick = { onIrB(nombre) },          // entrega el dato al pulsar
+            enabled = nombre.isNotBlank()          // sin nombre no se puede navegar
+        ) {
+            Text("Ir a la pantalla B")
+        }
+    }
 }
 ```
 
-Las dos clases hacen lo mismo. `: Acciones by jugador` significa "implemento `Acciones` y cada función se la paso a `jugador`". Si quieres cambiar una sola, la sobrescribes y las demás siguen delegadas.
-
-**2. Delegación de propiedades.** Una propiedad encarga a otro objeto cómo se lee y cómo se escribe su valor:
+**`AppNavegacion.kt`** (cambia el destino de Inicio):
 
 ```kotlin
-// Sin by: hay que usar .value
-val estado = remember { mutableStateOf("") }
-estado.value = "Hola"
-
-// Con by: el MutableState se encarga de leer y escribir
-var texto by remember { mutableStateOf("") }
-texto = "Hola"     // por dentro hace estado.value = "Hola" y avisa a Compose
+composable(Rutas.INICIO) {
+    PantallaInicio(
+        onIrA = { navController.navigate(Rutas.A) },
+        // Recibe el nombre que entrega la pantalla y navega con él
+        onIrB = { nombre -> navController.navigate(Rutas.b(nombre)) }
+    )
+}
 ```
 
-Ejemplos de delegación de propiedades que aparecen en esta unidad:
+**`Rutas.kt`** (cambia la función `b`):
 
-| Código | Quién se encarga del valor |
+```kotlin
+// Uri.encode evita que "/", "?" o los espacios del texto rompan la ruta
+fun b(nombre: String) = "b/${Uri.encode(nombre)}"
+```
+
+| Código | Qué hace |
 |---|---|
-| `var texto by remember { mutableStateOf("") }` | El `MutableState`: guarda el valor y avisa a Compose al cambiar |
-| `val entrada by navController.currentBackStackEntryAsState()` | El `NavController`: da la pantalla actual y avisa al cambiar (apartado 6.1) |
-| `val args: FragmentBArgs by navArgs()` (clásico) | `navArgs()`: lee los argumentos del `Bundle` |
-| `val datos by lazy { cargar() }` | `lazy`: calcula el valor la primera vez que se usa y lo recuerda |
+| `onIrB: (String) -> Unit` | Una lambda que recibe un `String`. Antes era `() -> Unit`, que no recibe nada. Así la pantalla puede avisar de que se ha pulsado el botón y, a la vez, entregar el dato. |
+| `onClick = { onIrB(nombre) }` | Al pulsar, la pantalla llama a la lambda con el nombre escrito. |
+| `onIrB = { nombre -> ... }` | En `AppNavegacion`, la lambda recibe ese nombre y navega con él. `nombre ->` da nombre al parámetro que llega. |
+| `enabled = nombre.isNotBlank()` | El botón solo se puede pulsar si hay algo escrito. Con el campo vacío, la ruta sería `"b/"`, que no encaja con `"b/{nombre}"`, y la app se cerraría. |
+| `Uri.encode(nombre)` | Convierte los caracteres que tienen un significado especial en una ruta (`/`, `?`, espacios...) en códigos que no lo tienen. Sin esto, un nombre como `"Ana/Luis"` partiría la ruta en dos. `getString` en el destino ya lo devuelve como se escribió. Se importa con `import android.net.Uri`. |
+| `${...}` | Dentro de un texto, `$nombre` inserta una variable; cuando lo que se inserta es una expresión, como `Uri.encode(nombre)`, va entre llaves. |
+
+El destino de B no cambia: sigue leyendo `nombre` con `getString`.
+
+Es el mismo mecanismo que usa la lista de hoteles de la UD3: `onHotelClick: (Hotel) -> Unit` entrega el hotel pulsado, y en el apartado 4.6 esa lambda navega con su `id`. Los `id` de los hoteles no necesitan `Uri.encode`, porque solo tienen letras, números y guiones; se usa con textos que escribe el usuario.
+
+### 4.3 Varios datos y datos que no son texto
+
+La pantalla C va a recibir el nombre que llegó a B y una edad, que es un número.
+
+**`Rutas.kt`** (completo):
+
+```kotlin
+object Rutas {
+    const val INICIO = "inicio"
+    const val A = "a"
+    const val B = "b/{nombre}"
+    const val C = "c/{nombre}/{edad}"     // dos huecos: dos argumentos
+
+    fun b(nombre: String) = "b/${Uri.encode(nombre)}"
+    // Un parámetro por cada hueco, en el mismo orden
+    fun c(nombre: String, edad: Int) = "c/${Uri.encode(nombre)}/$edad"
+}
+```
+
+**`AppNavegacion.kt`** (cambian los destinos de B y C):
+
+```kotlin
+composable(
+    route = Rutas.B,
+    arguments = listOf(
+        navArgument("nombre") { type = NavType.StringType }
+    )
+) { backStackEntry ->
+    val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
+    PantallaB(
+        nombre = nombre,
+        onAtras = { navController.popBackStack() },
+        // B pasa a C el nombre que ha recibido y una edad
+        onSiguiente = { navController.navigate(Rutas.c(nombre, 30)) }
+    )
+}
+composable(
+    route = Rutas.C,
+    arguments = listOf(
+        // Un navArgument por cada hueco de la ruta
+        navArgument("nombre") { type = NavType.StringType },
+        navArgument("edad") { type = NavType.IntType }     // la edad es un número
+    )
+) { backStackEntry ->
+    val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
+    val edad = backStackEntry.arguments?.getInt("edad") ?: 0   // IntType se lee con getInt
+    PantallaC(
+        nombre = nombre,
+        edad = edad,
+        onAtras = { navController.popBackStack() },
+        onInicio = { navController.popBackStack(route = Rutas.INICIO, inclusive = false) }
+    )
+}
+```
+
+**`Pantallas.kt`** (cambia `PantallaC`):
+
+```kotlin
+// Recibe cada dato ya convertido a su tipo
+@Composable
+fun PantallaC(nombre: String, edad: Int, onAtras: () -> Unit, onInicio: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFF44336))   // rojo
+            .padding(16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(onClick = onAtras) { Text("Atrás") }
+            Button(onClick = onInicio) { Text("Inicio") }
+        }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text("C", fontSize = 96.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            Text("$nombre, $edad años", fontSize = 24.sp, color = Color.White)
+        }
+    }
+}
+```
+
+| Código | Qué hace |
+|---|---|
+| `"c/{nombre}/{edad}"` | Una ruta con dos huecos, separados por `/`. Cada hueco es un argumento. |
+| `fun c(nombre: String, edad: Int)` | La función recibe un parámetro por cada hueco y los coloca en el mismo orden. `Rutas.c("Ana", 30)` devuelve `"c/Ana/30"`. |
+| `onSiguiente = { navController.navigate(Rutas.c(nombre, 30)) }` | El destino de B ya tiene el `nombre` que ha leído, así que puede pasarlo a C sin que `PantallaB` intervenga. |
+| `arguments = listOf(navArgument(...), navArgument(...))` | Un `navArgument` por cada hueco de la ruta. |
+| `navArgument("edad") { type = NavType.IntType }` | La edad se declara como número entero. En la ruta todo es texto (`"30"`); el `NavType` indica en qué tipo hay que convertirlo. |
+| `getInt("edad") ?: 0` | Lee la edad como `Int`. Cada tipo se lee con su función (tabla siguiente). |
+| `PantallaC(nombre: String, edad: Int, ...)` | La pantalla recibe los dos datos ya convertidos a su tipo. |
+
+Cada tipo se declara con su `NavType` y se lee con su función. Si no coinciden (se declara `IntType` y se lee con `getString`), el valor llega como `null`:
+
+| Tipo de Kotlin | En `navArgument` | Para leerlo |
+|---|---|---|
+| `String` | `NavType.StringType` | `getString("clave")` |
+| `Int` | `NavType.IntType` | `getInt("clave")` |
+| `Long` | `NavType.LongType` | `getLong("clave")` |
+| `Float` | `NavType.FloatType` | `getFloat("clave")` |
+| `Boolean` | `NavType.BoolType` | `getBoolean("clave")` |
+
+#### Datos opcionales
+
+Si un dato puede faltar, se escribe después de un `?`, como en las direcciones web, y se le da un valor por defecto en el destino:
+
+```kotlin
+const val C = "c/{nombre}?edad={edad}"     // edad es opcional: va después de ?
+```
+
+```kotlin
+navArgument("edad") { type = NavType.IntType; defaultValue = 18 }   // valor si falta
+```
+
+| Se navega a | `nombre` | `edad` |
+|---|---|---|
+| `"c/Ana"` | `"Ana"` | 18 (el valor por defecto) |
+| `"c/Ana?edad=30"` | `"Ana"` | 30 |
+
+Los datos obligatorios van separados por `/`; los opcionales, después de `?` y con la forma `clave=valor`. Si hay varios opcionales, se separan con `&`: `"c/{nombre}?edad={edad}&ciudad={ciudad}"`.
+
+### 4.4 Devolver un dato a la pantalla anterior
+
+Hasta ahora los datos viajan hacia delante: la pantalla que navega se los pasa a la siguiente. A veces hace falta lo contrario: una pantalla se abre para que el usuario elija o escriba algo, y al volver atrás la pantalla anterior tiene que recibirlo. Por ejemplo, una pantalla para elegir una provincia que, al volver, la deja escrita en el formulario.
+
+Este caso no se puede resolver con un argumento en la ruta. Para entregar un dato con una ruta habría que hacer `navigate(...)` hacia la pantalla anterior, y eso pondría otra copia encima: la pila quedaría `[Inicio, A, Inicio]`, que es el error del apartado 3.7. Lo que se quiere es volver con `popBackStack()` y que la pantalla de debajo encuentre el dato.
+
+Para eso, cada entrada de la pila tiene un `savedStateHandle`: un almacén de datos con clave y valor que pertenece a esa pantalla. La pantalla que se cierra escribe el dato en el almacén de la anterior, vuelve atrás, y la anterior lo lee del suyo.
+
+En el ejemplo de colores, la pantalla A tiene un campo para escribir un mensaje y un botón «Enviar y volver». Inicio muestra el mensaje recibido.
+
+**`Pantallas.kt`** (cambian `PantallaInicio` y `PantallaA`):
+
+```kotlin
+// mensaje es el dato que devuelve A; vale null mientras no ha llegado ninguno
+@Composable
+fun PantallaInicio(mensaje: String?, onIrA: () -> Unit, onIrB: (String) -> Unit) {
+    var nombre by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFFFFEB3B))   // amarillo
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        if (mensaje != null) {     // solo se muestra si A ha enviado algo
+            Text("Mensaje de A: $mensaje", fontSize = 20.sp)
+        }
+        OutlinedTextField(
+            value = nombre,
+            onValueChange = { nombre = it },
+            label = { Text("Tu nombre") },
+            singleLine = true
+        )
+        Button(onClick = onIrA) { Text("Ir a la pantalla A") }
+        Button(
+            onClick = { onIrB(nombre) },
+            enabled = nombre.isNotBlank()
+        ) {
+            Text("Ir a la pantalla B")
+        }
+    }
+}
+
+// onEnviar entrega el texto que hay que devolver a Inicio
+@Composable
+fun PantallaA(onAtras: () -> Unit, onEnviar: (String) -> Unit) {
+    var texto by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF4CAF50))   // verde
+            .padding(16.dp)
+    ) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = onAtras) { Text("Atrás") }
+        }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically)
+        ) {
+            Text("A", fontSize = 96.sp, fontWeight = FontWeight.Bold, color = Color.White)
+            OutlinedTextField(
+                value = texto,
+                onValueChange = { texto = it },
+                label = { Text("Mensaje para Inicio") },
+                singleLine = true
+            )
+            Button(
+                onClick = { onEnviar(texto) },
+                enabled = texto.isNotBlank()
+            ) {
+                Text("Enviar y volver")
+            }
+        }
+    }
+}
+```
+
+**`AppNavegacion.kt`** (cambian los destinos de Inicio y A):
+
+```kotlin
+composable(Rutas.INICIO) { backStackEntry ->
+    // Lee "mensaje" del almacén de Inicio y redibuja la pantalla cuando cambia
+    val mensaje by backStackEntry.savedStateHandle
+        .getStateFlow<String?>("mensaje", null)
+        .collectAsState()
+
+    PantallaInicio(
+        mensaje = mensaje,
+        onIrA = { navController.navigate(Rutas.A) },
+        onIrB = { nombre -> navController.navigate(Rutas.b(nombre)) }
+    )
+}
+composable(Rutas.A) {
+    PantallaA(
+        onAtras = { navController.popBackStack() },
+        onEnviar = { texto ->
+            // Primero guarda el texto en el almacén de la pantalla anterior (Inicio)
+            navController.previousBackStackEntry?.savedStateHandle?.set("mensaje", texto)
+            // Después vuelve a Inicio
+            navController.popBackStack()
+        }
+    )
+}
+```
+
+Qué significa cada parte:
+
+| Código | Qué hace |
+|---|---|
+| `savedStateHandle` | El almacén de datos de una entrada de la pila. Guarda pares clave-valor, como `"mensaje"` → `"Hola"`. Cada pantalla de la pila tiene el suyo. |
+| `navController.previousBackStackEntry` | La entrada que está justo debajo de la actual en la pila. Desde A, es la de Inicio. Puede ser `null` si no hay ninguna debajo (por eso el `?.`). |
+| `.savedStateHandle?.set("mensaje", texto)` | Guarda el texto con la clave `"mensaje"` en el almacén de Inicio. |
+| `navController.popBackStack()` | Quita A de la pila. Inicio vuelve a verse y su almacén ya tiene el mensaje. El orden importa: primero se guarda el dato y después se vuelve. |
+| `backStackEntry.savedStateHandle` | En el destino de Inicio, su propio almacén. Es el mismo en el que A ha escrito. |
+| `.getStateFlow<String?>("mensaje", null)` | Devuelve el valor de la clave `"mensaje"` de forma que se puede observar: cada vez que alguien lo cambia, avisa. `null` es el valor mientras nadie ha escrito nada. |
+| `.collectAsState()` | Convierte ese valor observable en estado de Compose. Cuando A escribe el mensaje, Inicio se redibuja con el valor nuevo. |
+| `val mensaje by ...` | Con `by` se lee directamente el `String?`, sin `.value`, igual que con `remember { mutableStateOf(...) }`. |
+| `PantallaInicio(mensaje: String?, ...)` | La pantalla recibe el mensaje como un parámetro más; no sabe de dónde viene. Con `null` no muestra nada. |
+
+`collectAsState` se importa con `import androidx.compose.runtime.collectAsState`.
+
+Así cambian la pila y los almacenes durante el ejemplo:
+
+| Acción | Pila después | Almacén de Inicio | Se ve |
+|---|---|---|---|
+| Arranca la app | `[Inicio]` | vacío | Inicio, sin mensaje |
+| Pulsa «Ir a la pantalla A» | `[Inicio, A]` | vacío | A |
+| Escribe «Hola» y pulsa «Enviar y volver» | `[Inicio]` | `"mensaje"` → `"Hola"` | Inicio, con «Mensaje de A: Hola» |
+| Vuelve a A y pulsa «Atrás» sin enviar | `[Inicio]` | `"mensaje"` → `"Hola"` | Inicio, con el mismo mensaje |
+
+- La clave (`"mensaje"`) tiene que ser exactamente la misma al escribir y al leer. Igual que con los argumentos, si no coincide el código compila, pero el dato no llega.
+- El dato se queda en el almacén hasta que se sustituye o se borra. Por eso, al volver con «Atrás» sin enviar, Inicio sigue mostrando el mensaje anterior. Si el dato solo debe usarse una vez, se borra después de leerlo con `backStackEntry.savedStateHandle.remove<String>("mensaje")`.
+- El almacén se conserva al girar el móvil, igual que la pila.
+- Solo se deben devolver datos sencillos (textos, números, `Boolean`), por la misma razón que en el apartado 4.5: si hay que devolver un objeto, se devuelve su `id`.
 
 ### 4.5 Qué conviene pasar
 
-**Pasa identificadores, no objetos.** Para ir al detalle de un hotel, pasa su `id`, no el `Hotel` entero:
+Pasa identificadores, no objetos. Para ir al detalle de un hotel, pasa su `id`, no el `Hotel` entero:
 
 ```kotlin
 // Bien: solo el id
@@ -764,22 +1008,585 @@ const val DETALLE = "detalle/{nombre}/{ciudad}/{precio}/{foto}/..."
 
 ### 4.6 Lista y detalle de hoteles con NavHost
 
-Ya se puede cambiar la navegación con estado de la aplicación de hospedajes (UD3, apartado 8.3) por un `NavHost`. Como anunciaba la UD3, solo cambia `AppPantallas.kt` (y se quitan del ViewModel los datos de navegación). Las pantallas siguen igual.
+Ya se puede cambiar la navegación con estado de la aplicación de hospedajes (UD3, apartado 8.3) por un `NavHost`. Como anunciaba la UD3, las pantallas siguen igual: cambia `AppPantallas.kt`, se añade `Rutas.kt` y se quitan del `UiState` y del ViewModel los datos de navegación.
 
-**Rutas** (archivo nuevo `Rutas.kt`):
+**Preparar el proyecto:**
+
+1. Añade la dependencia `navigation-compose` (apartado 2.4) y pulsa **Sync Now**.
+2. Crea el archivo `Rutas.kt` y cambia los archivos marcados en el esquema.
+
+```text
+app/src/main/java/com/ejemplo/hospedajes/
+├── Hotel.kt                  ← sin cambios
+├── HotelRepository.kt        ← sin cambios
+├── Rutas.kt                  ← NUEVO: las rutas de la lista y del detalle
+├── HospedajeUiState.kt       ← CAMBIA: se quita selectedHotelId
+├── HospedajeViewModel.kt     ← CAMBIA: se quitan onHotelClicked y onBackToList
+├── Dialogos.kt               ← sin cambios
+├── PantallaPrincipal.kt      ← sin cambios
+├── PantallaDetalle.kt        ← sin cambios
+├── AppPantallas.kt           ← CAMBIA: NavHost en lugar de if/else y BackHandler
+└── MainActivity.kt           ← sin cambios
+```
+
+En el ejemplo, el paquete es `com.ejemplo.hospedajes`; si el tuyo es otro, cambia la línea `package` de cada archivo. Como en el resto de la unidad, no se muestran las líneas `import`: cuando Android Studio marque un nombre en rojo, pulsa **Alt + Intro** → **Import**.
+
+#### `Hotel.kt` (sin cambios)
 
 ```kotlin
+package com.ejemplo.hospedajes
+
+data class Hotel(
+    val id: String = java.util.UUID.randomUUID().toString(),
+    val name: String,
+    val city: String,
+    val province: String,
+    val phone: String,
+    val image: String
+)
+```
+
+#### `HotelRepository.kt` (sin cambios)
+
+```kotlin
+package com.ejemplo.hospedajes
+
+object HotelRepository {
+    private val hotels = mutableListOf(
+        Hotel(
+            name = "Antiguo Palacio de Atienza",
+            city = "Atienza",
+            province = "Guadalajara",
+            phone = "975 45 54 45",
+            image = "https://picsum.photos/id/1011/300/300"
+        ),
+        Hotel(
+            name = "La Casa del Vaquero",
+            city = "Abiada",
+            province = "Cantabria",
+            phone = "978 65 56 65",
+            image = "https://picsum.photos/id/1025/300/300"
+        ),
+        Hotel(
+            name = "Hotel Peñalta",
+            city = "Bogarra",
+            province = "Albacete",
+            phone = "967 98 89 98",
+            image = "https://picsum.photos/id/1040/300/300"
+        ),
+        Hotel(
+            name = "Hotel Felipe II",
+            city = "Ayna",
+            province = "Albacete",
+            phone = "967 22 33 44",
+            image = "https://picsum.photos/id/1060/300/300"
+        )
+    )
+
+    fun getHotels(): List<Hotel> = hotels.toList()
+
+    fun getHotelById(id: String): Hotel? = hotels.find { it.id == id }
+
+    fun addHotel(hotel: Hotel) {
+        hotels.add(hotel)
+    }
+
+    fun updateHotel(hotel: Hotel) {
+        val index = hotels.indexOfFirst { it.id == hotel.id }
+        if (index != -1) {
+            hotels[index] = hotel
+        }
+    }
+
+    fun deleteHotel(id: String) {
+        hotels.removeAll { it.id == id }
+    }
+}
+```
+
+#### `Rutas.kt` (nuevo)
+
+```kotlin
+package com.ejemplo.hospedajes
+
 object Rutas {
     const val LISTA = "lista"
     const val DETALLE = "detalle/{hotelId}"
 
+    // Construye la ruta del detalle con un id concreto
     fun detalle(hotelId: String) = "detalle/$hotelId"
 }
 ```
 
-**`AppPantallas.kt`**:
+- `Rutas.LISTA` es la pantalla de inicio: no recibe datos.
+- `Rutas.DETALLE` es el patrón con el hueco `{hotelId}` y se usa en el `composable` (apartado 4.1).
+- `Rutas.detalle(hotel.id)` sirve para navegar al detalle de un hotel concreto. `Rutas.DETALLE` no sirve para eso, porque tiene el hueco sin rellenar; la función pone el `id` del hotel pulsado en el lugar del hueco (apartado 4.1).
+- Se usa en `onHotelClick` de `AppPantallas.kt`. Por ejemplo, si se pulsa un hotel cuyo `id` es `"a1b2"`, se navega a `"detalle/a1b2"`. El `NavHost` lo hace coincidir con el patrón `"detalle/{hotelId}"`, el argumento `hotelId` toma el valor `"a1b2"` y el detalle muestra ese hotel.
+
+#### `HospedajeUiState.kt` (cambia)
 
 ```kotlin
+package com.ejemplo.hospedajes
+
+data class HospedajeUiState(
+    val hotelList: List<Hotel> = emptyList(),
+    // selectedHotelId SE QUITA: el id del hotel viaja en la ruta "detalle/{hotelId}"
+    val hotelToEdit: Hotel? = null,
+    val hotelToDelete: Hotel? = null,
+    val isAddDialogOpen: Boolean = false,
+    val userMessage: String? = null
+)
+```
+
+| Propiedad | Significado | ¿Cambia? |
+|---|---|---|
+| `hotelList` | Hoteles que se muestran | No |
+| `selectedHotelId` | Hotel cuyo detalle se ve | Se quita: ahora lo sabe el `NavController` |
+| `hotelToEdit` | Hotel que se está editando | No |
+| `hotelToDelete` | Hotel pendiente de confirmar su borrado | No |
+| `isAddDialogOpen` | Diálogo de alta abierto | No |
+| `userMessage` | Mensaje pendiente para el `Snackbar` | No |
+
+Los diálogos siguen en el `UiState`: no son pantallas, se dibujan encima de la que esté visible.
+
+#### `HospedajeViewModel.kt` (cambia)
+
+```kotlin
+package com.ejemplo.hospedajes
+
+private const val DEFAULT_IMAGE = "https://picsum.photos/id/1043/300/300"
+
+class HospedajeViewModel : ViewModel() {
+
+    var uiState by mutableStateOf(HospedajeUiState())
+        private set
+
+    init {
+        uiState = uiState.copy(hotelList = HotelRepository.getHotels())
+    }
+
+    // ---------- Navegación ----------
+    // onHotelClicked y onBackToList SE QUITAN: ahora navega el NavController
+
+    // ---------- Alta ----------
+
+    fun onAddHotelClicked() {
+        uiState = uiState.copy(isAddDialogOpen = true)
+    }
+
+    fun onDismissAddDialog() {
+        uiState = uiState.copy(isAddDialogOpen = false)
+    }
+
+    fun onInsertHotel(name: String, city: String, province: String, phone: String, image: String) {
+        val newHotel = Hotel(
+            name = name,
+            city = city,
+            province = province,
+            phone = phone,
+            image = image.ifBlank { DEFAULT_IMAGE }
+        )
+        HotelRepository.addHotel(newHotel)
+        uiState = uiState.copy(
+            hotelList = HotelRepository.getHotels(),
+            isAddDialogOpen = false,
+            userMessage = "Hospedaje '${newHotel.name}' añadido correctamente"
+        )
+    }
+
+    // ---------- Edición ----------
+
+    fun onEditHotelClicked(hotel: Hotel) {
+        uiState = uiState.copy(hotelToEdit = hotel)
+    }
+
+    fun onDismissEditDialog() {
+        uiState = uiState.copy(hotelToEdit = null)
+    }
+
+    fun onUpdateHotel(id: String, name: String, city: String, province: String, phone: String, image: String) {
+        val existingHotel = HotelRepository.getHotelById(id) ?: return
+        val updatedHotel = existingHotel.copy(
+            name = name,
+            city = city,
+            province = province,
+            phone = phone,
+            image = image.ifBlank { DEFAULT_IMAGE }
+        )
+        HotelRepository.updateHotel(updatedHotel)
+        uiState = uiState.copy(
+            hotelList = HotelRepository.getHotels(),
+            hotelToEdit = null,
+            userMessage = "Hospedaje actualizado"
+        )
+    }
+
+    // ---------- Borrado con confirmación ----------
+
+    fun onDeleteHotelClicked(hotel: Hotel) {
+        uiState = uiState.copy(hotelToDelete = hotel)
+    }
+
+    fun onDismissDeleteDialog() {
+        uiState = uiState.copy(hotelToDelete = null)
+    }
+
+    fun onConfirmDeleteHotel() {
+        val target = uiState.hotelToDelete ?: return
+        HotelRepository.deleteHotel(target.id)
+        uiState = uiState.copy(
+            hotelList = HotelRepository.getHotels(),
+            hotelToDelete = null,
+            // selectedHotelId = null SE QUITA: la vuelta a la lista la hace popBackStack()
+            userMessage = "Hospedaje '${target.name}' borrado"
+        )
+    }
+
+    // ---------- Mensajes ----------
+
+    fun onUserMessageShown() {
+        uiState = uiState.copy(userMessage = null)
+    }
+}
+```
+
+Respecto al ViewModel de la UD3 (apartado 6.6), solo se quitan las dos funciones de navegación y la línea `selectedHotelId = null`. El alta, la edición, el borrado y los mensajes no cambian.
+
+#### `Dialogos.kt` (sin cambios)
+
+```kotlin
+package com.ejemplo.hospedajes
+
+@Composable
+fun ConfirmDeleteDialog(
+    hotel: Hotel,
+    onDismiss: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Eliminar hotel") },
+        text = { Text("¿Seguro que quieres eliminar ${hotel.name}?") },
+        confirmButton = {
+            TextButton(
+                onClick = onConfirm,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                )
+            ) {
+                Text("Eliminar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
+
+@Composable
+fun FormField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    label: String,
+    error: String? = null
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(label) },
+        singleLine = true,
+        isError = error != null,
+        supportingText = if (error != null) {
+            { Text(error) }
+        } else {
+            null
+        },
+        modifier = Modifier.fillMaxWidth()
+    )
+}
+
+@Composable
+fun AddEditHotelDialog(
+    hotelToEdit: Hotel? = null,
+    onDismiss: () -> Unit,
+    onConfirm: (name: String, city: String, province: String, phone: String, image: String) -> Unit
+) {
+    var name by remember { mutableStateOf(hotelToEdit?.name ?: "") }
+    var city by remember { mutableStateOf(hotelToEdit?.city ?: "") }
+    var province by remember { mutableStateOf(hotelToEdit?.province ?: "") }
+    var phone by remember { mutableStateOf(hotelToEdit?.phone ?: "") }
+    var image by remember { mutableStateOf(hotelToEdit?.image ?: "") }
+
+    var showErrors by remember { mutableStateOf(false) }
+
+    val nameError = if (name.isBlank()) "El nombre es obligatorio" else null
+    val cityError = if (city.isBlank()) "La ciudad es obligatoria" else null
+    val provinceError = if (province.isBlank()) "La provincia es obligatoria" else null
+    val phoneError = when {
+        phone.isBlank() -> null
+        phone.any { !it.isDigit() && it != ' ' } -> "Solo se admiten números y espacios"
+        phone.count { it.isDigit() } != 9 -> "El teléfono debe tener 9 cifras"
+        else -> null
+    }
+
+    val isFormValid = nameError == null && cityError == null &&
+        provinceError == null && phoneError == null
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(if (hotelToEdit == null) "Nuevo hospedaje" else "Editar hospedaje")
+        },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                FormField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = "Nombre *",
+                    error = if (showErrors) nameError else null
+                )
+                FormField(
+                    value = city,
+                    onValueChange = { city = it },
+                    label = "Ciudad *",
+                    error = if (showErrors) cityError else null
+                )
+                FormField(
+                    value = province,
+                    onValueChange = { province = it },
+                    label = "Provincia *",
+                    error = if (showErrors) provinceError else null
+                )
+                FormField(
+                    value = phone,
+                    onValueChange = { phone = it },
+                    label = "Teléfono",
+                    error = if (showErrors) phoneError else null
+                )
+                FormField(
+                    value = image,
+                    onValueChange = { image = it },
+                    label = "URL de la imagen"
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (isFormValid) {
+                        onConfirm(name.trim(), city.trim(), province.trim(), phone.trim(), image.trim())
+                    } else {
+                        showErrors = true
+                    }
+                }
+            ) {
+                Text(if (hotelToEdit == null) "Guardar" else "Actualizar")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancelar")
+            }
+        }
+    )
+}
+```
+
+#### `PantallaPrincipal.kt` (sin cambios)
+
+```kotlin
+package com.ejemplo.hospedajes
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PantallaPrincipal(
+    hoteles: List<Hotel>,
+    snackbarHostState: SnackbarHostState,
+    onHotelClick: (Hotel) -> Unit,
+    onAddClick: () -> Unit
+) {
+    Scaffold(
+        topBar = { TopAppBar(title = { Text("Mis hospedajes") }) },
+        floatingActionButton = {
+            FloatingActionButton(onClick = onAddClick) {
+                Icon(Icons.Default.Add, contentDescription = "Agregar hospedaje")
+            }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        if (hoteles.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                Text("No hay hospedajes registrados. Pulsa + para añadir uno.")
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentPadding = PaddingValues(bottom = 80.dp)
+            ) {
+                items(hoteles, key = { it.id }) { hotel ->
+                    HotelCard(hotel = hotel, onClick = { onHotelClick(hotel) })
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun HotelCard(
+    hotel: Hotel,
+    onClick: () -> Unit
+) {
+    ElevatedCard(
+        onClick = onClick,
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 6.dp),
+        shape = RoundedCornerShape(20.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                model = hotel.image,
+                contentDescription = "Fotografía de ${hotel.name}",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(110.dp)
+                    .clip(RoundedCornerShape(16.dp))
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = hotel.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
+                )
+                Text(
+                    text = hotel.city,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = hotel.province,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.secondary
+                )
+                Text(
+                    text = hotel.phone,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+            }
+        }
+    }
+}
+```
+
+#### `PantallaDetalle.kt` (sin cambios)
+
+```kotlin
+package com.ejemplo.hospedajes
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PantallaDetalle(
+    hotel: Hotel,
+    snackbarHostState: SnackbarHostState,
+    onVolver: () -> Unit,
+    onEditar: () -> Unit,
+    onBorrar: () -> Unit
+) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(hotel.name) },
+                navigationIcon = {
+                    IconButton(onClick = onVolver) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver a la lista"
+                        )
+                    }
+                }
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            AsyncImage(
+                model = hotel.image,
+                contentDescription = "Fotografía de ${hotel.name}",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(220.dp)
+                    .clip(RoundedCornerShape(16.dp))
+            )
+            Text(hotel.name, style = MaterialTheme.typography.headlineSmall)
+            Text("Ciudad: ${hotel.city}")
+            Text("Provincia: ${hotel.province}")
+            Text("Teléfono: ${hotel.phone}")
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
+            ) {
+                OutlinedButton(onClick = onEditar) {
+                    Icon(Icons.Default.Edit, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Editar")
+                }
+                Button(
+                    onClick = onBorrar,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError
+                    )
+                ) {
+                    Icon(Icons.Default.Delete, contentDescription = null)
+                    Spacer(Modifier.width(8.dp))
+                    Text("Eliminar")
+                }
+            }
+        }
+    }
+}
+```
+
+Las dos pantallas no saben nada del `NavHost`: reciben el hotel o la lista y avisan con lambdas (`onHotelClick`, `onVolver`...). Por eso no cambian.
+
+#### `AppPantallas.kt` (cambia)
+
+```kotlin
+package com.ejemplo.hospedajes
+
 @Composable
 fun AppPantallas(
     viewModel: HospedajeViewModel = viewModel()
@@ -796,7 +1603,9 @@ fun AppPantallas(
         }
     }
 
+    // Navegación: un composable(...) por pantalla
     NavHost(navController = navController, startDestination = Rutas.LISTA) {
+
         composable(Rutas.LISTA) {
             PantallaPrincipal(
                 hoteles = uiState.hotelList,
@@ -805,11 +1614,13 @@ fun AppPantallas(
                 onAddClick = { viewModel.onAddHotelClicked() }
             )
         }
+
         composable(
             route = Rutas.DETALLE,
             arguments = listOf(navArgument("hotelId") { type = NavType.StringType })
         ) { backStackEntry ->
             val hotelId = backStackEntry.arguments?.getString("hotelId")
+            // Se busca en la lista actual: tras editar, llegan los datos nuevos
             val hotel = uiState.hotelList.find { it.id == hotelId }
             if (hotel != null) {
                 PantallaDetalle(
@@ -823,7 +1634,7 @@ fun AppPantallas(
         }
     }
 
-    // Diálogos (UD3, apartado 7): igual que antes, salvo el borrado
+    // Diálogos (UD3, apartado 7): se dibujan encima de la pantalla visible
     uiState.hotelToDelete?.let { hotel ->
         ConfirmDeleteDialog(
             hotel = hotel,
@@ -834,11 +1645,63 @@ fun AppPantallas(
             }
         )
     }
-    // ... AddEditHotelDialog para alta y edición, sin cambios
+
+    if (uiState.isAddDialogOpen) {
+        AddEditHotelDialog(
+            onDismiss = { viewModel.onDismissAddDialog() },
+            onConfirm = { name, city, province, phone, image ->
+                viewModel.onInsertHotel(name, city, province, phone, image)
+            }
+        )
+    }
+
+    uiState.hotelToEdit?.let { hotel ->
+        AddEditHotelDialog(
+            hotelToEdit = hotel,
+            onDismiss = { viewModel.onDismissEditDialog() },
+            onConfirm = { name, city, province, phone, image ->
+                viewModel.onUpdateHotel(hotel.id, name, city, province, phone, image)
+            }
+        )
+    }
 }
 ```
 
-Qué ha cambiado respecto a la UD3:
+`AppPantallas` queda organizado en tres bloques: mensajes, navegación y diálogos. Los imports nuevos de la navegación son estos:
+
+```kotlin
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+```
+
+> Al `NavHost` no se le pone `Modifier.safeDrawingPadding()` como en el apartado 3.4. Cada pantalla tiene su propio `Scaffold`, que ya deja el hueco de las barras del sistema (UD3, apartado 8.1).
+
+#### `MainActivity.kt` (sin cambios)
+
+```kotlin
+package com.ejemplo.hospedajes
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            HospedajesTheme {
+                Surface(modifier = Modifier.fillMaxSize()) {
+                    AppPantallas()
+                }
+            }
+        }
+    }
+}
+```
+
+`HospedajesTheme` es el tema del ejemplo; usa el que tenga tu proyecto en `ui/theme`.
+
+#### Qué ha cambiado respecto a la UD3
 
 | UD3 (navegación con estado) | UD4 (`NavHost`) |
 |---|---|
@@ -848,9 +1711,20 @@ Qué ha cambiado respecto a la UD3:
 | `if (hotelSeleccionado == null) ... else ...` | Un `composable` por pantalla |
 | `onConfirmDeleteHotel` ponía `selectedHotelId = null` | `onConfirm` llama a `popBackStack()` |
 
-- **Quita del ViewModel** `selectedHotelId`, `onHotelClicked` y `onBackToList`: la navegación ya no es estado del ViewModel, es cosa del `NavController`. En `onConfirmDeleteHotel`, quita la línea `selectedHotelId = null`.
+- **La navegación sale del ViewModel.** Ya no es estado del ViewModel, es cosa del `NavController`. Por eso se quitan `selectedHotelId`, `onHotelClicked` y `onBackToList`.
 - **El ViewModel se comparte.** `viewModel()` se llama fuera del `NavHost`, así que las dos pantallas usan el mismo ViewModel y ven la misma lista: si editas un hotel en el detalle, la lista ya lo tiene actualizado al volver.
 - **`if (hotel != null)`**: justo después de borrar, durante un instante la ruta del detalle sigue arriba pero el hotel ya no existe; en ese momento no se dibuja nada y `popBackStack()` vuelve a la lista.
+
+#### Cómo queda cada operación
+
+| Acción del usuario | Qué se llama | Pila después | Qué se ve |
+|---|---|---|---|
+| Abre la app | `startDestination = Rutas.LISTA` | `[lista]` | `PantallaPrincipal` |
+| Pulsa una tarjeta | `navigate(Rutas.detalle(hotel.id))` | `[lista, detalle/id]` | `PantallaDetalle` de ese hotel |
+| Pulsa la flecha o Atrás | `popBackStack()` | `[lista]` | `PantallaPrincipal` |
+| Pulsa «+» en la lista | `viewModel.onAddHotelClicked()` | `[lista]` | Diálogo de alta sobre la lista |
+| Pulsa «Editar» y guarda | `viewModel.onUpdateHotel(...)` | `[lista, detalle/id]` | El detalle con los datos nuevos y el `Snackbar` |
+| Pulsa «Eliminar» y confirma | `viewModel.onConfirmDeleteHotel()` y `popBackStack()` | `[lista]` | La lista sin el hotel y el `Snackbar` |
 
 ---
 
@@ -984,7 +1858,7 @@ val entrada by navController.currentBackStackEntryAsState()
 val destino = entrada?.destination
 ```
 
-- **`currentBackStackEntryAsState()`** devuelve la entrada de arriba de la pila como estado: cada vez que se navega, cambia y Compose redibuja lo que la lee (la barra, el menú, la barra inferior). Por eso se usa `by` (apartado 4.4).
+- **`currentBackStackEntryAsState()`** devuelve la entrada de arriba de la pila como estado: cada vez que se navega, cambia y Compose redibuja lo que la lee (la barra, el menú, la barra inferior). Por eso se usa con `by`, igual que `remember { mutableStateOf(...) }`: se lee directamente la entrada, sin `.value`.
 - **`entrada?.destination`** es el destino actual. Puede ser `null` un instante al arrancar, por eso el `?.`.
 - Para preguntar si el destino es una ruta concreta se compara su `route` con la constante:
 
@@ -1783,7 +2657,7 @@ Crea un proyecto nuevo de Compose (`NavegacionBasica`) y añade las dependencias
 11. Pulsa muy rápido dos veces «Ir a la pantalla A» y después Atrás. ¿Cuántas veces tienes que pulsar Atrás para volver al inicio? Añade `launchSingleTop = true` y repite.
 12. Gira el móvil en la pantalla C y comprueba que sigues en C y que Atrás sigue llevando a B.
 
-**Parte D. Argumentos (apartados 4.2 y 4.3)**
+**Parte D. Argumentos (apartados 4.1 a 4.3)**
 
 13. Añade en `PantallaInicio` un `OutlinedTextField` para escribir un nombre.
 14. Cambia la ruta `B` por `"b/{nombre}"` y añade la función `b(nombre)` que la rellena. Al pulsar «Ir a la pantalla B», pasa el nombre escrito (codificado con `Uri.encode`, porque lo escribe el usuario).
@@ -1798,12 +2672,6 @@ Crea un proyecto nuevo de Compose (`NavegacionBasica`) y añade las dependencias
 
 18. Añade al `NavHost` transiciones de deslizamiento: hacia la izquierda al avanzar y hacia la derecha al volver.
 19. Haz que solo la pantalla C aparezca con un fundido (`fadeIn(tween(600))`), usando el parámetro `enterTransition` de su `composable`.
-
-**Parte F. Delegación (apartado 4.4)**
-
-20. En un archivo aparte, crea la interfaz `Acciones` y las clases `Jugador`, `EnemigoSinBy` y `EnemigoConBy` del apartado 4.4, con un `main` que las pruebe.
-21. Haz que `EnemigoConBy` sobrescriba solo `atacar()` con otro mensaje. Comprueba que `jugar()` y `morir()` siguen delegadas.
-22. En `PantallaInicio`, el `TextField` usa `var nombre by remember { mutableStateOf("") }`. Escríbelo sin `by` (con `.value`) y explica qué hace `by` en este caso.
 
 ### 11.2 Actividad 2: Barra superior, menú lateral y barra inferior
 
@@ -1877,7 +2745,7 @@ Continúa el proyecto de la actividad 2. Al terminar, tendrás la estructura de 
 10. Sustituye la opción «Salir» del menú lateral por «Cerrar sesión», que cierre el menú, cierre la sesión y navegue a `Rutas.AUTH` quitando de la pila el grafo `Rutas.PRINCIPAL`. Añade también «Cerrar sesión» al menú ⋮.
 11. Haz que el destino inicial dependa de si hay sesión (apartado 9.6). Para probarlo, llama a `AuthRepository.iniciarSesion(...)` antes de `setContent` en `MainActivity`, comprueba que se empieza en Inicio y quita después esa línea.
 
-**Parte D. Dos listas (apartado 4.2)**
+**Parte D. Dos listas (apartado 4.3)**
 
 12. Añade al repositorio una lista fija de películas comunes («Cartelera») y cárgala en el `UiState` del ViewModel.
 13. Crea un composable `ListaPeliculas` reutilizable y úsalo en «Mis películas» y en una nueva sección «Cartelera» (ruta, entrada en el menú lateral y en la barra inferior).
