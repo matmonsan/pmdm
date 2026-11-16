@@ -540,7 +540,7 @@ NavHost(
 Muchas veces una pantalla necesita un dato de la anterior: el detalle necesita saber qué hotel mostrar. En Navigation Compose la ruta es un texto, así que el dato viaja dentro de ese texto, igual que en una dirección web (`tienda.com/producto/25`):
 
 ```text
-"b/Santiago"     ← ruta de la pantalla B con el nombre "Santiago"
+"b/Matías"       ← ruta de la pantalla B con el nombre "Matías"
 "detalle/h3"     ← ruta del detalle del hotel con id "h3"
 ```
 
@@ -548,7 +548,7 @@ Este apartado amplía el ejemplo de las cuatro pantallas de colores (apartado 3)
 
 ### 4.1 Pasar un dato a una pantalla
 
-Queremos que, al pulsar «Ir a la pantalla B», la pantalla B muestre el mensaje «Mi nombre es Santiago». B necesita saber ese nombre, y quien lo conoce es la pantalla desde la que se navega. Hay que hacerlo llegar de una a otra, y el único camino entre las dos es la ruta.
+Queremos que, al pulsar «Ir a la pantalla B», la pantalla B muestre el mensaje «Mi nombre es Matías». B necesita saber ese nombre, y quien lo conoce es la pantalla desde la que se navega. Hay que hacerlo llegar de una a otra, y el único camino entre las dos es la ruta.
 
 #### Una ruta con un hueco
 
@@ -561,15 +561,15 @@ const val B = "b/{nombre}"
 Lo que va entre llaves no se escribe tal cual al navegar: es el nombre del hueco. Esta ruta se lee como «la pantalla B, seguida de un dato que se llama `nombre`». Una ruta con huecos se llama patrón, porque no es una ruta concreta sino la forma que tienen todas las rutas de B. Con este patrón encajan, por ejemplo:
 
 ```text
-"b/Santiago"    →  nombre vale "Santiago"
-"b/Ana"         →  nombre vale "Ana"
+"b/Matías"    →  nombre vale "Matías"
+"b/Ana"       →  nombre vale "Ana"
 ```
 
 #### Navegar con el hueco rellenado
 
-Para ir a B ya no sirve `navigate(Rutas.B)`. Eso navegaría a la ruta `"b/{nombre}"` tal cual, y la pantalla recibiría como nombre el texto `{nombre}`. Hay que navegar a una ruta concreta, con el dato en el lugar del hueco: `"b/Santiago"`.
+Para ir a B ya no sirve `navigate(Rutas.B)`. Eso navegaría a la ruta `"b/{nombre}"` tal cual, y la pantalla recibiría como nombre el texto `{nombre}`. Hay que navegar a una ruta concreta, con el dato en el lugar del hueco: `"b/Matías"`.
 
-Se podría escribir esa ruta a mano en el botón, `navigate("b/Santiago")`, pero entonces la forma de la ruta de B (`"b/"` seguido del nombre) quedaría repetida en cada sitio desde el que se navegue a B. Por eso se añade a `Rutas` una función que la monta:
+Se podría escribir esa ruta a mano en el botón, `navigate("b/Matías")`, pero entonces la forma de la ruta de B (`"b/"` seguido del nombre) quedaría repetida en cada sitio desde el que se navegue a B. Por eso se añade a `Rutas` una función que la monta:
 
 ```kotlin
 object Rutas {
@@ -582,7 +582,7 @@ object Rutas {
 }
 ```
 
-`Rutas.b("Santiago")` devuelve `"b/Santiago"`. Así, en `Rutas.kt` quedan juntas las dos formas de la ruta de B: la constante `B`, que describe qué datos recibe la pantalla, y la función `b`, que monta una ruta concreta para navegar. Por convenio, la constante va en mayúsculas y la función en minúsculas; Kotlin distingue entre ellas, así que son dos nombres distintos.
+`Rutas.b("Matías")` devuelve `"b/Matías"`. Así, en `Rutas.kt` quedan juntas las dos formas de la ruta de B: la constante `B`, que describe qué datos recibe la pantalla, y la función `b`, que monta una ruta concreta para navegar. Por convenio, la constante va en mayúsculas y la función en minúsculas; Kotlin distingue entre ellas, así que son dos nombres distintos.
 
 El botón de Inicio navega ahora con la función, en `AppNavegacion.kt`:
 
@@ -590,14 +590,14 @@ El botón de Inicio navega ahora con la función, en `AppNavegacion.kt`:
 composable(Rutas.INICIO) {
     PantallaInicio(
         onIrA = { navController.navigate(Rutas.A) },
-        onIrB = { navController.navigate(Rutas.b("Santiago")) }
+        onIrB = { navController.navigate(Rutas.b("Matías")) }
     )
 }
 ```
 
 #### Leer el dato en el destino
 
-Al navegar a `"b/Santiago"`, el `NavHost` compara esa ruta con el patrón de cada destino y encuentra el de B. Para que pueda sacar el valor del hueco, el destino tiene que declararse con el patrón y decir qué huecos tiene y de qué tipo es cada uno:
+Al navegar a `"b/Matías"`, el `NavHost` compara esa ruta con el patrón de cada destino y encuentra el de B. Para que pueda sacar el valor del hueco, el destino tiene que declararse con el patrón y decir qué huecos tiene y de qué tipo es cada uno:
 
 ```kotlin
 composable(
@@ -618,7 +618,7 @@ Los valores llegan en `backStackEntry`, que es la entrada de B en la pila: adem�
 val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
 ```
 
-`getString("nombre")` devuelve el texto que ocupaba el hueco, `"Santiago"`. Como Kotlin no puede garantizar que el argumento exista, el resultado puede ser `null`: por eso se escribe `?.` para leerlo, y `?: ""` para usar un texto vacío en ese caso.
+`getString("nombre")` devuelve el texto que ocupaba el hueco, `"Matías"`. Como Kotlin no puede garantizar que el argumento exista, el resultado puede ser `null`: por eso se escribe `?.` para leerlo, y `?: ""` para usar un texto vacío en ese caso.
 
 `NavType` y `navArgument` necesitan estos dos `import`:
 
@@ -664,11 +664,11 @@ composable(
 
 Este es el recorrido completo del nombre, desde el botón de Inicio hasta el `Toast` de B:
 
-<img class="diagrama" src="./assets/img/argumento_ruta.svg" alt="Rutas.b(&quot;Santiago&quot;) devuelve &quot;b/Santiago&quot; y se navega con ella; el NavHost compara &quot;b/Santiago&quot; con el patrón &quot;b/{nombre}&quot; y obtiene nombre = &quot;Santiago&quot;; el destino lo lee con getString(&quot;nombre&quot;); PantallaB lo recibe como parámetro y muestra el Toast «Mi nombre es Santiago»" style="width: 100%; height: auto;">
+<img class="diagrama" src="./assets/img/argumento_ruta.svg" alt="Rutas.b(&quot;Matías&quot;) devuelve &quot;b/Matías&quot; y se navega con ella; el NavHost compara &quot;b/Matías&quot; con el patrón &quot;b/{nombre}&quot; y obtiene nombre = &quot;Matías&quot;; el destino lo lee con getString(&quot;nombre&quot;); PantallaB lo recibe como parámetro y muestra el Toast «Mi nombre es Matías»" style="width: 100%; height: auto;">
 
 ### 4.2 Un dato que viene de la pantalla
 
-En 4.1 el nombre está escrito en `AppNavegacion`: siempre es `"Santiago"`. En una aplicación real, el dato sale de la pantalla: lo escribe el usuario, o es el elemento de una lista que ha pulsado. Ahora `PantallaInicio` va a tener un campo de texto, y lo que se escriba en él es lo que recibirá B.
+En 4.1 el nombre está escrito en `AppNavegacion`: siempre es `"Matías"`. En una aplicación real, el dato sale de la pantalla: lo escribe el usuario, o es el elemento de una lista que ha pulsado. Ahora `PantallaInicio` va a tener un campo de texto, y lo que se escriba en él es lo que recibirá B.
 
 #### Del campo de texto a AppNavegacion
 
@@ -750,7 +750,7 @@ Los `id` de los hoteles no necesitan `Uri.encode`, porque solo tienen letras, n�
 
 ### 4.3 Varios datos y datos que no son texto
 
-Ahora la pantalla C va a mostrar `Santiago, 30 años`: necesita dos datos, el nombre que llegó a B y una edad.
+Ahora la pantalla C va a mostrar `Matías, 30 años`: necesita dos datos, el nombre que llegó a B y una edad.
 
 #### Una ruta con dos huecos
 
@@ -768,7 +768,7 @@ object Rutas {
 }
 ```
 
-`Rutas.c("Santiago", 30)` devuelve `"c/Santiago/30"`, y al comparar con el patrón el `NavHost` obtiene `nombre` = `"Santiago"` y `edad` = `30`.
+`Rutas.c("Matías", 30)` devuelve `"c/Matías/30"`, y al comparar con el patrón el `NavHost` obtiene `nombre` = `"Matías"` y `edad` = `30`.
 
 El nombre que necesita C ya lo tiene el destino de B, que lo ha leído de su ruta. Por eso es ese destino el que se lo pasa a C, sin que `PantallaB` tenga que hacer nada:
 
@@ -778,7 +778,7 @@ onSiguiente = { navController.navigate(Rutas.c(nombre, 30)) }
 
 #### Datos que no son texto
 
-En la ruta todo es texto: `"c/Santiago/30"` contiene los caracteres `3` y `0`, no el número 30. Para recibir la edad como un `Int`, hay que declararla como número en el destino, con `NavType.IntType`. El `NavHost` convierte entonces ese texto en un número antes de entregarlo, y se lee con `getInt` en lugar de `getString`:
+En la ruta todo es texto: `"c/Matías/30"` contiene los caracteres `3` y `0`, no el número 30. Para recibir la edad como un `Int`, hay que declararla como número en el destino, con `NavType.IntType`. El `NavHost` convierte entonces ese texto en un número antes de entregarlo, y se lee con `getInt` en lugar de `getString`:
 
 ```kotlin
 composable(
