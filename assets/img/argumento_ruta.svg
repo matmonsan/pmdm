@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="1000" height="380" viewBox="0 0 1000 380" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <style>text { white-space: pre; } .mono { font-family: Consolas, Menlo, monospace; }</style>
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474F"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="380" fill="#FFFFFF"/>
+
+  <text x="500" y="28" text-anchor="middle" font-size="17" font-weight="bold" fill="#263238">Recorrido de un argumento: de navigate a la pantalla</text>
+  <text x="500" y="50" text-anchor="middle" font-size="13" fill="#546E7A">El dato viaja escrito dentro de la ruta. El NavHost lo saca comparando la ruta con el patrón del destino.</text>
+
+  <!-- Caja 1: navegar -->
+  <rect x="20" y="75" width="215" height="250" rx="10" fill="#FFFDE7" stroke="#F9A825" stroke-width="2"/>
+  <text x="127" y="102" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">Al pulsar el botón</text>
+  <text x="127" y="122" text-anchor="middle" font-size="12" fill="#546E7A">AppNavegacion (Inicio)</text>
+  <text x="127" y="160" text-anchor="middle" font-size="13" class="mono" fill="#263238">Rutas.b("Santiago")</text>
+  <text x="127" y="185" text-anchor="middle" font-size="12" fill="#546E7A">devuelve</text>
+  <text x="127" y="210" text-anchor="middle" font-size="13" class="mono" font-weight="bold" fill="#C62828">"b/Santiago"</text>
+  <text x="127" y="250" text-anchor="middle" font-size="12" fill="#546E7A">y se navega con ella:</text>
+  <text x="127" y="275" text-anchor="middle" font-size="12" class="mono" fill="#263238">navigate("b/Santiago")</text>
+
+  <line x1="238" y1="200" x2="262" y2="200" stroke="#37474F" stroke-width="2" marker-end="url(#flecha)"/>
+
+  <!-- Caja 2: NavHost compara -->
+  <rect x="265" y="75" width="225" height="250" rx="10" fill="#ECEFF1" stroke="#546E7A" stroke-width="2"/>
+  <text x="377" y="102" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">El NavHost busca el destino</text>
+  <text x="377" y="122" text-anchor="middle" font-size="12" fill="#546E7A">compara la ruta con cada patrón</text>
+
+  <text x="285" y="165" font-size="12" fill="#546E7A">ruta</text>
+  <text x="340" y="165" font-size="14" class="mono" fill="#263238">b/</text>
+  <rect x="362" y="148" width="90" height="24" rx="4" fill="#FFCDD2" stroke="#C62828"/>
+  <text x="407" y="165" text-anchor="middle" font-size="14" class="mono" font-weight="bold" fill="#C62828">Santiago</text>
+
+  <text x="285" y="215" font-size="12" fill="#546E7A">patrón</text>
+  <text x="340" y="215" font-size="14" class="mono" fill="#263238">b/</text>
+  <rect x="362" y="198" width="90" height="24" rx="4" fill="#BBDEFB" stroke="#1565C0"/>
+  <text x="407" y="215" text-anchor="middle" font-size="14" class="mono" font-weight="bold" fill="#1565C0">{nombre}</text>
+
+  <line x1="407" y1="174" x2="407" y2="196" stroke="#37474F" stroke-width="1.5" stroke-dasharray="4 3"/>
+
+  <text x="377" y="262" text-anchor="middle" font-size="12" fill="#546E7A">encaja con composable(Rutas.B):</text>
+  <text x="377" y="287" text-anchor="middle" font-size="13" class="mono" font-weight="bold" fill="#263238">nombre = "Santiago"</text>
+
+  <line x1="493" y1="200" x2="517" y2="200" stroke="#37474F" stroke-width="2" marker-end="url(#flecha)"/>
+
+  <!-- Caja 3: destino lee -->
+  <rect x="520" y="75" width="215" height="250" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <text x="627" y="102" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">El destino lee el dato</text>
+  <text x="627" y="122" text-anchor="middle" font-size="12" fill="#546E7A">composable(Rutas.B) { ... }</text>
+  <text x="627" y="160" text-anchor="middle" font-size="12" class="mono" fill="#263238">navArgument("nombre")</text>
+  <text x="627" y="180" text-anchor="middle" font-size="12" fill="#546E7A">declara el hueco y su tipo</text>
+  <text x="627" y="222" text-anchor="middle" font-size="12" class="mono" fill="#263238">getString("nombre")</text>
+  <text x="627" y="242" text-anchor="middle" font-size="12" fill="#546E7A">lee su valor:</text>
+  <text x="627" y="275" text-anchor="middle" font-size="13" class="mono" font-weight="bold" fill="#C62828">"Santiago"</text>
+
+  <line x1="738" y1="200" x2="762" y2="200" stroke="#37474F" stroke-width="2" marker-end="url(#flecha)"/>
+
+  <!-- Caja 4: pantalla -->
+  <rect x="765" y="75" width="215" height="250" rx="10" fill="#3F51B5" stroke="#1A237E" stroke-width="2"/>
+  <text x="872" y="102" text-anchor="middle" font-size="14" font-weight="bold" fill="#FFFFFF">La pantalla lo recibe</text>
+  <text x="872" y="122" text-anchor="middle" font-size="12" fill="#C5CAE9">como un parámetro más</text>
+  <text x="872" y="165" text-anchor="middle" font-size="13" class="mono" fill="#FFFFFF">PantallaB(</text>
+  <text x="872" y="185" text-anchor="middle" font-size="13" class="mono" fill="#FFFFFF">  nombre = "Santiago"</text>
+  <text x="872" y="205" text-anchor="middle" font-size="13" class="mono" fill="#FFFFFF">)</text>
+  <rect x="790" y="250" width="165" height="40" rx="20" fill="#424242"/>
+  <text x="872" y="275" text-anchor="middle" font-size="12" fill="#FFFFFF">Mi nombre es Santiago</text>
+
+  <text x="500" y="358" text-anchor="middle" font-size="12" fill="#546E7A">Rojo: el dato concreto.  Azul: el hueco del patrón, que recibe el dato.</text>
+</svg>

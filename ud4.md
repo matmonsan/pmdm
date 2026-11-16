@@ -548,79 +548,77 @@ Este apartado amplía el ejemplo de las cuatro pantallas de colores (apartado 3)
 
 ### 4.1 Pasar un dato a una pantalla
 
-La pantalla B va a recibir un nombre y a mostrarlo en un `Toast`. Cambian los mismos tres archivos del apartado 3.
+Queremos que, al pulsar «Ir a la pantalla B», la pantalla B muestre el mensaje «Mi nombre es Santiago». B necesita saber ese nombre, y quien lo conoce es la pantalla desde la que se navega. Hay que hacerlo llegar de una a otra, y el único camino entre las dos es la ruta.
 
-**`Rutas.kt`:**
+#### Una ruta con un hueco
+
+Hasta ahora la ruta de B era un texto fijo, `"b"`, y llevaba siempre a la misma pantalla con el mismo contenido. Para que pueda llevar un dato, se le deja un hueco en `Rutas.kt`:
+
+```kotlin
+const val B = "b/{nombre}"
+```
+
+Lo que va entre llaves no se escribe tal cual al navegar: es el nombre del hueco. Esta ruta se lee como «la pantalla B, seguida de un dato que se llama `nombre`». Una ruta con huecos se llama patrón, porque no es una ruta concreta sino la forma que tienen todas las rutas de B. Con este patrón encajan, por ejemplo:
+
+```text
+"b/Santiago"    →  nombre vale "Santiago"
+"b/Ana"         →  nombre vale "Ana"
+```
+
+#### Navegar con el hueco rellenado
+
+Para ir a B ya no sirve `navigate(Rutas.B)`. Eso navegaría a la ruta `"b/{nombre}"` tal cual, y la pantalla recibiría como nombre el texto `{nombre}`. Hay que navegar a una ruta concreta, con el dato en el lugar del hueco: `"b/Santiago"`.
+
+Se podría escribir esa ruta a mano en el botón, `navigate("b/Santiago")`, pero entonces la forma de la ruta de B (`"b/"` seguido del nombre) quedaría repetida en cada sitio desde el que se navegue a B. Por eso se añade a `Rutas` una función que la monta:
 
 ```kotlin
 object Rutas {
     const val INICIO = "inicio"
     const val A = "a"
-    const val B = "b/{nombre}"     // patrón con un hueco: B recibe un nombre
+    const val B = "b/{nombre}"
     const val C = "c"
 
-    // Rellena el hueco: b("Santiago") devuelve "b/Santiago". Es la que se usa en navigate
     fun b(nombre: String) = "b/$nombre"
 }
 ```
 
-**`AppNavegacion.kt`** (solo cambian los destinos de Inicio y B):
+`Rutas.b("Santiago")` devuelve `"b/Santiago"`. Así, en `Rutas.kt` quedan juntas las dos formas de la ruta de B: la constante `B`, que describe qué datos recibe la pantalla, y la función `b`, que monta una ruta concreta para navegar. Por convenio, la constante va en mayúsculas y la función en minúsculas; Kotlin distingue entre ellas, así que son dos nombres distintos.
+
+El botón de Inicio navega ahora con la función, en `AppNavegacion.kt`:
 
 ```kotlin
 composable(Rutas.INICIO) {
     PantallaInicio(
         onIrA = { navController.navigate(Rutas.A) },
-        // Se navega con la ruta ya rellenada, no con Rutas.B
         onIrB = { navController.navigate(Rutas.b("Santiago")) }
     )
 }
+```
+
+#### Leer el dato en el destino
+
+Al navegar a `"b/Santiago"`, el `NavHost` compara esa ruta con el patrón de cada destino y encuentra el de B. Para que pueda sacar el valor del hueco, el destino tiene que declararse con el patrón y decir qué huecos tiene y de qué tipo es cada uno:
+
+```kotlin
 composable(
-    route = Rutas.B,                     // el patrón con el hueco
+    route = Rutas.B,
     arguments = listOf(
-        // El mismo nombre que hay entre llaves en la ruta, y su tipo
         navArgument("nombre") { type = NavType.StringType }
     )
 ) { backStackEntry ->
-    // Lee el valor que ocupa el hueco; si no llega, usa un texto vacío
-    val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
-    PantallaB(
-        nombre = nombre,                 // la pantalla recibe el dato ya leído
-        onAtras = { navController.popBackStack() },
-        onSiguiente = { navController.navigate(Rutas.C) }
-    )
+    // aquí se lee el dato
 }
 ```
 
-**`Pantallas.kt`** (solo cambia `PantallaB`):
+`route` recibe el patrón, `Rutas.B`, no una ruta concreta: así este destino sirve para cualquier nombre. `arguments` es la lista de huecos de la ruta; cada uno se declara con `navArgument`, indicando su nombre y su tipo. Aquí hay un hueco que se llama `nombre` y es un texto (`NavType.StringType`). El nombre tiene que ser exactamente el que hay entre llaves en la ruta: si se escribe distinto, el código compila, pero el valor no llega.
+
+Los valores llegan en `backStackEntry`, que es la entrada de B en la pila: además de la pantalla, guarda la ruta con la que se llegó y sus argumentos. Cada valor se lee por su nombre:
 
 ```kotlin
-// Recibe el nombre como un parámetro más: no sabe nada de la ruta
-@Composable
-fun PantallaB(nombre: String, onAtras: () -> Unit, onSiguiente: () -> Unit) {
-    val context = LocalContext.current
-    // Se ejecuta una sola vez, al aparecer la pantalla
-    LaunchedEffect(Unit) {
-        Toast.makeText(context, "Mi nombre es $nombre", Toast.LENGTH_LONG).show()
-    }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF3F51B5))
-            .padding(16.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(onClick = onAtras) { Text("Atrás") }
-            Button(onClick = onSiguiente) { Text("Siguiente") }
-        }
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("B", fontSize = 96.sp, fontWeight = FontWeight.Bold, color = Color.White)
-        }
-    }
-}
+val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
 ```
+
+`getString("nombre")` devuelve el texto que ocupaba el hueco, `"Santiago"`. Como Kotlin no puede garantizar que el argumento exista, el resultado puede ser `null`: por eso se escribe `?.` para leerlo, y `?: ""` para usar un texto vacío en ese caso.
 
 `NavType` y `navArgument` necesitan estos dos `import`:
 
@@ -629,41 +627,63 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 ```
 
-Qué significa cada parte:
+#### Entregar el dato a la pantalla
 
-| Código | Qué hace |
-|---|---|
-| `"b/{nombre}"` | La ruta de B con un hueco. `{nombre}` indica que en esa parte de la ruta irá un dato que se llama `nombre`. |
-| `Rutas.B` | El patrón, con el hueco sin rellenar. Se usa en el `composable` para declarar que la pantalla B recibe un nombre. |
-| `Rutas.b("Santiago")` | Devuelve `"b/Santiago"`, la ruta con el dato ya puesto. Es la que se pasa a `navigate`. |
-| `navArgument("nombre") { type = NavType.StringType }` | Declara el argumento `nombre` y su tipo. El nombre debe ser exactamente el que hay entre llaves en la ruta; si no coincide, el código compila pero el valor llega como `null`. |
-| `backStackEntry` | La entrada de la pila de esta pantalla. Guarda la ruta con la que se llegó y sus argumentos. |
-| `backStackEntry.arguments?.getString("nombre")` | Lee el valor del argumento. Puede ser `null` (por eso el `?.`). |
-| `?: ""` | Si el valor es `null`, usa un texto vacío. |
-| `PantallaB(nombre: String, ...)` | La pantalla recibe el nombre ya leído, como un parámetro más. No lee la ruta ni conoce el `backStackEntry`, así que sigue sin depender de la navegación y se puede ver con `@Preview`. |
-| `LaunchedEffect(Unit) { ... }` | Muestra el `Toast` una sola vez, al aparecer la pantalla, y no en cada recomposición (UD3, apartado 8.2). |
+Con el nombre ya leído, el destino se lo pasa a la pantalla. `PantallaB` solo necesita un parámetro más:
 
-Al pulsar «Ir a la pantalla B» se navega a `"b/Santiago"`. El `NavHost` compara esa ruta con los patrones de sus destinos y la hace coincidir con `"b/{nombre}"`: lo que ocupa el lugar del hueco, `Santiago`, es el valor del argumento `nombre`. Dentro del `composable`, `getString("nombre")` devuelve `"Santiago"` y se pasa a `PantallaB`, que muestra «Mi nombre es Santiago».
+```kotlin
+@Composable
+fun PantallaB(nombre: String, onAtras: () -> Unit, onSiguiente: () -> Unit) {
+    val context = LocalContext.current
+    LaunchedEffect(Unit) {
+        Toast.makeText(context, "Mi nombre es $nombre", Toast.LENGTH_LONG).show()
+    }
+    // ... el resto, igual que en el apartado 3.3
+}
+```
 
-#### Para qué sirve la función `b`
+`PantallaB` recibe un `String` y nada más: no sabe que el nombre ha viajado en una ruta ni conoce el `backStackEntry`. Por eso se puede seguir viendo con `@Preview`, pasándole cualquier nombre. `LaunchedEffect(Unit)` hace que el `Toast` se muestre una sola vez, al aparecer la pantalla, y no en cada recomposición (UD3, apartado 8.2).
 
-La constante `Rutas.B` no sirve para navegar. Con `navController.navigate(Rutas.B)` se navega a `"b/{nombre}"` tal cual, y la pantalla B recibe como nombre el texto `{nombre}`. Para navegar hay que poner el dato real en el lugar del hueco, y eso es lo que hace la función: recibe el dato y devuelve la ruta rellenada.
+Con todo junto, el destino de B en `AppNavegacion.kt` queda así:
 
-| Para qué | Qué se usa | Valor |
-|---|---|---|
-| Declarar el destino en el `NavHost` | `Rutas.B` | `"b/{nombre}"` |
-| Navegar a la pantalla | `Rutas.b("Santiago")` | `"b/Santiago"` |
+```kotlin
+composable(
+    route = Rutas.B,
+    arguments = listOf(
+        navArgument("nombre") { type = NavType.StringType }
+    )
+) { backStackEntry ->
+    val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
+    PantallaB(
+        nombre = nombre,
+        onAtras = { navController.popBackStack() },
+        onSiguiente = { navController.navigate(Rutas.C) }
+    )
+}
+```
 
-Con la función, el formato de la ruta está escrito una sola vez, en `Rutas.kt`, junto al patrón. Si la ruta cambia, se cambia allí y todos los botones siguen funcionando. Por convenio, la constante va en mayúsculas (`B`) y la función en minúsculas (`b`); Kotlin distingue mayúsculas de minúsculas, así que son dos nombres distintos.
+Este es el recorrido completo del nombre, desde el botón de Inicio hasta el `Toast` de B:
+
+<img class="diagrama" src="./assets/img/argumento_ruta.svg" alt="Rutas.b(&quot;Santiago&quot;) devuelve &quot;b/Santiago&quot; y se navega con ella; el NavHost compara &quot;b/Santiago&quot; con el patrón &quot;b/{nombre}&quot; y obtiene nombre = &quot;Santiago&quot;; el destino lo lee con getString(&quot;nombre&quot;); PantallaB lo recibe como parámetro y muestra el Toast «Mi nombre es Santiago»" style="width: 100%; height: auto;">
 
 ### 4.2 Un dato que viene de la pantalla
 
-En 4.1 el nombre está escrito en `AppNavegacion` (`"Santiago"`). En una aplicación real, el dato sale de la pantalla: lo escribe el usuario o es el elemento que ha pulsado. Ahora `PantallaInicio` tiene un campo de texto y pasa a B el nombre escrito.
+En 4.1 el nombre está escrito en `AppNavegacion`: siempre es `"Santiago"`. En una aplicación real, el dato sale de la pantalla: lo escribe el usuario, o es el elemento de una lista que ha pulsado. Ahora `PantallaInicio` va a tener un campo de texto, y lo que se escriba en él es lo que recibirá B.
 
-**`Pantallas.kt`** (cambia `PantallaInicio`):
+#### Del campo de texto a AppNavegacion
+
+El nombre escrito queda guardado en una variable de estado de `PantallaInicio`. Pero quien navega no es la pantalla, es `AppNavegacion`. Hace falta que el nombre suba de la pantalla a `AppNavegacion`, y eso se hace con la misma lambda que avisa de que se ha pulsado el botón.
+
+Hasta ahora las lambdas de las pantallas no recibían nada: `() -> Unit` solo sirve para avisar de que algo ha ocurrido. Una lambda también puede recibir datos. Basta con indicar su tipo entre los paréntesis:
 
 ```kotlin
-// onIrB recibe un String: así la pantalla entrega el nombre escrito
+onIrB: () -> Unit          // avisa de que se ha pulsado el botón
+onIrB: (String) -> Unit    // avisa y, además, entrega un texto
+```
+
+Con la segunda forma, la pantalla llama a la lambda pasándole el nombre: `onIrB(nombre)`. Así queda `PantallaInicio`:
+
+```kotlin
 @Composable
 fun PantallaInicio(onIrA: () -> Unit, onIrB: (String) -> Unit) {
     var nombre by remember { mutableStateOf("") }
@@ -684,8 +704,8 @@ fun PantallaInicio(onIrA: () -> Unit, onIrB: (String) -> Unit) {
         )
         Button(onClick = onIrA) { Text("Ir a la pantalla A") }
         Button(
-            onClick = { onIrB(nombre) },          // entrega el dato al pulsar
-            enabled = nombre.isNotBlank()          // sin nombre no se puede navegar
+            onClick = { onIrB(nombre) },
+            enabled = nombre.isNotBlank()
         ) {
             Text("Ir a la pantalla B")
         }
@@ -693,84 +713,83 @@ fun PantallaInicio(onIrA: () -> Unit, onIrB: (String) -> Unit) {
 }
 ```
 
-**`AppNavegacion.kt`** (cambia el destino de Inicio):
+El botón de B ya no puede escribirse `onClick = onIrB`, porque `onClick` no entrega ningún dato. Se escribe `onClick = { onIrB(nombre) }`: al pulsar, se llama a `onIrB` con lo que haya en el campo en ese momento.
+
+`enabled = nombre.isNotBlank()` desactiva el botón mientras el campo esté vacío. Sin nombre, la ruta sería `"b/"`, que no encaja con el patrón `"b/{nombre}"`; ningún destino la reconocería y la app se cerraría.
+
+En `AppNavegacion`, la lambda que se pasa a la pantalla recibe ahora ese nombre y navega con él:
 
 ```kotlin
 composable(Rutas.INICIO) {
     PantallaInicio(
         onIrA = { navController.navigate(Rutas.A) },
-        // Recibe el nombre que entrega la pantalla y navega con él
         onIrB = { nombre -> navController.navigate(Rutas.b(nombre)) }
     )
 }
 ```
 
-**`Rutas.kt`** (cambia la función `b`):
+`nombre ->` da nombre al dato que llega a la lambda; después de la flecha se usa como cualquier variable. El destino de B no cambia: sigue leyendo `nombre` con `getString`, sea cual sea el nombre que se haya escrito.
+
+Es el mismo mecanismo que la lista de hoteles de la UD3: `onHotelClick: (Hotel) -> Unit` entrega el hotel pulsado, y en el apartado 4.6 esa lambda navega con su `id`.
+
+#### Textos con símbolos
+
+Lo que escribe el usuario puede contener cualquier carácter. Si escribe `Ana/Luis`, la ruta que se monta es `"b/Ana/Luis"`. Esa ruta tiene una `/` de más, ya no encaja con `"b/{nombre}"` y la app se cierra. Lo mismo pasa con `?` y con otros caracteres que tienen un significado especial en una ruta.
+
+La solución es codificar el texto antes de meterlo en la ruta, con `Uri.encode`. Esa función sustituye cada carácter especial por un código que no lo es: `Ana/Luis` se convierte en `Ana%2FLuis`, y la ruta queda `"b/Ana%2FLuis"`, con una sola `/`. En el destino no hay que hacer nada: `getString("nombre")` devuelve el texto ya decodificado, `"Ana/Luis"`.
+
+Se aplica en la función que monta la ruta, así que todos los botones que navegan a B quedan protegidos:
 
 ```kotlin
-// Uri.encode evita que "/", "?" o los espacios del texto rompan la ruta
 fun b(nombre: String) = "b/${Uri.encode(nombre)}"
 ```
 
-| Código | Qué hace |
-|---|---|
-| `onIrB: (String) -> Unit` | Una lambda que recibe un `String`. Antes era `() -> Unit`, que no recibe nada. Así la pantalla puede avisar de que se ha pulsado el botón y, a la vez, entregar el dato. |
-| `onClick = { onIrB(nombre) }` | Al pulsar, la pantalla llama a la lambda con el nombre escrito. |
-| `onIrB = { nombre -> ... }` | En `AppNavegacion`, la lambda recibe ese nombre y navega con él. `nombre ->` da nombre al parámetro que llega. |
-| `enabled = nombre.isNotBlank()` | El botón solo se puede pulsar si hay algo escrito. Con el campo vacío, la ruta sería `"b/"`, que no encaja con `"b/{nombre}"`, y la app se cerraría. |
-| `Uri.encode(nombre)` | Convierte los caracteres que tienen un significado especial en una ruta (`/`, `?`, espacios...) en códigos que no lo tienen. Sin esto, un nombre como `"Ana/Luis"` partiría la ruta en dos. `getString` en el destino ya lo devuelve como se escribió. Se importa con `import android.net.Uri`. |
-| `${...}` | Dentro de un texto, `$nombre` inserta una variable; cuando lo que se inserta es una expresión, como `Uri.encode(nombre)`, va entre llaves. |
+Dentro de un texto, `$nombre` inserta el valor de una variable; cuando lo que se inserta es el resultado de una función, como `Uri.encode(nombre)`, se escribe entre llaves: `${...}`. `Uri` se importa con `import android.net.Uri`.
 
-El destino de B no cambia: sigue leyendo `nombre` con `getString`.
-
-Es el mismo mecanismo que usa la lista de hoteles de la UD3: `onHotelClick: (Hotel) -> Unit` entrega el hotel pulsado, y en el apartado 4.6 esa lambda navega con su `id`. Los `id` de los hoteles no necesitan `Uri.encode`, porque solo tienen letras, números y guiones; se usa con textos que escribe el usuario.
+Los `id` de los hoteles no necesitan `Uri.encode`, porque solo tienen letras, números y guiones. Se usa con los textos que escribe el usuario.
 
 ### 4.3 Varios datos y datos que no son texto
 
-La pantalla C va a recibir el nombre que llegó a B y una edad, que es un número.
+Ahora la pantalla C va a mostrar `Santiago, 30 años`: necesita dos datos, el nombre que llegó a B y una edad.
 
-**`Rutas.kt`** (completo):
+#### Una ruta con dos huecos
+
+Cada dato necesita su hueco. Se ponen en la ruta uno detrás de otro, separados por `/`, y la función que monta la ruta recibe un parámetro por cada hueco:
 
 ```kotlin
 object Rutas {
     const val INICIO = "inicio"
     const val A = "a"
     const val B = "b/{nombre}"
-    const val C = "c/{nombre}/{edad}"     // dos huecos: dos argumentos
+    const val C = "c/{nombre}/{edad}"
 
     fun b(nombre: String) = "b/${Uri.encode(nombre)}"
-    // Un parámetro por cada hueco, en el mismo orden
     fun c(nombre: String, edad: Int) = "c/${Uri.encode(nombre)}/$edad"
 }
 ```
 
-**`AppNavegacion.kt`** (cambian los destinos de B y C):
+`Rutas.c("Santiago", 30)` devuelve `"c/Santiago/30"`, y al comparar con el patrón el `NavHost` obtiene `nombre` = `"Santiago"` y `edad` = `30`.
+
+El nombre que necesita C ya lo tiene el destino de B, que lo ha leído de su ruta. Por eso es ese destino el que se lo pasa a C, sin que `PantallaB` tenga que hacer nada:
+
+```kotlin
+onSiguiente = { navController.navigate(Rutas.c(nombre, 30)) }
+```
+
+#### Datos que no son texto
+
+En la ruta todo es texto: `"c/Santiago/30"` contiene los caracteres `3` y `0`, no el número 30. Para recibir la edad como un `Int`, hay que declararla como número en el destino, con `NavType.IntType`. El `NavHost` convierte entonces ese texto en un número antes de entregarlo, y se lee con `getInt` en lugar de `getString`:
 
 ```kotlin
 composable(
-    route = Rutas.B,
-    arguments = listOf(
-        navArgument("nombre") { type = NavType.StringType }
-    )
-) { backStackEntry ->
-    val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
-    PantallaB(
-        nombre = nombre,
-        onAtras = { navController.popBackStack() },
-        // B pasa a C el nombre que ha recibido y una edad
-        onSiguiente = { navController.navigate(Rutas.c(nombre, 30)) }
-    )
-}
-composable(
     route = Rutas.C,
     arguments = listOf(
-        // Un navArgument por cada hueco de la ruta
         navArgument("nombre") { type = NavType.StringType },
-        navArgument("edad") { type = NavType.IntType }     // la edad es un número
+        navArgument("edad") { type = NavType.IntType }
     )
 ) { backStackEntry ->
     val nombre = backStackEntry.arguments?.getString("nombre") ?: ""
-    val edad = backStackEntry.arguments?.getInt("edad") ?: 0   // IntType se lee con getInt
+    val edad = backStackEntry.arguments?.getInt("edad") ?: 0
     PantallaC(
         nombre = nombre,
         edad = edad,
@@ -780,50 +799,9 @@ composable(
 }
 ```
 
-**`Pantallas.kt`** (cambia `PantallaC`):
+Hay un `navArgument` por cada hueco de la ruta, y cada uno se lee con la función de su tipo. Si no coinciden, por ejemplo si la edad se declara como `IntType` y se lee con `getString`, el valor llega como `null`. Estos son los tipos que se pueden usar:
 
-```kotlin
-// Recibe cada dato ya convertido a su tipo
-@Composable
-fun PantallaC(nombre: String, edad: Int, onAtras: () -> Unit, onInicio: () -> Unit) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFF44336))   // rojo
-            .padding(16.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(onClick = onAtras) { Text("Atrás") }
-            Button(onClick = onInicio) { Text("Inicio") }
-        }
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text("C", fontSize = 96.sp, fontWeight = FontWeight.Bold, color = Color.White)
-            Text("$nombre, $edad años", fontSize = 24.sp, color = Color.White)
-        }
-    }
-}
-```
-
-| Código | Qué hace |
-|---|---|
-| `"c/{nombre}/{edad}"` | Una ruta con dos huecos, separados por `/`. Cada hueco es un argumento. |
-| `fun c(nombre: String, edad: Int)` | La función recibe un parámetro por cada hueco y los coloca en el mismo orden. `Rutas.c("Ana", 30)` devuelve `"c/Ana/30"`. |
-| `onSiguiente = { navController.navigate(Rutas.c(nombre, 30)) }` | El destino de B ya tiene el `nombre` que ha leído, así que puede pasarlo a C sin que `PantallaB` intervenga. |
-| `arguments = listOf(navArgument(...), navArgument(...))` | Un `navArgument` por cada hueco de la ruta. |
-| `navArgument("edad") { type = NavType.IntType }` | La edad se declara como número entero. En la ruta todo es texto (`"30"`); el `NavType` indica en qué tipo hay que convertirlo. |
-| `getInt("edad") ?: 0` | Lee la edad como `Int`. Cada tipo se lee con su función (tabla siguiente). |
-| `PantallaC(nombre: String, edad: Int, ...)` | La pantalla recibe los dos datos ya convertidos a su tipo. |
-
-Cada tipo se declara con su `NavType` y se lee con su función. Si no coinciden (se declara `IntType` y se lee con `getString`), el valor llega como `null`:
-
-| Tipo de Kotlin | En `navArgument` | Para leerlo |
+| Tipo de Kotlin | Se declara con | Se lee con |
 |---|---|---|
 | `String` | `NavType.StringType` | `getString("clave")` |
 | `Int` | `NavType.IntType` | `getInt("clave")` |
@@ -831,71 +809,57 @@ Cada tipo se declara con su `NavType` y se lee con su función. Si no coinciden 
 | `Float` | `NavType.FloatType` | `getFloat("clave")` |
 | `Boolean` | `NavType.BoolType` | `getBoolean("clave")` |
 
+`PantallaC` recibe los dos datos ya convertidos a su tipo. Respecto al apartado 3.3, cambian sus parámetros:
+
+```kotlin
+fun PantallaC(nombre: String, edad: Int, onAtras: () -> Unit, onInicio: () -> Unit)
+```
+
+y, debajo de la letra C, se añade un texto que los muestra:
+
+```kotlin
+Text("$nombre, $edad años", fontSize = 24.sp, color = Color.White)
+```
+
 #### Datos opcionales
 
-Si un dato puede faltar, se escribe después de un `?`, como en las direcciones web, y se le da un valor por defecto en el destino:
+A veces un dato no siempre se conoce. Si C debe poder abrirse sin edad, la edad se convierte en un dato opcional: en la ruta se escribe después de un `?`, con la forma `clave={clave}`, como en las direcciones web:
 
 ```kotlin
-const val C = "c/{nombre}?edad={edad}"     // edad es opcional: va después de ?
+const val C = "c/{nombre}?edad={edad}"
 ```
+
+Con este patrón se puede navegar a `"c/Ana"`, sin edad, o a `"c/Ana?edad=30"`, con ella. Para el caso en que falta, el destino indica qué valor debe tomar con `defaultValue`:
 
 ```kotlin
-navArgument("edad") { type = NavType.IntType; defaultValue = 18 }   // valor si falta
+navArgument("edad") { type = NavType.IntType; defaultValue = 18 }
 ```
 
-| Se navega a | `nombre` | `edad` |
-|---|---|---|
-| `"c/Ana"` | `"Ana"` | 18 (el valor por defecto) |
-| `"c/Ana?edad=30"` | `"Ana"` | 30 |
-
-Los datos obligatorios van separados por `/`; los opcionales, después de `?` y con la forma `clave=valor`. Si hay varios opcionales, se separan con `&`: `"c/{nombre}?edad={edad}&ciudad={ciudad}"`.
+Con `"c/Ana"`, `edad` vale 18; con `"c/Ana?edad=30"`, vale 30. Los datos obligatorios van separados por `/` y los opcionales después del `?`; si hay varios opcionales, se separan entre sí con `&`: `"c/{nombre}?edad={edad}&ciudad={ciudad}"`.
 
 ### 4.4 Devolver un dato a la pantalla anterior
 
 Hasta ahora los datos viajan hacia delante: la pantalla que navega se los pasa a la siguiente. A veces hace falta lo contrario: una pantalla se abre para que el usuario elija o escriba algo, y al volver atrás la pantalla anterior tiene que recibirlo. Por ejemplo, una pantalla para elegir una provincia que, al volver, la deja escrita en el formulario.
 
-Este caso no se puede resolver con un argumento en la ruta. Para entregar un dato con una ruta habría que hacer `navigate(...)` hacia la pantalla anterior, y eso pondría otra copia encima: la pila quedaría `[Inicio, A, Inicio]`, que es el error del apartado 3.7. Lo que se quiere es volver con `popBackStack()` y que la pantalla de debajo encuentre el dato.
+En el ejemplo de colores, la pantalla A va a tener un campo para escribir un mensaje y un botón «Enviar y volver». Al pulsarlo se vuelve a Inicio, que muestra «Mensaje de A: ...».
 
-Para eso, cada entrada de la pila tiene un `savedStateHandle`: un almacén de datos con clave y valor que pertenece a esa pantalla. La pantalla que se cierra escribe el dato en el almacén de la anterior, vuelve atrás, y la anterior lo lee del suyo.
+#### Por qué no sirve una ruta
 
-En el ejemplo de colores, la pantalla A tiene un campo para escribir un mensaje y un botón «Enviar y volver». Inicio muestra el mensaje recibido.
+Para entregar un dato con una ruta, habría que hacer `navigate` hacia Inicio. Pero `navigate` siempre pone una pantalla encima: la pila quedaría `[Inicio, A, Inicio]`, con dos Inicio, y al pulsar Atrás se volvería a A. Es el error del apartado 3.7. Lo que se quiere es volver con `popBackStack()`, que quita A, y que Inicio encuentre el dato al volver a verse.
 
-**`Pantallas.kt`** (cambian `PantallaInicio` y `PantallaA`):
+#### El almacén de cada pantalla
+
+Para esto, cada entrada de la pila tiene un `savedStateHandle`: un almacén en el que se guardan datos con una clave y un valor, por ejemplo `"mensaje"` → `"Hola"`. Cada pantalla de la pila tiene el suyo, y las demás pantallas pueden escribir en él.
+
+La idea es que A, antes de cerrarse, deje el mensaje en el almacén de Inicio. Después vuelve atrás, e Inicio lo encuentra en su propio almacén:
+
+<img class="diagrama" src="./assets/img/devolver_dato.svg" alt="Con la pila [Inicio, A], A escribe &quot;mensaje&quot; → &quot;Hola&quot; en el savedStateHandle de Inicio usando previousBackStackEntry; después popBackStack() deja la pila en [Inicio], que lee el mensaje de su almacén con getStateFlow y muestra «Mensaje de A: Hola»" style="width: 100%; height: auto;">
+
+#### A escribe el dato
+
+`PantallaA` no sabe nada de almacenes: igual que `PantallaInicio` en 4.2, entrega el texto escrito con una lambda que recibe un `String`:
 
 ```kotlin
-// mensaje es el dato que devuelve A; vale null mientras no ha llegado ninguno
-@Composable
-fun PantallaInicio(mensaje: String?, onIrA: () -> Unit, onIrB: (String) -> Unit) {
-    var nombre by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFFFEB3B))   // amarillo
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        if (mensaje != null) {     // solo se muestra si A ha enviado algo
-            Text("Mensaje de A: $mensaje", fontSize = 20.sp)
-        }
-        OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it },
-            label = { Text("Tu nombre") },
-            singleLine = true
-        )
-        Button(onClick = onIrA) { Text("Ir a la pantalla A") }
-        Button(
-            onClick = { onIrB(nombre) },
-            enabled = nombre.isNotBlank()
-        ) {
-            Text("Ir a la pantalla B")
-        }
-    }
-}
-
-// onEnviar entrega el texto que hay que devolver a Inicio
 @Composable
 fun PantallaA(onAtras: () -> Unit, onEnviar: (String) -> Unit) {
     var texto by remember { mutableStateOf("") }
@@ -932,11 +896,30 @@ fun PantallaA(onAtras: () -> Unit, onEnviar: (String) -> Unit) {
 }
 ```
 
-**`AppNavegacion.kt`** (cambian los destinos de Inicio y A):
+Es en `AppNavegacion` donde el texto se guarda en el almacén de Inicio:
+
+```kotlin
+composable(Rutas.A) {
+    PantallaA(
+        onAtras = { navController.popBackStack() },
+        onEnviar = { texto ->
+            navController.previousBackStackEntry?.savedStateHandle?.set("mensaje", texto)
+            navController.popBackStack()
+        }
+    )
+}
+```
+
+`previousBackStackEntry` es la entrada que está justo debajo de la actual en la pila. Desde A, es la de Inicio. Su `savedStateHandle` es el almacén de Inicio, y `set("mensaje", texto)` guarda en él el texto con la clave `"mensaje"`. Los `?.` están porque podría no haber ninguna pantalla debajo.
+
+El orden importa: primero se guarda el dato, mientras A sigue en la pila y `previousBackStackEntry` es Inicio, y después se vuelve con `popBackStack()`.
+
+#### Inicio lee el dato
+
+Inicio lee el mensaje de su propio almacén, que es el `savedStateHandle` de su `backStackEntry`:
 
 ```kotlin
 composable(Rutas.INICIO) { backStackEntry ->
-    // Lee "mensaje" del almacén de Inicio y redibuja la pantalla cuando cambia
     val mensaje by backStackEntry.savedStateHandle
         .getStateFlow<String?>("mensaje", null)
         .collectAsState()
@@ -947,48 +930,29 @@ composable(Rutas.INICIO) { backStackEntry ->
         onIrB = { nombre -> navController.navigate(Rutas.b(nombre)) }
     )
 }
-composable(Rutas.A) {
-    PantallaA(
-        onAtras = { navController.popBackStack() },
-        onEnviar = { texto ->
-            // Primero guarda el texto en el almacén de la pantalla anterior (Inicio)
-            navController.previousBackStackEntry?.savedStateHandle?.set("mensaje", texto)
-            // Después vuelve a Inicio
-            navController.popBackStack()
-        }
-    )
+```
+
+No basta con leer el valor una vez: el mensaje llega cuando A lo escribe, y en ese momento Inicio tiene que redibujarse para mostrarlo. Por eso se lee en dos partes. `getStateFlow<String?>("mensaje", null)` devuelve el valor de la clave `"mensaje"` de forma que avisa cada vez que cambia; `null` es su valor mientras nadie ha escrito nada. `collectAsState()` convierte ese aviso en estado de Compose: cuando A escribe el mensaje, `mensaje` cambia y Compose redibuja Inicio, igual que con `mutableStateOf`. Con `by` se obtiene directamente el `String?`, sin `.value`. `collectAsState` se importa con `import androidx.compose.runtime.collectAsState`.
+
+`PantallaInicio` recibe el mensaje como un parámetro más, `mensaje: String?`, y lo muestra solo si ha llegado alguno:
+
+```kotlin
+@Composable
+fun PantallaInicio(mensaje: String?, onIrA: () -> Unit, onIrB: (String) -> Unit) {
+    // ... igual que en 4.2, y dentro de la Column, antes del campo de texto:
+    if (mensaje != null) {
+        Text("Mensaje de A: $mensaje", fontSize = 20.sp)
+    }
 }
 ```
 
-Qué significa cada parte:
+#### Lo que hay que tener en cuenta
 
-| Código | Qué hace |
-|---|---|
-| `savedStateHandle` | El almacén de datos de una entrada de la pila. Guarda pares clave-valor, como `"mensaje"` → `"Hola"`. Cada pantalla de la pila tiene el suyo. |
-| `navController.previousBackStackEntry` | La entrada que está justo debajo de la actual en la pila. Desde A, es la de Inicio. Puede ser `null` si no hay ninguna debajo (por eso el `?.`). |
-| `.savedStateHandle?.set("mensaje", texto)` | Guarda el texto con la clave `"mensaje"` en el almacén de Inicio. |
-| `navController.popBackStack()` | Quita A de la pila. Inicio vuelve a verse y su almacén ya tiene el mensaje. El orden importa: primero se guarda el dato y después se vuelve. |
-| `backStackEntry.savedStateHandle` | En el destino de Inicio, su propio almacén. Es el mismo en el que A ha escrito. |
-| `.getStateFlow<String?>("mensaje", null)` | Devuelve el valor de la clave `"mensaje"` de forma que se puede observar: cada vez que alguien lo cambia, avisa. `null` es el valor mientras nadie ha escrito nada. |
-| `.collectAsState()` | Convierte ese valor observable en estado de Compose. Cuando A escribe el mensaje, Inicio se redibuja con el valor nuevo. |
-| `val mensaje by ...` | Con `by` se lee directamente el `String?`, sin `.value`, igual que con `remember { mutableStateOf(...) }`. |
-| `PantallaInicio(mensaje: String?, ...)` | La pantalla recibe el mensaje como un parámetro más; no sabe de dónde viene. Con `null` no muestra nada. |
+La clave tiene que ser exactamente la misma al escribir y al leer, `"mensaje"` en los dos sitios. Igual que con los argumentos, si no coincide el código compila, pero el dato no llega.
 
-`collectAsState` se importa con `import androidx.compose.runtime.collectAsState`.
+El dato se queda en el almacén hasta que se sustituye o se borra. Si el usuario vuelve a A y pulsa «Atrás» sin enviar nada, Inicio sigue mostrando el mensaje anterior. Si el dato solo debe usarse una vez, se borra después de leerlo con `backStackEntry.savedStateHandle.remove<String>("mensaje")`. El almacén se conserva al girar el móvil, igual que la pila.
 
-Así cambian la pila y los almacenes durante el ejemplo:
-
-| Acción | Pila después | Almacén de Inicio | Se ve |
-|---|---|---|---|
-| Arranca la app | `[Inicio]` | vacío | Inicio, sin mensaje |
-| Pulsa «Ir a la pantalla A» | `[Inicio, A]` | vacío | A |
-| Escribe «Hola» y pulsa «Enviar y volver» | `[Inicio]` | `"mensaje"` → `"Hola"` | Inicio, con «Mensaje de A: Hola» |
-| Vuelve a A y pulsa «Atrás» sin enviar | `[Inicio]` | `"mensaje"` → `"Hola"` | Inicio, con el mismo mensaje |
-
-- La clave (`"mensaje"`) tiene que ser exactamente la misma al escribir y al leer. Igual que con los argumentos, si no coincide el código compila, pero el dato no llega.
-- El dato se queda en el almacén hasta que se sustituye o se borra. Por eso, al volver con «Atrás» sin enviar, Inicio sigue mostrando el mensaje anterior. Si el dato solo debe usarse una vez, se borra después de leerlo con `backStackEntry.savedStateHandle.remove<String>("mensaje")`.
-- El almacén se conserva al girar el móvil, igual que la pila.
-- Solo se deben devolver datos sencillos (textos, números, `Boolean`), por la misma razón que en el apartado 4.5: si hay que devolver un objeto, se devuelve su `id`.
+Solo conviene devolver datos sencillos (textos, números, `Boolean`), por la misma razón que se explica en el apartado 4.5: si hay que devolver un objeto, se devuelve su `id`.
 
 ### 4.5 Qué conviene pasar
 
