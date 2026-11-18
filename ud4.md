@@ -1696,42 +1696,56 @@ class MainActivity : ComponentActivity() {
 
 La barra superior (`TopAppBar`, UD3 apartado 8.1) muestra el título y, a la derecha, acciones: iconos que se pulsan directamente y un icono ⋮ que despliega un menú de opciones con el resto. En la navegación clásica se definían en `menu/toolbar_menu.xml` y se gestionaban en `onOptionsItemSelected`. En Compose son composables dentro del parámetro `actions`.
 
+En este apartado y en el siguiente se añade una barra superior al ejemplo de las pantallas de colores del apartado 3 (la versión sin argumentos). En el apartado 6.3 se coloca en la aplicación para probarla. La aplicación de hospedajes usa las mismas piezas; su código completo se verá al final de la unidad.
+
+> **Los iconos necesitan una librería.** En las versiones recientes de Compose, `Icons.Default.Home`, `Icons.Default.MoreVert`, `Icons.AutoMirrored.Filled.ArrowBack`... ya no vienen incluidos en Material 3. Si salen en rojo y *Alt + Intro* no ofrece importarlos, añade la librería `material-icons-core` igual que `navigation-compose` (apartado 2.4): en el buscador escribe `material-icons-core` y elige la del grupo `androidx.compose.material`. En `build.gradle.kts (Module :app)` quedará una línea parecida a `implementation(libs.androidx.compose.material.icons.core)`.
+
+> **¿Qué es `@OptIn(ExperimentalMaterial3Api::class)`?**
+>
+> Algunos componentes de Material 3, como `TopAppBar` y `TopAppBarDefaults`, son **experimentales**: Google los publica para que se usen y se prueben antes de darlos por definitivos. Funcionan bien, pero en versiones futuras pueden cambiar (el nombre de un parámetro, la forma de configurarlos...) y el código que los usa podría tener que adaptarse.
+>
+> Por eso Kotlin obliga a aceptarlo expresamente: la función que usa un componente experimental debe llevar encima `@OptIn(ExperimentalMaterial3Api::class)`. Es como aceptar usar una versión *beta*: «sé que puede cambiar y lo uso igualmente».
+>
+> - No cambia cómo funciona el código; solo permite que compile. Si se quita y la función usa `TopAppBar`, Android Studio lo marca en rojo.
+> - No hace falta memorizarla: con el cursor sobre lo que sale en rojo, *Alt + Enter* la añade sola.
+> - Cuando Google declara estable un componente, la anotación deja de ser necesaria. Por eso en versiones recientes algunos componentes ya no la piden.
+
 ### 5.1 Acciones de la barra
 
 ```kotlin
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraConAcciones(onInicio: () -> Unit, onBuscar: () -> Unit) {
+fun BarraConAcciones(onInicio: () -> Unit) {
     TopAppBar(
-        title = { Text("Hospedajes") },
+        title = { Text("Colores") },
         actions = {
             IconButton(onClick = onInicio) {
                 Icon(Icons.Default.Home, contentDescription = "Inicio")
-            }
-            IconButton(onClick = onBuscar) {
-                Icon(Icons.Default.Search, contentDescription = "Buscar")
             }
         }
     )
 }
 ```
 
+<img src="./assets/img/barra_inicio.png" alt="Pantalla Inicio de la app de colores con la barra superior: título «Inicio» a la izquierda y, a la derecha, el icono de la casa y el icono ⋮" style="width: 280px; max-width: 100%; height: auto; border: 1px solid #CFD8DC;">
+
 - `actions` recibe un composable que se dibuja en una `Row` a la derecha del título. Se pueden poner tantos `IconButton` como se quiera, pero Material recomienda no más de tres; el resto va al menú ⋮.
+- El icono de la casa lleva a Inicio desde cualquier pantalla. Hace lo mismo que el botón «Inicio» de la pantalla C, pero está siempre a mano.
 - Cada icono necesita `contentDescription`: es lo que lee el lector de pantalla y lo que aparece al mantenerlo pulsado.
 - Equivalencia: un `<item app:showAsAction="always">` del XML es un `IconButton` en `actions`.
 
 ### 5.2 El menú desplegable
 
-El menú de opciones es un `DropdownMenu` que se abre al pulsar el icono ⋮ (`Icons.Default.MoreVert`). Si está abierto o no es, como siempre, un estado:
+El menú de opciones es un `DropdownMenu` que se abre al pulsar el icono ⋮ (`Icons.Default.MoreVert`). En la app de colores, el menú permite ir a las pantallas A y B desde cualquier sitio. Si el menú está abierto o no es, como siempre, un estado:
 
 ```kotlin
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun BarraConMenu(onInicio: () -> Unit, onAcercaDe: () -> Unit, onCerrarSesion: () -> Unit) {
+fun BarraConMenu(onInicio: () -> Unit, onIrA: () -> Unit, onIrB: () -> Unit) {
     var menuAbierto by remember { mutableStateOf(false) }
 
     TopAppBar(
-        title = { Text("Hospedajes") },
+        title = { Text("Colores") },
         actions = {
             IconButton(onClick = onInicio) {
                 Icon(Icons.Default.Home, contentDescription = "Inicio")
@@ -1745,21 +1759,23 @@ fun BarraConMenu(onInicio: () -> Unit, onAcercaDe: () -> Unit, onCerrarSesion: (
                     onDismissRequest = { menuAbierto = false }
                 ) {
                     DropdownMenuItem(
-                        text = { Text("Acerca de") },
-                        leadingIcon = { Icon(Icons.Default.Info, contentDescription = null) },
-                        onClick = {
-                            menuAbierto = false
-                            onAcercaDe()
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Cerrar sesión") },
+                        text = { Text("Pantalla A") },
                         leadingIcon = {
-                            Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
+                            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
                         },
                         onClick = {
                             menuAbierto = false
-                            onCerrarSesion()
+                            onIrA()
+                        }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Pantalla B") },
+                        leadingIcon = {
+                            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = null)
+                        },
+                        onClick = {
+                            menuAbierto = false
+                            onIrB()
                         }
                     )
                 }
@@ -1769,8 +1785,11 @@ fun BarraConMenu(onInicio: () -> Unit, onAcercaDe: () -> Unit, onCerrarSesion: (
 }
 ```
 
+<img src="./assets/img/barra_menu.png" alt="Pantalla Inicio con el menú ⋮ abierto, pegado al icono, con las opciones «Pantalla A» y «Pantalla B»" style="width: 280px; max-width: 100%; height: auto; border: 1px solid #CFD8DC;">
+
 - **`Box`** alrededor del botón y del menú: el `DropdownMenu` se abre pegado a su contenedor. Sin el `Box`, aparecería en una esquina de la barra.
 - **`expanded`**: si es `true`, el menú se ve. `onDismissRequest`: se llama al tocar fuera o pulsar Atrás; ahí se cierra.
+- **`leadingIcon`**: icono opcional a la izquierda del texto de la opción. `contentDescription = null` porque el texto ya la describe.
 - Cada `DropdownMenuItem` cierra el menú antes de ejecutar su acción. Si no, al volver a la pantalla el menú seguiría abierto.
 - Equivalencia: un `<item app:showAsAction="never">` del XML es un `DropdownMenuItem`, y el `when (item.itemId)` de `onOptionsItemSelected` desaparece: cada opción tiene su propio `onClick`.
 
@@ -1784,7 +1803,7 @@ En la navegación clásica, los colores de la barra y del menú se definían con
 
 ```kotlin
 TopAppBar(
-    title = { Text("Hospedajes") },
+    title = { Text("Colores") },
     colors = TopAppBarDefaults.topAppBarColors(
         containerColor = MaterialTheme.colorScheme.primary,       // fondo
         titleContentColor = MaterialTheme.colorScheme.onPrimary,  // título
@@ -1802,50 +1821,94 @@ TopAppBar(
 | `PopupOverlay` (menú ⋮ claro) | El `DropdownMenu` ya usa los colores de superficie del tema |
 | `Theme...NoActionBar` | No hace falta |
 
-> Usa siempre colores del tema (`colorScheme.primary`), no colores fijos (`Color.Blue`): así la barra se adapta sola al modo oscuro.
+> Usa siempre colores del tema (`colorScheme.primary`), no colores fijos (`Color.Blue`): así la barra se adapta sola al modo oscuro. Los fondos de las pantallas de colores son fijos porque son el propio ejemplo, pero la barra debe seguir el tema.
 
 ---
 
 ## 6. Destinos de nivel superior y botón de volver
 
-En una aplicación con menú lateral, el icono de la izquierda de la barra superior cambia según la pantalla:
+**Qué se quiere conseguir.** La barra del apartado 5 es siempre igual. Ahora se quiere que cambie según la pantalla en la que estés:
 
-- En las secciones principales (Inicio, Mis hoteles, Explorar...) muestra **≡** y abre el menú lateral.
-- En las pantallas de nivel inferior (el detalle de un hotel) muestra **←** y vuelve atrás.
+| Pantalla | Título de la barra | Flecha ← a la izquierda |
+|---|---|---|
+| Inicio | Inicio | No: es la primera pantalla, no hay a dónde volver |
+| A | Pantalla A | Sí |
+| B | Pantalla B | Sí |
+| C | Pantalla C | Sí |
 
-En la navegación clásica esto lo hacía `AppBarConfiguration`: se le pasaba el conjunto de destinos de nivel superior (`setOf(R.id.homeFragment, ...)`) y cambiaba el icono solo. En Compose se hace con dos líneas de lógica: saber en qué pantalla estamos y comprobar si es de nivel superior.
+A las pantallas como Inicio se les llama de **nivel superior**: son el punto de partida. A, B y C son de **nivel inferior**: se llega a ellas desde otra pantalla, y la flecha ← sirve para volver.
+
+**Cómo se consigue.** La barra tiene que responder a una pregunta: *¿en qué pantalla estoy?* Con la respuesta decide qué título pone (apartado 6.1) y si pone la flecha o no (apartado 6.2).
 
 ### 6.1 Saber en qué pantalla estamos
+
+El `NavController` sabe qué pantalla está arriba de la pila (apartado 3.6). Se le pregunta así:
 
 ```kotlin
 val entrada by navController.currentBackStackEntryAsState()
 val destino = entrada?.destination
 ```
 
-- **`currentBackStackEntryAsState()`** devuelve la entrada de arriba de la pila como estado: cada vez que se navega, cambia y Compose redibuja lo que la lee (la barra, el menú, la barra inferior). Por eso se usa con `by`, igual que `remember { mutableStateOf(...) }`: se lee directamente la entrada, sin `.value`.
-- **`entrada?.destination`** es el destino actual. Puede ser `null` un instante al arrancar, por eso el `?.`.
-- Para preguntar si el destino es una ruta concreta se compara su `route` con la constante:
+Se lee de abajo arriba:
+
+- **`destino`** es la pantalla que se está viendo ahora mismo.
+- Para sacarla, primero se coge **`entrada`**: el "plato" de arriba de la pila. `entrada?.destination` es la pantalla que guarda ese plato. El `?.` está porque, durante un instante al arrancar, la pila todavía está vacía (`null`).
+- **`currentBackStackEntryAsState()`** convierte esa entrada en un estado (UD2). Cada vez que navegas, el estado cambia y Compose redibuja la barra con la pantalla nueva. Por eso se usa `by`, igual que con `remember { mutableStateOf(...) }`.
+
+Para saber qué pantalla es, se mira su ruta: `destino?.route` (`"a"`, `"b"`...). Se compara con las constantes de `Rutas`:
 
 ```kotlin
-val enDetalle = destino?.route == Rutas.DETALLE
+val enC = destino?.route == Rutas.C    // true si se está viendo la pantalla C
 ```
 
-> `destino.route` es el patrón de la ruta (`"detalle/{hotelId}"`), no la ruta rellenada (`"detalle/h3"`). Por eso se compara con `Rutas.DETALLE` y no con `Rutas.detalle(...)`.
+Y con un `when` se elige el título de cada pantalla:
+
+```kotlin
+val titulo = when (destino?.route) {
+    Rutas.A -> "Pantalla A"
+    Rutas.B -> "Pantalla B"
+    Rutas.C -> "Pantalla C"
+    else -> "Inicio"
+}
+```
+
+> **Rutas con argumentos.** Si usas la versión del apartado 4, la ruta de B es `"b/{nombre}"`. `destino.route` es el patrón de la ruta (`"b/{nombre}"`), no la ruta rellenada (`"b/Ana"`). Por eso se compara con `Rutas.B` y no con `Rutas.b("Ana")`.
 
 ### 6.2 Nivel superior frente a nivel inferior
 
-Se guarda en una lista cuáles son las secciones principales y se comprueba si el destino actual es una de ellas:
+Las pantallas de nivel superior se escriben en una lista:
 
 ```kotlin
-val seccionesPrincipales = listOf(Rutas.INICIO, Rutas.MIS_HOTELES, Rutas.EXPLORAR, Rutas.ACERCA_DE)
+val seccionesPrincipales = listOf(Rutas.INICIO)
+```
 
+En la app de colores solo está Inicio. En la de hospedajes estarán todas las secciones del menú lateral (Inicio, Mis hoteles, Explorar, Acerca de; apartado 7.3). Por eso se usa una lista y no una sola comparación.
+
+Después se comprueba si la pantalla actual está en esa lista:
+
+```kotlin
 val esNivelSuperior = destino?.route in seccionesPrincipales
 ```
 
-- `in` comprueba si un valor está dentro de una lista: devuelve `true` si la ruta actual es alguna de las secciones.
-- Si `destino` es `null`, `destino?.route` es `null`, que no está en la lista: el resultado es `false`.
+- `in` pregunta "¿está dentro de la lista?". En Inicio da `true`; en A, B y C, `false`.
+- Si `destino` es `null` (el instante del arranque), el resultado es `false`.
 
-Con eso, la barra elige el icono:
+Con eso, la barra pone la flecha solo cuando hace falta:
+
+```kotlin
+navigationIcon = {
+    if (!esNivelSuperior) {
+        IconButton(onClick = { navController.navigateUp() }) {
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+        }
+    }
+}
+```
+
+- `!` significa "no": se lee "si **no** es de nivel superior, pon la flecha".
+- **`navigateUp()`** quita la pantalla de arriba, igual que `popBackStack()`. La diferencia es que `navigateUp()` es la pensada para la flecha ← ("subir un nivel") y nunca cierra la aplicación, aunque no quede nada debajo.
+
+**Más adelante, con menú lateral.** Cuando la aplicación tenga menú lateral (apartado 7), las pantallas de nivel superior no se quedan con el hueco vacío: muestran **≡**, que abre el menú. Basta con añadir un `else` al `if`:
 
 ```kotlin
 navigationIcon = {
@@ -1861,7 +1924,7 @@ navigationIcon = {
 }
 ```
 
-**`navigateUp()` frente a `popBackStack()`.** Dentro de la aplicación hacen lo mismo: quitar la pantalla de arriba. `navigateUp()` es la que corresponde a la flecha ← ("subir un nivel"): nunca cierra la aplicación, aunque no quede nada debajo. Es lo que hacía `onSupportNavigateUp()` en la navegación clásica.
+**Comparación con la navegación clásica.** Allí esto lo hacía `AppBarConfiguration`: se le pasaban los destinos de nivel superior y cambiaba el icono solo. En Compose se escribe a mano, pero son las mismas ideas:
 
 | Navegación clásica | Navigation Compose |
 |---|---|
@@ -1871,47 +1934,48 @@ navigationIcon = {
 
 ### 6.3 La barra superior completa
 
-Juntando los apartados 5 y 6, la barra de la aplicación de hospedajes recibe el título, si la pantalla es de nivel superior y los eventos:
+Juntando los apartados 5 y 6, la barra de la app de colores recibe el título, si la pantalla es de nivel superior y los eventos. Se añade en un archivo nuevo, **`BarraSuperior.kt`**:
 
 ```kotlin
+package com.ejemplo.navegacion
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BarraSuperior(
     titulo: String,
     esNivelSuperior: Boolean,
-    onAbrirMenu: () -> Unit,
     onVolver: () -> Unit,
-    onAcercaDe: () -> Unit,
-    onCerrarSesion: () -> Unit
+    onInicio: () -> Unit,
+    onIrA: () -> Unit,
+    onIrB: () -> Unit
 ) {
     var menuAbierto by remember { mutableStateOf(false) }
 
     TopAppBar(
         title = { Text(titulo) },
         navigationIcon = {
-            if (esNivelSuperior) {
-                IconButton(onClick = onAbrirMenu) {
-                    Icon(Icons.Default.Menu, contentDescription = "Abrir menú")
-                }
-            } else {
+            if (!esNivelSuperior) {
                 IconButton(onClick = onVolver) {
                     Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
                 }
             }
         },
         actions = {
+            IconButton(onClick = onInicio) {
+                Icon(Icons.Default.Home, contentDescription = "Inicio")
+            }
             Box {
                 IconButton(onClick = { menuAbierto = true }) {
                     Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
                 }
                 DropdownMenu(expanded = menuAbierto, onDismissRequest = { menuAbierto = false }) {
                     DropdownMenuItem(
-                        text = { Text("Acerca de") },
-                        onClick = { menuAbierto = false; onAcercaDe() }
+                        text = { Text("Pantalla A") },
+                        onClick = { menuAbierto = false; onIrA() }
                     )
                     DropdownMenuItem(
-                        text = { Text("Cerrar sesión") },
-                        onClick = { menuAbierto = false; onCerrarSesion() }
+                        text = { Text("Pantalla B") },
+                        onClick = { menuAbierto = false; onIrB() }
                     )
                 }
             }
@@ -1924,7 +1988,100 @@ fun BarraSuperior(
 }
 ```
 
-Fíjate en que `BarraSuperior` no recibe el `NavController`: solo datos y lambdas. El título y `esNivelSuperior` se calculan con el destino actual, como se ha visto en los apartados 6.1 y 6.2.
+Fíjate en que `BarraSuperior` no recibe el `NavController`: solo datos y lambdas, igual que las pantallas (apartado 3.3). El título y `esNivelSuperior` se calculan con el destino actual, como se ha visto en los apartados 6.1 y 6.2.
+
+La barra se coloca en un `Scaffold` (UD3, apartado 8.1) que envuelve al `NavHost`. Cambia **`AppNavegacion.kt`** así:
+
+```kotlin
+package com.ejemplo.navegacion
+
+val seccionesPrincipales = listOf(Rutas.INICIO)
+
+@Composable
+fun AppNavegacion() {
+    val navController = rememberNavController()
+
+    // Pantalla actual (apartado 6.1)
+    val entrada by navController.currentBackStackEntryAsState()
+    val destino = entrada?.destination
+
+    val titulo = when (destino?.route) {
+        Rutas.A -> "Pantalla A"
+        Rutas.B -> "Pantalla B"
+        Rutas.C -> "Pantalla C"
+        else -> "Inicio"
+    }
+    val esNivelSuperior = destino?.route in seccionesPrincipales
+
+    Scaffold(
+        topBar = {
+            BarraSuperior(
+                titulo = titulo,
+                esNivelSuperior = esNivelSuperior,
+                onVolver = { navController.navigateUp() },
+                onInicio = { navController.popBackStack(route = Rutas.INICIO, inclusive = false) },
+                onIrA = { navController.navigate(Rutas.A) { launchSingleTop = true } },
+                onIrB = { navController.navigate(Rutas.B) { launchSingleTop = true } }
+            )
+        }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = Rutas.INICIO,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            // Los mismos destinos del apartado 3.4
+            composable(Rutas.INICIO) {
+                PantallaInicio(
+                    onIrA = { navController.navigate(Rutas.A) },
+                    onIrB = { navController.navigate(Rutas.B) }
+                )
+            }
+            composable(Rutas.A) {
+                PantallaA(onAtras = { navController.popBackStack() })
+            }
+            composable(Rutas.B) {
+                PantallaB(
+                    onAtras = { navController.popBackStack() },
+                    onSiguiente = { navController.navigate(Rutas.C) }
+                )
+            }
+            composable(Rutas.C) {
+                PantallaC(
+                    onAtras = { navController.popBackStack() },
+                    onInicio = { navController.popBackStack(route = Rutas.INICIO, inclusive = false) }
+                )
+            }
+        }
+    }
+}
+```
+
+Qué cambia respecto al apartado 3.4:
+
+| Código | Qué hace |
+|---|---|
+| `currentBackStackEntryAsState()`, `titulo` y `esNivelSuperior` | Se calculan con la pantalla actual. Al navegar, cambian y la barra se redibuja sola con el título y el icono correctos. |
+| `Scaffold(topBar = { BarraSuperior(...) })` | Coloca la barra arriba y deja el resto del espacio para las pantallas. |
+| `modifier = Modifier.padding(innerPadding)` | Sustituye a `safeDrawingPadding()`. El `Scaffold` ya tiene en cuenta la barra de estado; `innerPadding` es el espacio que deja libre para que la barra no tape la pantalla. |
+| `onInicio` | La casa hace lo mismo que el botón «Inicio» de C: quita pantallas hasta que Inicio quede arriba. |
+| `navigate(Rutas.A) { launchSingleTop = true }` | Si ya estás en A y eliges «Pantalla A» en el menú, no se apila otra A (apartado 3.7). |
+
+- `MainActivity.kt` no cambia: sigue llamando a `AppNavegacion()`.
+- Ejecuta la app y prueba: en Inicio no hay flecha; en A, B y C sí. La flecha ←, el botón «Atrás» de cada pantalla y el botón Atrás del móvil hacen lo mismo.
+
+<img src="./assets/img/barra_inicio.png" alt="Inicio: barra con el título «Inicio», sin flecha" style="width: 180px; max-width: 48%; height: auto; border: 1px solid #CFD8DC;"> <img src="./assets/img/barra_pantalla_b.png" alt="Pantalla B: barra con la flecha ← a la izquierda y el título «Pantalla B»" style="width: 180px; max-width: 48%; height: auto; border: 1px solid #CFD8DC;">
+
+*Izquierda: Inicio, de nivel superior, sin flecha. Derecha: Pantalla B, de nivel inferior, con la flecha ← y su propio título.*
+
+| Acción | Pila después | Título | Flecha ← |
+|---|---|---|---|
+| Arranca la app | `[Inicio]` | Inicio | No |
+| Pulsa «Ir a la pantalla B» | `[Inicio, B]` | Pantalla B | Sí |
+| Pulsa «Siguiente» | `[Inicio, B, C]` | Pantalla C | Sí |
+| Pulsa ← | `[Inicio, B]` | Pantalla B | Sí |
+| Menú ⋮ → «Pantalla A» | `[Inicio, B, A]` | Pantalla A | Sí |
+| Pulsa la casa | `[Inicio]` | Inicio | No |
 
 ---
 
@@ -2654,7 +2811,7 @@ Continúa el proyecto `Peliculas` de las actividades 2 y 3 de la UD3 (lista, det
 6. Añade las rutas `INICIO`, `MIS_PELICULAS` (sustituye a `LISTA`) y `ACERCA_DE`, y crea una pantalla sencilla para Inicio y otra para Acerca de.
 7. Crea `Secciones.kt` con la `data class Seccion`, la lista `seccionesMenu` y las funciones `esSeccion`, `esNivelSuperior` e `irASeccion` (apartados 7.3 y 7.4).
 8. Crea `AppNavegacion.kt` con un único `Scaffold` que contenga el `NavHost` (estructura del apartado 7.1). Quita el `Scaffold` de las pantallas: la barra superior, el botón «+» y el `Snackbar` pasan al `Scaffold` común. Aplica `innerPadding` al `NavHost`.
-9. Crea `BarraSuperior` (apartado 6.3): título según el destino, icono ≡ en las secciones y ← en el detalle (con `navigateUp()`), y menú ⋮ con «Acerca de».
+9. Crea `BarraSuperior` (apartado 6.3, con el `navigationIcon` con ≡ del apartado 6.2): título según el destino, icono ≡ en las secciones y ← en el detalle (con `navigateUp()`), y menú ⋮ con «Acerca de».
 10. Muestra el botón «+» solo en Mis películas.
 11. Cambia los colores de la barra con `TopAppBarDefaults.topAppBarColors` usando colores del tema. Activa el modo oscuro del móvil y comprueba que la barra se adapta.
 
