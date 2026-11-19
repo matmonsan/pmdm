@@ -176,6 +176,21 @@ Si en lugar de eso aparece arriba del editor una barra con **Sync Now**, púlsal
 | `NavHost`, `composable` o `rememberNavController` en rojo en el código | Falta sincronizar, o falta el `import` (**Alt + Intro**) |
 | Al pulsar **Alt + Intro** no aparece la opción de importar `NavHost` | La librería no se ha añadido: revisa que la línea `implementation(libs.androidx.navigation.compose)` está en `build.gradle.kts (Module :app)` |
 
+#### La librería de los iconos
+
+En esta unidad se usan iconos de Material: `Icons.Default.Add`, `Icons.Default.Menu`, `Icons.AutoMirrored.Filled.ArrowBack`... En las versiones recientes de Compose ya no vienen incluidos en Material 3, y hay que añadir su librería. Abre `build.gradle.kts (Module :app)` y añade esta línea dentro del bloque `dependencies`:
+
+```kotlin
+dependencies {
+    // ... las dependencias que ya había
+    implementation("androidx.compose.material:material-icons-core")
+}
+```
+
+Después pulsa **Sync Now**. La línea no lleva número de versión porque la decide el BOM de Compose (`platform(libs.androidx.compose.bom)`), que ya está en el bloque `dependencies` del proyecto: así la librería de iconos usa la misma versión que el resto de Compose.
+
+Si los iconos salen en rojo y **Alt + Intro** no ofrece importarlos, falta esta línea o falta sincronizar.
+
 ---
 
 ## 3. Primera navegación con NavHost
@@ -976,7 +991,7 @@ Ya se puede cambiar la navegación con estado de la aplicación de hospedajes (U
 
 **Preparar el proyecto:**
 
-1. Añade la dependencia `navigation-compose` (apartado 2.4) y pulsa **Sync Now**.
+1. Añade las dependencias `navigation-compose` y `material-icons-core` (apartado 2.4) y pulsa **Sync Now**.
 2. Crea el archivo `Rutas.kt` y cambia los archivos marcados en el esquema.
 
 ```text
@@ -1698,7 +1713,7 @@ La barra superior (`TopAppBar`, UD3 apartado 8.1) muestra el título y, a la der
 
 En este apartado y en el siguiente se añade una barra superior al ejemplo de las pantallas de colores del apartado 3 (la versión sin argumentos). En el apartado 6.3 se coloca en la aplicación para probarla. La aplicación de hospedajes usa las mismas piezas; su código completo se verá al final de la unidad.
 
-> **Los iconos necesitan una librería.** En las versiones recientes de Compose, `Icons.Default.Home`, `Icons.Default.MoreVert`, `Icons.AutoMirrored.Filled.ArrowBack`... ya no vienen incluidos en Material 3. Si salen en rojo y *Alt + Intro* no ofrece importarlos, añade la librería `material-icons-core` igual que `navigation-compose` (apartado 2.4): en el buscador escribe `material-icons-core` y elige la del grupo `androidx.compose.material`. En `build.gradle.kts (Module :app)` quedará una línea parecida a `implementation(libs.androidx.compose.material.icons.core)`.
+> **Los iconos necesitan una librería.** Si `Icons.Default.Home`, `Icons.Default.MoreVert` o `Icons.AutoMirrored.Filled.ArrowBack` salen en rojo, revisa que has añadido `implementation("androidx.compose.material:material-icons-core")` en las dependencias (apartado 2.4).
 
 > **¿Qué es `@OptIn(ExperimentalMaterial3Api::class)`?**
 >
