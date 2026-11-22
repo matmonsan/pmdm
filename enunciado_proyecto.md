@@ -45,6 +45,7 @@ La organización de las pantallas podrá variar según la propuesta, pero la apl
 - Una pantalla que permitirá registrarse o iniciar sesión.
 - Después del acceso se mostrará una pantalla principal adaptada a la temática del proyecto.
 - La aplicación incluirá un menú lateral (`ModalNavigationDrawer`) con la información básica del usuario, como su fotografía, nombre y correo.
+- Las pantallas del área autenticada tendrán una barra superior (`TopAppBar`) con el título de la pantalla, el icono que abre el menú lateral y, a la derecha, acciones propias de la temática; las acciones menos habituales se agruparán en un menú de opciones (`DropdownMenu`) que se abre con el icono ⋮.
 - También tendrá una navegación inferior (`NavigationBar`) o una solución equivalente de Compose para alternar entre las principales áreas de la aplicación, incluyendo la información común y la información administrada por el usuario.
 - Al seleccionar un elemento se abrirá una pantalla de detalle con la información que corresponda.
 - La navegación se realizará con Jetpack Navigation Compose (`NavHost`) y permitirá volver a la pantalla anterior.
@@ -101,7 +102,7 @@ El orden recomendado es el siguiente:
 * [**Versión 1.1 (Lista y detalle en Compose)**](versiones/version_1_1.md): Crear una pantalla de lista con elementos temporales y una pantalla de detalle para visualizar cada elemento seleccionado; la navegación formal con `NavHost` se incorporará en la Versión 1.4. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 01/11/2026</span>
 * [**Versión 1.2 (CRUD en memoria y repositorios)**](versiones/version_1_2.md): Añadir el alta, la consulta, la edición y el borrado de elementos usando datos en memoria. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 22/11/2026</span>
 * [**Versión 1.3 (Autenticación con Firebase)**](versiones/version_1_3.md) <span class="etiqueta-investigacion">Investigación</span>: Incorporar registro, inicio de sesión y recuperación de contraseña con Firebase Auth. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 29/11/2026</span>
-* [**Versión 1.4 (Estructura de navegación)**](versiones/version_1_4.md): Conectar las pantallas mediante `ModalNavigationDrawer`, `NavigationBar` y `NavHost`. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 08/12/2026</span>
+* [**Versión 1.4 (Estructura de navegación)**](versiones/version_1_4.md): Conectar las pantallas mediante `ModalNavigationDrawer`, `TopAppBar` con menú de opciones, `NavigationBar` y `NavHost`. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 08/12/2026</span>
 * [**Versión 1.5 (Lista global y datos compartidos)**](versiones/version_1_5.md): Añadir una segunda lista con elementos comunes para todos los usuarios. <span class="delivery-date">→ <strong>FECHA ENTREGA:</strong> 13/12/2026</span>
 * [**Versión 1.6 (Arquitectura MVVM + Hilt)**](versiones/version_1_6.md): Organizar el código con MVVM, `StateFlow`, `UiState` y Hilt.
 * [**Versión 2.0 (Persistencia local con Room)**](versiones/version_2_0.md): Sustituir los datos temporales por una base de datos local Room.
@@ -129,7 +130,7 @@ Las siguientes versiones del proyecto se utilizarán como evidencias prácticas 
 |---|---|
 | **UD2: Layout de usuario** | Versión 1.0, con el prototipo de pantallas, y Versión 1.1, con la primera interfaz funcional en Jetpack Compose, sus layouts y modificadores. |
 | **UD3: Listas, diálogos y arquitectura MVVM** | Versión 1.2, con el CRUD en memoria, los formularios y el listado de elementos. |
-| **UD4: Navegación y menús** | Versión 1.3 (de investigación), con las pantallas de registro, inicio de sesión y recuperación de contraseña; Versión 1.4, con la navegación entre pantallas, el `Navigation Drawer` y la `NavigationBar`; y Versión 1.5, con las dos listas principales. |
+| **UD4: Navegación y menús** | Versión 1.3 (de investigación), con las pantallas de registro, inicio de sesión y recuperación de contraseña; Versión 1.4, con la navegación entre pantallas, el `Navigation Drawer`, la `TopAppBar` con menú de opciones y la `NavigationBar`; y Versión 1.5, con las dos listas principales. |
 | **UD5: Patrones de diseño** | Versión 1.6, con la organización del proyecto mediante MVVM, repositorios, `UiState`, `StateFlow` e inyección de dependencias con Hilt. |
 | **UD6: Almacenamiento local con Room** | Versión 2.0, con la sustitución de los datos en memoria por una base de datos local Room; y Versión 3.2, con la navegación a la pantalla de detalle y la visualización de la ubicación. |
 | **UD7: Servicios y conexión API REST mediante Retrofit** | Versión 4.1, con la conexión de la aplicación Android a la API REST, autenticación mediante JWT y sincronización de datos e imágenes. |
