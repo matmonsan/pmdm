@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="330" viewBox="0 0 900 330" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474F"/>
+    </marker>
+  </defs>
+  <rect width="900" height="330" fill="#FFFFFF"/>
+
+  <!-- Carriles -->
+  <text x="20" y="85" font-size="15" font-weight="bold" fill="#1565C0">Hilo principal</text>
+  <text x="20" y="104" font-size="12" fill="#1565C0">(Dispatchers.Main)</text>
+  <line x1="170" y1="92" x2="880" y2="92" stroke="#90CAF9" stroke-width="2"/>
+  <text x="20" y="225" font-size="15" font-weight="bold" fill="#2E7D32">Hilo de E/S</text>
+  <text x="20" y="244" font-size="12" fill="#2E7D32">(Dispatchers.IO)</text>
+  <line x1="170" y1="232" x2="880" y2="232" stroke="#A5D6A7" stroke-width="2"/>
+
+  <!-- 1 launch -->
+  <rect x="180" y="62" width="150" height="60" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <text x="255" y="88" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#0D47A1">launch {</text>
+  <text x="255" y="107" text-anchor="middle" font-size="12" fill="#0D47A1">cargando = true</text>
+
+  <!-- 2 withContext -->
+  <line x1="330" y1="110" x2="390" y2="205" stroke="#37474F" stroke-width="2" marker-end="url(#f)"/>
+  <rect x="390" y="202" width="200" height="60" rx="10" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/>
+  <text x="490" y="228" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#1B5E20">withContext(IO) {</text>
+  <text x="490" y="247" text-anchor="middle" font-size="12" fill="#1B5E20">leer los datos (500 ms)</text>
+
+  <!-- hueco libre -->
+  <rect x="390" y="66" width="200" height="52" rx="8" fill="#FFFFFF" stroke="#90CAF9" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="490" y="88" text-anchor="middle" font-size="12" fill="#1565C0">libre: dibuja la pantalla</text>
+  <text x="490" y="106" text-anchor="middle" font-size="12" fill="#1565C0">y responde a los toques</text>
+
+  <!-- 3 vuelta -->
+  <line x1="590" y1="205" x2="650" y2="110" stroke="#37474F" stroke-width="2" marker-end="url(#f)"/>
+  <rect x="650" y="62" width="200" height="60" rx="10" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <text x="750" y="88" text-anchor="middle" font-size="12" fill="#0D47A1">uiState con los colores</text>
+  <text x="750" y="107" text-anchor="middle" font-size="12" fill="#0D47A1">cargando = false</text>
+
+  <text x="255" y="30" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">1. Empieza</text>
+  <text x="490" y="30" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">2. Se suspende y espera</text>
+  <text x="750" y="30" text-anchor="middle" font-size="14" font-weight="bold" fill="#263238">3. Continúa</text>
+  <text x="450" y="305" text-anchor="middle" font-size="13" fill="#455A64">La corrutina se escribe de arriba abajo, pero mientras espera no ocupa el hilo principal.</text>
+</svg>

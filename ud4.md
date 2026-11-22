@@ -18,11 +18,10 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 7. [Menú lateral con ModalNavigationDrawer](#7-menú-lateral-con-modalnavigationdrawer)
 8. [Barra inferior con NavigationBar](#8-barra-inferior-con-navigationbar)
 9. [Flujo de acceso: login, registro y recuperación](#9-flujo-de-acceso-login-registro-y-recuperación)
-10. [Navegación manual sin Navigation Compose](#10-navegación-manual-sin-navigation-compose)
-11. [Actividades](#11-actividades)
-    - [11.1 Navegación básica y argumentos](#111-actividad-1-navegación-básica-y-argumentos)
-    - [11.2 Barra superior, menú lateral y barra inferior](#112-actividad-2-barra-superior-menú-lateral-y-barra-inferior)
-    - [11.3 Acceso y dos listas](#113-actividad-3-acceso-y-dos-listas)
+10. [Actividades](#10-actividades)
+    - [10.1 Navegación básica y argumentos](#101-actividad-1-navegación-básica-y-argumentos)
+    - [10.2 Barra superior, menú lateral y barra inferior](#102-actividad-2-barra-superior-menú-lateral-y-barra-inferior)
+    - [10.3 Acceso y dos listas](#103-actividad-3-acceso-y-dos-listas)
 
 ---
 
@@ -71,7 +70,6 @@ Al terminar esta unidad, podrás:
 5. Añadir una barra superior con acciones y menú de opciones, y cambiar su icono entre ≡ y ← según la pantalla.
 6. Crear un menú lateral (`ModalNavigationDrawer`) con cabecera de usuario y una barra inferior (`NavigationBar`).
 7. Organizar el acceso (login, registro y recuperación de contraseña) en un grafo separado y cerrar sesión sin poder volver atrás.
-8. Navegar sin Navigation Compose cuando la aplicación es muy sencilla, y saber qué se pierde.
 
 Esta unidad continúa la aplicación de hospedajes de la UD3: la lista y el detalle de hoteles pasan a navegar con `NavHost`, y se explican el menú lateral, la barra inferior y las pantallas de acceso. Es la base de la navegación que se pide en las Versiones 1.3, 1.4 y 1.5 del proyecto.
 
@@ -2958,6 +2956,8 @@ Ejecuta la app y prueba a cambiar de sección con la barra, con el menú lateral
 
 ## 9. Flujo de acceso: login, registro y recuperación
 
+> **Apartado de consulta.** Este apartado no se explica en clase. Sirve de ayuda para la [Versión 1.3](./versiones/version_1_3.md) del proyecto, que es de investigación: muestra cómo organizar las pantallas de acceso con `NavHost`, cómo entrar sin poder volver al login y cómo cerrar sesión sin poder volver al área principal. La sesión se simula con un objeto; en el proyecto la gestiona Firebase Authentication.
+
 El proyecto necesita pantallas de acceso: inicio de sesión, registro y recuperación de contraseña. Tras entrar, el usuario llega al área principal (con menú lateral y barra inferior). Al cerrar sesión, vuelve al login. Dos reglas:
 
 1. Una vez dentro, Atrás no puede volver al login.
@@ -3195,104 +3195,9 @@ NavHost(navController = navController, startDestination = destinoInicial) { ... 
 
 ---
 
-## 10. Navegación manual sin Navigation Compose
+## 10. Actividades
 
-El menú lateral y la barra inferior no dependen de Navigation Compose: son composables que avisan con un `onClick`. Si la aplicación es muy sencilla (tres secciones, sin detalle ni login), se pueden usar con la navegación con estado de la UD3: una variable dice qué sección se ve.
-
-```kotlin
-enum class SeccionManual(val titulo: String, val icono: ImageVector) {
-    INICIO("Inicio", Icons.Default.Home),
-    MIS_HOTELES("Mis hoteles", Icons.Default.Favorite),
-    EXPLORAR("Explorar", Icons.Default.Place)
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppManual() {
-    var seccion by rememberSaveable { mutableStateOf(SeccionManual.INICIO) }
-    val drawerState = rememberDrawerState(DrawerValue.Closed)
-    val scope = rememberCoroutineScope()
-
-    // Atrás: desde cualquier sección, vuelve a Inicio
-    BackHandler(enabled = seccion != SeccionManual.INICIO) {
-        seccion = SeccionManual.INICIO
-    }
-
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            ModalDrawerSheet {
-                SeccionManual.entries.forEach { s ->
-                    NavigationDrawerItem(
-                        label = { Text(s.titulo) },
-                        icon = { Icon(s.icono, contentDescription = null) },
-                        selected = s == seccion,
-                        onClick = {
-                            seccion = s
-                            scope.launch { drawerState.close() }
-                        }
-                    )
-                }
-            }
-        }
-    ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text(seccion.titulo) },
-                    navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Abrir menú")
-                        }
-                    }
-                )
-            },
-            bottomBar = {
-                NavigationBar {
-                    SeccionManual.entries.forEach { s ->
-                        NavigationBarItem(
-                            selected = s == seccion,
-                            onClick = { seccion = s },
-                            icon = { Icon(s.icono, contentDescription = null) },
-                            label = { Text(s.titulo) }
-                        )
-                    }
-                }
-            }
-        ) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
-                when (seccion) {
-                    SeccionManual.INICIO -> Text("Inicio")
-                    SeccionManual.MIS_HOTELES -> Text("Mis hoteles")
-                    SeccionManual.EXPLORAR -> Text("Explorar")
-                }
-            }
-        }
-    }
-}
-```
-
-- Un `enum class` describe las secciones; `SeccionManual.entries` es la lista de todas ellas.
-- `rememberSaveable` puede guardar un `enum`, así que la sección se conserva al girar.
-- `selected = s == seccion` y `onClick = { seccion = s }`: el menú y la barra cambian la misma variable.
-- El `when` hace de `NavHost`.
-
-| | Manual (estado) | Navigation Compose |
-|---|---|---|
-| Código para 2 o 3 secciones | Menos | Algo más |
-| Pila de pantallas (lista → detalle → ...) | A mano | Automática |
-| Botón Atrás | `BackHandler` | Automático |
-| Argumentos | Variables sueltas | Dentro de la ruta |
-| Recordar el estado de cada sección | A mano | `saveState` / `restoreState` |
-| Separar acceso y área principal | A mano | Grafos anidados |
-
-> El proyecto pide expresamente `NavHost` (Versión 1.4). La navegación manual sirve para entender qué hace Navigation Compose por debajo y para aplicaciones o partes de una pantalla muy pequeñas (por ejemplo, pestañas dentro de una sola pantalla).
-
----
-
-## 11. Actividades
-
-### 11.1 Actividad 1: Navegación básica y argumentos
+### 10.1 Actividad 1: Navegación básica y argumentos
 
 Crea un proyecto nuevo de Compose (`NavegacionBasica`) y añade las dependencias del apartado 2.4.
 
@@ -3333,7 +3238,7 @@ Crea un proyecto nuevo de Compose (`NavegacionBasica`) y añade las dependencias
 18. Añade al `NavHost` transiciones de deslizamiento: hacia la izquierda al avanzar y hacia la derecha al volver.
 19. Haz que solo la pantalla C aparezca con un fundido (`fadeIn(tween(600))`), usando el parámetro `enterTransition` de su `composable`.
 
-### 11.2 Actividad 2: Barra superior, menú lateral y barra inferior
+### 10.2 Actividad 2: Barra superior, menú lateral y barra inferior
 
 Continúa el proyecto `NavegacionBasica` de la actividad 1. Antes de empezar, deja las rutas `B` y `C` sin argumentos, como en el apartado 3.2. Si quieres conservar la versión con argumentos, haz antes una copia del proyecto o un *commit*.
 
@@ -3378,11 +3283,12 @@ Continúa el proyecto `NavegacionBasica` de la actividad 1. Antes de empezar, de
 **Parte F. Ampliación (opcional)**
 
 24. Añade animaciones de deslizamiento al `NavHost` (apartado 3.8).
-25. Escribe una versión de las partes C y D sin Navigation Compose (apartado 10) en una función aparte, `AppManual`. Compara cuántas líneas necesitas y qué comportamientos de la parte E se pierden.
 
-### 11.3 Actividad 3: Acceso y dos listas
+### 10.3 Actividad 3: Acceso y dos listas
 
-Continúa el proyecto `Peliculas` de las actividades 2 y 3 de la UD3 (lista, detalle, CRUD con diálogos y `Snackbar`) y aplica en él lo que has hecho en la actividad 2 con la app de colores. Al terminar, tendrás la estructura de navegación completa que piden las Versiones 1.3, 1.4 y 1.5 del proyecto.
+Continúa el proyecto `Peliculas` de las actividades 2 y 3 de la UD3 (lista, detalle, CRUD con diálogos y `Snackbar`) y aplica en él lo que has hecho en la actividad 2 con la app de colores. Con las partes A, B y C tendrás la navegación que piden las Versiones 1.4 y 1.5 del proyecto.
+
+Las partes D a G son opcionales: se basan en el apartado 9, que no se explica en clase y sirve de consulta para la Versión 1.3 (de investigación). Hacerlas te prepara el flujo de acceso que después conectarás con Firebase.
 
 **Parte A. Navegación de Películas (apartados 4.6, 6, 7 y 8)**
 
@@ -3393,42 +3299,47 @@ Continúa el proyecto `Peliculas` de las actividades 2 y 3 de la UD3 (lista, det
 5. Usa un único `Scaffold` común, dentro del `ModalNavigationDrawer` (apartado 7.1). Quita el `Scaffold` de las pantallas: la barra superior, el botón «+» (solo en Mis películas) y el `Snackbar` pasan al `Scaffold` común.
 6. Comprueba que el CRUD funciona igual que antes, que el detalle muestra ← y no tiene barra inferior, y que, si editas una película, el detalle y la lista muestran los datos nuevos.
 
-**Parte B. Grafos anidados (apartado 9.1)**
+**Parte B. Dos listas (apartado 4.3)**
 
-7. Añade las rutas `AUTH`, `LOGIN`, `REGISTRO`, `RECUPERAR_CLAVE` y `PRINCIPAL`.
-8. Agrupa en el `NavHost` las pantallas de acceso con `navigation(route = Rutas.AUTH, startDestination = Rutas.LOGIN)` y las del área principal con `navigation(route = Rutas.PRINCIPAL, startDestination = Rutas.INICIO)`.
-9. Calcula `enAreaPrincipal` con `hierarchy` y muestra la barra superior solo dentro del área principal.
+7. Añade al repositorio una lista fija de películas comunes («Cartelera») y cárgala en el `UiState` del ViewModel.
+8. Crea un composable `ListaPeliculas` reutilizable y úsalo en «Mis películas» y en una nueva sección «Cartelera» (ruta, entrada en el menú lateral y en la barra inferior).
+9. Añade a la ruta del detalle el argumento `editable` de tipo `NavType.BoolType`: `"detalle/{peliculaId}/{editable}"`. Desde «Mis películas» se abre con `true` y desde «Cartelera» con `false`. Con `false`, el detalle no muestra Editar ni Eliminar.
+10. Diferencia visualmente las dos listas: cabecera explicativa en «Cartelera» y botón «+» solo en «Mis películas».
 
-**Parte C. Sesión y pantallas de acceso (apartados 9.2 y 9.3)**
+**Parte C. Comprobaciones**
 
-10. Crea la `data class Usuario(nombre, email, foto)` y el `object AuthRepository` del apartado 9.2.
-11. Crea `PantallaLogin` con correo y contraseña. Valida que el correo contiene `@` y que la contraseña tiene al menos 6 caracteres. Los errores se muestran solo tras el primer intento.
-12. Crea `PantallaRegistro` con nombre, correo, contraseña y repetir contraseña. Además de las validaciones del login, comprueba que el nombre no está vacío y que las dos contraseñas coinciden.
-13. Crea `PantallaRecuperarClave` con un campo de correo. Al pulsar «Enviar enlace» con un correo válido, muestra un texto de confirmación en la pantalla.
-14. Haz que la cabecera del menú lateral muestre los datos de `AuthRepository.usuarioActual`.
+11. Comprueba que una película de «Cartelera» no se puede editar ni borrar, y que el CRUD de «Mis películas» sigue funcionando.
+12. Abre el detalle de una película desde «Mis películas», cambia a «Cartelera» con la barra inferior y vuelve a «Mis películas». Comprueba que aparece otra vez el detalle y explica por qué.
+13. Rellena una tabla como la del apartado 3.6 con el recorrido de la comprobación anterior: acción, llamada y pila después.
 
-**Parte D. Entrar y salir (apartados 9.4 y 9.5)**
+**Parte D. Grafos anidados (apartado 9.1, opcional)**
 
-15. Al entrar o registrarse, navega a `Rutas.PRINCIPAL` quitando de la pila el grafo `Rutas.AUTH`.
-16. Sustituye la opción «Salir» del menú lateral por «Cerrar sesión», que cierre el menú, cierre la sesión y navegue a `Rutas.AUTH` quitando de la pila el grafo `Rutas.PRINCIPAL`. Añade también «Cerrar sesión» al menú ⋮.
-17. Haz que el destino inicial dependa de si hay sesión (apartado 9.6). Para probarlo, llama a `AuthRepository.iniciarSesion(...)` antes de `setContent` en `MainActivity`, comprueba que se empieza en Inicio y quita después esa línea.
+14. Añade las rutas `AUTH`, `LOGIN`, `REGISTRO`, `RECUPERAR_CLAVE` y `PRINCIPAL`.
+15. Agrupa en el `NavHost` las pantallas de acceso con `navigation(route = Rutas.AUTH, startDestination = Rutas.LOGIN)` y las del área principal con `navigation(route = Rutas.PRINCIPAL, startDestination = Rutas.INICIO)`.
+16. Calcula `enAreaPrincipal` con `hierarchy` y muestra la barra superior solo dentro del área principal.
 
-**Parte E. Dos listas (apartado 4.3)**
+**Parte E. Sesión y pantallas de acceso (apartados 9.2 y 9.3, opcional)**
 
-18. Añade al repositorio una lista fija de películas comunes («Cartelera») y cárgala en el `UiState` del ViewModel.
-19. Crea un composable `ListaPeliculas` reutilizable y úsalo en «Mis películas» y en una nueva sección «Cartelera» (ruta, entrada en el menú lateral y en la barra inferior).
-20. Añade a la ruta del detalle el argumento `editable` de tipo `NavType.BoolType`: `"detalle/{peliculaId}/{editable}"`. Desde «Mis películas» se abre con `true` y desde «Cartelera» con `false`. Con `false`, el detalle no muestra Editar ni Eliminar.
-21. Diferencia visualmente las dos listas: cabecera explicativa en «Cartelera» y botón «+» solo en «Mis películas».
+17. Crea la `data class Usuario(nombre, email, foto)` y el `object AuthRepository` del apartado 9.2.
+18. Crea `PantallaLogin` con correo y contraseña. Valida que el correo contiene `@` y que la contraseña tiene al menos 6 caracteres. Los errores se muestran solo tras el primer intento.
+19. Crea `PantallaRegistro` con nombre, correo, contraseña y repetir contraseña. Además de las validaciones del login, comprueba que el nombre no está vacío y que las dos contraseñas coinciden.
+20. Crea `PantallaRecuperarClave` con un campo de correo. Al pulsar «Enviar enlace» con un correo válido, muestra un texto de confirmación en la pantalla.
+21. Haz que la cabecera del menú lateral muestre los datos de `AuthRepository.usuarioActual`.
 
-**Parte F. Comprobaciones**
+**Parte F. Entrar y salir (apartados 9.4 a 9.6, opcional)**
 
-22. Abre la aplicación, pulsa «Crear una cuenta» y después Atrás: debes volver al login. Regístrate y pulsa Atrás: la aplicación se cierra, no vuelves al registro.
-23. Entra, abre el detalle de una película, cierra sesión desde el menú ⋮ y pulsa Atrás: la aplicación se cierra, no vuelves al detalle.
-24. En el login, intenta abrir el menú lateral deslizando el dedo: no debe abrirse.
-25. Comprueba que una película de «Cartelera» no se puede editar ni borrar, y que el CRUD de «Mis películas» sigue funcionando.
-26. Rellena una tabla como la del apartado 3.6 con el recorrido de las comprobaciones 22 y 23: acción, llamada y pila después.
+22. Al entrar o registrarse, navega a `Rutas.PRINCIPAL` quitando de la pila el grafo `Rutas.AUTH`.
+23. Sustituye la opción «Salir» del menú lateral por «Cerrar sesión», que cierre el menú, cierre la sesión y navegue a `Rutas.AUTH` quitando de la pila el grafo `Rutas.PRINCIPAL`. Añade también «Cerrar sesión» al menú ⋮.
+24. Haz que el destino inicial dependa de si hay sesión (apartado 9.6). Para probarlo, llama a `AuthRepository.iniciarSesion(...)` antes de `setContent` en `MainActivity`, comprueba que se empieza en Inicio y quita después esa línea.
 
-**Parte G. Ampliación (opcional)**
+**Parte G. Comprobaciones del acceso (opcional)**
 
-27. Añade una pantalla `Perfil` de nivel inferior, con ruta `"perfil/{email}"` (codifica el correo con `Uri.encode`), que se abra al pulsar la cabecera del menú lateral y muestre los datos del usuario.
-28. Añade un `BackHandler` en Inicio que, en lugar de cerrar la aplicación directamente, muestre un `Snackbar` «Pulsa otra vez para salir» y solo salga si se vuelve a pulsar Atrás en los dos segundos siguientes.
+25. Abre la aplicación, pulsa «Crear una cuenta» y después Atrás: debes volver al login. Regístrate y pulsa Atrás: la aplicación se cierra, no vuelves al registro.
+26. Entra, abre el detalle de una película, cierra sesión desde el menú ⋮ y pulsa Atrás: la aplicación se cierra, no vuelves al detalle.
+27. En el login, intenta abrir el menú lateral deslizando el dedo: no debe abrirse.
+28. Rellena una tabla como la del apartado 3.6 con el recorrido de las comprobaciones 25 y 26: acción, llamada y pila después.
+
+**Parte H. Ampliación (opcional)**
+
+29. Añade una pantalla `Perfil` de nivel inferior, con ruta `"perfil/{email}"` (codifica el correo con `Uri.encode`), que se abra al pulsar la cabecera del menú lateral y muestre los datos del usuario.
+30. Añade un `BackHandler` en Inicio que, en lugar de cerrar la aplicación directamente, muestre un `Snackbar` «Pulsa otra vez para salir» y solo salga si se vuelve a pulsar Atrás en los dos segundos siguientes.

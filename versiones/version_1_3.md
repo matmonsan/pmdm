@@ -22,6 +22,7 @@ Punto de partida:
 
 - Las pantallas siguen el mismo esquema de las unidades anteriores: reciben datos y avisan con eventos. El acceso a Firebase queda dentro de un repositorio.
 - La navegación entre las pantallas de acceso y la pantalla principal es libre: podéis hacerla como consideréis (con estado de Compose, como en la Versión 1.2, o con `NavHost`). En la Versión 1.4 será obligatorio que toda la navegación de la aplicación esté hecha con `NavHost`.
+- El [apartado 9 de la UD4](../ud4.md#9-flujo-de-acceso-login-registro-y-recuperación) no se explica en clase, pero conviene consultarlo: muestra con `NavHost` las pantallas de inicio de sesión, registro y recuperación de contraseña, cómo entrar sin poder volver al login con Atrás y cómo cerrar sesión sin poder volver a una pantalla protegida. La sesión está simulada con un objeto `AuthRepository`; sus funciones son las que tendréis que implementar con Firebase.
 
 Documentación oficial recomendada:
 

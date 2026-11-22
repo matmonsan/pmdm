@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="430" viewBox="0 0 900 430" font-family="Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#37474F"/>
+    </marker>
+  </defs>
+  <rect width="900" height="430" fill="#FFFFFF"/>
+
+  <!-- UI -->
+  <rect x="20" y="40" width="260" height="300" rx="14" fill="#E3F2FD" stroke="#1565C0" stroke-width="2"/>
+  <text x="150" y="72" text-anchor="middle" font-size="20" font-weight="bold" fill="#0D47A1">ui</text>
+  <text x="150" y="94" text-anchor="middle" font-size="13" fill="#0D47A1">Presentación</text>
+  <text x="40" y="130" font-size="13" font-family="Consolas, Menlo, monospace" fill="#0D47A1">AppNavegacion.kt</text>
+  <text x="40" y="152" font-size="13" font-family="Consolas, Menlo, monospace" fill="#0D47A1">ListaColores.kt</text>
+  <text x="40" y="174" font-size="13" font-family="Consolas, Menlo, monospace" fill="#0D47A1">PantallaDetalleColor.kt</text>
+  <text x="40" y="196" font-size="13" font-family="Consolas, Menlo, monospace" fill="#0D47A1">...</text>
+  <rect x="35" y="220" width="230" height="60" rx="8" fill="#E8F5E9" stroke="#2E7D32" stroke-width="1.5"/>
+  <text x="150" y="245" text-anchor="middle" font-size="13" font-family="Consolas, Menlo, monospace" fill="#1B5E20">viewmodel/</text>
+  <text x="150" y="265" text-anchor="middle" font-size="12" font-family="Consolas, Menlo, monospace" fill="#1B5E20">ColoresViewModel.kt</text>
+  <text x="150" y="315" text-anchor="middle" font-size="12" fill="#263238">Dibuja y guarda el estado</text>
+
+  <!-- DOMAIN -->
+  <rect x="320" y="40" width="260" height="300" rx="14" fill="#FFF8E1" stroke="#F9A825" stroke-width="3"/>
+  <text x="450" y="72" text-anchor="middle" font-size="20" font-weight="bold" fill="#E65100">domain</text>
+  <text x="450" y="94" text-anchor="middle" font-size="13" fill="#E65100">Dominio (no depende de nadie)</text>
+  <text x="340" y="130" font-size="13" font-family="Consolas, Menlo, monospace" fill="#BF360C">model/ColorItem.kt</text>
+  <text x="340" y="160" font-size="13" font-family="Consolas, Menlo, monospace" fill="#BF360C">repository/</text>
+  <text x="352" y="180" font-size="13" font-family="Consolas, Menlo, monospace" fill="#BF360C">ColorRepository.kt</text>
+  <text x="352" y="198" font-size="11" fill="#BF360C">(interfaz)</text>
+  <text x="340" y="228" font-size="13" font-family="Consolas, Menlo, monospace" fill="#BF360C">usecase/</text>
+  <text x="352" y="248" font-size="12" font-family="Consolas, Menlo, monospace" fill="#BF360C">ObtenerMisColoresUseCase</text>
+  <text x="352" y="266" font-size="12" font-family="Consolas, Menlo, monospace" fill="#BF360C">AnadirColorUseCase ...</text>
+  <text x="450" y="315" text-anchor="middle" font-size="12" fill="#263238">Qué hace la aplicación</text>
+
+  <!-- DATA -->
+  <rect x="620" y="40" width="260" height="300" rx="14" fill="#ECEFF1" stroke="#455A64" stroke-width="2"/>
+  <text x="750" y="72" text-anchor="middle" font-size="20" font-weight="bold" fill="#263238">data</text>
+  <text x="750" y="94" text-anchor="middle" font-size="13" fill="#263238">Datos</text>
+  <text x="640" y="130" font-size="13" font-family="Consolas, Menlo, monospace" fill="#263238">repository/</text>
+  <text x="652" y="150" font-size="13" font-family="Consolas, Menlo, monospace" fill="#263238">ColorRepositoryImpl.kt</text>
+  <text x="640" y="185" font-size="13" font-family="Consolas, Menlo, monospace" fill="#263238">datasource/</text>
+  <text x="652" y="205" font-size="13" font-family="Consolas, Menlo, monospace" fill="#263238">ColoresDataSource.kt</text>
+  <text x="750" y="255" text-anchor="middle" font-size="12" fill="#455A64">memoria · Room (UD6)</text>
+  <text x="750" y="273" text-anchor="middle" font-size="12" fill="#455A64">API REST (UD7)</text>
+  <text x="750" y="315" text-anchor="middle" font-size="12" fill="#263238">Dónde y cómo se guardan</text>
+
+  <!-- Dependencias -->
+  <line x1="282" y1="190" x2="316" y2="190" stroke="#37474F" stroke-width="3" marker-end="url(#f)"/>
+  <line x1="618" y1="190" x2="584" y2="190" stroke="#37474F" stroke-width="3" marker-end="url(#f)"/>
+  <text x="450" y="380" text-anchor="middle" font-size="14" fill="#263238">Las flechas indican quién conoce a quién: ui y data usan las clases de domain;</text>
+  <text x="450" y="402" text-anchor="middle" font-size="14" fill="#263238">domain no importa nada de ui ni de data.</text>
+</svg>
