@@ -1503,7 +1503,7 @@ plugins {
 }
 ```
 
-**`build.gradle.kts (Module :app)`**: los dos *plugins* y estas dependencias, además de las que ya tenía el proyecto de la UD4 (Navigation Compose, iconos y Coil):
+**`build.gradle.kts (Module :app)`**: los dos *plugins* y estas dependencias, además de las que ya tenía el proyecto de la UD4 (Navigation Compose e iconos):
 
 ```kotlin
 plugins {
@@ -2130,23 +2130,31 @@ Continúa el proyecto de la actividad 1.
 
 ### 9.3 Actividad 3: Películas con MVVM, casos de uso y Hilt
 
-Continúa el proyecto `Peliculas` de la actividad 3 de la UD4 (navegación con menú lateral y barra inferior, «Mis películas» con CRUD y «Cartelera»). Al terminar, tendrás la estructura que pide la Versión 1.6 del proyecto.
+Continúa el proyecto `Peliculas` de las actividades 2 y 3 de la UD3 (lista, detalle y CRUD con diálogos y `Snackbar`). Al terminar, tendrás la estructura que piden las Versiones 1.5 y 1.6 del proyecto.
 
-**Parte A. StateFlow y corrutinas (apartados 4 y 5)**
+**Parte A. Navegación y dos listas (UD4 y apartado 3)**
 
-1. Cambia el ViewModel para que exponga el estado con `StateFlow` y léelo con `collectAsStateWithLifecycle()`.
-2. Cambia las funciones del repositorio a `suspend`, con `withContext(Dispatchers.IO)` y un `delay` que simule el acceso a los datos. Llama a todas desde el ViewModel con `viewModelScope.launch`.
-3. Añade `cargando` al estado y muestra un indicador de progreso mientras vale `true`.
-4. Comprueba que los diálogos de alta, edición y borrado de la UD3 y el `Snackbar` siguen funcionando.
+1. Cambia la navegación con estado por un `NavHost`, como en el apartado 4.6 de la UD4, con las rutas `MIS_PELICULAS`, `CARTELERA` y `DETALLE` (`"detalle/{peliculaId}/{editable}"`).
+2. Añade al repositorio una lista fija de películas comunes («Cartelera») con `listOf`, y al `UiState` una segunda lista para ellas. Obtén el ViewModel una sola vez, fuera del `NavHost`.
+3. Crea un composable `ListaPeliculas` reutilizable y úsalo en «Mis películas» y en «Cartelera». La cartelera muestra un aviso al principio de la lista.
+4. El detalle recibe `editable` en la ruta: desde «Mis películas» se abre con `true` y muestra Editar y Eliminar; desde «Cartelera», con `false`, y no los muestra.
+5. Añade una barra inferior (UD4, apartado 8) con las dos secciones y el botón «+» solo en «Mis películas».
 
-**Parte B. Clean Architecture (apartado 6)**
+**Parte B. StateFlow y corrutinas (apartados 4 y 5)**
 
-5. Organiza el proyecto en los paquetes `data`, `domain`, `di` y `ui`.
-6. Crea la interfaz `PeliculaRepository` en el dominio y su implementación en datos. La implementación guarda las películas en una fuente de datos con un formato distinto al del modelo del dominio (por ejemplo, la duración como texto `"2h 15min"` en lugar de minutos) y las convierte.
-7. Crea un caso de uso por cada operación del CRUD y uno para la cartelera. Pon en el caso de uso de alta alguna regla de la aplicación (por ejemplo, que el título no esté vacío ni repetido) y haz que el ViewModel muestre un mensaje si no se cumple.
+6. Cambia el ViewModel para que exponga el estado con `StateFlow` y léelo con `collectAsStateWithLifecycle()`.
+7. Cambia las funciones del repositorio a `suspend`, con `withContext(Dispatchers.IO)` y un `delay` que simule el acceso a los datos. Llama a todas desde el ViewModel con `viewModelScope.launch`.
+8. Añade `cargando` al estado y muestra un indicador de progreso mientras vale `true`.
+9. Comprueba que los diálogos de alta, edición y borrado de la UD3 y el `Snackbar` siguen funcionando.
 
-**Parte C. Hilt (apartado 7)**
+**Parte C. Clean Architecture (apartado 6)**
 
-8. Configura Hilt en el proyecto (`Application`, `Activity`, `@Inject constructor`, módulos y `@HiltViewModel`).
-9. Decide qué clases necesitan `@Singleton` y justifícalo en un comentario sobre cada una.
-10. Escribe en el `README.md` del repositorio un esquema de las tres capas del proyecto con las clases de cada una.
+10. Organiza el proyecto en los paquetes `data`, `domain`, `di` y `ui`.
+11. Crea la interfaz `PeliculaRepository` en el dominio y su implementación en datos. La implementación guarda las películas en una fuente de datos con un formato distinto al del modelo del dominio (por ejemplo, la duración como texto `"2h 15min"` en lugar de minutos) y las convierte.
+12. Crea un caso de uso por cada operación del CRUD y uno para la cartelera. Pon en el caso de uso de alta alguna regla de la aplicación (por ejemplo, que el título no esté vacío ni repetido) y haz que el ViewModel muestre un mensaje si no se cumple.
+
+**Parte D. Hilt (apartado 7)**
+
+13. Configura Hilt en el proyecto (`Application`, `Activity`, `@Inject constructor`, módulos y `@HiltViewModel`).
+14. Decide qué clases necesitan `@Singleton` y justifícalo en un comentario sobre cada una.
+15. Escribe en el `README.md` del repositorio un esquema de las tres capas del proyecto con las clases de cada una.

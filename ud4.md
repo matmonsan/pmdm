@@ -21,7 +21,7 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 10. [Actividades](#10-actividades)
     - [10.1 Navegación básica y argumentos](#101-actividad-1-navegación-básica-y-argumentos)
     - [10.2 Barra superior, menú lateral y barra inferior](#102-actividad-2-barra-superior-menú-lateral-y-barra-inferior)
-    - [10.3 Acceso y dos listas](#103-actividad-3-acceso-y-dos-listas)
+    - [10.3 Portal con menú lateral, barra superior y barra inferior](#103-actividad-3-portal-con-menú-lateral-barra-superior-y-barra-inferior)
 
 ---
 
@@ -2112,7 +2112,16 @@ El menú tendrá cuatro secciones: Inicio, Pantalla A, Pantalla B y una pantalla
 | Acerca de (nueva) | ≡ | Acerca de | Sí |
 | C | ← | Ninguna | No |
 
-**Cómo se consigue.** Un `ModalNavigationDrawer` envuelve al `Scaffold` del apartado 6.3 (apartado 7.1) y guarda en un estado si está abierto o cerrado (apartado 7.2). Las opciones salen de una lista de secciones (apartado 7.3), y al elegir una se navega sin apilar pantallas (apartado 7.4). El panel se dibuja con una cabecera y una opción por sección (apartado 7.5). En el apartado 7.6 se juntan las piezas en la app de colores.
+**Cómo se consigue.** Se parte del proyecto tal como quedó en el apartado 6.3 y se va modificando en cuatro etapas. Al final de cada una, la aplicación compila y se puede ejecutar para ver el avance:
+
+| Apartado | Qué se consigue | Archivos que se tocan |
+|---|---|---|
+| 7.2 | Un menú lateral vacío que se abre con ≡ en Inicio | `AppNavegacion.kt`, `BarraSuperior.kt` |
+| 7.3 | La pantalla Acerca de y la lista de secciones; A, B y Acerca de muestran ≡ | `Rutas.kt`, `Pantallas.kt`, `Secciones.kt` (nuevo), `AppNavegacion.kt` |
+| 7.4 | Ir a una sección sin que se acumulen pantallas en la pila | `Secciones.kt`, `AppNavegacion.kt` |
+| 7.5 | El contenido del menú: cabecera con el usuario y una opción por sección | `res/drawable` (la foto), `MenuLateral.kt` (nuevo), `AppNavegacion.kt` |
+
+El apartado 7.1 presenta antes las piezas de Compose que se usan, y el apartado 7.6 reúne el código completo de todos los archivos.
 
 ### 7.1 Las piezas del menú lateral
 
@@ -2127,37 +2136,31 @@ El menú tendrá cuatro secciones: Inicio, Pantalla A, Pantalla B y una pantalla
 | `DrawerState` | Si el panel está abierto o cerrado |
 | El contenido (`content`) | El resto de la pantalla: el `Scaffold` con la barra y el `NavHost` |
 
-La estructura es:
-
-```kotlin
-ModalNavigationDrawer(
-    drawerState = drawerState,
-    drawerContent = {
-        ModalDrawerSheet {
-            // cabecera y opciones del menú
-        }
-    }
-) {
-    Scaffold(topBar = { ... }) { innerPadding ->
-        NavHost(..., modifier = Modifier.padding(innerPadding)) { ... }
-    }
-}
-```
-
-El menú lateral envuelve al `Scaffold`. Así el panel se abre por encima de todo, incluida la barra superior. Si fuera al revés (el menú dentro del `Scaffold`), el panel quedaría debajo de la barra.
+Todas estas piezas se colocan en `AppNavegacion.kt`. El `ModalNavigationDrawer` envuelve al `Scaffold` que ya existe desde el apartado 6.3: el panel va en su parámetro `drawerContent`, y el `Scaffold` entero pasa a estar dentro de sus llaves. Así el panel se abre por encima de todo, incluida la barra superior. Si fuera al revés (el menú dentro del `Scaffold`), el panel quedaría debajo de la barra.
 
 ### 7.2 Abrir y cerrar el menú
 
-Si el menú está abierto o cerrado se guarda en un `DrawerState`:
+En esta etapa se monta el menú lateral con un panel provisional que solo tiene un texto. El objetivo es que se abra con el icono ≡ y se cierre con Atrás o tocando fuera. Las opciones de verdad se añaden en el apartado 7.5.
+
+#### El estado del menú
+
+Si el menú está abierto o cerrado se guarda en un `DrawerState`. Se crea en **`AppNavegacion.kt`**, al principio de la función, justo después del `navController`:
 
 ```kotlin
-val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-val scope = rememberCoroutineScope()
+@Composable
+fun AppNavegacion() {
+    val navController = rememberNavController()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)   // nuevo
+    val scope = rememberCoroutineScope()                                       // nuevo
+
+    // Pantalla actual (apartado 6.1)
+    val entrada by navController.currentBackStackEntryAsState()
+    // ... el resto, sin cambios
 ```
 
 `rememberDrawerState` crea el estado y lo conserva entre recomposiciones, igual que `rememberNavController`. Empieza cerrado (`DrawerValue.Closed`).
 
-Para abrirlo desde el icono ≡ y cerrarlo al elegir una opción:
+`scope` hace falta para abrir y cerrar el menú. Las funciones que lo hacen son estas:
 
 ```kotlin
 scope.launch { drawerState.open() }    // abrir
@@ -2166,37 +2169,251 @@ scope.launch { drawerState.close() }   // cerrar
 
 `open()` y `close()` son funciones `suspend`: no terminan hasta que acaba la animación del panel. Por eso se llaman dentro de una corrutina creada con `rememberCoroutineScope()`, igual que `showSnackbar` en la UD3 (apartado 2.2). `drawerState.isOpen` dice si el panel está abierto en ese momento.
 
-El parámetro `gesturesEnabled` de `ModalNavigationDrawer` permite o impide abrir el menú deslizando el dedo desde el borde. En C no debe abrirse, porque es de nivel inferior y su forma de salir es la flecha ←. Se usa el mismo valor que decide el icono de la barra:
+Estas dos líneas todavía no se escriben en ningún sitio: se usan más abajo, en el icono ≡ y en el `BackHandler`.
+
+#### El icono ≡ en la barra superior
+
+La barra tiene que mostrar ≡ en las pantallas de nivel superior y avisar cuando se pulse. En **`BarraSuperior.kt`** cambian dos cosas: se añade el parámetro `onAbrirMenu` y el `navigationIcon` pasa a ser el `if`-`else` del apartado 6.2. El archivo completo queda así:
 
 ```kotlin
-ModalNavigationDrawer(
-    drawerState = drawerState,
-    gesturesEnabled = esNivelSuperior,
-    ...
-)
-```
+package com.ejemplo.navegacion
 
-#### Atrás con el menú abierto
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun BarraSuperior(
+    titulo: String,
+    esNivelSuperior: Boolean,
+    onAbrirMenu: () -> Unit,          // nuevo
+    onVolver: () -> Unit,
+    onInicio: () -> Unit,
+    onIrA: () -> Unit,
+    onIrB: () -> Unit
+) {
+    var menuAbierto by remember { mutableStateOf(false) }
 
-`ModalNavigationDrawer` cierra el panel cuando se pulsa Atrás. Pero el `NavHost` también responde a Atrás quitando la pantalla de arriba, y cuando hay varios composables que responden a Atrás, tiene prioridad el último que se ha creado. El `NavHost` está dentro del menú, así que se crea después y es el que responde. En la app de colores se ve así: en B, con el menú abierto, Atrás quita B de la pila y el menú sigue abierto encima de Inicio.
-
-Se soluciona con un `BackHandler` (UD3, apartado 5.5) escrito después del `NavHost`, que solo está activo mientras el menú está abierto:
-
-```kotlin
-NavHost(...) { ... }
-
-BackHandler(enabled = drawerState.isOpen) {
-    scope.launch { drawerState.close() }
+    TopAppBar(
+        title = { Text(titulo) },
+        navigationIcon = {
+            if (esNivelSuperior) {                                  // nuevo: ≡ en las secciones
+                IconButton(onClick = onAbrirMenu) {
+                    Icon(Icons.Default.Menu, contentDescription = "Abrir menú")
+                }
+            } else {
+                IconButton(onClick = onVolver) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                }
+            }
+        },
+        actions = {
+            IconButton(onClick = onInicio) {
+                Icon(Icons.Default.Home, contentDescription = "Inicio")
+            }
+            Box {
+                IconButton(onClick = { menuAbierto = true }) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "Más opciones")
+                }
+                DropdownMenu(expanded = menuAbierto, onDismissRequest = { menuAbierto = false }) {
+                    DropdownMenuItem(
+                        text = { Text("Pantalla A") },
+                        onClick = { menuAbierto = false; onIrA() }
+                    )
+                    DropdownMenuItem(
+                        text = { Text("Pantalla B") },
+                        onClick = { menuAbierto = false; onIrB() }
+                    )
+                }
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    )
 }
 ```
 
-Al estar escrito después del `NavHost`, se crea después y tiene prioridad sobre él. Con el menú cerrado, `enabled` es `false`: el `BackHandler` no hace nada y Atrás vuelve a quitar pantallas de la pila.
+La barra no recibe el `drawerState`: avisa con `onAbrirMenu` y quien la usa (`AppNavegacion`) abre el panel. Es el mismo principio de las pantallas (apartado 3.3): la barra recibe datos y lambdas.
+
+#### El ModalNavigationDrawer alrededor del Scaffold
+
+En **`AppNavegacion.kt`** se envuelve el `Scaffold` en un `ModalNavigationDrawer` y se pasa `onAbrirMenu` a la barra. El archivo completo queda así; los comentarios `// nuevo` marcan lo que cambia respecto al apartado 6.3:
+
+```kotlin
+package com.ejemplo.navegacion
+
+val seccionesPrincipales = listOf(Rutas.INICIO)
+
+@Composable
+fun AppNavegacion() {
+    val navController = rememberNavController()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)   // nuevo
+    val scope = rememberCoroutineScope()                                       // nuevo
+
+    // Pantalla actual (apartado 6.1)
+    val entrada by navController.currentBackStackEntryAsState()
+    val destino = entrada?.destination
+
+    val titulo = when (destino?.route) {
+        Rutas.A -> "Pantalla A"
+        Rutas.B -> "Pantalla B"
+        Rutas.C -> "Pantalla C"
+        else -> "Inicio"
+    }
+    val esNivelSuperior = destino?.route in seccionesPrincipales
+
+    ModalNavigationDrawer(                                   // nuevo
+        drawerState = drawerState,
+        gesturesEnabled = esNivelSuperior,
+        drawerContent = {
+            ModalDrawerSheet {
+                Text("Menú lateral", modifier = Modifier.padding(16.dp))   // provisional
+            }
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                BarraSuperior(
+                    titulo = titulo,
+                    esNivelSuperior = esNivelSuperior,
+                    onAbrirMenu = { scope.launch { drawerState.open() } },   // nuevo
+                    onVolver = { navController.navigateUp() },
+                    onInicio = { navController.popBackStack(route = Rutas.INICIO, inclusive = false) },
+                    onIrA = { navController.navigate(Rutas.A) { launchSingleTop = true } },
+                    onIrB = { navController.navigate(Rutas.B) { launchSingleTop = true } }
+                )
+            }
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = Rutas.INICIO,
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                // Los mismos destinos del apartado 6.3
+                composable(Rutas.INICIO) {
+                    PantallaInicio(
+                        onIrA = { navController.navigate(Rutas.A) },
+                        onIrB = { navController.navigate(Rutas.B) }
+                    )
+                }
+                composable(Rutas.A) {
+                    PantallaA(onAtras = { navController.popBackStack() })
+                }
+                composable(Rutas.B) {
+                    PantallaB(
+                        onAtras = { navController.popBackStack() },
+                        onSiguiente = { navController.navigate(Rutas.C) }
+                    )
+                }
+                composable(Rutas.C) {
+                    PantallaC(
+                        onAtras = { navController.popBackStack() },
+                        onInicio = { navController.popBackStack(route = Rutas.INICIO, inclusive = false) }
+                    )
+                }
+            }
+
+            // Atrás cierra el menú si está abierto (se explica más abajo)   // nuevo
+            BackHandler(enabled = drawerState.isOpen) {
+                scope.launch { drawerState.close() }
+            }
+        }   // fin del contenido del ModalNavigationDrawer                   // nuevo
+    }
+}
+```
+
+- **`drawerState = drawerState`** conecta el menú con su estado: cuando `onAbrirMenu` llama a `drawerState.open()`, el panel se abre.
+- **`drawerContent`** es lo que se dibuja dentro del panel. `ModalDrawerSheet` es el panel en sí (fondo, anchura, esquinas redondeadas). De momento solo contiene un texto.
+- **Las llaves después de `ModalNavigationDrawer(...)`** son su contenido: el `Scaffold` entero, igual que estaba, solo que una tabulación más a la derecha.
+- **`gesturesEnabled = esNivelSuperior`** permite abrir el menú deslizando el dedo solo en las pantallas de nivel superior. En C, deslizar desde el borde no debe abrir el menú: su forma de salir es la flecha ←.
+
+Ejecuta la app. En Inicio aparece ≡ y al pulsarlo se abre un panel con el texto «Menú lateral». En A, B y C sigue apareciendo la flecha, porque `seccionesPrincipales` todavía solo tiene Inicio; eso cambia en el apartado 7.3.
+
+#### Atrás con el menú abierto
+
+El `BackHandler` del final necesita una explicación. `ModalNavigationDrawer` cierra el panel cuando se pulsa Atrás. Pero el `NavHost` también responde a Atrás quitando la pantalla de arriba, y cuando hay varios composables que responden a Atrás, tiene prioridad el último que se ha creado. El `NavHost` está dentro del menú, así que se crea después y es el que responde. Sin el `BackHandler`, en B con el menú abierto, Atrás quitaría B de la pila y el menú seguiría abierto encima de Inicio.
+
+El `BackHandler` (UD3, apartado 5.5) está escrito después del `NavHost`, así que se crea después y tiene prioridad sobre él. Solo está activo mientras el menú está abierto (`enabled = drawerState.isOpen`): entonces Atrás cierra el menú y no hace nada más. Con el menú cerrado, `enabled` es `false` y Atrás vuelve a quitar pantallas de la pila.
 
 ### 7.3 Las secciones del menú
 
-Cada opción del menú necesita tres datos: la ruta a la que lleva, el texto y el icono. Se agrupan en una `data class`, y las opciones se escriben en una lista:
+En esta etapa se crea la pantalla Acerca de y se escribe la lista de secciones del menú. Con esa lista, A, B y Acerca de pasan a ser de nivel superior y muestran ≡.
+
+#### La pantalla Acerca de
+
+Cada pantalla necesita una ruta. En **`Rutas.kt`** se añade la constante `ACERCA_DE`. El archivo completo queda así:
 
 ```kotlin
+package com.ejemplo.navegacion
+
+object Rutas {
+    const val INICIO = "inicio"
+    const val A = "a"
+    const val B = "b"
+    const val C = "c"
+    const val ACERCA_DE = "acerca_de"   // nuevo
+}
+```
+
+En **`Pantallas.kt`**, al final del archivo, después de `PantallaC`, se añade la pantalla:
+
+```kotlin
+@Composable
+fun PantallaAcercaDe() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF9E9E9E))   // gris
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "App de colores\nEjemplo de navegación de la UD4",
+            fontSize = 22.sp,
+            color = Color.White,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+```
+
+No recibe ninguna lambda porque no tiene botones: se sale de ella con el menú o con Atrás. `\n` dentro del texto es un salto de línea.
+
+En **`AppNavegacion.kt`** se añade el destino dentro del `NavHost`, después del de C:
+
+```kotlin
+                composable(Rutas.C) {
+                    PantallaC(
+                        onAtras = { navController.popBackStack() },
+                        onInicio = { navController.popBackStack(route = Rutas.INICIO, inclusive = false) }
+                    )
+                }
+                composable(Rutas.ACERCA_DE) {   // nuevo
+                    PantallaAcercaDe()
+                }
+            }   // fin del NavHost
+```
+
+Y en el mismo archivo, en el `when` del título, una línea antes del `else`:
+
+```kotlin
+    val titulo = when (destino?.route) {
+        Rutas.A -> "Pantalla A"
+        Rutas.B -> "Pantalla B"
+        Rutas.C -> "Pantalla C"
+        Rutas.ACERCA_DE -> "Acerca de"   // nuevo
+        else -> "Inicio"
+    }
+```
+
+Todavía no hay forma de llegar a Acerca de: se hará desde el menú en el apartado 7.5.
+
+#### La lista de secciones
+
+Cada opción del menú necesita tres datos: la ruta a la que lleva, el texto y el icono. Se agrupan en una `data class`, y las opciones se escriben en una lista. Todo esto va en un archivo nuevo, **`Secciones.kt`**, en el mismo paquete que los demás (**New → Kotlin Class/File → File**):
+
+```kotlin
+package com.ejemplo.navegacion
+
 data class Seccion(
     val ruta: String,
     val titulo: String,
@@ -2209,13 +2426,7 @@ val seccionesMenu = listOf(
     Seccion(Rutas.B, "Pantalla B", Icons.Default.Star),
     Seccion(Rutas.ACERCA_DE, "Acerca de", Icons.Default.Info)
 )
-```
 
-La pantalla nueva necesita su ruta en `Rutas.kt`, igual que las del apartado 3.2: `const val ACERCA_DE = "acerca_de"`. El orden de la lista es el orden en que aparecen las opciones en el menú.
-
-Esta lista sustituye a `seccionesPrincipales` del apartado 6.2: las pantallas de nivel superior son justamente las del menú. Para no repetir comparaciones, se añaden dos funciones de ayuda:
-
-```kotlin
 // ¿El destino actual es esta sección?
 fun NavDestination?.esSeccion(seccion: Seccion): Boolean =
     this?.route == seccion.ruta
@@ -2225,21 +2436,35 @@ fun NavDestination?.esNivelSuperior(): Boolean =
     seccionesMenu.any { this.esSeccion(it) }
 ```
 
-Son funciones de extensión (UD1): se llaman como si fueran del propio destino, `destino.esSeccion(seccion)` o `destino.esNivelSuperior()`. El `?` de `NavDestination?` permite llamarlas aunque `destino` sea `null`, en el instante del arranque; en ese caso las dos devuelven `false`. `any` devuelve `true` si al menos un elemento de la lista cumple la condición.
+- **`seccionesMenu`** es una lista que no está dentro de ninguna función, así que se puede usar desde cualquier archivo. El orden de la lista es el orden en que aparecerán las opciones en el menú.
+- **`ImageVector`** es el tipo de los iconos de Material (`Icons.Default.Home`...).
+- **`esSeccion` y `esNivelSuperior`** son funciones de extensión (UD1): se llaman como si fueran del propio destino, `destino.esSeccion(seccion)` o `destino.esNivelSuperior()`. El `?` de `NavDestination?` permite llamarlas aunque `destino` sea `null`, en el instante del arranque; en ese caso las dos devuelven `false`. `any` devuelve `true` si al menos un elemento de la lista cumple la condición.
 
-Con ellas, el cálculo del apartado 6.2 queda en una línea:
+#### Las secciones del menú son las de nivel superior
+
+Esta lista sustituye a `seccionesPrincipales` del apartado 6.2: las pantallas de nivel superior son justamente las del menú. En **`AppNavegacion.kt`** se hacen dos cambios.
+
+Se borra la línea que hay encima de la función:
 
 ```kotlin
-val esNivelSuperior = destino.esNivelSuperior()
+val seccionesPrincipales = listOf(Rutas.INICIO)   // se borra
 ```
 
-> **En la aplicación de hospedajes**, la lista tiene las secciones de la aplicación: `Seccion(Rutas.INICIO, "Inicio", Icons.Default.Home)`, `Seccion(Rutas.MIS_HOTELES, "Mis hoteles", Icons.Default.Favorite)`, `Seccion(Rutas.EXPLORAR, "Explorar", Icons.Default.Place)` y `Seccion(Rutas.ACERCA_DE, "Acerca de", Icons.Default.Info)`. Las funciones `esSeccion` y `esNivelSuperior` no cambian.
+Y se cambia el cálculo de `esNivelSuperior`, debajo del `when` del título:
+
+```kotlin
+    val esNivelSuperior = destino.esNivelSuperior()   // antes: destino?.route in seccionesPrincipales
+```
+
+Ejecuta la app. Ahora A y B muestran ≡ y se puede abrir el menú deslizando el dedo; en C sigue la flecha y deslizar no abre nada.
 
 ### 7.4 Navegar a una sección sin apilar pantallas
 
 Las secciones del menú no son pantallas siguientes, sino lugares de la aplicación. Si cada opción hiciera un `navigate` normal, la pila crecería con cada pulsación (`[Inicio, A, B, A, Inicio, ...]`) y Atrás recorrería todo ese historial. Lo que se quiere es que, al cambiar de sección, la pila quede como `[Inicio, sección]`. Atrás desde cualquier sección lleva a Inicio, y Atrás en Inicio cierra la aplicación.
 
-Para eso se usan las opciones de `navigate` del apartado 3.7, reunidas en una función:
+#### La función irASeccion
+
+Para eso se usan las opciones de `navigate` del apartado 3.7, reunidas en una función. Se añade en **`Secciones.kt`**, al final del archivo, después de `esNivelSuperior`:
 
 ```kotlin
 fun NavController.irASeccion(ruta: String) {
@@ -2250,6 +2475,8 @@ fun NavController.irASeccion(ruta: String) {
     }
 }
 ```
+
+Es otra función de extensión, esta vez de `NavController`: se llama `navController.irASeccion(Rutas.A)`.
 
 `popUpTo(Rutas.INICIO)` quita, antes de navegar, todo lo que hay encima de Inicio. `launchSingleTop = true` evita que se apile otra vez la sección en la que ya estás.
 
@@ -2265,29 +2492,72 @@ fun NavController.irASeccion(ruta: String) {
 | Pulsa Atrás | `[Inicio, B]` |
 | Pulsa Atrás | `[Inicio]` |
 
-Como A y B ahora son secciones, cualquier forma de ir a ellas debe usar `irASeccion`: las opciones del menú lateral, las del menú ⋮ y los dos botones de Inicio. Si un botón usara `navigate(Rutas.A)` y una opción del menú `irASeccion(Rutas.A)`, la pila quedaría distinta según cómo se llegara a A.
+#### Usar irASeccion en todos los caminos a A y B
+
+Como A y B ahora son secciones, cualquier forma de ir a ellas debe usar `irASeccion`. Si un botón usara `navigate(Rutas.A)` y una opción del menú `irASeccion(Rutas.A)`, la pila quedaría distinta según cómo se llegara a A.
+
+En **`AppNavegacion.kt`** hay dos sitios que llevan a A y B. El primero es la llamada a `BarraSuperior`, dentro de `topBar`; cambian las dos últimas líneas:
+
+```kotlin
+                BarraSuperior(
+                    titulo = titulo,
+                    esNivelSuperior = esNivelSuperior,
+                    onAbrirMenu = { scope.launch { drawerState.open() } },
+                    onVolver = { navController.navigateUp() },
+                    onInicio = { navController.popBackStack(route = Rutas.INICIO, inclusive = false) },
+                    onIrA = { navController.irASeccion(Rutas.A) },   // antes: navigate(Rutas.A) { launchSingleTop = true }
+                    onIrB = { navController.irASeccion(Rutas.B) }    // antes: navigate(Rutas.B) { launchSingleTop = true }
+                )
+```
+
+El segundo son los dos botones de Inicio, en el destino `composable(Rutas.INICIO)` del `NavHost`:
+
+```kotlin
+                composable(Rutas.INICIO) {
+                    PantallaInicio(
+                        onIrA = { navController.irASeccion(Rutas.A) },   // antes: navigate(Rutas.A)
+                        onIrB = { navController.irASeccion(Rutas.B) }    // antes: navigate(Rutas.B)
+                    )
+                }
+```
+
+El botón «Siguiente» de B se deja con `navigate(Rutas.C)`: C no es una sección, es una pantalla que se apila encima de B.
 
 ### 7.5 La cabecera y el contenido del menú
 
-La cabecera muestra la foto, el nombre y el correo del usuario. Sus datos se guardan en una `data class`. En la app de colores todavía no hay inicio de sesión (apartado 9), así que se usa un usuario fijo:
+En esta etapa se sustituye el texto provisional del panel por el menú de verdad: una cabecera con los datos del usuario, una opción por sección y una opción para cerrar sesión. Todo va en un archivo nuevo, `MenuLateral.kt`, y después se conecta en `AppNavegacion.kt`.
+
+#### La foto del usuario
+
+La cabecera muestra una foto del usuario. Es una imagen guardada en el propio proyecto, en la carpeta de recursos `res/drawable`, igual que las imágenes de la UD2.
+
+Descarga [esta foto](./assets/img/foto_perfil.jpg) (o usa cualquier imagen `.jpg` o `.png` tuya) y guárdala con el nombre `foto_perfil.jpg`. En Android Studio, en la vista **Android** del panel del proyecto, arrástrala a la carpeta **app → res → drawable**. Si aparece una ventana preguntando la carpeta de destino, elige `drawable` (sin sufijo).
+
+El nombre del archivo es el nombre del recurso: desde el código se usa como `R.drawable.foto_perfil`. Solo puede tener minúsculas, números y guiones bajos; con mayúsculas, espacios o tildes, el proyecto no compila.
+
+#### El archivo MenuLateral.kt
+
+Crea el archivo **`MenuLateral.kt`** en el mismo paquete. Tiene cuatro partes, que se explican una a una. La primera son los datos del usuario:
 
 ```kotlin
+package com.ejemplo.navegacion
+
 data class Usuario(
     val nombre: String,
     val email: String,
-    val foto: String? = null
+    val foto: Int? = null
 )
 
 val usuarioEjemplo = Usuario(
     nombre = "Ana García",
     email = "ana@ejemplo.com",
-    foto = "https://picsum.photos/seed/ana/200"
+    foto = R.drawable.foto_perfil
 )
 ```
 
-La foto es una dirección de internet y se carga con Coil (UD3, apartado 4). El proyecto de colores no la tenía: añade la dependencia `implementation("io.coil-kt:coil-compose:2.7.0")` en `build.gradle.kts (Module :app)`, pulsa **Sync Now** y añade en `AndroidManifest.xml` el permiso `<uses-permission android:name="android.permission.INTERNET" />`.
+`foto` es el identificador del recurso de la imagen (`R.drawable.foto_perfil`), o `null` si el usuario no tiene foto. Es un `Int` porque Android identifica cada recurso con un número que genera al compilar. En la app de colores todavía no hay inicio de sesión (apartado 9), así que se usa un usuario fijo, `usuarioEjemplo`.
 
-La cabecera es un composable normal:
+Debajo, en el mismo archivo, la cabecera del menú:
 
 ```kotlin
 @Composable
@@ -2299,16 +2569,22 @@ fun CabeceraMenu(usuario: Usuario?) {
             .padding(horizontal = 16.dp, vertical = 24.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            model = usuario?.foto,
-            contentDescription = "Foto de perfil",
-            contentScale = ContentScale.Crop,
-            fallback = rememberVectorPainter(Icons.Default.AccountCircle),
-            error = rememberVectorPainter(Icons.Default.AccountCircle),
-            modifier = Modifier
-                .size(64.dp)
-                .clip(CircleShape)
-        )
+        if (usuario?.foto != null) {
+            Image(
+                painter = painterResource(usuario.foto),
+                contentDescription = "Foto de perfil",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = "Foto de perfil",
+                modifier = Modifier.size(64.dp)
+            )
+        }
         Spacer(Modifier.width(16.dp))
         Column {
             Text(
@@ -2327,9 +2603,11 @@ fun CabeceraMenu(usuario: Usuario?) {
 }
 ```
 
-`clip(CircleShape)` recorta la foto en círculo y `ContentScale.Crop` la ajusta al círculo sin deformarla. `fallback` se muestra si `foto` es `null`, y `error` si la imagen no se puede descargar; los dos usan el icono de usuario. Recibe `Usuario?` y no `Usuario` porque, cuando haya inicio de sesión, puede no haber usuario: entonces muestra «Invitado».
+- `Image` con `painterResource(...)` dibuja una imagen de `res/drawable` (UD2). Como `foto` puede ser `null`, primero se comprueba: si hay foto se dibuja, y si no, se muestra el icono de usuario de Material en su lugar.
+- `clip(CircleShape)` recorta la foto en círculo y `ContentScale.Crop` la ajusta al círculo sin deformarla.
+- Recibe `Usuario?` y no `Usuario` porque, cuando haya inicio de sesión, puede no haber usuario: entonces muestra «Invitado».
 
-El contenido del menú pone la cabecera, una opción por cada sección de `seccionesMenu` y, separada por una línea, la opción de cerrar sesión:
+Debajo, el contenido completo del panel: la cabecera, una opción por sección y, separada por una línea, la de cerrar sesión:
 
 ```kotlin
 @Composable
@@ -2366,24 +2644,59 @@ fun ContenidoMenuLateral(
 }
 ```
 
-`selected` marca con fondo de color la opción de la sección que se está viendo. Se calcula con el destino actual, así que siempre coincide con la pantalla, se llegue a ella por el menú, por un botón o con Atrás. En C no se marca ninguna, porque C no está en `seccionesMenu`.
+- `ModalDrawerSheet` es el mismo panel que en el apartado 7.2; ahora contiene el menú de verdad.
+- `seccionesMenu.forEach` crea una opción `NavigationDrawerItem` por cada sección de la lista del apartado 7.3.
+- `selected` marca con fondo de color la opción de la sección que se está viendo. Se calcula con el destino, así que siempre coincide con la pantalla, se llegue a ella por el menú, por un botón o con Atrás. En C no se marca ninguna, porque C no está en `seccionesMenu`.
+- `contentDescription = null` en los iconos: el texto de la opción ya los describe. `NavigationDrawerItemDefaults.ItemPadding` es el margen lateral que recomienda Material.
+- Cerrar sesión no es una sección: no lleva a una pantalla del menú. Por eso va aparte, después del `HorizontalDivider`, y con `selected = false`. Lo que hace de verdad se explica en el apartado 9.5.
+- Si hubiera más opciones de las que caben, se pondrían dentro de una `Column` con `Modifier.verticalScroll(rememberScrollState())`.
 
-Los iconos llevan `contentDescription = null` porque el texto de la opción ya la describe. `NavigationDrawerItemDefaults.ItemPadding` es el margen lateral que recomienda Material. Si hubiera más opciones de las que caben, se pondrían dentro de una `Column` con `Modifier.verticalScroll(rememberScrollState())`.
+`ContenidoMenuLateral` no navega ni cierra el panel: avisa con `onSeccionClick` y `onCerrarSesion`, y quien lo usa decide qué hacer.
 
-Cerrar sesión no es una sección: no lleva a una pantalla del menú. Por eso va aparte, después del `HorizontalDivider`, y con `selected = false`. En la app de colores solo muestra un `Toast`; lo que hace de verdad se explica en el apartado 9.5.
+#### Conectar el menú en AppNavegacion
 
-`ContenidoMenuLateral` no navega ni cierra el panel: avisa con `onSeccionClick` de qué sección se ha elegido. Quien lo usa cierra el panel y navega:
+En **`AppNavegacion.kt`** se hacen dos cambios. Al principio de la función, debajo de `scope`, se obtiene el contexto, que necesita el `Toast` de cerrar sesión:
 
 ```kotlin
-onSeccionClick = { seccion ->
-    scope.launch { drawerState.close() }
-    navController.irASeccion(seccion.ruta)
-}
+    val navController = rememberNavController()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current   // nuevo
 ```
+
+Y en el `ModalNavigationDrawer`, el `drawerContent` provisional del apartado 7.2 se sustituye por `ContenidoMenuLateral`:
+
+```kotlin
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        gesturesEnabled = esNivelSuperior,
+        drawerContent = {
+            ContenidoMenuLateral(                          // sustituye a ModalDrawerSheet { Text(...) }
+                usuario = usuarioEjemplo,
+                destino = destino,
+                onSeccionClick = { seccion ->
+                    scope.launch { drawerState.close() }
+                    navController.irASeccion(seccion.ruta)
+                },
+                onCerrarSesion = {
+                    scope.launch { drawerState.close() }
+                    Toast.makeText(context, "Cerrar sesión: apartado 9.5", Toast.LENGTH_SHORT).show()
+                }
+            )
+        }
+    ) {
+        // ... el Scaffold, sin cambios
+```
+
+- **`destino = destino`**: el menú recibe la pantalla actual para marcar su opción.
+- **`onSeccionClick`**: al elegir una opción, se cierra el panel y se navega con `irASeccion` (apartado 7.4).
+- **`onCerrarSesion`**: de momento cierra el panel y muestra un `Toast`.
+
+Ejecuta la app. El menú muestra la foto, el nombre y el correo, y las cuatro secciones. Al elegir una, el panel se cierra y se navega a ella; al volver a abrirlo, la opción marcada es la de la pantalla actual.
 
 ### 7.6 El menú lateral completo
 
-Juntando los apartados 7.1 a 7.5, la app de colores queda con estos archivos:
+Este apartado reúne el código completo de los archivos tal como quedan al terminar los apartados 7.2 a 7.5. Sirve para comparar con tu proyecto si algo no compila o no funciona. La app de colores queda con estos archivos:
 
 ```text
 app/src/main/java/com/ejemplo/navegacion/
@@ -2391,6 +2704,7 @@ app/src/main/java/com/ejemplo/navegacion/
 ├── Pantallas.kt       ← cambia: se añade PantallaAcercaDe
 ├── Secciones.kt       ← nuevo: Seccion, seccionesMenu y funciones de ayuda
 ├── MenuLateral.kt     ← nuevo: Usuario, CabeceraMenu y ContenidoMenuLateral
+│                         (y la imagen res/drawable/foto_perfil.jpg)
 ├── BarraSuperior.kt   ← cambia: icono ≡ que abre el menú
 ├── AppNavegacion.kt   ← cambia: ModalNavigationDrawer alrededor del Scaffold
 └── MainActivity.kt    ← sin cambios
@@ -2467,7 +2781,98 @@ fun NavController.irASeccion(ruta: String) {
 }
 ```
 
-**`MenuLateral.kt`** (nuevo) contiene la `data class Usuario`, `usuarioEjemplo`, `CabeceraMenu` y `ContenidoMenuLateral`, tal como se han escrito en el apartado 7.5, con `package com.ejemplo.navegacion` en la primera línea.
+**`MenuLateral.kt`** (nuevo), con el código del apartado 7.5:
+
+```kotlin
+package com.ejemplo.navegacion
+
+data class Usuario(
+    val nombre: String,
+    val email: String,
+    val foto: Int? = null
+)
+
+val usuarioEjemplo = Usuario(
+    nombre = "Ana García",
+    email = "ana@ejemplo.com",
+    foto = R.drawable.foto_perfil
+)
+
+@Composable
+fun CabeceraMenu(usuario: Usuario?) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(horizontal = 16.dp, vertical = 24.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (usuario?.foto != null) {
+            Image(
+                painter = painterResource(usuario.foto),
+                contentDescription = "Foto de perfil",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)
+            )
+        } else {
+            Icon(
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = "Foto de perfil",
+                modifier = Modifier.size(64.dp)
+            )
+        }
+        Spacer(Modifier.width(16.dp))
+        Column {
+            Text(
+                text = usuario?.nombre ?: "Invitado",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Text(
+                text = usuario?.email ?: "",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        }
+    }
+}
+
+@Composable
+fun ContenidoMenuLateral(
+    usuario: Usuario?,
+    destino: NavDestination?,
+    onSeccionClick: (Seccion) -> Unit,
+    onCerrarSesion: () -> Unit
+) {
+    ModalDrawerSheet {
+        CabeceraMenu(usuario)
+        Spacer(Modifier.height(12.dp))
+
+        seccionesMenu.forEach { seccion ->
+            NavigationDrawerItem(
+                label = { Text(seccion.titulo) },
+                icon = { Icon(seccion.icono, contentDescription = null) },
+                selected = destino.esSeccion(seccion),
+                onClick = { onSeccionClick(seccion) },
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            )
+        }
+
+        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
+        NavigationDrawerItem(
+            label = { Text("Cerrar sesión") },
+            icon = { Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null) },
+            selected = false,
+            onClick = onCerrarSesion,
+            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+        )
+    }
+}
+```
 
 **`BarraSuperior.kt`** cambia en dos puntos: recibe `onAbrirMenu` y el `navigationIcon` muestra ≡ en las pantallas de nivel superior (el `if`-`else` del apartado 6.2):
 
@@ -2670,7 +3075,14 @@ Respecto al apartado 6.3, el `Scaffold` y el `NavHost` son los mismos, con un de
 | Acerca de | Sí | Ninguno | No |
 | C | No | — | No |
 
-**Cómo se consigue.** La barra es una `NavigationBar` con un botón por sección, que se coloca en el parámetro `bottomBar` del `Scaffold` (apartados 8.1 y 8.2). Reutiliza lo del apartado 7: la lista de secciones, `esSeccion` para marcar el botón e `irASeccion` para navegar. El botón flotante va en el parámetro `floatingActionButton` del mismo `Scaffold` (apartado 8.3). En el apartado 8.5 se juntan las piezas en la app de colores.
+**Cómo se consigue.** Se parte del proyecto tal como quedó en el apartado 7 y se modifica en dos etapas. Al final de cada una, la aplicación compila y se puede ejecutar para ver el avance:
+
+| Apartado | Qué se consigue | Archivos que se tocan |
+|---|---|---|
+| 8.2 | La barra inferior con Inicio, A y B, y un contador sobre el icono de B | `BarraInferior.kt` (nuevo), `AppNavegacion.kt` |
+| 8.3 | El botón flotante de B que lleva a C | `AppNavegacion.kt` |
+
+El apartado 8.1 presenta antes las piezas de Compose que se usan, el 8.4 resume cómo conviven el menú lateral y la barra inferior, y el 8.5 reúne el código completo.
 
 ### 8.1 Cómo funciona
 
@@ -2680,19 +3092,23 @@ Respecto al apartado 6.3, el `Scaffold` y el `NavHost` son los mismos, con un de
 | `NavigationBarItem` | Cada botón: icono, texto y marcado si es la sección actual |
 | `Scaffold(bottomBar = ...)` | Coloca la barra abajo y reserva su espacio |
 
-Material recomienda entre tres y cinco botones. Las secciones de la barra se sacan de la lista del menú lateral, para no escribirlas dos veces:
+La barra se dibuja en un composable propio, `BarraInferior`, igual que la barra superior tiene `BarraSuperior`. Y se coloca en el parámetro `bottomBar` del `Scaffold` de `AppNavegacion.kt`, al lado de `topBar`.
 
-```kotlin
-val seccionesBarra = seccionesMenu.take(3)   // Inicio, Pantalla A, Pantalla B
-```
-
-`take(3)` devuelve los tres primeros elementos de la lista. Por eso en `seccionesMenu` se ponen primero las secciones que deben ir en la barra y al final las que solo están en el menú lateral.
+Material recomienda entre tres y cinco botones. Las secciones de la barra no se escriben otra vez: se sacan de la lista `seccionesMenu` de `Secciones.kt` (apartado 7.3) con `take(3)`, que devuelve los tres primeros elementos de una lista. Como `seccionesMenu` tiene Inicio, A, B y Acerca de, en ese orden, la barra tendrá Inicio, A y B. Por eso en `seccionesMenu` se ponen primero las secciones que deben ir en la barra y al final las que solo están en el menú lateral.
 
 > **En la aplicación de hospedajes**, `seccionesMenu.take(3)` da Inicio, Mis hoteles y Explorar. Acerca de queda solo en el menú lateral, igual que en la app de colores.
 
 ### 8.2 El código de la barra
 
+#### El archivo BarraInferior.kt
+
+Crea el archivo **`BarraInferior.kt`** en el mismo paquete que los demás (**New → Kotlin Class/File → File**) con este contenido:
+
 ```kotlin
+package com.ejemplo.navegacion
+
+val seccionesBarra = seccionesMenu.take(3)   // Inicio, Pantalla A, Pantalla B
+
 @Composable
 fun BarraInferior(
     destino: NavDestination?,
@@ -2711,65 +3127,110 @@ fun BarraInferior(
 }
 ```
 
-La barra funciona igual que `ContenidoMenuLateral`: `selected` se calcula con `esSeccion` y el clic se avisa con `onSeccionClick`, sin navegar desde dentro. Como los dos usan el mismo `destino`, el menú lateral y la barra inferior siempre marcan la misma sección.
+- **`seccionesBarra`** está fuera de la función, al principio del archivo, como `seccionesMenu` en `Secciones.kt`.
+- **`NavigationBar { ... }`** es la barra; dentro, `seccionesBarra.forEach` crea un `NavigationBarItem` por sección.
+- **`selected = destino.esSeccion(seccion)`** marca el botón de la sección que se está viendo, con la misma función que usa el menú lateral (apartado 7.3). Como los dos usan el mismo `destino`, el menú lateral y la barra inferior siempre marcan la misma sección.
+- **`onClick = { onSeccionClick(seccion) }`**: igual que `ContenidoMenuLateral`, la barra no navega; avisa de qué sección se ha pulsado y quien la usa decide qué hacer.
+- **`label`** es el texto bajo el icono. Si hubiera cuatro o cinco botones y los textos no cupieran, el parámetro `alwaysShowLabel = false` muestra solo el del botón marcado.
 
-`label` es el texto bajo el icono. Si hubiera cuatro o cinco botones y los textos no cupieran, `alwaysShowLabel = false` muestra solo el del botón marcado.
+#### Colocar la barra en el Scaffold
 
-Para mostrar un número sobre un icono (avisos pendientes, elementos nuevos...) se envuelve el icono en un `BadgedBox`. En la app de colores se pone un 3 sobre el icono de Pantalla B:
-
-```kotlin
-icon = {
-    if (seccion.ruta == Rutas.B) {
-        BadgedBox(badge = { Badge { Text("3") } }) {
-            Icon(seccion.icono, contentDescription = null)
-        }
-    } else {
-        Icon(seccion.icono, contentDescription = null)
-    }
-}
-```
-
-`badge` es lo que se dibuja en la esquina del icono: un `Badge` con el número. Sin texto, `Badge { }` dibuja solo un punto. En una aplicación real el número no es fijo, sino un dato del estado (por ejemplo, cuántos favoritos hay).
-
-La barra se coloca en el `Scaffold`, pero solo en las pantallas de nivel superior. En C no se muestra, porque C es una pantalla de detalle de B y se sale de ella con ←:
+En **`AppNavegacion.kt`**, el `Scaffold` tiene hasta ahora un solo parámetro, `topBar`. Se añade `bottomBar` detrás, separado por una coma. Así queda el principio del `Scaffold`:
 
 ```kotlin
-Scaffold(
-    topBar = { ... },
-    bottomBar = {
-        if (esNivelSuperior) {
-            BarraInferior(
-                destino = destino,
-                onSeccionClick = { seccion -> navController.irASeccion(seccion.ruta) }
-            )
-        }
-    }
-) { innerPadding -> ... }
+        Scaffold(
+            topBar = {
+                BarraSuperior(
+                    titulo = titulo,
+                    esNivelSuperior = esNivelSuperior,
+                    onAbrirMenu = { scope.launch { drawerState.open() } },
+                    onVolver = { navController.navigateUp() },
+                    onInicio = { navController.popBackStack(route = Rutas.INICIO, inclusive = false) },
+                    onIrA = { navController.irASeccion(Rutas.A) },
+                    onIrB = { navController.irASeccion(Rutas.B) }
+                )
+            },                                         // ← se añade esta coma
+            bottomBar = {                              // nuevo
+                if (esNivelSuperior) {
+                    BarraInferior(
+                        destino = destino,
+                        onSeccionClick = { seccion -> navController.irASeccion(seccion.ruta) }
+                    )
+                }
+            }
+        ) { innerPadding ->
+            NavHost(
+                // ... sin cambios
 ```
 
-Cuando la barra no se muestra, el `Scaffold` no reserva su espacio y `innerPadding` cambia: la pantalla ocupa también el hueco de abajo.
+- **`if (esNivelSuperior)`**: la barra solo se muestra en las pantallas de nivel superior. En C no se muestra, porque C es una pantalla de detalle de B y se sale de ella con ←. Cuando la barra no se muestra, el `Scaffold` no reserva su espacio y `innerPadding` cambia: la pantalla ocupa también el hueco de abajo.
+- **`onSeccionClick`** navega con `irASeccion`, la misma función que el menú lateral (apartado 7.4). La pila queda igual se cambie de sección desde un sitio o desde otro.
 
 En Acerca de la barra se muestra, porque es de nivel superior, pero no se marca ningún botón, porque Acerca de no está en `seccionesBarra`.
 
-### 8.3 El botón flotante
+Ejecuta la app. La barra aparece en Inicio, A, B y Acerca de, y no aparece en C. Cambia de sección con la barra y abre el menú lateral: la opción marcada es siempre la misma en los dos.
 
-El botón flotante (UD3, apartado 8.1) también va en el `Scaffold`. En la app de colores solo aparece en B y lleva a C, como el botón «Siguiente». Se muestra según el destino:
+#### Un contador sobre un icono
+
+Para mostrar un número sobre un icono (avisos pendientes, elementos nuevos...) se envuelve el icono en un `BadgedBox`. En la app de colores se pone un 3 sobre el icono de Pantalla B.
+
+En **`BarraInferior.kt`**, dentro del `NavigationBarItem`, se cambia la línea `icon = { ... }` por esta versión:
 
 ```kotlin
-floatingActionButton = {
-    if (destino?.route == Rutas.B) {
-        FloatingActionButton(onClick = { navController.navigate(Rutas.C) }) {
-            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Ir a la pantalla C")
-        }
-    }
-}
+            NavigationBarItem(
+                selected = destino.esSeccion(seccion),
+                onClick = { onSeccionClick(seccion) },
+                icon = {                                                   // cambia
+                    if (seccion.ruta == Rutas.B) {
+                        BadgedBox(badge = { Badge { Text("3") } }) {
+                            Icon(seccion.icono, contentDescription = null)
+                        }
+                    } else {
+                        Icon(seccion.icono, contentDescription = null)
+                    }
+                },
+                label = { Text(seccion.titulo) }
+            )
 ```
 
-El botón usa `navigate` y no `irASeccion`, igual que «Siguiente»: C se apila encima de B.
+- **`if (seccion.ruta == Rutas.B)`**: el `forEach` pasa por las tres secciones, y solo la de B lleva contador.
+- **`BadgedBox`** dibuja su contenido (el icono) y, en la esquina, lo que se le pasa en `badge`: un `Badge` con el número. Sin texto, `Badge { }` dibuja solo un punto.
+- En una aplicación real el número no es fijo, sino un dato del estado (por ejemplo, cuántos favoritos hay). En la UD5 este contador mostrará cuántos colores tiene el usuario.
 
-Por defecto el `Scaffold` lo coloca abajo a la derecha, encima de la barra inferior. Con el parámetro `floatingActionButtonPosition = FabPosition.Center` del `Scaffold` se centra. El `Scaffold` reserva el espacio de cada pieza (barra superior, barra inferior, botón) y pasa al contenido los márgenes en `innerPadding`, para que nada quede tapado.
+### 8.3 El botón flotante
+
+El botón flotante (UD3, apartado 8.1) también va en el `Scaffold`, en su parámetro `floatingActionButton`. En la app de colores solo aparece en B y lleva a C, como el botón «Siguiente».
+
+En **`AppNavegacion.kt`** se añade detrás de `bottomBar`, otra vez separado por una coma:
+
+```kotlin
+            bottomBar = {
+                if (esNivelSuperior) {
+                    BarraInferior(
+                        destino = destino,
+                        onSeccionClick = { seccion -> navController.irASeccion(seccion.ruta) }
+                    )
+                }
+            },                                         // ← se añade esta coma
+            floatingActionButton = {                   // nuevo
+                if (destino?.route == Rutas.B) {
+                    FloatingActionButton(onClick = { navController.navigate(Rutas.C) }) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Ir a la pantalla C")
+                    }
+                }
+            }
+        ) { innerPadding ->
+```
+
+- **`if (destino?.route == Rutas.B)`**: el botón se muestra según la pantalla actual, igual que la barra. En el resto de pantallas el parámetro no dibuja nada y el `Scaffold` no reserva su espacio.
+- **`navigate(Rutas.C)`** y no `irASeccion`, igual que «Siguiente»: C no es una sección, se apila encima de B.
+- **`contentDescription`** describe lo que hace el botón, porque no tiene texto: es lo que lee el lector de pantalla.
+
+Por defecto el `Scaffold` coloca el botón abajo a la derecha, encima de la barra inferior. Para centrarlo, se añade al `Scaffold` el parámetro `floatingActionButtonPosition = FabPosition.Center`. El `Scaffold` reserva el espacio de cada pieza (barra superior, barra inferior, botón) y pasa al contenido los márgenes en `innerPadding`, para que nada quede tapado.
 
 Si se quiere el botón encajado en el centro de la barra inferior, se usa `BottomAppBar(floatingActionButton = { ... })` en lugar de `NavigationBar`. Material 3 recomienda `NavigationBar` para cambiar de sección y `BottomAppBar` para barras con acciones de la pantalla.
+
+Ejecuta la app. El botón aparece solo en B; al pulsarlo se va a C, y con ← se vuelve a B.
 
 > **En la aplicación de hospedajes**, el botón flotante es el «+» de alta, solo en «Mis hoteles»: `if (destino?.route == Rutas.MIS_HOTELES)`, con `onClick = { viewModel.onAddHotelClicked() }` e `Icons.Default.Add`.
 
@@ -2788,7 +3249,9 @@ En la aplicación conviven los dos. Para que no se contradigan:
 
 ### 8.5 La barra inferior completa
 
-Juntando los apartados 8.1 a 8.3, se añade a la app de colores un archivo nuevo, **`BarraInferior.kt`**:
+Este apartado reúne el código completo de los archivos tal como quedan al terminar los apartados 8.2 y 8.3. Sirve para comparar con tu proyecto si algo no compila o no funciona.
+
+**`BarraInferior.kt`** (nuevo):
 
 ```kotlin
 package com.ejemplo.navegacion
@@ -2821,7 +3284,7 @@ fun BarraInferior(
 }
 ```
 
-En **`AppNavegacion.kt`** solo cambia la llamada al `Scaffold`, que recibe `bottomBar` y `floatingActionButton`. El resto es igual que en el apartado 7.6:
+**`AppNavegacion.kt`**: respecto al apartado 7.6, solo cambia el `Scaffold`, que recibe además `bottomBar` y `floatingActionButton`:
 
 ```kotlin
 package com.ejemplo.navegacion
@@ -3035,7 +3498,7 @@ object AuthRepository {
         usuarioActual = Usuario(
             nombre = email.substringBefore("@"),
             email = email,
-            foto = "https://picsum.photos/seed/$email/200"
+            foto = R.drawable.foto_perfil
         )
     }
 
@@ -3051,7 +3514,7 @@ object AuthRepository {
 
 - Es un repositorio como `HotelRepository` (UD3, apartado 6.2): un `object` que ofrece los datos a la aplicación.
 - `usuarioActual` usa `mutableStateOf` para que la cabecera del menú se redibuje al cambiar de usuario. `private set` impide modificarlo desde fuera (UD3, apartado 6.4).
-- La simulación acepta cualquier correo y contraseña válidos. Con Firebase, el resultado llega al cabo de un momento y puede ser un error; el estado de carga y los mensajes de error se guardarán entonces en un ViewModel, con el mismo esquema que en la UD3.
+- La simulación acepta cualquier correo y contraseña válidos. Al iniciar sesión, el usuario recibe la foto de `res/drawable` del apartado 7.5; al registrarse no tiene foto (`foto` vale `null`) y la cabecera muestra el icono de usuario. Con Firebase, el resultado llega al cabo de un momento y puede ser un error; el estado de carga y los mensajes de error se guardarán entonces en un ViewModel, con el mismo esquema que en la UD3.
 
 ### 9.3 Las pantallas de acceso
 
@@ -3260,7 +3723,7 @@ Continúa el proyecto `NavegacionBasica` de la actividad 1. Antes de empezar, de
 **Parte C. Menú lateral (apartado 7)**
 
 10. Envuelve el `Scaffold` en un `ModalNavigationDrawer` con `rememberDrawerState` y `rememberCoroutineScope`.
-11. Añade la dependencia de Coil y el permiso de internet (apartado 7.5). Crea `MenuLateral.kt` con la `data class Usuario`, un usuario fijo con tus datos y `CabeceraMenu` con una foto redonda (`AsyncImage` + `CircleShape`), el nombre y el correo.
+11. Añade una foto tuya a `res/drawable` (apartado 7.5). Crea `MenuLateral.kt` con la `data class Usuario`, un usuario fijo con tus datos y `CabeceraMenu` con la foto redonda (`Image` + `painterResource` + `CircleShape`), el nombre y el correo. Si el usuario no tiene foto, muestra el icono de usuario.
 12. Crea `ContenidoMenuLateral` con una opción por sección, marcada si es la actual, y, separada por un `HorizontalDivider`, una opción «Salir» que de momento solo muestre un `Toast`.
 13. Añade a `BarraSuperior` el parámetro `onAbrirMenu` y muestra ≡ en las pantallas de nivel superior. Haz que ≡ abra el menú y que elegir una opción lo cierre y navegue con `irASeccion`.
 14. Desactiva el gesto de abrir el menú en C (`gesturesEnabled`).
@@ -3284,62 +3747,43 @@ Continúa el proyecto `NavegacionBasica` de la actividad 1. Antes de empezar, de
 
 24. Añade animaciones de deslizamiento al `NavHost` (apartado 3.8).
 
-### 10.3 Actividad 3: Acceso y dos listas
+### 10.3 Actividad 3: Portal con menú lateral, barra superior y barra inferior
 
-Continúa el proyecto `Peliculas` de las actividades 2 y 3 de la UD3 (lista, detalle, CRUD con diálogos y `Snackbar`) y aplica en él lo que has hecho en la actividad 2 con la app de colores. Con las partes A, B y C tendrás la navegación que piden las Versiones 1.4 y 1.5 del proyecto.
+Crea un proyecto nuevo de Compose (`MiPortal`) y añade las dependencias de Navigation Compose y de los iconos.
 
-Las partes D a G son opcionales: se basan en el apartado 9, que no se explica en clase y sirve de consulta para la Versión 1.3 (de investigación). Hacerlas te prepara el flujo de acceso que después conectarás con Firebase.
+La aplicación tiene solo dos pantallas de verdad: una de bienvenida con un botón «Inicio» y una pantalla principal con menú lateral, barra superior y barra inferior. Todo lo demás es ficticio: los enlaces del menú lateral, las opciones de inicio de sesión y registro y los botones de la barra inferior se ven y se pueden pulsar, pero no llevan a ningún sitio ni hacen nada.
 
-**Parte A. Navegación de Películas (apartados 4.6, 6, 7 y 8)**
+```text
+Bienvenida ──«Inicio»──► Principal
+                          ├── Barra superior: ≡, título, ⋮ (Iniciar sesión, Registrarse)
+                          ├── Menú lateral: cabecera y enlaces a páginas web
+                          └── Barra inferior: Inicio, Mis mensajes, Agenda
+```
 
-1. Añade las dependencias del apartado 2.4 y crea `Rutas.kt` con las rutas `INICIO`, `MIS_PELICULAS`, `ACERCA_DE` y `DETALLE` (`"detalle/{peliculaId}"`), y la función `detalle(peliculaId)`.
-2. Cambia la navegación con estado de `AppPantallas` por un `NavHost` (apartado 4.6). Quita del `UiState` y del ViewModel el id seleccionado y sus funciones de navegación, y quita el `BackHandler`. Al confirmar el borrado de una película desde el detalle, vuelve con `popBackStack()`.
-3. Crea una pantalla sencilla para Inicio y otra para Acerca de.
-4. Copia de la actividad 2 `Secciones.kt`, `BarraSuperior.kt`, `MenuLateral.kt` y `BarraInferior.kt`, cambia el `package` y adapta las secciones: Inicio, Mis películas y Acerca de en el menú lateral; Inicio y Mis películas en la barra inferior. El menú ⋮ tendrá la opción «Acerca de».
-5. Usa un único `Scaffold` común, dentro del `ModalNavigationDrawer` (apartado 7.1). Quita el `Scaffold` de las pantallas: la barra superior, el botón «+» (solo en Mis películas) y el `Snackbar` pasan al `Scaffold` común.
-6. Comprueba que el CRUD funciona igual que antes, que el detalle muestra ← y no tiene barra inferior, y que, si editas una película, el detalle y la lista muestran los datos nuevos.
+**Las dos pantallas**
 
-**Parte B. Dos listas (apartado 4.3)**
+1. Crea `Rutas.kt` con las rutas `BIENVENIDA` y `PRINCIPAL`.
+2. Crea `PantallaBienvenida` con el nombre de la aplicación, un texto de presentación y un botón «Inicio». La pantalla recibe la lambda `onInicio` y no conoce el `NavController`.
+3. Crea `PantallaPrincipal` con un texto centrado («Pantalla principal»). Es el contenido que se verá entre la barra superior y la barra inferior.
+4. Crea `AppNavegacion.kt` con un `NavHost` que empiece en `BIENVENIDA`. Al pulsar «Inicio», navega a `PRINCIPAL` quitando la bienvenida de la pila (`popUpTo(Rutas.BIENVENIDA) { inclusive = true }`), de forma que Atrás en la pantalla principal cierre la aplicación.
+5. Haz que `MainActivity` llame a `AppNavegacion()` y comprueba que se pasa de una pantalla a otra.
 
-7. Añade al repositorio una lista fija de películas comunes («Cartelera») y cárgala en el `UiState` del ViewModel.
-8. Crea un composable `ListaPeliculas` reutilizable y úsalo en «Mis películas» y en una nueva sección «Cartelera» (ruta, entrada en el menú lateral y en la barra inferior).
-9. Añade a la ruta del detalle el argumento `editable` de tipo `NavType.BoolType`: `"detalle/{peliculaId}/{editable}"`. Desde «Mis películas» se abre con `true` y desde «Cartelera» con `false`. Con `false`, el detalle no muestra Editar ni Eliminar.
-10. Diferencia visualmente las dos listas: cabecera explicativa en «Cartelera» y botón «+» solo en «Mis películas».
+**Barra superior**
 
-**Parte C. Comprobaciones**
+6. Crea `BarraSuperior.kt` con una `TopAppBar` con el título «Mi portal», el icono ≡ a la izquierda (lambda `onAbrirMenu`) y, a la derecha, un icono de usuario (`Icons.Default.Person`) y el icono ⋮.
+7. El icono ⋮ abre un `DropdownMenu` con dos opciones, «Iniciar sesión» y «Registrarse», cada una con un icono en `leadingIcon`. Al pulsarlas solo se cierra el menú. El icono de usuario no hace nada.
+8. Usa los colores del tema con `TopAppBarDefaults.topAppBarColors` y comprueba en modo oscuro que la barra se adapta.
 
-11. Comprueba que una película de «Cartelera» no se puede editar ni borrar, y que el CRUD de «Mis películas» sigue funcionando.
-12. Abre el detalle de una película desde «Mis películas», cambia a «Cartelera» con la barra inferior y vuelve a «Mis películas». Comprueba que aparece otra vez el detalle y explica por qué.
-13. Rellena una tabla como la del apartado 3.6 con el recorrido de la comprobación anterior: acción, llamada y pila después.
+**Menú lateral**
 
-**Parte D. Grafos anidados (apartado 9.1, opcional)**
+9. Crea un archivo `MarcoPrincipal.kt` con un composable `MarcoPrincipal` que contenga un `ModalNavigationDrawer` y, dentro, un `Scaffold` con la barra superior y `PantallaPrincipal` como contenido. En el `NavHost`, el destino `PRINCIPAL` dibuja `MarcoPrincipal()`. Así la bienvenida no tiene barras ni menú.
+10. Crea `drawerState` y `scope` en `MarcoPrincipal`, y haz que el icono ≡ abra el menú.
+11. Crea la `data class EnlaceWeb(titulo, url, icono)` y una lista con al menos cuatro enlaces (por ejemplo, Android Developers, Kotlin, Material Design y la web de tu centro).
+12. Crea `ContenidoMenuLateral` con una cabecera (nombre de la aplicación y un icono o una imagen de `res/drawable`) y un `NavigationDrawerItem` por enlace. En cada opción se ve el título y, debajo, la dirección en letra más pequeña (pon una `Column` con dos `Text` en el `label`). Ninguna opción está marcada (`selected = false`) y al pulsarlas solo se cierra el menú.
 
-14. Añade las rutas `AUTH`, `LOGIN`, `REGISTRO`, `RECUPERAR_CLAVE` y `PRINCIPAL`.
-15. Agrupa en el `NavHost` las pantallas de acceso con `navigation(route = Rutas.AUTH, startDestination = Rutas.LOGIN)` y las del área principal con `navigation(route = Rutas.PRINCIPAL, startDestination = Rutas.INICIO)`.
-16. Calcula `enAreaPrincipal` con `hierarchy` y muestra la barra superior solo dentro del área principal.
+**Barra inferior**
 
-**Parte E. Sesión y pantallas de acceso (apartados 9.2 y 9.3, opcional)**
-
-17. Crea la `data class Usuario(nombre, email, foto)` y el `object AuthRepository` del apartado 9.2.
-18. Crea `PantallaLogin` con correo y contraseña. Valida que el correo contiene `@` y que la contraseña tiene al menos 6 caracteres. Los errores se muestran solo tras el primer intento.
-19. Crea `PantallaRegistro` con nombre, correo, contraseña y repetir contraseña. Además de las validaciones del login, comprueba que el nombre no está vacío y que las dos contraseñas coinciden.
-20. Crea `PantallaRecuperarClave` con un campo de correo. Al pulsar «Enviar enlace» con un correo válido, muestra un texto de confirmación en la pantalla.
-21. Haz que la cabecera del menú lateral muestre los datos de `AuthRepository.usuarioActual`.
-
-**Parte F. Entrar y salir (apartados 9.4 a 9.6, opcional)**
-
-22. Al entrar o registrarse, navega a `Rutas.PRINCIPAL` quitando de la pila el grafo `Rutas.AUTH`.
-23. Sustituye la opción «Salir» del menú lateral por «Cerrar sesión», que cierre el menú, cierre la sesión y navegue a `Rutas.AUTH` quitando de la pila el grafo `Rutas.PRINCIPAL`. Añade también «Cerrar sesión» al menú ⋮.
-24. Haz que el destino inicial dependa de si hay sesión (apartado 9.6). Para probarlo, llama a `AuthRepository.iniciarSesion(...)` antes de `setContent` en `MainActivity`, comprueba que se empieza en Inicio y quita después esa línea.
-
-**Parte G. Comprobaciones del acceso (opcional)**
-
-25. Abre la aplicación, pulsa «Crear una cuenta» y después Atrás: debes volver al login. Regístrate y pulsa Atrás: la aplicación se cierra, no vuelves al registro.
-26. Entra, abre el detalle de una película, cierra sesión desde el menú ⋮ y pulsa Atrás: la aplicación se cierra, no vuelves al detalle.
-27. En el login, intenta abrir el menú lateral deslizando el dedo: no debe abrirse.
-28. Rellena una tabla como la del apartado 3.6 con el recorrido de las comprobaciones 25 y 26: acción, llamada y pila después.
-
-**Parte H. Ampliación (opcional)**
-
-29. Añade una pantalla `Perfil` de nivel inferior, con ruta `"perfil/{email}"` (codifica el correo con `Uri.encode`), que se abra al pulsar la cabecera del menú lateral y muestre los datos del usuario.
-30. Añade un `BackHandler` en Inicio que, en lugar de cerrar la aplicación directamente, muestre un `Snackbar` «Pulsa otra vez para salir» y solo salga si se vuelve a pulsar Atrás en los dos segundos siguientes.
+13. Crea `BarraInferior.kt` con una `NavigationBar` de tres botones: Inicio (`Icons.Default.Home`), Mis mensajes (`Icons.Default.Email`) y Agenda (`Icons.Default.DateRange`). Define los botones con una `data class` y una lista.
+14. Inicio aparece siempre marcado y los otros dos no. Al pulsar cualquiera no ocurre nada.
+15. Añade un `BadgedBox` con el número 5 sobre el icono de Mis mensajes.
+16. Coloca la barra en el `bottomBar` del `Scaffold` de `MarcoPrincipal`.

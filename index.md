@@ -16,3 +16,10 @@ description: "<strong>Profesor:</strong> Matías Montávez Sánchez"
 ## [UD 3: Listas, diálogos y arquitectura MVVM](ud3.md)
 ## [UD 4: Navegación y menús](ud4.md)
 ## [UD 5: Patrones de diseño](ud5.md)
+
+---
+
+## EXTRA: Lo mismo pero con XML
+- [UD 2 con XML: Interfaz de usuario con vistas y layouts](xml_ud2.md)
+- [UD 3 con XML: Listas, diálogos y MVVM](xml_ud3.md)
+- [UD 4 con XML: Navegación y menús con fragments](xml_ud4.md)
