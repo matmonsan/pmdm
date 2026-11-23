@@ -6,6 +6,8 @@ description: "<strong>Módulo:</strong> Programación Multimedia y Dispositivos 
 
 **[<span style="color: purple;">Simulador componentes</span>](jetpack_compose_studio.html)**
 
+> **Proyecto de hospedajes completo.** [Descarga aquí el proyecto](https://github.com/matmonsan/hoteles-pmdm/archive/refs/heads/ud4.zip) con todo lo de la UD3 (lista, detalle, CRUD con diálogos y `Snackbar`) y lo de esta unidad aplicado a los hospedajes: `NavHost`, barra superior con menú de opciones, menú lateral y barra inferior. Descomprime el archivo y ábrelo en Android Studio con **File → Open**. El código está también en el [repositorio de GitHub](https://github.com/matmonsan/hoteles-pmdm/tree/ud4).
+
 ## Índice
 
 0. [Resumen de términos](#0-resumen-de-términos)
