@@ -154,27 +154,29 @@ Esta tabla relaciona cada pieza de la navegación con *Fragments* y XML con la q
 
 Navigation Compose no viene incluido en un proyecto nuevo: hay que añadir la librería `navigation-compose`. Una librería es código ya hecho que tu app usa: trae `NavHost`, `NavController`, `navigate`... Sin ella, Android Studio no conoce esos nombres.
 
-Las dependencias se configuran con Gradle (UD1), pero esta la puede añadir Android Studio por ti.
+Las dependencias se configuran con Gradle (UD1). Abre `build.gradle.kts (Module :app)` y añade esta línea dentro del bloque `dependencies`:
 
-#### Añadir la librería desde Android Studio
+```kotlin
+dependencies {
+    // ... las dependencias que ya había
+    implementation("androidx.navigation:navigation-compose:2.10.2")
+}
+```
 
-1. Menú **File → Project Structure...**
-2. En la columna de la izquierda, elige **Dependencies**, y en **Modules**, elige **app**.
-3. Pulsa el **+** de la lista de dependencias → **Library Dependency**.
-4. En el buscador escribe `navigation-compose` y pulsa **Search**.
-5. Elige la fila cuyo grupo es `androidx.navigation` y, en **Version**, la versión estable más reciente. Evita las que terminan en `-alpha`, `-beta` o `-rc`: son versiones de prueba.
-6. Pulsa **OK** y otra vez **OK** para cerrar la ventana.
+Después pulsa **Sync Now**, en la barra que aparece arriba del editor. Hasta que no se sincronice, Android Studio no reconocerá `NavHost` ni `rememberNavController`.
 
-Android Studio escribe las líneas necesarias en los archivos de Gradle y sincroniza el proyecto. Si quieres ver qué ha hecho, abre `build.gradle.kts (Module :app)`: en el bloque `dependencies` habrá una línea nueva parecida a `implementation(libs.androidx.navigation.compose)`.
+El texto entre comillas tiene tres partes separadas por dos puntos: el grupo (`androidx.navigation`), el nombre de la librería (`navigation-compose`) y la versión (`2.10.2`). Si Android Studio subraya la línea en amarillo y propone una versión más reciente, acéptala. Evita las que terminan en `-alpha`, `-beta` o `-rc`: son versiones de prueba.
 
-Si en lugar de eso aparece arriba del editor una barra con **Sync Now**, púlsala. Hasta que no se sincronice, Android Studio no reconocerá `NavHost` ni `rememberNavController`.
+> **`libs.androidx.navigation.compose`.** En otros ejemplos verás la dependencia escrita como `implementation(libs.androidx.navigation.compose)`. Esa forma no indica la librería directamente: hace referencia a una entrada del catálogo de versiones, el archivo `gradle/libs.versions.toml`. Si el catálogo no tiene esa entrada, que es lo normal en un proyecto nuevo, la sincronización falla con el error *Unresolved reference: navigation*. La forma de arriba funciona siempre.
 
 **Si algo falla:**
 
 | Síntoma | Causa probable |
 |---|---|
+| Al sincronizar: *Unresolved reference: navigation* | Se ha escrito `libs.androidx.navigation.compose` sin tener la entrada en el catálogo. Usa la línea con comillas de arriba |
+| Al sincronizar: *Could not find androidx.navigation:navigation-compose:...* | La versión está mal escrita o no existe. Revisa el texto entre comillas |
 | `NavHost`, `composable` o `rememberNavController` en rojo en el código | Falta sincronizar, o falta el `import` (**Alt + Intro**) |
-| Al pulsar **Alt + Intro** no aparece la opción de importar `NavHost` | La librería no se ha añadido: revisa que la línea `implementation(libs.androidx.navigation.compose)` está en `build.gradle.kts (Module :app)` |
+| Al pulsar **Alt + Intro** no aparece la opción de importar `NavHost` | La librería no se ha añadido: revisa que la línea está en `build.gradle.kts (Module :app)` y que se ha sincronizado |
 
 #### La librería de los iconos
 
